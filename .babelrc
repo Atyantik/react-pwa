@@ -4,6 +4,6 @@
     "react"
   ],
   "plugins": [
-    //"lodash"
+    "lodash"
   ]
 }

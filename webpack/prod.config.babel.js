@@ -5,7 +5,7 @@ import CleanWebpackPlugin from "clean-webpack-plugin";
 import UglifyJSPlugin from "uglifyjs-webpack-plugin";
 import CopyWebpackPlugin from "copy-webpack-plugin";
 
-import generateConfig, { srcDir,rootDir,publicDir,distDir } from "./config-generator";
+import generateConfig, { srcDir, rootDir, srcPublicDir, distPublicDir, distDir } from "./config-generator";
 
 const hash = "[chunkhash]";
 
@@ -14,6 +14,8 @@ const configDirName = "config";
 // Config dir is the dir that contains all the configurations
 const configDir = path.join(srcDir, configDirName);
 
+// We would need the assets as different file as we
+// would like it to include in the dev.server.js
 const AssetsPluginInstance = new AssetsPlugin({
   filename: "assets.js",
   path: configDir,
@@ -31,17 +33,21 @@ const entry = {
 };
 
 const plugins = [
-  // While performing production build remove the dist & build dir
+  // While building remove the dist dir
   new CleanWebpackPlugin(["dist"], {
     root: rootDir,
     verbose: true,
   }),
+  // Assets plugin to generate
   AssetsPluginInstance,
+
+  // Uglify the output so that we have the most optimized code
   new UglifyJSPlugin({
     compress: true,
     comments: false,
     sourceMap: false,
   }),
+
   // Create common chunk of data
   new webpack.optimize.CommonsChunkPlugin({
     name: "commons",
@@ -50,10 +56,14 @@ const plugins = [
   }),
   new CopyWebpackPlugin([
     {
-      from: publicDir,
-      to: path.join(distDir, "public"),
+      from: srcPublicDir,
+      to: distPublicDir,
     }
+
   ]),
+  new webpack.DefinePlugin({
+    "process.env.NODE_ENV": JSON.stringify("production")
+  })
 ];
 
 const devtool = false;
@@ -67,10 +77,15 @@ export default [
   }),
   generateConfig({
     hash: "prod",
-    distDir: distDir,
+    buildOutputDir: distDir,
     entry: {
       "server": path.join(srcDir, "server", "server.js"),
     },
+    plugins: [
+      new webpack.DefinePlugin({
+        "process.env.NODE_ENV": JSON.stringify("production")
+      })
+    ],
     devtool,
     target: "node",
   }),

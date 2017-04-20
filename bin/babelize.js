@@ -30,6 +30,6 @@ if (process.argv.length > 2) {
 } else {
   console.log("Babelize is only helpful when provided with a file name");
   console.log("Usage: nodejs babelize.js <relative path to file>");
-  console.log("Example: nodejs babelize.js ./server.js");
+  console.log("Example: nodejs babelize.js ./dev.server.js");
 }
 /* eslint-enable */

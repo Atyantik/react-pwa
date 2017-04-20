@@ -42,7 +42,6 @@ const webpackMiddlewareInstance = webpackMiddleware(compiler, {
 
   // headers: { 'X-Custom-Header': 'yes' },
   // custom headers
-  hot: webpackConfig.devServer.hot,
 
   stats: {
     // Add asset Information

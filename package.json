@@ -42,8 +42,8 @@
     "webpack-hot-middleware": "^2.18.0"
   },
   "scripts": {
-    "start": "nodejs ./bin/babelize.js ./server.js",
-    "build": "NODE_ENV=production webpack -p --config ./webpack/prod.config.babel.js",
+    "start": "nodejs ./bin/babelize.js ./dev.server.js",
+    "build": "NODE_ENV=production nodejs ./bin/babelize.js ./prod.server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

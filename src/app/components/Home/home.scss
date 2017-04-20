@@ -1,9 +1,16 @@
 .h1 {
-	font-family: 'monospace';
-	text-shadow: 2px;
+  font-family: 'monospace';
+  text-shadow: 2px;
 }
+
 body {
-	.h2 {
-		display: none;
-	}
+  .h2 {
+    display: none;
+  }
+}
+/**
+ * Dummy Example for checking autoprefixer
+ */
+:fullscreen a {
+  display: flex
 }

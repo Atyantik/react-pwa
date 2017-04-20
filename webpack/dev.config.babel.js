@@ -1,6 +1,6 @@
 import path from "path";
 import webpack from "webpack";
-import generateConfig, {srcDir} from "./config-generator";
+import generateConfig, { srcDir, srcPublicDir } from "./config-generator";
 const hash = "[hash]";
 
 
@@ -21,12 +21,9 @@ const devServer = {
   open: false,
 
   // the base of content, in our case its the "src/public" folder
-  contentBase: path.join(srcDir, "public"),
+  contentBase: srcPublicDir,
 
   compress: true,
-
-  // Yes do a hot reload for sure
-  hot: true,
 
   // Show errors and warning on overlap
   overlay: {
@@ -35,12 +32,13 @@ const devServer = {
   },
 };
 
-console.log(devServer);
-
 const plugins = [
   // Hot module replacement for getting latest updates
+  // thus no reload required
   new webpack.HotModuleReplacementPlugin(),
+
   // Create common chunk of data
+  // Break data in common so that we have minimum data to load
   new webpack.optimize.CommonsChunkPlugin({
     name: "commons",
     filename: `${hash}.commons.js`,
@@ -48,6 +46,7 @@ const plugins = [
   }),
 ];
 
+// use eval-source-map, fast but insecure. good for dev
 const devtool = "eval-source-map";
 
 export default generateConfig({
