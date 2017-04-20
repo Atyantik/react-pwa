@@ -1,0 +1,6 @@
+{
+  "name": "Server",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./initializer.js"
+}
