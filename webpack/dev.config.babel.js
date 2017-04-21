@@ -41,7 +41,7 @@ const plugins = [
   // Break data in common so that we have minimum data to load
   new webpack.optimize.CommonsChunkPlugin({
     name: "commons",
-    filename: `${hash}.commons.js`,
+    filename: `common-${hash}.js`,
     minChunks: Infinity,
   }),
 ];

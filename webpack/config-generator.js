@@ -106,7 +106,40 @@ const getConfig = ({
   // for server we would need /dist, so lets allow it to pass it
   // as parameter
   buildOutputDir = buildDir,
+
+  universalCss = false,
 }) => {
+
+  let cssLoader = {
+    test: /\.(sass|scss)$/, //Check for sass or scss file names
+    use: [
+      {
+        loader: "style-loader"
+      },
+      {
+        loader: "css-loader?modules&localIdentName=[name]__[local]&minimize&sourceMap&importLoaders=2",
+      },
+      {
+        loader: "postcss-loader",
+      },
+      {
+        loader: "sass-loader?outputStyle=expanded&sourceMap&sourceMapContents",
+      }
+    ]
+  };
+  if (universalCss) {
+    cssLoader = {
+      test: /\.(sass|scss)$/, //Check for sass or scss file names
+      loader: ExtractTextPlugin.extract({
+        fallback: "style-loader",
+        use: [
+          "css-loader?modules&localIdentName=[name]__[local]___[hash:base64:5]&minimize&sourceMap&importLoaders=2",
+          "postcss-loader",
+          "sass-loader?outputStyle=expanded&sourceMap&sourceMapContents"
+        ]
+      }),
+    };
+  }
   return {
 
     // The base directory, an absolute path, for resolving entry points
@@ -136,19 +169,7 @@ const getConfig = ({
             }
           ]
         },
-
-        // Output css and use postcss for only required css loading
-        {
-          test: /\.(sass|scss)$/, //Check for sass or scss file names
-          loader: ExtractTextPlugin.extract({
-            fallback: "style-loader",
-            use: [
-              "css-loader?modules&localIdentName=[name]__[local]&minimize&sourceMap&importLoaders=2",
-              "postcss-loader",
-              "sass-loader?outputStyle=expanded&sourceMap&sourceMapContents"
-            ]
-          }),
-        }
+        cssLoader,
       ],
     },
     output: {
@@ -177,8 +198,7 @@ const getConfig = ({
 
       // Extract the CSS so that it can be moved to CDN as desired
       // Also extracted CSS can be loaded parallel
-      new ExtractTextPlugin(`[name].${hash}.min.css`),
-
+      ...(universalCss ? [new ExtractTextPlugin(`[name].${hash}.min.css`)] :[]),
       // Sass loader options for autoprefix
       new webpack.LoaderOptionsPlugin({
         options: {

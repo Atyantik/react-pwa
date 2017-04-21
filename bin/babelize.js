@@ -16,6 +16,11 @@ try {
   console.error(err);
 }
 
+config.plugins.push([
+  "css-modules-transform", {
+  "generateScopedName": "[name]__[local]",
+  "extensions": [".css", ".scss", ".sass"]
+}]);
 require("babel-register")(config);
 
 if (process.argv.length > 2) {

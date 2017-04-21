@@ -32,4 +32,5 @@ export default generateConfig({
   plugins,
   devtool,
   target: "node",
+  universalCss: true,
 });

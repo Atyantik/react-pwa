@@ -1,41 +1,70 @@
 import express from "express";
+
 import _ from "lodash";
 
 import app from "./initializer";
 import assets from "../config/assets";
+import React from "react";
+import ReactDOMServer from "react-dom/server";
+import Home from "../app/components/Home/home";
 
 app.use("/public", express.static("public"));
 
+const extractFiles = (assets, ext = ".js") => {
+  let common = [];
+  let dev = [];
+  let other = [];
+
+  const addToList = (file) => {
+
+    let fileName = file.split("/").pop();
+
+    if (_.startsWith(fileName, "common")) {
+      common.push(file);
+      return;
+    }
+    if (_.startsWith(fileName, "dev")) {
+      dev.push(file);
+      return;
+    }
+    other.push(file);
+  };
+
+  _.each(assets, asset => {
+    "use strict";
+    if (_.isArray(asset) || _.isObject(asset)) {
+      _.each(asset, file => {
+        if (_.endsWith(file, ext)) {
+          addToList(file);
+        }
+      });
+    } else {
+      if (_.endsWith(asset, ext)) {
+        addToList(asset);
+      }
+    }
+  });
+
+  return [
+    ...common,
+    ...dev,
+    ...other,
+  ];
+
+};
+
 app.get("/", (req, res) => {
-
-  let commonCss = _.filter(assets.commons, path => _.endsWith(path, ".css"));
-  commonCss = _.map(commonCss, path => `<link rel="stylesheet" href="${path}" />`);
-  commonCss = commonCss.join("");
-
-  let appCss = _.filter(assets.app, path => _.endsWith(path, ".css"));
-  appCss = _.map(appCss, path => `<link rel="stylesheet" href="${path}" />`);
-  appCss = appCss.join("");
-
-  let commonJs = _.filter(assets.commons, path => _.endsWith(path, ".js"));
-  commonJs = _.map(commonJs, path => `<script type="text/javascript" src="${path}"></script>`);
-  commonJs = commonJs.join("");
-
-  let appJs = _.filter(assets.app, path => _.endsWith(path, ".js"));
-  appJs = _.map(appJs, path => `<script type="text/javascript" src="${path}"></script>`);
-  appJs = appJs.join("");
-
+  const html = ReactDOMServer.renderToString(<Home />);
 
   res.send(`<!DOCTYPE html>
 		<html>
 		  <head>
 		    <title>My App</title>
-		    ${commonCss}
-				${appCss}
+        ${_.map(extractFiles(assets, ".css"), path => `<link rel="stylesheet" href="${path}" />`).join("")}
 		  </head>
 		  <body>
-		    <div id="app"></div>
-		    ${commonJs}
-		    ${appJs}
+		    <div id="app">${html}</div>
+		    ${_.map(extractFiles(assets, ".js"), path => `<script type="text/javascript" src="${path}"></script>`).join("")}
 		  </body>
 		</html>
 	`);

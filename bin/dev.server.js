@@ -1,12 +1,16 @@
 /**
  * Work with webpack to run for dev env
  */
+import React from "react";
+import ReactDOMServer from "react-dom/server";
+import _ from "lodash";
 import webpack from "webpack";
 import webpackMiddleware from "webpack-dev-middleware";
 import webpackHotMiddleware from "webpack-hot-middleware";
 import webpackConfig from "../webpack/dev.config.babel";
 import express from "express";
 import app from "../src/server";
+import Home from "../src/app/components/Home/home";
 
 // Inform developers that Compilation is in process
 // and wait till its fully done
@@ -155,6 +159,49 @@ app.use(webpackHotMiddlewareInstance);
 app.use("/public", express.static(webpackConfig.devServer.contentBase));
 
 
+const extractFiles = (assets, ext = ".js") => {
+  let common = [];
+  let dev = [];
+  let other = [];
+
+  const addToList = (file) => {
+
+    let fileName = file.split("/").pop();
+
+    if (_.startsWith(fileName, "common")) {
+      common.push(file);
+      return;
+    }
+    if (_.startsWith(fileName, "dev")) {
+      dev.push(file);
+      return;
+    }
+    other.push(file);
+  };
+
+  _.each(assets, asset => {
+    "use strict";
+    if (_.isArray(asset) || _.isObject(asset)) {
+      _.each(asset, file => {
+        if (_.endsWith(file, ext)) {
+          addToList(file);
+        }
+      });
+    } else {
+      if (_.endsWith(asset, ext)) {
+        addToList(asset);
+      }
+    }
+  });
+
+  return [
+    ...common,
+    ...dev,
+    ...other,
+  ];
+
+};
+
 // The following middleware would not be invoked until the latest build is finished.
 app.get("/", (req, res) => {
 
@@ -162,27 +209,18 @@ app.get("/", (req, res) => {
   const assetsByChunkName = webpackStats.assetsByChunkName;
   const publicPath = webpackStats.publicPath;
 
+  const html = ReactDOMServer.renderToString(<Home />);
+  //const html = '';
+
   res.send(`<!DOCTYPE html>
 		<html>
 		  <head>
 		    <title>My App</title>
-				${
-    assetsByChunkName.app
-      .filter(path => path.endsWith(".css"))
-      .map(path => `<link rel="stylesheet" href="${publicPath}${path}" />`)
-    }
+				${_.map(extractFiles(assetsByChunkName, ".css"), path => `<link rel="stylesheet" href="${publicPath}${path}" />`).join("")}
 		  </head>
 		  <body>
-		    <div id="app"></div>
-		    <script type="text/javascript" src="${publicPath}${assetsByChunkName["commons"]}"></script>
-		    <script type="text/javascript" src="${publicPath}${assetsByChunkName["dev-webpack"]}"></script>
-		    <script type="text/javascript" src="${publicPath}${assetsByChunkName["dev-react-hot-loader"]}"></script>
-        ${
-    assetsByChunkName.app
-      .filter(path => path.endsWith(".js"))
-      .map(path => `<script type="text/javascript" src="${publicPath}${path}"></script>`)
-      .join("")
-    }
+		    <div id="app">${html}</div>
+		    ${_.map(extractFiles(assetsByChunkName, ".js"), path => `<script type="text/javascript" src="${publicPath}${path}"></script>`).join("")}
 		  </body>
 		</html>
 	`);

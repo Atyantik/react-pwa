@@ -72,5 +72,6 @@ export default generateConfig({
   hash,
   plugins,
   entry,
-  devtool
+  devtool,
+  universalCss: true,
 });
