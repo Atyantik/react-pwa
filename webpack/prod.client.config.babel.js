@@ -5,7 +5,7 @@ import CleanWebpackPlugin from "clean-webpack-plugin";
 import UglifyJSPlugin from "uglifyjs-webpack-plugin";
 import CopyWebpackPlugin from "copy-webpack-plugin";
 
-import generateConfig, { srcDir, rootDir, srcPublicDir, distPublicDir, distDir } from "./config-generator";
+import generateConfig, { srcDir, rootDir, srcPublicDir, distPublicDir } from "./config-generator";
 
 const hash = "[chunkhash]";
 
@@ -68,25 +68,9 @@ const plugins = [
 
 const devtool = false;
 
-export default [
-  generateConfig({
-    hash,
-    plugins,
-    entry,
-    devtool
-  }),
-  generateConfig({
-    hash: "prod",
-    buildOutputDir: distDir,
-    entry: {
-      "server": path.join(srcDir, "server", "server.js"),
-    },
-    plugins: [
-      new webpack.DefinePlugin({
-        "process.env.NODE_ENV": JSON.stringify("production")
-      })
-    ],
-    devtool,
-    target: "node",
-  }),
-];
+export default generateConfig({
+  hash,
+  plugins,
+  entry,
+  devtool
+});

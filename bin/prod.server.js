@@ -1,10 +1,10 @@
 /**
  * Work with webpack to run for dev env
  */
+/* eslint-disable */
 import webpack from "webpack";
-import webpackConfig from "../webpack/prod.config.babel";
-
-const [clientConfig, serverConfig] = webpackConfig;
+import clientConfig from "../webpack/prod.client.config.babel";
+import serverConfig from "../webpack/prod.server.config.babel";
 
 // Inform developers that Compilation is in process
 // and wait till its fully done

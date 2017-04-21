@@ -1,7 +1,8 @@
 import express from "express";
+import _ from "lodash";
+
 import app from "./initializer";
 import assets from "../config/assets";
-import _ from "lodash";
 
 app.use("/public", express.static("public"));
 

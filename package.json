@@ -43,7 +43,7 @@
   },
   "scripts": {
     "start": "nodejs ./bin/babelize.js ./dev.server.js",
-    "build": "NODE_ENV=production nodejs ./bin/babelize.js ./prod.server.js",
+    "build": "NODE_ENV=production webpack -p --config ./webpack/prod.client.config.babel.js && NODE_ENV=production webpack -p --config ./webpack/prod.server.config.babel.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
