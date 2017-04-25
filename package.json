@@ -35,6 +35,8 @@
     "node-sass": "^4.5.2",
     "postcss-loader": "^1.3.3",
     "postcss-scss": "^0.4.1",
+    "postcss-smart-import": "^0.6.12",
+    "precss": "^1.4.0",
     "sass-loader": "^6.0.3",
     "style-loader": "^0.16.1",
     "uglify-js": "git://github.com/mishoo/UglifyJS2.git#harmony",
@@ -44,7 +46,7 @@
   },
   "scripts": {
     "start": "nodejs ./bin/babelize.js ./dev.server.js",
-    "build": "NODE_ENV=production webpack -p --config ./webpack/prod.client.config.babel.js && NODE_ENV=production webpack -p --config ./webpack/prod.server.config.babel.js",
+    "build": "NODE_ENV=production webpack -p --config ./webpack/prod.client.babel.js && NODE_ENV=production webpack -p --config ./webpack/prod.server.babel.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

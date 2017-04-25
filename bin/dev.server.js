@@ -7,7 +7,7 @@ import _ from "lodash";
 import webpack from "webpack";
 import webpackMiddleware from "webpack-dev-middleware";
 import webpackHotMiddleware from "webpack-hot-middleware";
-import webpackConfig from "../webpack/dev.config.babel";
+import webpackConfig from "../webpack/dev.babel";
 import express from "express";
 import app from "../src/server";
 import Home from "../src/app/components/Home/home";
