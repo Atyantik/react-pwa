@@ -1,16 +1,14 @@
 /**
  * Work with webpack to run for dev env
  */
-import React from "react";
-import ReactDOMServer from "react-dom/server";
+
 import _ from "lodash";
 import webpack from "webpack";
 import webpackMiddleware from "webpack-dev-middleware";
 import webpackHotMiddleware from "webpack-hot-middleware";
-import webpackConfig from "../webpack/dev.babel";
 import express from "express";
-import app from "../src/server";
-import Home from "../src/app/components/Home/home";
+import webpackConfig from "../webpack/dev.babel";
+import app, { startServer } from "../src/server";
 
 // Inform developers that Compilation is in process
 // and wait till its fully done
@@ -157,78 +155,34 @@ app.use(webpackHotMiddlewareInstance);
 
 // server content from content base
 app.use("/public", express.static(webpackConfig.devServer.contentBase));
-
-
-const extractFiles = (assets, ext = ".js") => {
-  let common = [];
-  let dev = [];
-  let other = [];
-
-  const addToList = (file) => {
-
-    let fileName = file.split("/").pop();
-
-    if (_.startsWith(fileName, "common")) {
-      common.push(file);
-      return;
-    }
-    if (_.startsWith(fileName, "dev")) {
-      dev.push(file);
-      return;
-    }
-    other.push(file);
-  };
-
-  _.each(assets, asset => {
-    "use strict";
-    if (_.isArray(asset) || _.isObject(asset)) {
-      _.each(asset, file => {
-        if (_.endsWith(file, ext)) {
-          addToList(file);
-        }
-      });
-    } else {
-      if (_.endsWith(asset, ext)) {
-        addToList(asset);
-      }
-    }
-  });
-
-  return [
-    ...common,
-    ...dev,
-    ...other,
-  ];
-
-};
-
-// The following middleware would not be invoked until the latest build is finished.
-app.get("/", (req, res) => {
+// Add assets to request
+app.use(function (req, res, next) {
 
   const webpackStats = res.locals.webpackStats.toJson();
   const assetsByChunkName = webpackStats.assetsByChunkName;
   const publicPath = webpackStats.publicPath;
 
-  const html = ReactDOMServer.renderToString(<Home />);
-  //const html = '';
+  _.each(assetsByChunkName, (chunkValue, chunkName) => {
+    "use strict";
 
-  res.send(`<!DOCTYPE html>
-		<html>
-		  <head>
-		    <title>My App</title>
-				${_.map(extractFiles(assetsByChunkName, ".css"), path => `<link rel="stylesheet" href="${publicPath}${path}" />`).join("")}
-		  </head>
-		  <body>
-		    <div id="app">${html}</div>
-		    ${_.map(extractFiles(assetsByChunkName, ".js"), path => `<script type="text/javascript" src="${publicPath}${path}"></script>`).join("")}
-		  </body>
-		</html>
-	`);
+    // If its array then it just contains chunk value as array
+    if (_.isArray(chunkValue)) {
+      //console.log(chunkValue);
+      _.each(chunkValue, (path, index) => {
+        assetsByChunkName[chunkName][index] = `${publicPath}${path}`;
+      });
+    } else if (_.isObject(chunkValue)) {
+      _.each(chunkValue, (subChunkValues, subChunkType) => {
+        _.each(subChunkValues, (subChunkValue, subChunkIndex) => {
+          assetsByChunkName[chunkName][subChunkType][subChunkIndex] = `${publicPath}${subChunkValue}`;
+        });
+      });
+    }
+  });
+  req.assets = assetsByChunkName;
+  next();
 });
 
 webpackMiddlewareInstance.waitUntilValid(() => {
-  app.listen(3000, () => {
-    // eslint-disable-next-line no-console
-    console.log("App Started ==> Open http://localhost:3000 to see the app");
-  });
+  startServer();
 });

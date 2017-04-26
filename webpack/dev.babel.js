@@ -10,6 +10,7 @@ import webpack from "webpack";
  */
 import autoprefixer from "autoprefixer";
 import path from "path";
+import fs from "fs";
 
 import {
   srcDir,
@@ -17,6 +18,14 @@ import {
   buildPublicPath,
   srcPublicDir
 } from "./directories";
+
+const pagesFolder = path.join(srcDir, "pages");
+const pages = fs.readdirSync(pagesFolder);
+let entries = {};
+pages.forEach(page => {
+  const slugishName = page.replace(".js", "").replace(/['" \-!@#$%]/g, "_");
+  entries[`mod-${slugishName}`] = path.join(pagesFolder, page);
+});
 
 
 export default {
@@ -28,17 +37,15 @@ export default {
   // The point or points to enter the application. At this point the
   // application starts executing. If an array is passed all items will
   // be executed.
-  entry: {
+  entry: Object.assign({}, {
     // Adding react hot loader as entry point for
     "dev-react-hot-loader": "react-hot-loader/patch",
 
     // development with webpack
     "dev-webpack": "webpack-hot-middleware/client?path=/__hot_update&timeout=2000&overlay=true",
 
-    // Initial entry point
-    // @todo Need to replace with routes
-    "app": path.join(srcDir, "client", "index.js"),
-  },
+    "client": path.join(srcDir, "client.js"),
+  }, entries),
 
   //These options determine how the different types of modules within
   // a project will be treated.
@@ -116,9 +123,22 @@ export default {
     // Create common chunk of data
     // Break data in common so that we have minimum data to load
     new webpack.optimize.CommonsChunkPlugin({
-      name: "commons",
-      filename: "common-[hash].js",
-      minChunks: Infinity,
+      name: "commons-vendor",
+      filename: "common-vendor-[hash].js",
+      minChunks: function (module) {
+        // this assumes your vendor imports exist in the node_modules directory
+        return module.context &&
+          (
+            module.context.indexOf("node_modules") !== -1 ||
+            module.resource.indexOf("/src/client") !== -1
+          );
+      },
+    }),
+
+    //CommonChunksPlugin will now extract all the common modules from vendor and main bundles
+    new webpack.optimize.CommonsChunkPlugin({
+      name: "commons-manifest",
+      filename: "common-manifest-[hash].js" //But since there are no more common modules between them we end up with just the runtime code included in the manifest file
     }),
 
     // Enable no errors plugin

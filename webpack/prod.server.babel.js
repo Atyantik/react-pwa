@@ -67,8 +67,6 @@ export default {
     ],
   },
   output: {
-    // Compress output
-    // compress: true,
 
     // Output everything in dist folder
     path: distDir,
