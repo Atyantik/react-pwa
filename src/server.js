@@ -2,7 +2,7 @@ import express from "express";
 import _ from "lodash";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
-import { StaticRouter, Route } from "react-router";
+import { StaticRouter, Route, matchPath } from "react-router";
 
 import assets from "./config/assets";
 import routes from "./routes";
@@ -64,6 +64,18 @@ export const extractFiles = (assets, ext = ".js") => {
 
 };
 
+export const getModuleFromPath = (routes, path) => {
+  "use strict";
+  let mod = false;
+
+  _.each(routes, route => {
+    if(matchPath(path, route)) {
+      mod = route.bundleKey;
+    }
+  });
+  return mod;
+};
+
 export default app;
 
 export const startServer = () => {
@@ -72,7 +84,26 @@ export const startServer = () => {
   app.get("*", (req, res) => {
     const { assets } = req;
     const context = {};
-    const routeMap = {};
+
+    /**
+     * Get all css and js files for mapping
+     */
+    const allCss = extractFiles(assets, ".css");
+    const allJs = extractFiles(assets, ".js");
+
+    let mod = getModuleFromPath(routes, req.path);
+    const currentModRoutes = _.filter(routes, route => {
+      return route.bundleKey === mod;
+    });
+    const currentRouteCss = _.filter(allCss, css => {
+      const fileName = css.split("/").pop();
+      return !(_.startsWith(fileName, "mod-") && fileName.indexOf(mod) === -1)
+    });
+    mod = "tirth";
+    const currentRouteJs = _.filter(allJs, js => {
+      const fileName = js.split("/").pop();
+      return !(_.startsWith(fileName, "mod-") && fileName.indexOf(mod) === -1)
+    });
 
     const html = ReactDOMServer.renderToString((
       <StaticRouter
@@ -80,7 +111,7 @@ export const startServer = () => {
         context={context}
       >
         <div>
-          {_.map(routes, (route, index) => {
+          {_.map(currentModRoutes, (route, index) => {
             return <Route key={index} exact={route.exact} path={route.path} render={(props) => {
               return <route.component {...props} />;
             }} />;
@@ -93,11 +124,16 @@ export const startServer = () => {
 		<html>
 		  <head>
 		    <title>My App</title>
-        ${_.map(extractFiles(assets, ".css"), path => `<link rel="stylesheet" href="${path}" />`).join("")}
+        ${_.map(currentRouteCss, path => `<link rel="stylesheet" href="${path}" />`).join("")}
+        <script type="text/javascript">
+          window.routes = ${JSON.stringify(routes)};
+          window.allCss = ${JSON.stringify(allCss)};
+          window.allJs = ${JSON.stringify(allJs)};
+        </script>
 		  </head>
 		  <body>
 		    <div id="app">${html}</div>
-		    ${_.map(extractFiles(assets, ".js"), path => `<script type="text/javascript" src="${path}"></script>`).join("")}
+		    ${_.map(currentRouteJs, path => `<script type="text/javascript" src="${path}"></script>`).join("")}
 		  </body>
 		</html>
 	`);

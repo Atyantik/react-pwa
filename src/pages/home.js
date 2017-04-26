@@ -1,6 +1,7 @@
 import Home from "../app/components/Home/home";
+import { loadRoutes } from "../client";
 
-export default [
+const routes = [
   {
     path: "/",
     exact: true,
@@ -8,3 +9,6 @@ export default [
     bundleKey: "home",
   }
 ];
+loadRoutes(routes);
+
+export default routes;

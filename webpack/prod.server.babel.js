@@ -35,7 +35,7 @@ export default {
   // be executed.
   entry: [
     // Initial entry point
-    path.join(srcDir, "server", "server.js"),
+    path.join(srcDir, "startServer.js"),
   ],
 
   //These options determine how the different types of modules within
