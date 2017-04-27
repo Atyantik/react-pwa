@@ -1,108 +1,78 @@
 import React from "react";
 import { render } from "react-dom";
-import { matchPath, BrowserRouter as Router, Route } from "react-router-dom";
 import _ from "lodash";
 
+import {
+  BrowserRouter as Router,
+  Route
+} from "react-router-dom";
+
+import { isBrowser } from "./utils";
+import { loadUrl, idlePreload, isModuleLoaded } from "./utils/bundler";
+
+// Collect routes from all the routes
+// loaded over time
 let collectedRoutes = [];
 
-const getModByPathname = () => {
-  "use strict";
-  let mod = false;
-  _.each(window.routes, route => {
-    console.log(window.location.pathname);
-    if(matchPath(window.location.pathname, route)) {
-      mod = route.bundleKey;
-    }
-  });
-  return mod;
-};
-
+// Browser operations
 const initBrowserOperations = () => {
   "use strict";
-  if (typeof window ==="undefined") {
-    return;
-  }
 
-  // Load in respect to path
-  let currentMod = getModByPathname();
+  if (!isBrowser()) return;
 
-  _.each(window.allJs, js => {
-    if (js.indexOf(`mod-${currentMod}`) !== -1) {
-      loadScripts(js, "js");
-    }
+  // Load in respect to current path on init
+  loadUrl(window.location.pathname, () => {
+    renderRoutes();
+    idlePreload(5000);
   });
 
-  console.log("am here");
-
-  // monitor history change
-  (function(history){
-    var pushState = history.pushState;
-    history.pushState = function(state) {
-      if (typeof history.onpushstate == "function") {
-        history.onpushstate({state: state});
-      }
-      // whatever else you want to do
-      // maybe call onhashchange e.handler
-      return pushState.apply(history, arguments);
-    };
-  })(window.history);
-  window.onpopstate = history.onpushstate = function(state) {
-    // Load in respect to path
-    let currentMod = getModByPathname();
-
-    _.each(window.allCss, css => {
-      if (css.indexOf(`mod-${currentMod}`) !== -1) {
-        loadScripts(css, "css");
-      }
-    });
-    _.each(window.allJs, js => {
-      if (js.indexOf(`mod-${currentMod}`) !== -1) {
-        loadScripts(js, "js", () => {
-          renderRoutes();
-        });
-      }
-    });
+  // Override push state
+  let pushState = window.history.pushState;
+  window.history.pushState = function (e, page, url) {
+    pushState.apply(history, arguments);
+    document.dispatchEvent(new CustomEvent("location-change", {detail: {state: e.state, url, page}}));
   };
-};
+  window.onpopstate = function(e) {
+    document.dispatchEvent(new CustomEvent("location-change", {detail: { state: e.state, url: window.location.pathname}}));
+  };
+  document.addEventListener("location-change", (e) => {
+    const { url } = e.detail;
 
-const enableHotReloading = () => {
+    console.log(isModuleLoaded(url));
+    if (!isModuleLoaded(url)) {
+      renderRouteLoader();
+      loadUrl(url, () => {
+        renderRoutes();
+      });
+    } else {
+      renderRoutes();
+    }
+  });
+};
+initBrowserOperations();
+
+
+// Try hot reloading, though its not happening right now
+const hotReload = () => {
   "use strict";
-  if (module && module.hot && !window.hotLoaded) {
+  if (module && module.hot) {
     module.hot.accept();
-    //window.hotLoaded = true;
   }
 };
 
-const loadScripts = (path, type = "js", cb = () => {}) => {
-  if (document.getElementById(path)) {
-    cb();
-    return;
-  }
-  let scriptReference;
-  if (type === "js") { //if filename is a external JavaScript file
-    scriptReference = document.createElement("script");
-    scriptReference.setAttribute("type", "text/javascript");
-    scriptReference.setAttribute("id", path);
-    scriptReference.setAttribute("src", path);
-    scriptReference.onload = cb;
-    document.getElementsByTagName("body")[0].appendChild(scriptReference);
-  } else if (type === "css") { //if filename is an external CSS file
-    scriptReference = document.createElement("link");
-    scriptReference.setAttribute("rel", "stylesheet");
-    scriptReference.setAttribute("type", "text/css");
-    scriptReference.setAttribute("id", path);
-    scriptReference.setAttribute("href", path);
-    scriptReference.onload = cb;
-    document.getElementsByTagName("head")[0].appendChild(scriptReference);
-  }
-};
-
-export const loadRoutes = (routes) => {
+/**
+ * Load routes when a bundle is included,
+ * this will be called from pages
+ * @param routes
+ */
+export const updateRoutes = (routes) => {
   "use strict";
   collectedRoutes = [...collectedRoutes, ...routes];
-  renderRoutes();
 };
 
+/**
+ * Render routes when routes are loaded
+ */
 const renderRoutes = () => {
   "use strict";
   if (typeof window !== "undefined") {
@@ -117,13 +87,15 @@ const renderRoutes = () => {
         </div>
       </Router>
     ), document.getElementById("app"));
-    enableHotReloading();
+    hotReload();
   }
-}
-
-initBrowserOperations();
-
-export default () => {
+};
+const renderRouteLoader = () => {
   "use strict";
-  return null;
+  if (typeof window !== "undefined") {
+    render((
+      <div>Loading your route.. please wait.</div>
+    ), document.getElementById("app"));
+    hotReload();
+  }
 };

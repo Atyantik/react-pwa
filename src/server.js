@@ -7,15 +7,17 @@ import { StaticRouter, Route, matchPath } from "react-router";
 import assets from "./config/assets";
 import routes from "./routes";
 
-// Create and expressjs application
+// Create and express js application
 const app = express();
 
-// Set x-powered-by to false
+// Set x-powered-by to false (security issues)
 _.set(app, "locals.settings.x-powered-by", false);
 
+// Add public path to server from public folder
+// This is used when doing server loading
 app.use("/public", express.static("public"));
 
-// add assets to request
+// Middleware to add assets to request
 app.use(function (req, res, next) {
   req.assets = assets;
   next();
@@ -124,7 +126,7 @@ export const startServer = () => {
 		<html>
 		  <head>
 		    <title>My App</title>
-        ${_.map(currentRouteCss, path => `<link rel="stylesheet" href="${path}" />`).join("")}
+        ${_.map(currentRouteCss, path => `<link rel="stylesheet" id="${path}" href="${path}" />`).join("")}
         <script type="text/javascript">
           window.routes = ${JSON.stringify(routes)};
           window.allCss = ${JSON.stringify(allCss)};
@@ -133,7 +135,7 @@ export const startServer = () => {
 		  </head>
 		  <body>
 		    <div id="app">${html}</div>
-		    ${_.map(currentRouteJs, path => `<script type="text/javascript" src="${path}"></script>`).join("")}
+		    ${_.map(currentRouteJs, path => `<script type="text/javascript" id="${path}" src="${path}"></script>`).join("")}
 		  </body>
 		</html>
 	`);

@@ -1,5 +1,5 @@
 import About from "../app/components/About/about";
-import { loadRoutes } from "../client";
+import { updateRoutes } from "../client";
 
 const routes = [
   {
@@ -9,6 +9,6 @@ const routes = [
   }
 ];
 
-loadRoutes(routes);
+updateRoutes(routes);
 
 export default routes;

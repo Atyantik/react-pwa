@@ -1,6 +1,5 @@
 import React from "react";
-
-// eslint-disable-next-line
+import { Link } from "react-router-dom";
 import * as styles from "./home.scss";
 
 export default class Home extends React.Component {
@@ -9,7 +8,8 @@ export default class Home extends React.Component {
     {/*<div className={styles.h1}>*/}
     return (
       <div className={styles.h1}>
-        This is Tirth Bodawala from react class.
+        This is Tirth Bodawala from react class. Right?
+         <Link to="/about">Go to about page</Link>
       </div>
     );
   }

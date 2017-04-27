@@ -1,5 +1,5 @@
 import Home from "../app/components/Home/home";
-import { loadRoutes } from "../client";
+import { updateRoutes } from "../client";
 
 const routes = [
   {
@@ -9,6 +9,6 @@ const routes = [
     bundleKey: "home",
   }
 ];
-loadRoutes(routes);
+updateRoutes(routes);
 
 export default routes;
