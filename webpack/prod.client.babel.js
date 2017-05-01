@@ -28,7 +28,7 @@ import {
   distPublicDir,
   buildDir,
   buildPublicPath
-} from "./directories";
+} from "../directories";
 const configDirName = "config";
 // Config dir is the dir that contains all the configurations
 const configDir = path.join(srcDir, configDirName);
@@ -66,7 +66,10 @@ export default {
   // application starts executing. If an array is passed all items will
   // be executed.
   entry: Object.assign({}, {
-    "client": path.join(srcDir, "client.js"),
+    "client": [
+      path.join(srcDir, "client.js"),
+      path.join(srcDir, "resources", "css", "style.scss")
+    ]
   }, entries),
 
   //These options determine how the different types of modules within
@@ -89,6 +92,9 @@ export default {
       },
       {
         test: /\.(sass|scss)$/, //Check for sass or scss file names
+        exclude: [
+          path.join(srcDir, "resources"),
+        ],
         loader: ExtractTextPlugin.extract({
           fallback: "style-loader",
           use: [
@@ -98,8 +104,64 @@ export default {
           ]
         }),
       },
+      {
+        test: /\.(jpe?g|png|gif|svg)$/,
+        use: [
+          "url-loader?limit=1000&hash=sha512&digest=hex&outputPath=images/&name=[name]-[hash].[ext]",
+          {
+            loader: "img-loader",
+            options: {
+              enabled: true,
+              gifsicle: {
+                interlaced: false
+              },
+              mozjpeg: {
+                progressive: true,
+                arithmetic: false
+              },
+              optipng: false, // disabled
+              pngquant: {
+                floyd: 0.5,
+                speed: 2
+              },
+              svgo: {
+                plugins: [
+                  { removeTitle: true },
+                  { convertPathData: false }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      {
+        test: /\.(eot|svg|ttf|woff|woff2)$/,
+        loader: "file-loader?outputPath=fonts/&name=[name]-[hash].[ext]"
+      },
+      {
+        test: /\.(sass|scss|css)$/, //Check for sass or scss file names,
+        include: [
+          path.join(srcDir, "resources"),
+        ],
+        loader: ExtractTextPlugin.extract({
+          fallback: "style-loader",
+          use: [
+            "css-loader?modules&localIdentName=[local]&minimize&sourceMap&importLoaders=2",
+            "postcss-loader",
+            "sass-loader?outputStyle=expanded&sourceMap&sourceMapContents"
+          ]
+        }),
+      },
     ],
   },
+
+  resolve: {
+    modules: [
+      "node_modules",
+      srcDir
+    ],
+  },
+
   output: {
 
     // Output everything in dist folder
@@ -136,28 +198,24 @@ export default {
       name: "commons-vendor",
       filename: "common-vendor-[chunkhash].js",
       minChunks: function (module) {
+        /** Ignore css files **/
+        if(module.resource && (/^.*\.(css|scss|sass)$/).test(module.resource)) {
+          return false;
+        }
         // this assumes your vendor imports exist in the node_modules directory
         return module.context &&
           (
             module.context.indexOf("node_modules") !== -1 ||
-            module.resource.indexOf("/src/client") !== -1
+            (module.resource && module.resource.indexOf("/src/client") !== -1)
           );
       },
     }),
 
-    //CommonChunksPlugin will now extract all the common modules from vendor and main bundles
-    new webpack.optimize.CommonsChunkPlugin({
-      name: "commons-manifest",
-      filename: "common-manifest-[chunkhash].js" //But since there are no more common modules between them we end up with just the runtime code included in the manifest file
-    }),
+    new CopyWebpackPlugin([{
+      from: srcPublicDir,
+      to: distPublicDir,
+    }]),
 
-    new CopyWebpackPlugin([
-      {
-        from: srcPublicDir,
-        to: distPublicDir,
-      }
-
-    ]),
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify("production")
     }),
@@ -168,6 +226,7 @@ export default {
     // Extract the CSS so that it can be moved to CDN as desired
     // Also extracted CSS can be loaded parallel
     new ExtractTextPlugin("[name].[chunkhash].min.css"),
+
     // Sass loader options for autoprefix
     new webpack.LoaderOptionsPlugin({
       options: {

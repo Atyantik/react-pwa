@@ -6,7 +6,7 @@ export default class About extends React.Component {
   render() {
     return (
       <div className={styles.h1}>
-        This is Tirth Bodawala from about page.
+        This is a dummy about page with bad styling.
       </div>
     );
   }

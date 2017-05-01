@@ -1,17 +1,18 @@
-.h1 {
-  font-family: 'monospace';
-  text-shadow: 2px;
-  font-size: 20px;
+@import "../../../resources/css/scss/variables";
+@import "../../../resources/css/scss/mixins";
+@import "../../../resources/css/scss/components/white-box";
+
+.home-container {
+  padding: 60px;
 }
 
-body {
-  .h2 {
-    display: none;
+.form-layout {
+  &.white-box {
+    @include white-box;
+  }
+  .title {
+    max-width: 16rem;
+    margin: 0 auto;
   }
 }
-/**
- * Dummy Example for checking autoprefixer
- */
-:fullscreen a {
-  display: flex
-}
+

@@ -1,0 +1,12 @@
+@import "../../variables";
+@import "../../mixins";
+@import "../../components/white-box";
+.form-layout {
+    &.white-box {
+        @include white-box;
+    }
+    .title{
+        max-width: 16rem;
+        margin: 0 auto;
+    }
+}

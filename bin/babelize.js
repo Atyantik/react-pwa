@@ -2,7 +2,7 @@
  * @description This file is for registering babel register
  * thus including server file
  */
-/* eslint-disable */
+/* eslint-disable no-console */
 const fs = require("fs");
 const path = require("path");
 
@@ -18,10 +18,48 @@ try {
 
 config.plugins.push([
   "css-modules-transform", {
-  "generateScopedName": "[name]__[local]",
-  "extensions": [".css", ".scss", ".sass"]
-}]);
+    "generateScopedName": "[name]__[local]",
+    "extensions": [".css", ".scss", ".sass"]
+  }]);
+
+config.cache = false;
+
 require("babel-register")(config);
+require("babel-polyfill");
+
+
+const directories = require("../directories");
+
+/**
+ * try to include src to path, but with last priority
+ */
+try {
+  const extraIncludePaths = [ directories.srcDir ];
+  process.env.NODE_PATH = `${process.env.NODE_PATH}:${extraIncludePaths.join(":")}`;
+  require("module").Module._initPaths();
+} catch (ex) {
+  // Do nothing
+}
+
+const _  = require("lodash");
+const appConfig = require(`${directories.srcDir}/config/config`);
+
+const allowedImageExtensions = _.get(appConfig, "config.images.allowedExtensions", [
+  ".jpeg",
+  ".jpg",
+  ".png",
+  ".gif",
+  ".svg",
+  ".bmp",
+]);
+
+_.each(allowedImageExtensions, ext => {
+  "use strict";
+  require.extensions[ext] = function (module, filename) {
+    "use strict";
+    module.exports = `${directories.buildPublicPath}images/${filename.split("/").pop()}`;
+  };
+});
 
 if (process.argv.length > 2) {
   const relativePathToFile = process.argv[2];
@@ -32,9 +70,5 @@ if (process.argv.length > 2) {
     console.log(`Cannot resolve "${relativePathToFile}"`);
     console.log(`Make sure the path os relative to ${path.resolve(__dirname)}`);
   }
-} else {
-  console.log("Babelize is only helpful when provided with a file name");
-  console.log("Usage: nodejs babelize.js <relative path to file>");
-  console.log("Example: nodejs babelize.js ./dev.server.js");
 }
 /* eslint-enable */

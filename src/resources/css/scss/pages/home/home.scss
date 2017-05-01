@@ -1,0 +1,6 @@
+@import "../../variables";
+@import "../../mixins";
+@import "../../components/review-card";
+.review-card {
+    @include review-card;
+}

@@ -1,7 +1,7 @@
 {
   "presets": [
-    "env",
-    "react"
+    "react",
+    "env"
   ],
   "plugins": [
     "lodash"

@@ -1,6 +1,32 @@
 import path from "path";
 
 /**
+ * Directory structure for the application
+ *  bin
+ *  dist
+ *    images  --> server images
+ *    public --> Public folder that can be pushed to cdn
+ *      build --> Compiled files
+ *    server.js --> Single compiled server file
+ *  node_modules
+ *  src --> Main sources
+ *    app
+ *      components
+ *      containers
+ *    config
+ *      assets.js --> Do not change this file, its used by webpack
+ *      config.js
+ *    pages --> All the bundled pages
+ *    public --> Public folder adding schema or authentication data etc
+ *    resources --> css/images/fonts etc
+ *    utils --> Util functions
+ *    client.js --> Client entry js
+ *    routes.js --> Consolidated routes
+ *    server.js --> Server instance
+ *    startServer.js --> Simple start server
+ */
+
+/**
  * @description Public directory name preferred during
  * application building and in src folder
  * @type {string}
@@ -44,7 +70,7 @@ export const buildPublicPath = `/${publicDirName}/${buildDirName}/`;
 
 // Directory structure
 // Root dir is the project root
-export const rootDir = path.resolve(__dirname + "/../");
+export const rootDir = path.resolve(__dirname);
 
 // Distribution dir is the directory where
 // We will put all the output dir

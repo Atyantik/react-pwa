@@ -1,7 +1,6 @@
 import React from "react";
 import { render } from "react-dom";
 import _ from "lodash";
-
 import {
   BrowserRouter as Router,
   Route
@@ -13,6 +12,27 @@ import { loadUrl, idlePreload, isModuleLoaded } from "./utils/bundler";
 // Collect routes from all the routes
 // loaded over time
 let collectedRoutes = [];
+
+/**
+ * Render routes when routes are loaded
+ */
+const renderRoutes = () => {
+  "use strict";
+  if (typeof window !== "undefined") {
+    render((
+      <Router>
+        <div>
+          {_.map(collectedRoutes, (route, index) => {
+            return <Route key={index} exact={route.exact} path={route.path} render={(props) => {
+              return <route.component {...props} />;
+            }} />;
+          })}
+        </div>
+      </Router>
+    ), document.getElementById("app"));
+    hotReload();
+  }
+};
 
 // Browser operations
 const initBrowserOperations = () => {
@@ -53,10 +73,16 @@ initBrowserOperations();
 
 
 // Try hot reloading, though its not happening right now
-const hotReload = () => {
+const hotReload = (callback) => {
   "use strict";
   if (module && module.hot) {
-    module.hot.accept();
+    module.hot.accept((err, result) => {
+      if (!err) {
+        callback();
+      }
+    });
+  } else {
+    callback();
   }
 };
 
@@ -69,33 +95,13 @@ export const updateRoutes = (routes) => {
   "use strict";
   collectedRoutes = [...collectedRoutes, ...routes];
 };
-
-/**
- * Render routes when routes are loaded
- */
-const renderRoutes = () => {
-  "use strict";
-  if (typeof window !== "undefined") {
-    render((
-      <Router>
-        <div>
-          {_.map(collectedRoutes, (route, index) => {
-            return <Route key={index} exact={route.exact} path={route.path} render={(props) => {
-              return <route.component {...props} />;
-            }} />;
-          })}
-        </div>
-      </Router>
-    ), document.getElementById("app"));
-    hotReload();
-  }
-};
 const renderRouteLoader = () => {
   "use strict";
   if (typeof window !== "undefined") {
-    render((
-      <div>Loading your route.. please wait.</div>
-    ), document.getElementById("app"));
-    hotReload();
+    hotReload(() => {
+      render((
+        <div>Loading your route.. please wait.</div>
+      ), document.getElementById("app"));
+    });
   }
 };

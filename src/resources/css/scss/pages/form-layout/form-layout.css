@@ -1,0 +1,16 @@
+@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700,900,400italic,300,200);
+.form-layout.white-box {
+  padding: 2rem;
+  background-color: #fff;
+  border: 1px solid rgba(70, 74, 76, 0.2);
+  width: 100%;
+  max-width: 30rem;
+  -webkit-box-shadow: 1px 1px 5px 0px rgba(99, 108, 114, 0.2);
+  -moz-box-shadow: 1px 1px 5px 0px rgba(99, 108, 114, 0.2);
+  box-shadow: 1px 1px 5px 0px rgba(99, 108, 114, 0.2);
+  border-radius: 5px; }
+.form-layout .title {
+  max-width: 16rem;
+  margin: 0 auto; }
+
+/*# sourceMappingURL=form-layout.css.map */

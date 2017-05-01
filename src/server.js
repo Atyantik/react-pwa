@@ -5,7 +5,6 @@ import ReactDOMServer from "react-dom/server";
 import { StaticRouter, Route, matchPath } from "react-router";
 
 import assets from "./config/assets";
-import routes from "./routes";
 
 // Create and express js application
 const app = express();
@@ -80,10 +79,13 @@ export const getModuleFromPath = (routes, path) => {
 
 export default app;
 
-export const startServer = () => {
-  "use strict";
+export const startServer = (purge = false) => {
 
   app.get("*", (req, res) => {
+    if (purge) {
+      purgeCache("./routes");
+    }
+    let routes  = require("./routes").default;
     const { assets } = req;
     const context = {};
 
@@ -99,12 +101,13 @@ export const startServer = () => {
     });
     const currentRouteCss = _.filter(allCss, css => {
       const fileName = css.split("/").pop();
-      return !(_.startsWith(fileName, "mod-") && fileName.indexOf(mod) === -1)
+      return !(_.startsWith(fileName, "mod-") && fileName.indexOf(mod) === -1);
     });
+
     mod = "tirth";
     const currentRouteJs = _.filter(allJs, js => {
       const fileName = js.split("/").pop();
-      return !(_.startsWith(fileName, "mod-") && fileName.indexOf(mod) === -1)
+      return !(_.startsWith(fileName, "mod-") && fileName.indexOf(mod) === -1);
     });
 
     const html = ReactDOMServer.renderToString((
@@ -141,8 +144,54 @@ export const startServer = () => {
 	`);
   });
 
+  console.log("Listen in progress");
   app.listen(3000, () => {
     // eslint-disable-next-line no-console
     console.log("App Started ==> Open http://localhost:3000 to see the app");
   });
+};
+
+/**
+ * Removes a module from the cache
+ */
+function purgeCache(moduleName) {
+  // Traverse the cache looking for the files
+  // loaded by the specified module name
+  searchCache(moduleName, function (mod) {
+    delete require.cache[mod.id];
+  });
+
+  // Remove cached paths to the module.
+  // Thanks to @bentael for pointing this out.
+  Object.keys(module.constructor._pathCache).forEach(function(cacheKey) {
+    if (cacheKey.indexOf(moduleName)>0) {
+      delete module.constructor._pathCache[cacheKey];
+    }
+  });
+};
+
+/**
+ * Traverses the cache to search for all the cached
+ * files of the specified module name
+ */
+function searchCache(moduleName, callback) {
+  // Resolve the module identified by the specified name
+  var mod = require.resolve(moduleName);
+
+  // Check if the module has been resolved and found within
+  // the cache
+  if (mod && ((mod = require.cache[mod]) !== undefined)) {
+    // Recursively go over the results
+    (function traverse(mod) {
+      // Go over each of the module's children and
+      // traverse them
+      mod.children.forEach(function (child) {
+        traverse(child);
+      });
+
+      // Call the specified callback providing the
+      // found cached module
+      callback(mod);
+    }(mod));
+  }
 };

@@ -4,6 +4,7 @@ import { updateRoutes } from "../client";
 const routes = [
   {
     path: "/",
+    something: "test",
     exact: true,
     component: Home,
     bundleKey: "home",

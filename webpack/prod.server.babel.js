@@ -22,7 +22,7 @@ import {
   srcDir,
   distDir,
   buildPublicPath,
-} from "./directories";
+} from "../directories";
 
 export default {
 
@@ -64,6 +64,42 @@ export default {
           ]
         }),
       },
+      {
+        test: /\.(jpe?g|png|gif|svg)$/,
+        use: [
+          "url-loader?limit=1000&hash=sha512&digest=hex&outputPath=images/&name=[name]-[hash].[ext]",
+          {
+            loader: "img-loader",
+            options: {
+              enabled: true,
+              gifsicle: {
+                interlaced: false
+              },
+              mozjpeg: {
+                progressive: true,
+                arithmetic: false
+              },
+              optipng: false, // disabled
+              pngquant: {
+                floyd: 0.5,
+                speed: 2
+              },
+              svgo: {
+                plugins: [
+                  { removeTitle: true },
+                  { convertPathData: false }
+                ]
+              }
+            }
+          }
+        ]
+      },
+    ],
+  },
+  resolve: {
+    modules: [
+      "node_modules",
+      srcDir
     ],
   },
   output: {

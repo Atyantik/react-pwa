@@ -5,7 +5,7 @@
 import _ from "lodash";
 import webpack from "webpack";
 import webpackMiddleware from "webpack-dev-middleware";
-import webpackHotMiddleware from "webpack-hot-middleware";
+// import webpackHotMiddleware from "webpack-hot-middleware";
 import express from "express";
 import webpackConfig from "../webpack/dev.babel";
 import app, { startServer } from "../src/server";
@@ -141,17 +141,17 @@ const webpackMiddlewareInstance = webpackMiddleware(compiler, {
   // Turn off the server-side rendering mode. See Server-Side Rendering part for more info.
 });
 
-const webpackHotMiddlewareInstance = webpackHotMiddleware(compiler, {
-  log: false,
-  path: "/__hot_update",
-  heartbeat: 2000
-});
+// const webpackHotMiddlewareInstance = webpackHotMiddleware(compiler, {
+//   log: false,
+//   path: "/__hot_update",
+//   heartbeat: 2000
+// });
 
 // Use the webpack middleware
 app.use(webpackMiddlewareInstance);
 
 // Use webpack hot middleware
-app.use(webpackHotMiddlewareInstance);
+// app.use(webpackHotMiddlewareInstance);
 
 // server content from content base
 app.use("/public", express.static(webpackConfig.devServer.contentBase));
@@ -184,5 +184,6 @@ app.use(function (req, res, next) {
 });
 
 webpackMiddlewareInstance.waitUntilValid(() => {
-  startServer();
+  const purge = true;
+  startServer(purge);
 });
