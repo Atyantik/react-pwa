@@ -140,6 +140,12 @@ export const loadScript = (path, fn = () => {}, scope) => {
 
 
 const preloads = {};
+/**
+ * Preload a script, compatible with ie 6,7,8+ and all major browsers
+ * @param path
+ * @param fn
+ * @param scope
+ */
 export const preLoadScript = (path, fn = () => {}, scope) => {
   const pathHash = generateStringHash(path, "PRELOAD");
   if (preloads[pathHash]) {
@@ -185,6 +191,12 @@ export const preLoadScript = (path, fn = () => {}, scope) => {
   document.body.appendChild(s);
 };
 
+/**
+ * Simple numeric hash of a string, used for non-secure usage only
+ * @param str
+ * @param namespace
+ * @returns {number}
+ */
 export const generateStringHash = (str, namespace) => {
   "use strict";
   namespace = namespace || "";

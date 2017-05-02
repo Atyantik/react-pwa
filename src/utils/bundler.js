@@ -55,6 +55,16 @@ export const loadModuleByUrl = (url, cb = () => {}) => {
     cb();
   });
 };
+
+/**
+ * Check if script requested belongs to the modules specified
+ * check if public/build/mod-home-cat-1982Aasdd12ascgt3.bundle.js
+ * belongs to home module or home-cat module
+ *
+ * @param script
+ * @param mod
+ * @returns {boolean}
+ */
 export const scriptBelongToMod = (script, mod) => {
   const finalFileName = script.split("/").pop();
   if (!finalFileName) {
