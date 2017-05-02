@@ -107,7 +107,7 @@ export default {
       {
         test: /\.(jpe?g|png|gif|svg)$/,
         use: [
-          "url-loader?limit=1000&hash=sha512&digest=hex&outputPath=images/&name=[name]-[hash].[ext]",
+          "url-loader?limit=102400&hash=sha512&digest=hex&outputPath=images/&name=[name]-[hash].[ext]",
           {
             loader: "img-loader",
             options: {

@@ -5,6 +5,8 @@ import ReactDOMServer from "react-dom/server";
 import { StaticRouter, Route, matchPath } from "react-router";
 
 import assets from "./config/assets";
+import { extractFilesFromAssets } from "utils/bundler";
+import { generateStringHash } from "utils";
 
 // Create and express js application
 const app = express();
@@ -21,49 +23,6 @@ app.use(function (req, res, next) {
   req.assets = assets;
   next();
 });
-
-export const extractFiles = (assets, ext = ".js") => {
-  let common = [];
-  let dev = [];
-  let other = [];
-
-  const addToList = (file) => {
-
-    let fileName = file.split("/").pop();
-
-    if (_.startsWith(fileName, "common")) {
-      common.push(file);
-      return;
-    }
-    if (_.startsWith(fileName, "dev")) {
-      dev.push(file);
-      return;
-    }
-    other.push(file);
-  };
-
-  _.each(assets, asset => {
-    "use strict";
-    if (_.isArray(asset) || _.isObject(asset)) {
-      _.each(asset, file => {
-        if (_.endsWith(file, ext)) {
-          addToList(file);
-        }
-      });
-    } else {
-      if (_.endsWith(asset, ext)) {
-        addToList(asset);
-      }
-    }
-  });
-
-  return [
-    ...common.sort(),
-    ...dev.sort(),
-    ...other.sort(),
-  ];
-
-};
 
 export const getModuleFromPath = (routes, path) => {
   "use strict";
@@ -92,8 +51,8 @@ export const startServer = (purge = false) => {
     /**
      * Get all css and js files for mapping
      */
-    const allCss = extractFiles(assets, ".css");
-    const allJs = extractFiles(assets, ".js");
+    const allCss = extractFilesFromAssets(assets, ".css");
+    const allJs = extractFilesFromAssets(assets, ".js");
 
     let mod = getModuleFromPath(routes, req.path);
     const currentModRoutes = _.filter(routes, route => {
@@ -129,7 +88,7 @@ export const startServer = (purge = false) => {
 		<html>
 		  <head>
 		    <title>My App</title>
-        ${_.map(currentRouteCss, path => `<link rel="stylesheet" id="${path}" href="${path}" />`).join("")}
+        ${_.map(currentRouteCss, path => `<link rel="stylesheet" id="${generateStringHash(path, "CSS")}" href="${path}" />`).join("")}
         <script type="text/javascript">
           window.routes = ${JSON.stringify(routes)};
           window.allCss = ${JSON.stringify(allCss)};
@@ -138,7 +97,7 @@ export const startServer = (purge = false) => {
 		  </head>
 		  <body>
 		    <div id="app">${html}</div>
-		    ${_.map(currentRouteJs, path => `<script type="text/javascript" id="${path}" src="${path}"></script>`).join("")}
+		    ${_.map(currentRouteJs, path => `<script type="text/javascript" id="${generateStringHash(path, "JS")}" src="${path}"></script>`).join("")}
 		  </body>
 		</html>
 	`);

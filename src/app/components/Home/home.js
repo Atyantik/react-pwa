@@ -29,6 +29,10 @@ export default class Home extends React.Component {
                     <label className="pt-2 float-left">Go to about page</label>
                     <Link to="/about" className="btn btn-secondary float-right">About page</Link>
                   </div>
+                  <div className="form-group mb-0 w-100 d-inline-block">
+                    <label className="pt-2 float-left">Go to contact page</label>
+                    <Link to="/contact" className="btn btn-secondary float-right">Contact page</Link>
+                  </div>
                 </form>
               </div>
             </div>

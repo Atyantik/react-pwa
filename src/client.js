@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 
 import { isBrowser } from "./utils";
-import { loadUrl, idlePreload, isModuleLoaded } from "./utils/bundler";
+import { loadModuleByUrl, idlePreload, isModuleLoaded } from "./utils/bundler";
 
 // Collect routes from all the routes
 // loaded over time
@@ -30,7 +30,6 @@ const renderRoutes = () => {
         </div>
       </Router>
     ), document.getElementById("app"));
-    hotReload();
   }
 };
 
@@ -41,9 +40,9 @@ const initBrowserOperations = () => {
   if (!isBrowser()) return;
 
   // Load in respect to current path on init
-  loadUrl(window.location.pathname, () => {
+  loadModuleByUrl(window.location.pathname, () => {
     renderRoutes();
-    idlePreload(5000);
+    idlePreload(1000);
   });
 
   // Override push state
@@ -57,11 +56,9 @@ const initBrowserOperations = () => {
   };
   document.addEventListener("location-change", (e) => {
     const { url } = e.detail;
-
-    console.log(isModuleLoaded(url));
     if (!isModuleLoaded(url)) {
       renderRouteLoader();
-      loadUrl(url, () => {
+      loadModuleByUrl(url, () => {
         renderRoutes();
       });
     } else {
@@ -70,21 +67,6 @@ const initBrowserOperations = () => {
   });
 };
 initBrowserOperations();
-
-
-// Try hot reloading, though its not happening right now
-const hotReload = (callback) => {
-  "use strict";
-  if (module && module.hot) {
-    module.hot.accept((err, result) => {
-      if (!err) {
-        callback();
-      }
-    });
-  } else {
-    callback();
-  }
-};
 
 /**
  * Load routes when a bundle is included,
@@ -98,10 +80,8 @@ export const updateRoutes = (routes) => {
 const renderRouteLoader = () => {
   "use strict";
   if (typeof window !== "undefined") {
-    hotReload(() => {
-      render((
-        <div>Loading your route.. please wait.</div>
-      ), document.getElementById("app"));
-    });
+    render((
+      <div>Loading your route.. please wait.</div>
+    ), document.getElementById("app"));
   }
 };
