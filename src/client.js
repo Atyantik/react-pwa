@@ -3,9 +3,9 @@ import { render } from "react-dom";
 import _ from "lodash";
 import {
   BrowserRouter as Router,
-  Route
 } from "react-router-dom";
 
+import RouteWithSubRoutes from "app/components/route/with-sub-routes";
 import { isBrowser } from "./utils";
 import { loadModuleByUrl, idlePreload, isModuleLoaded } from "./utils/bundler";
 
@@ -22,10 +22,8 @@ const renderRoutes = () => {
     render((
       <Router>
         <div>
-          {_.map(collectedRoutes, (route, index) => {
-            return <Route key={index} exact={route.exact} path={route.path} render={(props) => {
-              return <route.component {...props} />;
-            }} />;
+          {_.map(collectedRoutes, (route, i) => {
+            return <RouteWithSubRoutes key={i} {...route}/>;
           })}
         </div>
       </Router>

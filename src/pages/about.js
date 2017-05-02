@@ -1,4 +1,4 @@
-import About from "../app/components/About/about";
+import About from "../app/components/about";
 import { updateRoutes } from "../client";
 
 const routes = [

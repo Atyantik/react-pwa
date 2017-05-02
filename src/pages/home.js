@@ -1,15 +1,14 @@
-import Home from "../app/components/Home/home";
+import Home from "../app/components/home";
 import { updateRoutes } from "../client";
 
 const routes = [
   {
     path: "/",
-    something: "test",
     exact: true,
     component: Home,
     bundleKey: "home",
   }
 ];
-updateRoutes(routes);
 
+updateRoutes(routes);
 export default routes;
