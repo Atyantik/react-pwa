@@ -2,12 +2,16 @@ import express from "express";
 import _ from "lodash";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
-import { StaticRouter, matchPath } from "react-router";
+import {
+  StaticRouter as Router,
+  Route,
+  Switch,
+  matchPath
+} from "react-router";
 
-import assets from "./config/assets";
 import RouteWithSubRoutes from "app/components/route/with-sub-routes";
+import Html from "app/components/html";
 import { extractFilesFromAssets } from "utils/bundler";
-import { generateStringHash } from "utils";
 
 // Create and express js application
 const app = express();
@@ -20,10 +24,16 @@ _.set(app, "locals.settings.x-powered-by", false);
 app.use("/public", express.static("public"));
 
 // Middleware to add assets to request
-app.use(function (req, res, next) {
-  req.assets = assets;
-  next();
-});
+try {
+  const assets = require("./config/assets").default;
+  app.use(function (req, res, next) {
+    req.assets = assets;
+    next();
+  });
+} catch (ex) {
+  // Do not do anything here.
+  // cause the assets are most probably handled by webpack in dev mode
+}
 
 export const getModuleFromPath = (routes, path) => {
   "use strict";
@@ -46,8 +56,16 @@ export const startServer = (purge = false) => {
     /**
      * Purge and get new routes
      */
-    if (purge) { purgeCache("./routes"); }
+    if (purge) {
+      purgeCache([
+        "./routes",
+        "app/components/error/404",
+        "app/components/html"
+      ]);
+    }
     let routes  = require("./routes").default;
+    let NotFoundPage = require("app/components/error/404").default;
+    let ErrorPage = require("app/components/error/500").default;
 
     const { assets } = req;
 
@@ -86,41 +104,59 @@ export const startServer = (purge = false) => {
 
 
     const context = {};
-    const html = ReactDOMServer.renderToString((
-      <StaticRouter
-        location={req.path}
-        context={context}
-      >
-        <div>
-          {_.map(currentModRoutes, (route, i) => {
-            return <RouteWithSubRoutes key={i} {...route}/>;
-          })}
-        </div>
-      </StaticRouter>
-    ));
 
-    if (context.url) {
-      // Somewhere a `<Redirect>` was rendered
-      return res.redirect((context.status|| 301),context.url);
+    let html, statusCode;
+    try {
+      const routerComponent = (
+        <Router
+          location={req.path}
+          context={context}
+        >
+          <Switch>
+            {_.map(currentModRoutes, (route, i) => {
+              return <RouteWithSubRoutes key={i} {...route}/>;
+            })}
+            <Route component={NotFoundPage}/>
+          </Switch>
+        </Router>
+      );
+      html = ReactDOMServer.renderToStaticMarkup((
+        <Html
+          stylesheets={currentRouteCss}
+          scripts={currentRouteJs}
+          globals={{
+            routes: routes,
+            allCss: allCss,
+            allJs: allJs,
+          }}
+        >
+          {routerComponent}
+        </Html>
+      ));
+
+      statusCode = context.status || 200;
+      if (context.url) {
+        // Somewhere a `<Redirect>` was rendered
+        return res.status((context.status|| 301)).redirect(context.url);
+      }
+    } catch (ex) {
+      html = ReactDOMServer.renderToStaticMarkup((
+        <Html
+          stylesheets={currentRouteCss}
+          scripts={currentRouteJs}
+          globals={{
+            routes: routes,
+            allCss: allCss,
+            allJs: allJs,
+          }}
+        >
+          <ErrorPage error={ex} />
+        </Html>
+      ));
+      statusCode = 500;
     }
 
-    res.send(`<!DOCTYPE html>
-		<html>
-		  <head>
-		    <title>My App</title>
-        ${_.map(currentRouteCss, path => `<link rel="stylesheet" id="${generateStringHash(path, "CSS")}" href="${path}" />`).join("")}
-        <script type="text/javascript">
-          window.routes = ${JSON.stringify(routes)};
-          window.allCss = ${JSON.stringify(allCss)};
-          window.allJs = ${JSON.stringify(allJs)};
-        </script>
-		  </head>
-		  <body>
-		    <div id="app">${html}</div>
-		    ${_.map(currentRouteJs, path => `<script type="text/javascript" id="${generateStringHash(path, "JS")}" src="${path}"></script>`).join("")}
-		  </body>
-		</html>
-	`);
+    return res.status(statusCode).send(`<!DOCTYPE html>${html}`);
   });
 
   app.listen(3000, () => {
@@ -132,19 +168,22 @@ export const startServer = (purge = false) => {
 /**
  * Removes a module from the cache
  */
-function purgeCache(moduleName) {
-  // Traverse the cache looking for the files
-  // loaded by the specified module name
-  searchCache(moduleName, function (mod) {
-    delete require.cache[mod.id];
-  });
+function purgeCache(modules) {
+  _.each(modules, moduleName => {
+    "use strict";
+    // Traverse the cache looking for the files
+    // loaded by the specified module name
+    searchCache(moduleName, function (mod) {
+      delete require.cache[mod.id];
+    });
 
-  // Remove cached paths to the module.
-  // Thanks to @bentael for pointing this out.
-  Object.keys(module.constructor._pathCache).forEach(function(cacheKey) {
-    if (cacheKey.indexOf(moduleName)>0) {
-      delete module.constructor._pathCache[cacheKey];
-    }
+    // Remove cached paths to the module.
+    // Thanks to @bentael for pointing this out.
+    Object.keys(module.constructor._pathCache).forEach(function(cacheKey) {
+      if (cacheKey.indexOf(moduleName)>0) {
+        delete module.constructor._pathCache[cacheKey];
+      }
+    });
   });
 };
 
@@ -154,7 +193,7 @@ function purgeCache(moduleName) {
  */
 function searchCache(moduleName, callback) {
   // Resolve the module identified by the specified name
-  var mod = require.resolve(moduleName);
+  let mod = require.resolve(moduleName);
 
   // Check if the module has been resolved and found within
   // the cache

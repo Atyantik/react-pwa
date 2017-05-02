@@ -1,11 +1,10 @@
-import React from "react";
+import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import ClientLogo from "../../../resources/images/client.png";
 import classNames from "classnames";
 import * as styles from "./home.scss";
 
-export default class Home extends React.Component {
-
+export default class Home extends Component {
   render() {
     return (
       <main>

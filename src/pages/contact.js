@@ -8,6 +8,7 @@ const routes = [
     bundleKey: "contact",
   }
 ];
+
 updateRoutes(routes);
 
 export default routes;

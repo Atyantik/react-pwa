@@ -4,6 +4,7 @@
     "env"
   ],
   "plugins": [
-    "lodash"
+    "lodash",
+    "transform-class-properties"
   ]
 }

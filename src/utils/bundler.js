@@ -50,7 +50,7 @@ export const loadModuleByUrl = (url, cb = () => {}) => {
       listOfPromises.push(loadScript(js));
     }
   });
-  Promise.all(listOfPromises).then(cb).catch(() => {
+  Promise.all(listOfPromises).then(cb).catch((ex) => {
     "use strict";
     cb();
   });

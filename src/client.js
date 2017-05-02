@@ -3,11 +3,24 @@ import { render } from "react-dom";
 import _ from "lodash";
 import {
   BrowserRouter as Router,
+  Switch,
+  Route
 } from "react-router-dom";
 
-import RouteWithSubRoutes from "app/components/route/with-sub-routes";
+/**
+ * Bundling utilities
+ */
+import {
+  loadModuleByUrl,
+  idlePreload,
+  isModuleLoaded
+} from "./utils/bundler";
+
 import { isBrowser } from "./utils";
-import { loadModuleByUrl, idlePreload, isModuleLoaded } from "./utils/bundler";
+
+import RouteWithSubRoutes from "app/components/route/with-sub-routes";
+import NotFoundPage from "app/components/error/404";
+import ErrorPage from "app/components/error/500";
 
 // Collect routes from all the routes
 // loaded over time
@@ -18,16 +31,21 @@ let collectedRoutes = [];
  */
 const renderRoutes = () => {
   "use strict";
-  if (typeof window !== "undefined") {
+  if (!isBrowser()) return;
+
+  try {
     render((
-      <Router>
-        <div>
+      <Router onTransitionError={e => console.log("Am here")}>
+        <Switch>
           {_.map(collectedRoutes, (route, i) => {
             return <RouteWithSubRoutes key={i} {...route}/>;
           })}
-        </div>
+          <Route component={NotFoundPage}/>
+        </Switch>
       </Router>
     ), document.getElementById("app"));
+  } catch (err) {
+    render(<ErrorPage error={err}/>, document.getElementById("app"));
   }
 };
 
