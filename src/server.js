@@ -1,4 +1,5 @@
 import express from "express";
+import compression from "compression";
 import _ from "lodash";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
@@ -6,15 +7,17 @@ import {
   StaticRouter as Router,
   Route,
   Switch,
-  matchPath
 } from "react-router";
 
 import RouteWithSubRoutes from "app/components/route/with-sub-routes";
-import Html from "app/components/html";
 import { extractFilesFromAssets } from "utils/bundler";
+import { getModuleFromPath, getRouteFromPath } from "utils";
 
 // Create and express js application
 const app = express();
+
+// use compression for all requests
+app.use(compression());
 
 // Set x-powered-by to false (security issues)
 _.set(app, "locals.settings.x-powered-by", false);
@@ -35,37 +38,48 @@ try {
   // cause the assets are most probably handled by webpack in dev mode
 }
 
-export const getModuleFromPath = (routes, path) => {
-  "use strict";
-  let mod = false;
-
-  _.each(routes, route => {
-    if(matchPath(path, route)) {
-      mod = route.bundleKey;
-    }
-  });
-  return mod;
-};
-
 export default app;
 
 export const startServer = (purge = false) => {
+
+  /**
+   * Send global data to user, as we do not want to send it via
+   * window object
+   */
+  app.get("/_globals", (req,res) => {
+    "use strict";
+
+    const { assets } = req;
+    if (purge) {
+      purgeCache([
+        "./routes",
+      ]);
+    }
+    let routes  = require("./routes").default;
+    const allCss = extractFilesFromAssets(assets, ".css");
+    const allJs = extractFilesFromAssets(assets, ".js");
+    res.setHeader("Content-Type", "application/json");
+    return res.send(JSON.stringify({ routes, allCss, allJs }));
+  });
 
   app.get("*", (req, res) => {
 
     /**
      * Purge and get new routes
+     * @todo: this should be managed in better way! maybe by webpack-dev-server
      */
     if (purge) {
       purgeCache([
         "./routes",
         "app/components/error/404",
+        "app/components/error/500",
         "app/components/html"
       ]);
     }
     let routes  = require("./routes").default;
     let NotFoundPage = require("app/components/error/404").default;
     let ErrorPage = require("app/components/error/500").default;
+    let Html = require("app/components/html").default;
 
     const { assets } = req;
 
@@ -120,15 +134,15 @@ export const startServer = (purge = false) => {
           </Switch>
         </Router>
       );
+
+      const currentRoute = getRouteFromPath(routes, req.path);
+      const seoDetails = _.get(currentRoute, "seo", {});
+
       html = ReactDOMServer.renderToStaticMarkup((
         <Html
           stylesheets={currentRouteCss}
           scripts={currentRouteJs}
-          globals={{
-            routes: routes,
-            allCss: allCss,
-            allJs: allJs,
-          }}
+          seo={seoDetails}
         >
           {routerComponent}
         </Html>
@@ -185,7 +199,7 @@ function purgeCache(modules) {
       }
     });
   });
-};
+}
 
 /**
  * Traverses the cache to search for all the cached
@@ -211,4 +225,4 @@ function searchCache(moduleName, callback) {
       callback(mod);
     }(mod));
   }
-};
+}

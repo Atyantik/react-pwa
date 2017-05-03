@@ -35,7 +35,7 @@ const renderRoutes = () => {
 
   try {
     render((
-      <Router onTransitionError={e => console.log("Am here")}>
+      <Router>
         <Switch>
           {_.map(collectedRoutes, (route, i) => {
             return <RouteWithSubRoutes key={i} {...route}/>;

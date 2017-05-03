@@ -47,16 +47,7 @@ export default {
   // application starts executing. If an array is passed all items will
   // be executed.
   entry: Object.assign({}, {
-    // Adding react hot loader as entry point for
-    // "dev-react-hot-loader": "react-hot-loader/patch",
-
-    // development with webpack
-    // "dev-webpack-server": "webpack-hot-middleware/client?path=/__hot_update&timeout=2000&overlay=true",
-
-    // "dev-webpack-hot": "webpack/hot/dev-server",
-
-    "client": path.join(srcDir, "client.js"),
-
+    "client": ["babel-polyfill", path.join(srcDir, "client.js")],
     "common-style": path.join(srcDir, "resources", "css", "style.scss")
   }, entries),
 

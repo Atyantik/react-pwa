@@ -1,3 +1,5 @@
+import _ from "lodash";
+import { matchPath } from "react-router";
 /**
  * Check if current script is running in browser or not
  * @returns {boolean}
@@ -140,6 +142,7 @@ export const loadScript = (path, fn = () => {}, scope) => {
 
 
 const preloads = {};
+
 /**
  * Preload a script, compatible with ie 6,7,8+ and all major browsers
  * @param path
@@ -209,4 +212,39 @@ export const generateStringHash = (str, namespace) => {
     hash |= 0; // Convert to 32bit integer
   }
   return hash;
+};
+
+/**
+ * Get module from provided path
+ * @param routes
+ * @param path
+ * @returns {boolean}
+ */
+export const getModuleFromPath = (routes, path) => {
+  "use strict";
+  let mod = false;
+
+  _.each(routes, route => {
+    if(matchPath(path, route)) {
+      mod = route.bundleKey;
+    }
+  });
+  return mod;
+};
+
+/**
+ * Get route from path
+ * @param routes
+ * @param path
+ */
+export const getRouteFromPath = (routes, path) => {
+  "use strict";
+  let selectedRoute = false;
+
+  _.each(routes, route => {
+    if(matchPath(path, route)) {
+      selectedRoute = route;
+    }
+  });
+  return selectedRoute;
 };

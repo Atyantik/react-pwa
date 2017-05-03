@@ -18,11 +18,6 @@ console.log("Creating bundle with Webpack dev server.. Please wait..");
 const compiler = webpack(webpackConfig);
 
 const webpackMiddlewareInstance = webpackMiddleware(compiler, {
-  // noInfo: false,
-  // display no info to console (only warnings and errors)
-
-  // quiet: true,
-  // display nothing to the console
 
   lazy: false,
   // switch into lazy mode
@@ -41,9 +36,6 @@ const webpackMiddlewareInstance = webpackMiddleware(compiler, {
   publicPath: webpackConfig.output.publicPath,
   // public path to bind the middleware to
   // use the same as in webpack
-
-  // headers: { 'X-Custom-Header': 'yes' },
-  // custom headers
 
   stats: {
     // Add asset Information
@@ -141,17 +133,8 @@ const webpackMiddlewareInstance = webpackMiddleware(compiler, {
   // Turn off the server-side rendering mode. See Server-Side Rendering part for more info.
 });
 
-// const webpackHotMiddlewareInstance = webpackHotMiddleware(compiler, {
-//   log: false,
-//   path: "/__hot_update",
-//   heartbeat: 2000
-// });
-
 // Use the webpack middleware
 app.use(webpackMiddlewareInstance);
-
-// Use webpack hot middleware
-// app.use(webpackHotMiddlewareInstance);
 
 // server content from content base
 app.use("/public", express.static(webpackConfig.devServer.contentBase));
@@ -184,6 +167,6 @@ app.use(function (req, res, next) {
 });
 
 webpackMiddlewareInstance.waitUntilValid(() => {
-  const purge = true;
-  startServer(purge);
+  const withPurge = true;
+  startServer(withPurge);
 });

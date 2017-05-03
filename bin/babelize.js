@@ -42,7 +42,7 @@ try {
 }
 
 const _  = require("lodash");
-const appConfig = require(`${directories.srcDir}/config/config`);
+const appConfig = require(`${directories.srcDir}/config`);
 
 const allowedImageExtensions = _.get(appConfig, "config.images.allowedExtensions", [
   ".jpeg",

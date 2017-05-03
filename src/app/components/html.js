@@ -1,7 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import _ from "lodash";
-import { generateStringHash } from "../../utils/utils.js";
+import { generateStringHash } from "../../utils";
+import { generateMeta } from "../../utils/seo";
 
 export default class Html extends React.Component {
 
@@ -9,35 +10,40 @@ export default class Html extends React.Component {
     stylesheets: PropTypes.array,
     scripts: PropTypes.array,
     globals: PropTypes.shape({}),
+    seo: PropTypes.shape({})
   };
 
-  getGlobalHtml() {
-    const { globals } = this.props;
-    let html = "";
-    _.each(globals, (value, key) => {
-      if (_.isArray(value) || _.isObject(value)) {
-        html += `window["${key}"] = ${JSON.stringify(value)};`;
-      } else {
-        html += `window["${key}"] = "${value}";`;
-      }
-    });
-    return html;
+  getMeta() {
+    return generateMeta(this.props.seo);
+  }
+  getTitle() {
+    const allMeta = this.getMeta();
+    const metaForTitle = _.find(allMeta, {itemProp: "name"});
+    if (metaForTitle) {
+      return metaForTitle.content;
+    }
+    return "";
   }
 
   render() {
     "use strict";
+    this.getMeta();
     const { stylesheets, scripts } = this.props;
     return (
       <html>
       <head>
-        <title>TrustyTribe</title>
+        <title>{this.getTitle()}</title>
+        {
+          _.map(this.getMeta(), (meta, i) => {
+            return <meta key={i} {...meta} />;
+          })
+        }
         {
           _.map(stylesheets, path => {
             const pathHash = generateStringHash(path, "CSS");
             return <link rel="stylesheet" key={pathHash} id={pathHash} href={path} />;
           })
         }
-        <script type="text/javascript" dangerouslySetInnerHTML={{__html: this.getGlobalHtml()}}/>
       </head>
       <body>
       <div id="app">{this.props.children}</div>

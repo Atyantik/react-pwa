@@ -67,6 +67,7 @@ export default {
   // be executed.
   entry: Object.assign({}, {
     "client": [
+      "babel-polyfill",
       path.join(srcDir, "client.js"),
       path.join(srcDir, "resources", "css", "style.scss")
     ]
@@ -107,7 +108,7 @@ export default {
       {
         test: /\.(jpe?g|png|gif|svg)$/,
         use: [
-          "url-loader?limit=102400&hash=sha512&digest=hex&outputPath=images/&name=[name]-[hash].[ext]",
+          "url-loader?limit=10240&hash=sha512&digest=hex&outputPath=images/&name=[name]-[hash].[ext]",
           {
             loader: "img-loader",
             options: {

@@ -6,6 +6,7 @@ import * as styles from "./home.scss";
 
 export default class Home extends Component {
   render() {
+
     return (
       <main>
         <div className={classNames("container", styles["home-container"])}>

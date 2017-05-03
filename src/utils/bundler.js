@@ -1,5 +1,6 @@
 import { matchPath } from "react-router";
 import _ from "lodash";
+import fetch from "universal-fetch";
 import {
   isBrowser,
   loadScript,
@@ -34,26 +35,48 @@ export const loadModuleByUrl = (url, cb = () => {}) => {
   if (!isBrowser()) {
     return;
   }
-  // location is an object like window.location
-  // Load in respect to path
-  let currentMod = getModuleByPathname(window.routes, url);
+  loadGlobals().then(() => {
+    // location is an object like window.location
+    // Load in respect to path
+    let currentMod = getModuleByPathname(window.routes, url);
 
-  let listOfPromises = [];
-  _.each(window.allCss, css => {
-    if (scriptBelongToMod(css,currentMod)) {
-      listOfPromises.push(loadStyle(css));
-    }
-  });
+    let listOfPromises = [];
+    _.each(window.allCss, css => {
+      if (scriptBelongToMod(css,currentMod)) {
+        listOfPromises.push(loadStyle(css));
+      }
+    });
 
-  _.each(window.allJs, js => {
-    if (scriptBelongToMod(js,currentMod)) {
-      listOfPromises.push(loadScript(js));
-    }
+    _.each(window.allJs, js => {
+      if (scriptBelongToMod(js,currentMod)) {
+        listOfPromises.push(loadScript(js));
+      }
+    });
+    Promise.all(listOfPromises).then(cb).catch((ex) => {
+      "use strict";
+      cb();
+    });
   });
-  Promise.all(listOfPromises).then(cb).catch((ex) => {
-    "use strict";
-    cb();
-  });
+};
+
+export const loadGlobals = async () => {
+  "use strict";
+  if (!isBrowser()) {
+    return Promise.reject();
+  }
+
+  if (window.__GLOBALS_LOADED__) {
+    return Promise.resolve();
+  }
+
+  return fetch("/_globals")
+    .then(res => res.json())
+    .then(responseBody => {
+      _.each(responseBody, (value, key) => {
+        _.set(window, key, value);
+      });
+      window.__GLOBALS_LOADED__ = true;
+    });
 };
 
 /**

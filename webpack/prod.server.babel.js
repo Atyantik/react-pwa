@@ -34,6 +34,7 @@ export default {
   // application starts executing. If an array is passed all items will
   // be executed.
   entry: [
+    "babel-polyfill",
     // Initial entry point
     path.join(srcDir, "startServer.js"),
   ],
@@ -67,7 +68,7 @@ export default {
       {
         test: /\.(jpe?g|png|gif|svg)$/,
         use: [
-          "url-loader?limit=1000&hash=sha512&digest=hex&outputPath=images/&name=[name]-[hash].[ext]",
+          "url-loader?limit=10240&hash=sha512&digest=hex&outputPath=images/&name=[name]-[hash].[ext]",
           {
             loader: "img-loader",
             options: {
