@@ -5,6 +5,7 @@ const routes = [
   {
     path: "/contact",
     component: Contact,
+    layout: false,
     bundleKey: "contact",
   }
 ];
