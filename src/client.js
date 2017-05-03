@@ -16,7 +16,8 @@ import {
   isModuleLoaded
 } from "./utils/bundler";
 
-import { isBrowser } from "./utils";
+import { isBrowser, getRouteFromPath } from "./utils";
+import { generateMeta } from "./utils/seo";
 
 import RouteWithSubRoutes from "app/components/route/with-sub-routes";
 import NotFoundPage from "app/components/error/404";
@@ -26,12 +27,42 @@ import ErrorPage from "app/components/error/500";
 // loaded over time
 let collectedRoutes = [];
 
+const updateMeta = (url) => {
+  "use strict";
+  if (!isBrowser()) return;
+  const currentRoute = getRouteFromPath(collectedRoutes, url);
+  const seoData = _.get(currentRoute, "seo", {});
+  const allMeta = generateMeta(seoData);
+
+  // Remove all meta tags
+  const head = document.head;
+  Array.from(head.getElementsByTagName("meta")).forEach(tag => tag.remove());
+
+  let title = "";
+  allMeta.forEach(meta => {
+    if (meta.itemProp === "name") {
+      title = meta.content;
+    }
+    const metaTag = document.createElement("meta");
+    _.each(meta, (value, key) => {
+      if (key === "itemProp")  {
+        key = "itemprop";
+      }
+      metaTag.setAttribute(key, value);
+    });
+    head.appendChild(metaTag);
+  });
+  head.getElementsByTagName("title")[0].innerHTML = title;
+};
+
 /**
  * Render routes when routes are loaded
  */
-const renderRoutes = () => {
+const renderRoutes = (url) => {
   "use strict";
   if (!isBrowser()) return;
+
+  updateMeta(url);
 
   try {
     render((
@@ -57,7 +88,7 @@ const initBrowserOperations = () => {
 
   // Load in respect to current path on init
   loadModuleByUrl(window.location.pathname, () => {
-    renderRoutes();
+    renderRoutes(window.location.pathname);
     idlePreload(1000);
   });
 
@@ -75,10 +106,10 @@ const initBrowserOperations = () => {
     if (!isModuleLoaded(url)) {
       renderRouteLoader();
       loadModuleByUrl(url, () => {
-        renderRoutes();
+        renderRoutes(url);
       });
     } else {
-      renderRoutes();
+      renderRoutes(url);
     }
   });
 };
