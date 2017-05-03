@@ -4,7 +4,6 @@ import * as styles from "./contact.scss";
 export default class Contact extends React.Component {
   constructor(props) {
     super(props);
-    throw new Error("Am here");
   }
   render() {
     return (

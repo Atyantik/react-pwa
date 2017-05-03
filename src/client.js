@@ -58,10 +58,8 @@ const updateMeta = (url) => {
 /**
  * Render routes when routes are loaded
  */
-const renderRoutes = (url) => {
-  "use strict";
+const renderRoutes = (url, render404 = true) => {
   if (!isBrowser()) return;
-
   updateMeta(url);
 
   try {
@@ -71,10 +69,15 @@ const renderRoutes = (url) => {
           {_.map(collectedRoutes, (route, i) => {
             return <RouteWithSubRoutes key={i} {...route}/>;
           })}
-          <Route component={NotFoundPage}/>
+          {render404 && (
+            <Route component={NotFoundPage}/>
+          )}
         </Switch>
       </Router>
-    ), document.getElementById("app"));
+    ), document.getElementById("app"), ()=> {
+      "use strict";
+      window.__URL_LOADING__ = false;
+    });
   } catch (err) {
     render(<ErrorPage error={err}/>, document.getElementById("app"));
   }
@@ -88,7 +91,8 @@ const initBrowserOperations = () => {
 
   // Load in respect to current path on init
   loadModuleByUrl(window.location.pathname, () => {
-    renderRoutes(window.location.pathname);
+    // Do not render 404 on initial load
+    renderRoutes(window.location.pathname, false);
     idlePreload(1000);
   });
 
@@ -102,6 +106,7 @@ const initBrowserOperations = () => {
     document.dispatchEvent(new CustomEvent("location-change", {detail: { state: e.state, url: window.location.pathname}}));
   };
   document.addEventListener("location-change", (e) => {
+    window.__URL_LOADING__ = true;
     const { url } = e.detail;
     if (!isModuleLoaded(url)) {
       renderRouteLoader();
@@ -126,9 +131,9 @@ export const updateRoutes = (routes) => {
 };
 const renderRouteLoader = () => {
   "use strict";
-  if (typeof window !== "undefined") {
-    render((
-      <div>Loading your route.. please wait.</div>
-    ), document.getElementById("app"));
-  }
+  if (!isBrowser()) return;
+  window.__URL_LOADING__ = true;
+  render((
+    <div>Loading your route.. please wait.</div>
+  ), document.getElementById("app"));
 };
