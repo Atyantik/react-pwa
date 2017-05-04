@@ -1,10 +1,14 @@
-import About from "../app/components/about";
+import React from "react";
+import About from "app/components/about";
+import DefaultLayout from "app/components/layout";
+import AboutSection from "app/components/about/section";
 import { updateRoutes } from "../client";
 
 const routes = [
   {
     path: "/about",
     component: About,
+    layout: DefaultLayout,
     bundleKey: "about",
     seo: {
       title: "About Page",
@@ -31,7 +35,14 @@ const routes = [
           content: "bodawala"
         },
       ],
-    }
+    },
+    routes: [
+      {
+        path: "/about/:section?",
+        bundleKey: "about",
+        component: AboutSection
+      }
+    ]
   }
 ];
 

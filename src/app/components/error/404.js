@@ -1,8 +1,8 @@
 import React from "react";
 
-export default (params) => {
+export default (props) => {
   "use strict";
-  const { location, staticContext } = params;
+  const { location, staticContext } = props;
   if (staticContext) {
     staticContext.status = 404;
   }

@@ -239,11 +239,16 @@ export const getModuleFromPath = (routes, path) => {
  */
 export const getRouteFromPath = (routes, path) => {
   "use strict";
-  let selectedRoute = false;
+  let selectedRoute = [];
 
   _.each(routes, route => {
-    if(matchPath(path, route)) {
-      selectedRoute = route;
+
+    const match = matchPath(path, route);
+    if(match) {
+      selectedRoute.push(_.assignIn(route, {match: match}));
+      if (route.routes && route.routes.length) {
+        selectedRoute.push(...getRouteFromPath(route.routes, path));
+      }
     }
   });
   return selectedRoute;

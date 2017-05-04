@@ -2,7 +2,7 @@ import React from "react";
 import { render } from "react-dom";
 import _ from "lodash";
 import {
-  BrowserRouter as Router,
+  Router,
   Switch,
   Route
 } from "react-router-dom";
@@ -21,17 +21,24 @@ import { generateMeta } from "./utils/seo";
 
 import RouteWithSubRoutes from "app/components/route/with-sub-routes";
 import NotFoundPage from "app/components/error/404";
-import ErrorPage from "app/components/error/500";
+import ErrorPage from "./app/components/error/500";
 
 // Collect routes from all the routes
 // loaded over time
 let collectedRoutes = [];
+let history;
 
 const updateMeta = (url) => {
   "use strict";
   if (!isBrowser()) return;
-  const currentRoute = getRouteFromPath(collectedRoutes, url);
-  const seoData = _.get(currentRoute, "seo", {});
+  const currentRoutes = getRouteFromPath(collectedRoutes, url);
+
+  let seoData = {};
+  _.each(currentRoutes, r => {
+    "use strict";
+    seoData = _.defaults({}, _.get(r, "seo", {}));
+  });
+
   const allMeta = generateMeta(seoData);
 
   // Remove all meta tags
@@ -61,11 +68,38 @@ const updateMeta = (url) => {
 const renderRoutes = (url) => {
   if (!isBrowser()) return;
 
-  updateMeta(url);
+  let promises = [];
 
-  try {
+  const currentRoutes = getRouteFromPath(collectedRoutes, url);
+  // Preload Data
+  _.each(currentRoutes, r => {
+    "use strict";
+
+    // Load data and add it to route itself
+    if (r.preLoadData) {
+      promises.push((() => {
+        // Pass route as reference so that we can modify it while loading data
+
+        let returnData = r.preLoadData({route: r, match: r.match});
+        if (returnData && _.isFunction(returnData.then)) {
+          return returnData.then(data => {
+            return r.preLoadedData = data;
+          }).catch(err => {
+            throw err;
+          });
+        }
+        return r.preLoadedData = returnData;
+      })());
+    }
+  });
+
+  Promise.all(promises).then(() => {
+    "use strict";
+    // Update SEO MetaData
+    updateMeta(url);
+
     render((
-      <Router>
+      <Router history={history}>
         <Switch>
           {_.map(collectedRoutes, (route, i) => {
             return <RouteWithSubRoutes key={i} {...route}/>;
@@ -73,13 +107,23 @@ const renderRoutes = (url) => {
           <Route component={NotFoundPage}/>
         </Switch>
       </Router>
-    ), document.getElementById("app"), ()=> {
+    ), document.getElementById("app"), () => {
       "use strict";
       window.__URL_LOADING__ = false;
     });
-  } catch (err) {
-    render(<ErrorPage error={err}/>, document.getElementById("app"));
-  }
+  }).catch(err => {
+    "use strict";
+    if (!(err instanceof Error)) {
+      err = new Error(err);
+    }
+    err.statusCode = err.statusCode || 500;
+    render((
+      <ErrorPage error={err} />
+    ), document.getElementById("app"), () => {
+      "use strict";
+      window.__URL_LOADING__ = false;
+    });
+  });
 };
 
 // Browser operations
@@ -88,26 +132,19 @@ const initBrowserOperations = () => {
 
   if (!isBrowser()) return;
 
+  const createHistory = require("history/createBrowserHistory").default;
+  history = createHistory();
+
   // Load in respect to current path on init
   loadModuleByUrl(window.location.pathname, () => {
     renderRoutes(window.location.pathname);
     idlePreload(1000);
   });
 
-  // Override push state
-  let pushState = window.history.pushState;
-  window.history.pushState = function (e, page, url) {
-    pushState.apply(history, arguments);
-    document.dispatchEvent(new CustomEvent("location-change", {detail: {state: e.state, url, page}}));
-  };
-  window.onpopstate = function(e) {
-    window.__URL_LOADING__ = true;
-    document.dispatchEvent(new CustomEvent("location-change", {detail: { state: e.state, url: window.location.pathname}}));
-  };
-  document.addEventListener("location-change", (e) => {
-    const { url } = e.detail;
+  history.listen((location, action) => {
+    const url = `${location.pathname}${location.search}${location.hash}`;
+    renderRouteLoader();
     if (!isModuleLoaded(url)) {
-      renderRouteLoader();
       loadModuleByUrl(url, () => {
         renderRoutes(url);
       });

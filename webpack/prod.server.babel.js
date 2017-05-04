@@ -66,7 +66,17 @@ export default {
         }),
       },
       {
+        test: /\.(eot|svg|ttf|woff|woff2)$/,
+        include: [
+          path.join(srcDir, "resources", "fonts"),
+        ],
+        loader: "file-loader?outputPath=fonts/&name=[name]-[hash].[ext]"
+      },
+      {
         test: /\.(jpe?g|png|gif|svg)$/,
+        include: [
+          path.join(srcDir, "resources", "images"),
+        ],
         use: [
           "url-loader?limit=10240&hash=sha512&digest=hex&outputPath=images/&name=[name]-[hash].[ext]",
           {

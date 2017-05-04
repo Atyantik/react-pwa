@@ -119,58 +119,122 @@ export const startServer = (purge = false) => {
 
     const context = {};
 
-    let html, statusCode;
-    try {
-      const routerComponent = (
-        <Router
-          location={req.path}
-          context={context}
-        >
-          <Switch>
-            {_.map(currentModRoutes, (route, i) => {
-              return <RouteWithSubRoutes key={i} {...route}/>;
-            })}
-            <Route component={NotFoundPage}/>
-          </Switch>
-        </Router>
-      );
+    let html, statusCode = 200;
 
-      const currentRoute = getRouteFromPath(routes, req.path);
-      const seoDetails = _.get(currentRoute, "seo", {});
+    // Render error
+    const renderError = (err) => {
+      "use strict";
 
-      html = ReactDOMServer.renderToStaticMarkup((
-        <Html
-          stylesheets={currentRouteCss}
-          scripts={currentRouteJs}
-          seo={seoDetails}
-        >
-          {routerComponent}
-        </Html>
-      ));
-
-      statusCode = context.status || 200;
-      if (context.url) {
-        // Somewhere a `<Redirect>` was rendered
-        return res.status((context.status|| 301)).redirect(context.url);
+      if (!(err instanceof Error)) {
+        err = new Error(err);
       }
-    } catch (ex) {
-      html = ReactDOMServer.renderToStaticMarkup((
-        <Html
-          stylesheets={currentRouteCss}
-          scripts={currentRouteJs}
-          globals={{
-            routes: routes,
-            allCss: allCss,
-            allJs: allJs,
-          }}
-        >
-          <ErrorPage error={ex} />
-        </Html>
-      ));
-      statusCode = 500;
-    }
 
-    return res.status(statusCode).send(`<!DOCTYPE html>${html}`);
+      let errorStatusCode = err.statusCode || 500;
+      let errorHtml = "";
+
+      // Manage server errors
+      if (errorStatusCode === 500) {
+        errorHtml = ReactDOMServer.renderToStaticMarkup((
+          <Html
+            stylesheets={currentRouteCss}
+            //scripts={currentRouteJs}
+          >
+            <ErrorPage error={err} />
+          </Html>
+        ));
+      } else {
+        errorHtml = ReactDOMServer.renderToStaticMarkup((
+          <Html
+            stylesheets={currentRouteCss}
+            //scripts={currentRouteJs}
+          >
+          <NotFoundPage location={{pathname: req.path}} />
+          </Html>
+        ));
+      }
+      return res.status(errorStatusCode).send(`<!DOCTYPE html>${errorHtml}`);
+    };
+
+    try {
+      // Get current routes and data needed to reload
+      const currentRoutes = getRouteFromPath(routes, req.path);
+
+      // Get seo details for the routes in an inherited manner
+      // i.e. get seo details of parent when feasible
+      let seoDetails = {};
+
+      // Also preload data required when asked
+      let promises = [];
+
+      // Preload Data
+      _.each(currentRoutes, r => {
+        "use strict";
+
+        // Load data and add it to route itself
+        if (r.preLoadData) {
+          promises.push((() => {
+            // Pass route as reference so that we can modify it while loading data
+            let returnData = r.preLoadData({route: r, match: r.match});
+            if (returnData && _.isFunction(returnData.then)) {
+              return returnData.then(data => {
+                return r.preLoadedData = data;
+              }).catch(err => {
+                throw err;
+              });
+            }
+            return returnData;
+          })());
+        }
+        // Add to seo
+        seoDetails = _.defaults({}, _.get(r, "seo", {}));
+      });
+
+      Promise.all(promises).then(() => {
+        "use strict";
+
+        // Once all data has been preloaded and processed
+        _.each(currentRoutes, r => {
+          seoDetails = _.defaults({}, _.get(r, "seo", {}), seoDetails);
+        });
+
+        const routerComponent = (
+          <Router
+            location={req.path}
+            context={context}
+          >
+            <Switch>
+              {_.map(currentModRoutes, (route, i) => {
+                return <RouteWithSubRoutes key={i} {...route}/>;
+              })}
+              <Route component={NotFoundPage}/>
+            </Switch>
+          </Router>
+        );
+
+        html = ReactDOMServer.renderToStaticMarkup((
+          <Html
+            stylesheets={currentRouteCss}
+            scripts={currentRouteJs}
+            seo={seoDetails}
+          >
+          {routerComponent}
+          </Html>
+        ));
+
+        statusCode = context.status || 200;
+        if (context.url) {
+          // Somewhere a `<Redirect>` was rendered
+          return res.status(statusCode).redirect(context.url);
+        }
+        return res.status(statusCode).send(`<!DOCTYPE html>${html}`);
+
+      }).catch((err) => {
+        renderError(err);
+      });
+      // Get data to load for all the routes
+    } catch (ex) {
+      renderError(ex);
+    }
   });
 
   app.listen(3000, () => {

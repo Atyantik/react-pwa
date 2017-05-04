@@ -3,9 +3,7 @@ import { Link } from "react-router-dom";
 import * as styles from "./contact.scss";
 
 export default class Contact extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+
   render() {
     return (
       <div className="text-center">

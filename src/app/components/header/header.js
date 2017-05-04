@@ -21,6 +21,9 @@ const Header = (props) => {
           <li className={classNames("nav-item", {active: props.url === "/about"})}>
             <Link className="nav-link" to="/about">About</Link>
           </li>
+          <li className={classNames("nav-item", {active: props.url === "/blog"})}>
+            <Link className="nav-link" to="/blog">Blog</Link>
+          </li>
           <li className={classNames("nav-item", {active: props.url === "/contact"})}>
             <Link className="nav-link" to="/contact">Contact</Link>
           </li>
