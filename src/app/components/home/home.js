@@ -1,15 +1,13 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import ClientLogo from "../../../resources/images/client.png";
-import classNames from "classnames";
-import * as styles from "./home.scss";
+import ReactLogo from "resources/images/reactjs.svg";
 
 export default class Home extends Component {
   render() {
 
     return (
-      <div className="container">
-        <h1>Home Page</h1>
+      <div className="mt-4">
+        <img style={{ maxWidth: "150px" }} className="img-fluid mx-auto d-block" src={ReactLogo} alt="ReactJS"/>
+        <h1>React ES6 SEO Boilerplate</h1>
         <p>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit.
           Mauris bibendum enim quis ligula congue consequat. Maecenas

@@ -91,10 +91,16 @@ export default {
       },
       {
         test: /\.(eot|svg|ttf|woff|woff2)$/,
-        loader: "file-loader?name=fonts/[name].[ext]"
+        include: [
+          path.join(srcDir, "resources", "fonts"),
+        ],
+        loader: "file-loader?outputPath=fonts/&name=[name].[ext]"
       },
       {
         test: /\.(jpe?g|png|gif|svg)$/i,
+        include: [
+          path.join(srcDir, "resources", "images"),
+        ],
         use: [
           "file-loader?outputPath=images/&name=[name].[ext]",
         ]

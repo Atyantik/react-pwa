@@ -54,9 +54,7 @@ const allowedImageExtensions = _.get(appConfig, "config.images.allowedExtensions
 ]);
 
 _.each(allowedImageExtensions, ext => {
-  "use strict";
   require.extensions[ext] = function (module, filename) {
-    "use strict";
     module.exports = `${directories.buildPublicPath}images/${filename.split("/").pop()}`;
   };
 });
