@@ -8,37 +8,31 @@ export default class Home extends Component {
   render() {
 
     return (
-      <main>
-        <div className={classNames("container", styles["home-container"])}>
-          <section className="text-center w-100 text-center">
-            <div className={classNames("d-inline-block", styles["form-layout"], styles["white-box"])}>
-              <img src={ClientLogo} alt="Logo"/>
-              <h3 className={styles.title}>Forgot Password</h3>
-              <div className="form">
-                <form>
-                  <div className="form-group mt-3">
-                    <div className="has-icon">
-                      <input type="email" className="form-control" id="Email" placeholder="Email address" />
-                      <span className="icon"><i className="fa fa-envelope" /></span>
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <a href="reset-password.php" className="btn btn-primary btn-lg btn-block">Reset Password</a>
-                  </div>
-                  <div className="form-group mb-0 w-100 d-inline-block">
-                    <label className="pt-2 float-left">Go to about page</label>
-                    <Link to="/about" className="btn btn-secondary float-right">About page</Link>
-                  </div>
-                  <div className="form-group mb-0 w-100 d-inline-block">
-                    <label className="pt-2 float-left">Go to contact page</label>
-                    <Link to="/contact" className="btn btn-secondary float-right">Contact page</Link>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </section>
-        </div>
-      </main>
+      <div className="container">
+        <h1>Home Page</h1>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          Mauris bibendum enim quis ligula congue consequat. Maecenas
+          a neque ac diam elementum sollicitudin. Praesent a libero sit
+          amet justo viverra mattis vitae ac nulla. Aenean eget tincidunt
+          urna. Suspendisse quis iaculis ex. Proin nec ante eros. Donec
+          eu eros vitae nunc auctor imperdiet. Praesent nec tortor eget
+          magna gravida posuere. Sed at velit at est dictum mollis. Pellentesque
+          ullamcorper dapibus nulla, efficitur pharetra nisi sodales ut.
+        </p>
+        <p>
+          Cras at elementum magna. Proin sed vulputate erat. Quisque magna nibh,
+          posuere in mattis id, consectetur non nunc. Sed sodales diam risus,
+          non facilisis augue cursus id. Nulla non magna at tellus tempor
+          efficitur id nec ex. Vestibulum a ex a dolor dapibus vulputate.
+          Etiam ac diam vestibulum, commodo lacus nec, feugiat diam. Mauris
+          sollicitudin pellentesque pretium. Suspendisse at tempus lectus.
+          Vivamus euismod velit quis tincidunt pulvinar. In posuere, libero sed
+          condimentum fringilla, tortor mi maximus dolor, eget aliquam turpis
+          libero at sem. Ut pulvinar, odio a vestibulum pretium, ante leo volutpat
+          massa, in suscipit diam tortor id odio. Nunc convallis vitae felis eget aliquet.
+        </p>
+      </div>
     );
   }
 }

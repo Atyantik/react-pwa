@@ -1,17 +1,16 @@
 import React, { Component } from "react";
+import Header from "../header";
+import Footer from "../footer";
 
 export default class Layout extends Component {
   render() {
-
     return (
       <div>
-        <header>
-          Some header data
-        </header>
-        {this.props.children || null}
-        <footer>
-          some footer data
-        </footer>
+        <Header url={this.props.match.url} />
+        <main className="container">
+          {this.props.children}
+        </main>
+        <Footer />
       </div>
     );
   }

@@ -58,8 +58,9 @@ const updateMeta = (url) => {
 /**
  * Render routes when routes are loaded
  */
-const renderRoutes = (url, render404 = true) => {
+const renderRoutes = (url) => {
   if (!isBrowser()) return;
+
   updateMeta(url);
 
   try {
@@ -69,9 +70,7 @@ const renderRoutes = (url, render404 = true) => {
           {_.map(collectedRoutes, (route, i) => {
             return <RouteWithSubRoutes key={i} {...route}/>;
           })}
-          {render404 && (
-            <Route component={NotFoundPage}/>
-          )}
+          <Route component={NotFoundPage}/>
         </Switch>
       </Router>
     ), document.getElementById("app"), ()=> {
@@ -91,8 +90,7 @@ const initBrowserOperations = () => {
 
   // Load in respect to current path on init
   loadModuleByUrl(window.location.pathname, () => {
-    // Do not render 404 on initial load
-    renderRoutes(window.location.pathname, false);
+    renderRoutes(window.location.pathname);
     idlePreload(1000);
   });
 
@@ -103,10 +101,10 @@ const initBrowserOperations = () => {
     document.dispatchEvent(new CustomEvent("location-change", {detail: {state: e.state, url, page}}));
   };
   window.onpopstate = function(e) {
+    window.__URL_LOADING__ = true;
     document.dispatchEvent(new CustomEvent("location-change", {detail: { state: e.state, url: window.location.pathname}}));
   };
   document.addEventListener("location-change", (e) => {
-    window.__URL_LOADING__ = true;
     const { url } = e.detail;
     if (!isModuleLoaded(url)) {
       renderRouteLoader();

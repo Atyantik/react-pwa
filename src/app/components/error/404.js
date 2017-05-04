@@ -16,6 +16,7 @@ export default (params) => {
    */
   if (typeof window !== "undefined") {
     if (window.__URL_LOADING__) {
+      alert("Am here");
       window.location.reload(false);
       return null;
     }
