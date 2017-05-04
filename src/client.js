@@ -14,7 +14,8 @@ import Loader from "app/components/loader";
 import {
   loadModuleByUrl,
   idlePreload,
-  isModuleLoaded
+  isModuleLoaded,
+  isModulePreLoaded
 } from "./utils/bundler";
 
 import { isBrowser, getRouteFromPath } from "./utils";
@@ -66,8 +67,10 @@ const updateMeta = (url) => {
 /**
  * Render routes when routes are loaded
  */
-const renderRoutes = (url) => {
+const renderRoutes = (url, options = {}) => {
   if (!isBrowser()) return;
+
+  const { isInitialLoad } = options;
 
   let promises = [];
 
@@ -93,6 +96,7 @@ const renderRoutes = (url) => {
       })());
     }
   });
+  if (promises.length && !isInitialLoad) renderRouteLoader();
 
   Promise.all(promises).then(() => {
     "use strict";
@@ -138,14 +142,16 @@ const initBrowserOperations = () => {
 
   // Load in respect to current path on init
   loadModuleByUrl(window.location.pathname, () => {
-    renderRoutes(window.location.pathname);
+    renderRoutes(window.location.pathname, {isInitialLoad: true});
     idlePreload(1000);
   });
 
   history.listen((location, action) => {
     const url = `${location.pathname}${location.search}${location.hash}`;
-    renderRouteLoader();
+
+    // If route is not preloaded in background then show loader
     if (!isModuleLoaded(url)) {
+      renderRouteLoader();
       loadModuleByUrl(url, () => {
         renderRoutes(url);
       });

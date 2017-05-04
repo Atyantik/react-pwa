@@ -124,13 +124,33 @@ export const isModuleLoaded = (url) => {
   let loaded = true;
 
   _.each(window.allCss, css => {
-    if (css.indexOf(`mod-${mod}`) !== -1 && !document.getElementById(generateStringHash(css, "CSS"))) {
+    if (css.indexOf(`mod-${mod}`) !== -1 && !document.getElementById(`${generateStringHash(css, "CSS")}`)) {
       loaded = false;
     }
   });
 
   _.each(window.allJs, js => {
-    if (js.indexOf(`mod-${mod}`) !== -1  && !document.getElementById(generateStringHash(js, "JS"))) {
+    if (js.indexOf(`mod-${mod}`) !== -1  && !document.getElementById(`${generateStringHash(js, "JS")}`)) {
+      loaded = false;
+    }
+  });
+  return loaded;
+};
+
+export const isModulePreLoaded = url => {
+  "use strict";
+  let mod = getModuleByPathname(window.routes, url);
+
+  let loaded = true;
+
+  _.each(window.allCss, css => {
+    if (css.indexOf(`mod-${mod}`) !== -1 && !document.getElementById(`${generateStringHash(css, "PRELOAD")}`)) {
+      loaded = false;
+    }
+  });
+
+  _.each(window.allJs, js => {
+    if (js.indexOf(`mod-${mod}`) !== -1  && !document.getElementById(`${generateStringHash(js, "PRELOAD")}`)) {
       loaded = false;
     }
   });
