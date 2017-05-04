@@ -1,0 +1,57 @@
+@import "../../../resources/css/scss/variables";
+@import "../../../resources/css/scss/mixins";
+//screen-loader
+@include keyframes(wave) {
+    0%,
+    100% {
+        @include shadow(0 0 0 $gray-light, 0 0 0 $gray-light);
+    }
+    50% {
+        @include shadow(0 -1em 0 $gray-light, 0 1em 0 $gray-light);
+    }
+}
+
+.loader-section {
+    position: relative;
+    height: 100vh;
+}
+
+.screen-loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background: $gray-light;
+    @include animation(wave 1s ease-in-out infinite);
+    animation-delay: 0.4s;
+    width: 1em;
+    height: 2em;
+    margin-left: -0.5em;
+    margin-top: -1em;
+    &:after,
+    &:before {
+        content: '';
+        position: absolute;
+        width: inherit;
+        height: inherit;
+        background: inherit;
+        animation: inherit;
+    }
+    &:before {
+        right: 2em;
+        animation-delay: 0.2s;
+    }
+    &:after {
+        left: 2em;
+        animation-delay: 0.6s;
+    }
+    .loading-text {
+        position: absolute;
+        width: 12.5em;
+        bottom: 0;
+        margin-bottom: -3.125em;
+        left: 50%;
+        text-align: center;
+        @include transform(translate(-50%, 0%));
+        
+    }
+}

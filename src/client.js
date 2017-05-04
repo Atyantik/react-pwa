@@ -6,6 +6,7 @@ import {
   Switch,
   Route
 } from "react-router-dom";
+import Loader from "app/components/loader";
 
 /**
  * Bundling utilities
@@ -168,7 +169,5 @@ const renderRouteLoader = () => {
   "use strict";
   if (!isBrowser()) return;
   window.__URL_LOADING__ = true;
-  render((
-    <div>Loading your route.. please wait.</div>
-  ), document.getElementById("app"));
+  render(<Loader />, document.getElementById("app"));
 };
