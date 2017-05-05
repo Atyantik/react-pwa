@@ -32,13 +32,14 @@ let history;
 
 const updateMeta = (url) => {
   "use strict";
+
   if (!isBrowser()) return;
   const currentRoutes = getRouteFromPath(collectedRoutes, url);
 
   let seoData = {};
   _.each(currentRoutes, r => {
     "use strict";
-    seoData = _.defaults({}, _.get(r, "seo", {}));
+    seoData = _.defaults({}, _.get(r, "seo", {}), seoData);
   });
 
   const allMeta = generateMeta(seoData);
