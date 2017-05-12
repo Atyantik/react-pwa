@@ -62,9 +62,6 @@ export default {
         include: srcDir,
         use: [
           {
-            loader: "react-hot-loader/webpack",
-          },
-          {
             loader: "babel-loader",
           }
         ]
@@ -94,7 +91,7 @@ export default {
         include: [
           path.join(srcDir, "resources", "fonts"),
         ],
-        loader: "file-loader?outputPath=fonts/&name=[name].[ext]"
+        use: "file-loader?outputPath=fonts/&name=[name].[ext]"
       },
       {
         test: /\.(jpe?g|png|gif|svg)$/i,
@@ -110,7 +107,7 @@ export default {
         include: [
           path.join(srcDir, "resources"),
         ],
-        loader: ExtractTextPlugin.extract({
+        use: ExtractTextPlugin.extract({
           fallback: "style-loader",
           use: [
             "css-loader?modules&localIdentName=[local]&minimize&sourceMap&importLoaders=2",

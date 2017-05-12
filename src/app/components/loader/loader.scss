@@ -12,8 +12,13 @@
 }
 
 .loader-section {
-    position: relative;
-    height: 100vh;
+    position: fixed;
+    height: 200vh;
+    width: 200vw;
+    top: -50vh;
+    left: -50vw;
+    background-color: $white;
+    z-index: 9999;
 }
 
 .screen-loader {
@@ -52,6 +57,6 @@
         left: 50%;
         text-align: center;
         @include transform(translate(-50%, 0%));
-        
+
     }
 }

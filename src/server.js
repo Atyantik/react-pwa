@@ -8,10 +8,11 @@ import {
   Route,
   Switch,
 } from "react-router";
+import Config from "config/config";
 
 import RouteWithSubRoutes from "app/components/route/with-sub-routes";
 import { extractFilesFromAssets } from "utils/bundler";
-import { getModuleFromPath, getRouteFromPath } from "utils";
+import { getModuleByPathname, getRouteFromPath } from "utils";
 
 // Create and express js application
 const app = express();
@@ -47,7 +48,6 @@ export const startServer = (purge = false) => {
    * window object
    */
   app.get("/_globals", (req,res) => {
-    "use strict";
 
     const { assets } = req;
     if (purge) {
@@ -58,7 +58,15 @@ export const startServer = (purge = false) => {
     let routes  = require("./routes").default;
     const allCss = extractFilesFromAssets(assets, ".css");
     const allJs = extractFilesFromAssets(assets, ".js");
+
+    // Never ever cache this request as the files must have
+    // changed from the last deploy
     res.setHeader("Content-Type", "application/json");
+    // No cache header
+    res.setHeader("Cache-Control", "private, no-cache, no-store, must-revalidate");
+    res.setHeader("Expires", "-1");
+    res.setHeader("Pragma", "no-cache");
+
     return res.send(JSON.stringify({ routes, allCss, allJs }));
   });
 
@@ -89,7 +97,7 @@ export const startServer = (purge = false) => {
     const allCss = extractFilesFromAssets(assets, ".css");
     const allJs = extractFilesFromAssets(assets, ".js");
 
-    let mod = getModuleFromPath(routes, req.path);
+    let mod = getModuleByPathname(routes, req.path);
 
     /**
      * Get routes for current module, we can get all the routes,
@@ -139,7 +147,7 @@ export const startServer = (purge = false) => {
             stylesheets={currentRouteCss}
             //scripts={currentRouteJs}
           >
-            <ErrorPage error={err} />
+          <ErrorPage error={err} />
           </Html>
         ));
       } else {
@@ -237,7 +245,7 @@ export const startServer = (purge = false) => {
     }
   });
 
-  app.listen(3000, () => {
+  app.listen(_.get(Config, "server.port", 3000), () => {
     // eslint-disable-next-line no-console
     console.log("App Started ==> Open http://localhost:3000 to see the app");
   });

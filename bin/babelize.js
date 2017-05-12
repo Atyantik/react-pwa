@@ -59,14 +59,16 @@ _.each(allowedImageExtensions, ext => {
   };
 });
 
-if (process.argv.length > 2) {
-  const relativePathToFile = process.argv[2];
-  const resolvedFile = path.resolve(`${__dirname}/${relativePathToFile}`);
-  if (fs.existsSync(resolvedFile)) {
-    require(resolvedFile);
-  } else {
-    console.log(`Cannot resolve "${relativePathToFile}"`);
-    console.log(`Make sure the path os relative to ${path.resolve(__dirname)}`);
+if (process.argv.indexOf("--ignore-babelize-require") === -1) {
+  if (process.argv.length > 2) {
+    const relativePathToFile = process.argv[2];
+    const resolvedFile = path.resolve(`${__dirname}/${relativePathToFile}`);
+    if (fs.existsSync(resolvedFile)) {
+      require(resolvedFile);
+    } else {
+      console.log(`Cannot resolve "${relativePathToFile}"`);
+      console.log(`Make sure the path os relative to ${path.resolve(__dirname)}`);
+    }
   }
 }
 /* eslint-enable */

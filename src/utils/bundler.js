@@ -1,4 +1,3 @@
-import { matchPath } from "react-router";
 import _ from "lodash";
 import fetch from "universal-fetch";
 import {
@@ -6,25 +5,9 @@ import {
   loadScript,
   loadStyle,
   preLoadScript,
-  generateStringHash
+  generateStringHash,
+  getModuleByPathname
 } from "./utils";
-
-/**
- * Get requested module by specifying path
- * @param routes
- * @param pathname
- * @returns {boolean}
- */
-export const getModuleByPathname = (routes, pathname) => {
-  "use strict";
-  let moduleName = false;
-  _.each(routes, route => {
-    if(matchPath(pathname, route)) {
-      moduleName = route.bundleKey;
-    }
-  });
-  return moduleName;
-};
 
 /**
  * Load url specific modules & trigger call backs on load
@@ -52,10 +35,7 @@ export const loadModuleByUrl = (url, cb = () => {}) => {
         listOfPromises.push(loadScript(js));
       }
     });
-    Promise.all(listOfPromises).then(cb).catch((ex) => {
-      "use strict";
-      cb();
-    });
+    Promise.all(listOfPromises).then(cb).catch(cb);
   });
 };
 

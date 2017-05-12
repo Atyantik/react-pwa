@@ -215,21 +215,29 @@ export const generateStringHash = (str, namespace) => {
 };
 
 /**
- * Get module from provided path
+ * Get requested module by specifying path
+ * @todo >>> Improve function to cover the scenario where no bundleKey for child is
+ * present but present for parent route. In such case make the bundleKey of parent
+ * as the Module we are searching for
+ * <<<
  * @param routes
- * @param path
+ * @param pathname
  * @returns {boolean}
  */
-export const getModuleFromPath = (routes, path) => {
+export const getModuleByPathname = (routes, pathname) => {
   "use strict";
-  let mod = false;
-
+  let moduleName = false;
   _.each(routes, route => {
-    if(matchPath(path, route)) {
-      mod = route.bundleKey;
+    if (moduleName) return;
+    if (_.get(route, "abstract", false)) {
+      if (_.get(route, "routes", []).length) {
+        moduleName = getModuleByPathname(route.routes, pathname);
+      }
+    } else if(matchPath(pathname, route)) {
+      moduleName = route.bundleKey;
     }
   });
-  return mod;
+  return moduleName;
 };
 
 /**
@@ -242,12 +250,34 @@ export const getRouteFromPath = (routes, path) => {
   let selectedRoute = [];
 
   _.each(routes, route => {
+    if (_.get(route, "abstract", false)) {
+      // If abstract is present then Try to see if sub-routes matches
+      // the path.
 
-    const match = matchPath(path, route);
-    if(match) {
-      selectedRoute.push(_.assignIn(route, {match: match}));
       if (route.routes && route.routes.length) {
-        selectedRoute.push(...getRouteFromPath(route.routes, path));
+        // If subRoutes are found to match the provided path,
+        // that means we can add the abstract path to list of
+        // our routes
+        const subRoutes = getRouteFromPath(route.routes, path);
+
+        if (subRoutes.length) {
+          // Add abstract path to our list in expected order and then
+          // add sub routes accordingly
+          selectedRoute.push(_.assignIn(route, {match: null}));
+          selectedRoute.push(...subRoutes);
+        }
+      }
+    } else {
+
+      // If route.path is found and route is not abstract
+      // match with the path and if it matches try to match sub-routes
+      // as well
+      const match = matchPath(path, route);
+      if(match) {
+        selectedRoute.push(_.assignIn(route, {match: match}));
+        if (route.routes && route.routes.length) {
+          selectedRoute.push(...getRouteFromPath(route.routes, path));
+        }
       }
     }
   });

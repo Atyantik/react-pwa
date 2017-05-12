@@ -3,7 +3,6 @@ import { render } from "react-dom";
 import _ from "lodash";
 import {
   Router,
-  Switch,
   Route
 } from "react-router-dom";
 import Loader from "app/components/loader";
@@ -29,10 +28,13 @@ import ErrorPage from "./app/components/error/500";
 // loaded over time
 let collectedRoutes = [];
 let history;
+let showScreenLoader = false;
+
+// Get our dom app
+const domApp = isBrowser() ? document.getElementById("app"): null;
 
 const updateMeta = (url) => {
   "use strict";
-
   if (!isBrowser()) return;
   const currentRoutes = getRouteFromPath(collectedRoutes, url);
 
@@ -69,22 +71,31 @@ const updateMeta = (url) => {
  * Render routes when routes are loaded
  */
 const renderRoutes = (url, options = {}) => {
+
   if (!isBrowser()) return;
 
   const { isInitialLoad } = options;
-
   let promises = [];
 
+  // Get current routes from the routes we need to load data
   const currentRoutes = getRouteFromPath(collectedRoutes, url);
+
+  // If no routes are matching our criteria, that means we have a 404
+  // else react-router is taking care of it.
+
+  if (!currentRoutes.length) {
+
+    // Render 404 and return
+    return renderNotFoundPage();
+  }
   // Preload Data
   _.each(currentRoutes, r => {
-    "use strict";
 
     // Load data and add it to route itself
     if (r.preLoadData) {
       promises.push((() => {
-        // Pass route as reference so that we can modify it while loading data
 
+        // Pass route as reference so that we can modify it while loading data
         let returnData = r.preLoadData({route: r, match: r.match});
         if (returnData && _.isFunction(returnData.then)) {
           return returnData.then(data => {
@@ -94,51 +105,72 @@ const renderRoutes = (url, options = {}) => {
           });
         }
         return r.preLoadedData = returnData;
+
       })());
     }
   });
-  if (promises.length && !isInitialLoad) renderRouteLoader();
+
+  if (promises.length && !isInitialLoad) {
+    showScreenLoader = true;
+  }
+
+  if (showScreenLoader) {
+    // Just render all routes with showScreenLoader
+    renderAllRoutes();
+  }
 
   Promise.all(promises).then(() => {
-    "use strict";
-    // Update SEO MetaData
     updateMeta(url);
+    showScreenLoader = false;
+    console.log("Render without screenloader");
+    renderAllRoutes();
 
-    render((
-      <Router history={history}>
-        <Switch>
-          {_.map(collectedRoutes, (route, i) => {
-            return <RouteWithSubRoutes key={i} {...route}/>;
-          })}
-          <Route component={NotFoundPage}/>
-        </Switch>
-      </Router>
-    ), document.getElementById("app"), () => {
-      "use strict";
-      window.__URL_LOADING__ = false;
-    });
   }).catch(err => {
-    "use strict";
     if (!(err instanceof Error)) {
       err = new Error(err);
     }
     err.statusCode = err.statusCode || 500;
-    render((
-      <ErrorPage error={err} />
-    ), document.getElementById("app"), () => {
-      "use strict";
-      window.__URL_LOADING__ = false;
-    });
+    renderErrorPage(err);
   });
 };
 
+const renderAllRoutes = () => {
+  render((
+    <Router history={history}>
+      <Loader showScreenLoader={showScreenLoader}>
+        {_.map(collectedRoutes, (route, i) => {
+          return <RouteWithSubRoutes key={i} {...route} />;
+        })}
+      </Loader>
+    </Router>
+  ), domApp);
+};
+const renderNotFoundPage = () => {
+  // render 404
+  render((
+    <Router history={history}>
+      <Route component={NotFoundPage}/>
+    </Router>
+  ), domApp, () => {
+    showScreenLoader = false;
+  });
+};
+
+const renderErrorPage = (err) => {
+  // Render 500
+  render((
+    <ErrorPage error={err} />
+  ), domApp, () => {
+    showScreenLoader = false;
+  });
+};
 // Browser operations
 const initBrowserOperations = () => {
-  "use strict";
 
   if (!isBrowser()) return;
 
   const createHistory = require("history/createBrowserHistory").default;
+
   history = createHistory();
 
   // Load in respect to current path on init
@@ -147,12 +179,16 @@ const initBrowserOperations = () => {
     idlePreload(1000);
   });
 
-  history.listen((location, action) => {
+  history.listen((location) => {
     const url = `${location.pathname}${location.search}${location.hash}`;
 
-    // If route is not preloaded in background then show loader
     if (!isModuleLoaded(url)) {
-      renderRouteLoader();
+
+      // If route is not preloaded in background then show loader
+      if(!isModulePreLoaded(url)) {
+        renderAllRoutes();
+      }
+
       loadModuleByUrl(url, () => {
         renderRoutes(url);
       });
@@ -170,11 +206,6 @@ initBrowserOperations();
  */
 export const updateRoutes = (routes) => {
   "use strict";
+  //collectedRoutes = [...routes,...collectedRoutes];
   collectedRoutes = [...collectedRoutes, ...routes];
-};
-const renderRouteLoader = () => {
-  "use strict";
-  if (!isBrowser()) return;
-  window.__URL_LOADING__ = true;
-  render(<Loader />, document.getElementById("app"));
 };
