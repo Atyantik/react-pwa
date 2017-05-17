@@ -181,8 +181,9 @@ export const preLoadScript = (path, fn = () => {}, scope) => {
 
   s = document.createElement("object");
   s.data = path;
-  s.width  = 0;
+  s.width = 0;
   s.height = 0;
+  s.style = "display:none";
   s.id = pathHash;
   s.onload = s.onreadystatechange = function() {
     if (!r && (!this.readyState || this.readyState == "complete")) {
