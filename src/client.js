@@ -122,7 +122,6 @@ const renderRoutes = (url, options = {}) => {
   Promise.all(promises).then(() => {
     updateMeta(url);
     showScreenLoader = false;
-    console.log("Render without screenloader");
     renderAllRoutes();
 
   }).catch(err => {
@@ -164,6 +163,7 @@ const renderErrorPage = (err) => {
     showScreenLoader = false;
   });
 };
+
 // Browser operations
 const initBrowserOperations = () => {
 
@@ -206,6 +206,5 @@ initBrowserOperations();
  */
 export const updateRoutes = (routes) => {
   "use strict";
-  //collectedRoutes = [...routes,...collectedRoutes];
-  collectedRoutes = [...collectedRoutes, ...routes];
+  collectedRoutes = [...routes,...collectedRoutes];
 };

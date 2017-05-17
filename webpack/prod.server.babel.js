@@ -59,9 +59,30 @@ export default {
         loader: ExtractTextPlugin.extract({
           fallback: "style-loader",
           use: [
-            "css-loader?modules&localIdentName=[name]__[local]___[hash:base64:5]&minimize&sourceMap&importLoaders=2",
-            "postcss-loader",
-            "sass-loader?outputStyle=expanded&sourceMap&sourceMapContents"
+            {
+              loader: "css-loader",
+              options: {
+                modules: true,
+                localIdentName: "[name]__[local]___[hash:base64:5]",
+                minimize: true,
+                sourceMap: false,
+                importLoaders: 2,
+              }
+            },
+            {
+              loader: "postcss-loader",
+              options: {
+                sourceMap: false
+              }
+            },
+            {
+              loader: "sass-loader",
+              options: {
+                outputStyle: "expanded",
+                sourceMap: false,
+                sourceMapContents: false,
+              }
+            },
           ]
         }),
       },

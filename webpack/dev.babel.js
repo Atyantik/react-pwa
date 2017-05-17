@@ -73,16 +73,30 @@ export default {
         ],
         use: [
           {
-            loader: "style-loader"
+            loader: "style-loader",
+            options: { sourceMap: true }
           },
           {
-            loader: "css-loader?modules&localIdentName=[name]__[local]&minimize&sourceMap&importLoaders=2",
+            loader: "css-loader",
+            options: {
+              modules: true,
+              localIdentName: "[name]__[local]",
+              sourceMap: true,
+              minimize: false,
+              importLoaders: 2
+            }
           },
           {
             loader: "postcss-loader",
+            options: { sourceMap: true }
           },
           {
-            loader: "sass-loader?outputStyle=expanded&sourceMap&sourceMapContents",
+            loader: "sass-loader",
+            options: {
+              outputStyle: "expanded",
+              sourceMap: true,
+              sourceMapContents: true,
+            }
           }
         ]
       },
@@ -110,9 +124,28 @@ export default {
         use: ExtractTextPlugin.extract({
           fallback: "style-loader",
           use: [
-            "css-loader?modules&localIdentName=[local]&minimize&sourceMap&importLoaders=2",
-            "postcss-loader",
-            "sass-loader?outputStyle=expanded&sourceMap&sourceMapContents"
+            {
+              loader: "css-loader",
+              options: {
+                modules: true,
+                localIdentName: "[local]",
+                sourceMap: true,
+                minimize: false,
+                importLoaders: 2
+              }
+            },
+            {
+              loader: "postcss-loader",
+              options: { sourceMap: true }
+            },
+            {
+              loader: "sass-loader",
+              options: {
+                outputStyle: "expanded",
+                sourceMap: true,
+                sourceMapContents: true,
+              }
+            }
           ]
         }),
       },

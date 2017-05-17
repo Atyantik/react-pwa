@@ -84,9 +84,6 @@ export default {
         include: srcDir,
         use: [
           {
-            loader: "react-hot-loader/webpack",
-          },
-          {
             loader: "babel-loader",
           }
         ]
@@ -99,9 +96,30 @@ export default {
         loader: ExtractTextPlugin.extract({
           fallback: "style-loader",
           use: [
-            "css-loader?modules&localIdentName=[name]__[local]___[hash:base64:5]&minimize&sourceMap&importLoaders=2",
-            "postcss-loader",
-            "sass-loader?outputStyle=expanded&sourceMap&sourceMapContents"
+            {
+              loader: "css-loader",
+              options: {
+                modules: true,
+                localIdentName: "[name]__[local]___[hash:base64:5]",
+                minimize: true,
+                sourceMap: false,
+                importLoaders: 2,
+              }
+            },
+            {
+              loader: "postcss-loader",
+              options: {
+                sourceMap: false
+              }
+            },
+            {
+              loader: "sass-loader",
+              options: {
+                outputStyle: "expanded",
+                sourceMap: false,
+                sourceMapContents: false,
+              }
+            },
           ]
         }),
       },
@@ -151,11 +169,32 @@ export default {
           path.join(srcDir, "resources"),
         ],
         loader: ExtractTextPlugin.extract({
-          fallback: "style-loader",
+          fallback: "style-loader?sourceMap=false",
           use: [
-            "css-loader?modules&localIdentName=[local]&minimize&sourceMap&importLoaders=2",
-            "postcss-loader",
-            "sass-loader?outputStyle=expanded&sourceMap&sourceMapContents"
+            {
+              loader: "css-loader",
+              options: {
+                modules: true,
+                localIdentName: "[local]",
+                minimize: true,
+                sourceMap: false,
+                importLoaders: 2,
+              }
+            },
+            {
+              loader: "postcss-loader",
+              options: {
+                sourceMap: false
+              }
+            },
+            {
+              loader: "sass-loader",
+              options: {
+                outputStyle: "expanded",
+                sourceMap: false,
+                sourceMapContents: false,
+              }
+            },
           ]
         }),
       },
