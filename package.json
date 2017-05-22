@@ -28,7 +28,7 @@
     "compression": "^1.6.2",
     "cookie-parser": "^1.4.3",
     "copy-webpack-plugin": "^4.0.1",
-    "css-loader": "^0.28.1",
+    "css-loader": "^0.28.2",
     "eslint": "^3.19.0",
     "eslint-plugin-react": "^7.0.1",
     "express": "^4.15.3",
@@ -37,6 +37,7 @@
     "img-loader": "^2.0.0",
     "lodash": "^4.17.4",
     "mocha": "^3.4.1",
+    "moment": "^2.18.1",
     "node-sass": "^4.5.3",
     "nodemon": "^1.11.0",
     "postcss-loader": "^2.0.5",
@@ -47,7 +48,6 @@
     "react": "^15.5.3",
     "react-addons-test-utils": "^15.4.1",
     "react-dom": "^15.5.3",
-    "react-hot-loader": "next",
     "react-router": "^4.1.1",
     "react-router-dom": "^4.1.1",
     "react-test-renderer": "^15.5.4",
@@ -55,7 +55,7 @@
     "sass-loader": "^6.0.5",
     "serve-favicon": "^2.4.3",
     "strict-uri-encode": "^2.0.0",
-    "style-loader": "^0.17.0",
+    "style-loader": "^0.18.0",
     "uglify-js": "^3.0.8",
     "uglifyjs-webpack-plugin": "^0.4.3",
     "universal-fetch": "^1.0.0",
@@ -76,7 +76,5 @@
   ],
   "author": "Tirth Bodawala",
   "license": "ISC",
-  "dependencies": {
-    "moment": "^2.18.1"
-  }
+  "dependencies": {}
 }
