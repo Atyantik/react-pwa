@@ -115,7 +115,7 @@ export default {
             {
               loader: "sass-loader",
               options: {
-                outputStyle: "expanded",
+                outputStyle: "compressed",
                 sourceMap: false,
                 sourceMapContents: false,
               }

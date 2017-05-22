@@ -2,7 +2,6 @@ import fetch from "universal-fetch";
 import BlogListing from "app/components/blog";
 import BlogPost from "app/components/blog/post";
 import DefaultLayout from "app/components/layout";
-import { updateRoutes } from "../client";
 
 const routes = [
   {
@@ -30,6 +29,8 @@ const routes = [
   }
 ];
 
-updateRoutes(routes);
+if (typeof window !== "undefined") {
+  window.__updateRoutes(routes);
+}
 
 export default routes;

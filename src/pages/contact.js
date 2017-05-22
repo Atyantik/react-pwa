@@ -1,5 +1,4 @@
 import Contact from "../app/components/contact";
-import { updateRoutes } from "../client";
 
 const routes = [
   {
@@ -10,6 +9,8 @@ const routes = [
   }
 ];
 
-updateRoutes(routes);
+if (typeof window !== "undefined") {
+  window.__updateRoutes(routes);
+}
 
 export default routes;

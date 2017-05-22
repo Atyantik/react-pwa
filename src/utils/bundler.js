@@ -1,62 +1,70 @@
 import _ from "lodash";
-import fetch from "universal-fetch";
+import { matchPath } from "react-router";
+import api from "lib/api";
 import {
   isBrowser,
   loadScript,
   loadStyle,
-  preLoadScript,
-  generateStringHash,
-  getModuleByPathname
+  generateStringHash
 } from "./utils";
 
+let globalsLoaded = false;
+let globals = {};
+
 /**
- * Load url specific modules & trigger call backs on load
- * @param url
- * @param cb
+ * Load globals through the express route, we don't want to increase size of page
+ * adding it to script tag
+ * @returns {Promise.<*>}
  */
-export const loadModuleByUrl = (url, cb = () => {}) => {
-  if (!isBrowser()) {
-    return;
-  }
-  loadGlobals().then(() => {
-    // location is an object like window.location
-    // Load in respect to path
-    let currentMod = getModuleByPathname(window.routes, url);
-
-    let listOfPromises = [];
-    _.each(window.allCss, css => {
-      if (scriptBelongToMod(css,currentMod)) {
-        listOfPromises.push(loadStyle(css));
-      }
-    });
-
-    _.each(window.allJs, js => {
-      if (scriptBelongToMod(js,currentMod)) {
-        listOfPromises.push(loadScript(js));
-      }
-    });
-    Promise.all(listOfPromises).then(cb).catch(cb);
-  });
-};
-
 export const loadGlobals = async () => {
-  "use strict";
   if (!isBrowser()) {
     return Promise.reject();
   }
 
-  if (window.__GLOBALS_LOADED__) {
+  if (globalsLoaded) {
     return Promise.resolve();
   }
 
-  return fetch("/_globals")
-    .then(res => res.json())
+  return api.fetch(`${location.protocol}//${location.host}/_globals`)
     .then(responseBody => {
       _.each(responseBody, (value, key) => {
-        _.set(window, key, value);
+        _.set(globals, key, value);
       });
-      window.__GLOBALS_LOADED__ = true;
+      globalsLoaded = true;
     });
+};
+
+/**
+ * Get requested module by specifying path
+ * @todo >>> Improve function to cover the scenario where no bundleKey for child is
+ * present but present for parent route. In such case make the bundleKey of parent
+ * as the Module we are searching for
+ * <<<
+ * @param routes
+ * @param pathname
+ * @returns {boolean}
+ */
+export const getModuleByPathname = (routes, pathname) => {
+  let moduleName = false;
+
+  // Iterate through all the routes to get
+  // the correct module name for the path
+  _.each(routes, route => {
+
+    // If already found a module name then return
+    if (moduleName) return;
+
+    // if current route is abstract then try to
+    // search for sub routes
+    if (_.get(route, "abstract", false)) {
+      if (_.get(route, "routes", []).length) {
+        moduleName = getModuleByPathname(route.routes, pathname);
+      }
+    } else if(matchPath(pathname, route)) {
+      moduleName = route.bundleKey;
+    }
+  });
+  return moduleName;
 };
 
 /**
@@ -92,6 +100,46 @@ export const scriptBelongToMod = (script, mod) => {
   return fileNameWithoutHash === `mod-${mod}`;
 };
 
+
+/**
+ * Keep track of modules loaded
+ * @type {Array}
+ */
+let modulesLoaded = [];
+/**
+ * Load url specific modules & trigger call backs on load
+ * @param url
+ * @param cb
+ */
+export const loadModuleByUrl = (url, cb = () => {}) => {
+  if (!isBrowser()) {
+    return;
+  }
+  loadGlobals().then(() => {
+    // location is an object like window.location
+    // Load in respect to path
+    let currentMod = getModuleByPathname(globals.routes, url);
+    const afterLoad = () => {
+      modulesLoaded.push(currentMod);
+      cb();
+    };
+
+    let listOfPromises = [];
+    _.each(globals.allCss, css => {
+      if (scriptBelongToMod(css,currentMod)) {
+        listOfPromises.push(loadStyle(css));
+      }
+    });
+
+    _.each(globals.allJs, js => {
+      if (scriptBelongToMod(js,currentMod)) {
+        listOfPromises.push(loadScript(js));
+      }
+    });
+    Promise.all(listOfPromises).then(afterLoad).catch(afterLoad);
+  });
+};
+
 /**
  * Check if module for the url is loaded or not
  * @param url
@@ -99,61 +147,66 @@ export const scriptBelongToMod = (script, mod) => {
  */
 export const isModuleLoaded = (url) => {
   "use strict";
-  let mod = getModuleByPathname(window.routes, url);
-
-  let loaded = true;
-
-  _.each(window.allCss, css => {
-    if (css.indexOf(`mod-${mod}`) !== -1 && !document.getElementById(`${generateStringHash(css, "CSS")}`)) {
-      loaded = false;
-    }
-  });
-
-  _.each(window.allJs, js => {
-    if (js.indexOf(`mod-${mod}`) !== -1  && !document.getElementById(`${generateStringHash(js, "JS")}`)) {
-      loaded = false;
-    }
-  });
-  return loaded;
-};
-
-export const isModulePreLoaded = url => {
-  "use strict";
-  let mod = getModuleByPathname(window.routes, url);
-
-  let loaded = true;
-
-  _.each(window.allCss, css => {
-    if (css.indexOf(`mod-${mod}`) !== -1 && !document.getElementById(`${generateStringHash(css, "PRELOAD")}`)) {
-      loaded = false;
-    }
-  });
-
-  _.each(window.allJs, js => {
-    if (js.indexOf(`mod-${mod}`) !== -1  && !document.getElementById(`${generateStringHash(js, "PRELOAD")}`)) {
-      loaded = false;
-    }
-  });
-  return loaded;
+  let mod = getModuleByPathname(globals.routes, url);
+  return _.indexOf(modulesLoaded, mod) !== -1;
 };
 
 /**
- * Get list of pending preloads
+ * List of hash of files pre-loaded
+ * @type {Array}
+ */
+let preLoadedFiles = [];
+
+export const isModulePreLoaded = url => {
+
+  let modulePreLoaded = true;
+  let mod = getModuleByPathname(globals.routes, url);
+
+
+  _.each(globals.allCss, css => {
+    if (scriptBelongToMod(css, mod)) {
+      let scriptHash = generateStringHash(css, "PRELOAD").toString();
+      if (_.indexOf(preLoadedFiles, scriptHash) === -1) {
+        modulePreLoaded = false;
+      }
+    }
+  });
+
+  _.each(globals.allJs, js => {
+    if (scriptBelongToMod(js, mod)) {
+      let scriptHash = generateStringHash(js, "PRELOAD").toString();
+      if (_.indexOf(preLoadedFiles, scriptHash) === -1) {
+        modulePreLoaded = false;
+      }
+    }
+  });
+  return modulePreLoaded;
+};
+/**
+ * Get list of pending pre-loads files
  * @returns {[*,*]}
  */
-const getPendingPreloadModules = () => {
+const getPendingPreloadFiles = () => {
   "use strict";
   let pendingCss = [];
   let pendingJs = [];
 
-  _.each(window.allCss, css => {
-    if (css.indexOf("mod-") !== -1 && !document.getElementById(generateStringHash(css, "PRELOAD"))) {
+  _.each(globals.allCss, css => {
+    let cssHash = generateStringHash(css, "PRELOAD").toString();
+    if (
+      css.indexOf("mod-") !== -1 &&
+      _.indexOf(preLoadedFiles, cssHash) === -1 &&
+      _.indexOf(preLoadingFiles, cssHash) === -1) {
       pendingCss.push(css);
     }
   });
 
-  _.each(window.allJs, js => {
-    if (js.indexOf("mod-") !== -1 && !document.getElementById(generateStringHash(js,"PRELOAD"))) {
+  _.each(globals.allJs, js => {
+    let jsHash = generateStringHash(js, "PRELOAD").toString();
+    if (
+      js.indexOf("mod-") !== -1 &&
+      _.indexOf(preLoadedFiles, jsHash) === -1 &&
+      _.indexOf(preLoadingFiles, jsHash) === -1) {
       pendingJs.push(js);
     }
   });
@@ -164,41 +217,148 @@ const getPendingPreloadModules = () => {
 };
 
 /**
+ * Preload a script, compatible with ie 6,7,8+ and all major browsers
+ * @param path
+ * @param fn
+ * @param scope
+ */
+const preLoadingFiles = [];
+export const preLoadFile = (path, fn = () => {}, scope) => {
+
+  if (!isBrowser()) {
+    // If not a browser then do not allow loading of
+    // css file, return with success->false
+    fn.call( scope, false );
+  }
+
+  const pathHash = generateStringHash(path, "PRELOAD").toString();
+
+  if (_.indexOf(preLoadedFiles, pathHash) !== -1) {
+    // Give a success callback
+    fn.call( scope || window, true);
+  }
+  if (_.indexOf(preLoadingFiles, pathHash) !== -1) {
+    return;
+  }
+  preLoadingFiles.push(pathHash);
+  const isIE = navigator.appName.indexOf("Microsoft") === 0;
+  let s, r;
+  if (isIE) {
+    // Load for internet explorer
+    r = false;
+    s = new Image();
+    s.width = 0;
+    s.height = 0;
+    s.id = pathHash;
+    s.style="display:none;";
+    s.onload = s.onreadystatechange = function() {
+      if(!r && (!this.readyState || this.readyState === "complete")) {
+        r = true;
+        preLoadedFiles.push(pathHash);
+        fn.call( scope || window, true, s );
+      }
+    };
+    s.onerror = function() {
+      preLoadedFiles.push(pathHash);
+      fn.call( scope || window, true, s );
+    };
+    s.src = path;
+    return s;
+  }
+  s = document.createElement("object");
+  s.width = 0;
+  s.height = 0;
+  s.style = "position:fixed; left:-200vw;top: -200vh; visibility:hidden;";
+  s.id = pathHash;
+  s.onload = s.onreadystatechange = function() {
+    if (!r && (!this.readyState || this.readyState == "complete")) {
+      r = true;
+      preLoadedFiles.push(pathHash);
+      fn.call( scope || window, true, s );
+    }
+  };
+  s.onerror = function() {
+    preLoadedFiles.push(pathHash);
+    fn.call( scope || window, true, s );
+  };
+  s.data = path;
+  document.body.appendChild(s);
+  return s;
+};
+
+/**
  * Detect idle time for user and download assets accordingly
  * @param idleTime
  */
+let timerEventInitialized  = false;
 export const idlePreload = (idleTime = 10000) => {
   if (!isBrowser()) return;
 
+  const concurrentLoading = 1;
+
   let timerInt;
 
+  let loadingFile = false;
+  let loadedFiles = 0;
   const preload = () => {
-    "use strict";
-    let [pendingCss, pendingJs] = getPendingPreloadModules();
-    let css = _.head(pendingCss);
-    let js = _.head(pendingJs);
-    if (css) {
-      preLoadScript(css, () => {
-        idlePreload(idleTime);
-      });
+    if (loadingFile) {
+      return;
     }
-    if (js) {
-      preLoadScript(js, () => {
-        idlePreload(idleTime);
-      });
+
+    const [pendingCss, pendingJs] = getPendingPreloadFiles();
+
+    // Beauty is everything load css first
+    // and then other files
+    // BUT Load one file at a time
+    let filesToBeLoaded = [];
+    let isCss = false;
+
+    if (pendingCss && pendingCss.length) {
+      filesToBeLoaded = _.take(pendingCss, 1);
+      isCss = true;
+    } else if(pendingJs && pendingJs.length) {
+      filesToBeLoaded = _.take(pendingJs, 1);
     }
+
+    loadingFile = !!filesToBeLoaded.length;
+    _.each(filesToBeLoaded, path => {
+      preLoadFile(path, () => {
+        loadedFiles++;
+
+        if (isCss) {
+          // Load stylesheet right away
+          loadStyle(path);
+        }
+        // If files loaded change loadingFile to false
+        if (loadedFiles >= concurrentLoading) {
+          loadedFiles = 0;
+          loadingFile = false;
+          timerInt = setTimeout(preload, 100);
+        }
+      });
+    });
   };
+
   const resetTimer = _.debounce(() => {
     clearTimeout(timerInt);
-    timerInt = setTimeout(preload, idleTime);  // time is in milliseconds
+    timerInt = setTimeout(() => {
+      preload();
+    }, idleTime);  // time is in milliseconds
   }, 10);
 
-  window.onload = resetTimer;
-  window.onmousemove = resetTimer;
-  window.onmousedown = resetTimer; // catches touchscreen presses
-  window.onclick = resetTimer;     // catches touchpad clicks
-  window.onscroll = resetTimer;    // catches scrolling with arrow keys
-  window.onkeypress = resetTimer;
+  timerInt = setTimeout(() => {
+    preload();
+  }, idleTime);  // time is in milliseconds
+
+  if (!timerEventInitialized) {
+    window.onload = resetTimer;
+    window.onmousemove = resetTimer;
+    window.onmousedown = resetTimer; // catches touchscreen presses
+    window.onclick = resetTimer;     // catches touchpad clicks
+    window.onscroll = resetTimer;    // catches scrolling with arrow keys
+    window.onkeypress = resetTimer;
+    timerEventInitialized = true;
+  }
 };
 
 /**
@@ -228,7 +388,6 @@ export const extractFilesFromAssets = (assets, ext = ".js") => {
   };
 
   _.each(assets, asset => {
-    "use strict";
     if (_.isArray(asset) || _.isObject(asset)) {
       _.each(asset, file => {
         if (_.endsWith(file, ext)) {
@@ -247,5 +406,48 @@ export const extractFilesFromAssets = (assets, ext = ".js") => {
     ...dev.sort(),
     ...other.sort(),
   ];
+};
 
+/**
+ * Get route from path
+ * @param routes
+ * @param path
+ */
+export const getRouteFromPath = (routes, path) => {
+  "use strict";
+  let selectedRoute = [];
+
+  _.each(routes, route => {
+    if (_.get(route, "abstract", false)) {
+      // If abstract is present then Try to see if sub-routes matches
+      // the path.
+
+      if (route.routes && route.routes.length) {
+        // If subRoutes are found to match the provided path,
+        // that means we can add the abstract path to list of
+        // our routes
+        const subRoutes = getRouteFromPath(route.routes, path);
+
+        if (subRoutes.length) {
+          // Add abstract path to our list in expected order and then
+          // add sub routes accordingly
+          selectedRoute.push(_.assignIn(route, {match: null}));
+          selectedRoute.push(...subRoutes);
+        }
+      }
+    } else {
+
+      // If route.path is found and route is not abstract
+      // match with the path and if it matches try to match sub-routes
+      // as well
+      const match = matchPath(path, route);
+      if(match) {
+        selectedRoute.push(_.assignIn(route, {match: match}));
+        if (route.routes && route.routes.length) {
+          selectedRoute.push(...getRouteFromPath(route.routes, path));
+        }
+      }
+    }
+  });
+  return selectedRoute;
 };

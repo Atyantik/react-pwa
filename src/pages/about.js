@@ -1,8 +1,6 @@
-import React from "react";
 import About from "app/components/about";
 import DefaultLayout from "app/components/layout";
 import AboutSection from "app/components/about/section";
-import { updateRoutes } from "../client";
 
 const routes = [
   {
@@ -46,6 +44,8 @@ const routes = [
   }
 ];
 
-updateRoutes(routes);
+if (typeof window !== "undefined") {
+  window.__updateRoutes(routes);
+}
 
 export default routes;

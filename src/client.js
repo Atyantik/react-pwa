@@ -1,11 +1,17 @@
-import React from "react";
-import { render } from "react-dom";
 import _ from "lodash";
+import createHistory from "history/createBrowserHistory";
+
+import storage from "lib/storage";
+import api from "lib/api";
+/**
+ * Rendering utilities
+ */
 import {
-  Router,
-  Route
-} from "react-router-dom";
-import Loader from "app/components/loader";
+  renderNotFoundPage,
+  renderErrorPage,
+  renderRoutesByUrl,
+  getPreloadDataPromises
+} from "./utils/renderer";
 
 /**
  * Bundling utilities
@@ -14,33 +20,25 @@ import {
   loadModuleByUrl,
   idlePreload,
   isModuleLoaded,
-  isModulePreLoaded
+  isModulePreLoaded,
+  getRouteFromPath
 } from "./utils/bundler";
-
-import { isBrowser, getRouteFromPath } from "./utils";
 import { generateMeta } from "./utils/seo";
-
-import RouteWithSubRoutes from "app/components/route/with-sub-routes";
-import NotFoundPage from "app/components/error/404";
-import ErrorPage from "./app/components/error/500";
 
 // Collect routes from all the routes
 // loaded over time
 let collectedRoutes = [];
-let history;
-let showScreenLoader = false;
+const history = createHistory();
 
 // Get our dom app
-const domApp = isBrowser() ? document.getElementById("app"): null;
+const renderRoot = document.getElementById("app");
 
 const updateMeta = (url) => {
-  "use strict";
-  if (!isBrowser()) return;
+
   const currentRoutes = getRouteFromPath(collectedRoutes, url);
 
   let seoData = {};
   _.each(currentRoutes, r => {
-    "use strict";
     seoData = _.defaults({}, _.get(r, "seo", {}), seoData);
   });
 
@@ -68,14 +66,16 @@ const updateMeta = (url) => {
 };
 
 /**
- * Render routes when routes are loaded
+ * Render routes for the provided url
+ * @param url
+ * @param options
  */
-const renderRoutes = (url, options = {}) => {
-
-  if (!isBrowser()) return;
-
-  const { isInitialLoad } = options;
-  let promises = [];
+const renderRoutes = (
+  url,
+  options = {
+    showScreenLoader: false,
+    isInitialLoad: false
+  }) => {
 
   // Get current routes from the routes we need to load data
   const currentRoutes = getRouteFromPath(collectedRoutes, url);
@@ -84,127 +84,98 @@ const renderRoutes = (url, options = {}) => {
   // else react-router is taking care of it.
 
   if (!currentRoutes.length) {
-
-    // Render 404 and return
-    return renderNotFoundPage();
+    return renderNotFoundPage({
+      history: history,
+      renderRoot: renderRoot,
+      url: url
+    });
   }
+
   // Preload Data
-  _.each(currentRoutes, r => {
-
-    // Load data and add it to route itself
-    if (r.preLoadData) {
-      promises.push((() => {
-
-        // Pass route as reference so that we can modify it while loading data
-        let returnData = r.preLoadData({route: r, match: r.match});
-        if (returnData && _.isFunction(returnData.then)) {
-          return returnData.then(data => {
-            return r.preLoadedData = data;
-          }).catch(err => {
-            throw err;
-          });
-        }
-        return r.preLoadedData = returnData;
-
-      })());
-    }
+  let promises = getPreloadDataPromises({
+    routes: currentRoutes,
+    storage,
+    api
   });
 
-  if (promises.length && !isInitialLoad) {
-    showScreenLoader = true;
+  if (promises.length && !options.isInitialLoad) {
+    options.showScreenLoader = true;
   }
 
-  if (showScreenLoader) {
-    // Just render all routes with showScreenLoader
-    renderAllRoutes();
+  if (options.showScreenLoader) {
+    // Show loader
+    renderRoutesByUrl({
+      routes: currentRoutes,
+      history: history,
+      renderRoot: renderRoot,
+      url: url,
+      showScreenLoader: true,
+    });
   }
 
   Promise.all(promises).then(() => {
+
     updateMeta(url);
-    showScreenLoader = false;
-    renderAllRoutes();
+
+    renderRoutesByUrl({
+      routes: currentRoutes,
+      history: history,
+      renderRoot: renderRoot,
+      url: url
+    });
 
   }).catch(err => {
     if (!(err instanceof Error)) {
       err = new Error(err);
     }
     err.statusCode = err.statusCode || 500;
-    renderErrorPage(err);
+    renderErrorPage({
+      history: history,
+      renderRoot: renderRoot,
+      error: err
+    });
   });
 };
 
-const renderAllRoutes = () => {
-  render((
-    <Router history={history}>
-      <Loader showScreenLoader={showScreenLoader}>
-        {_.map(collectedRoutes, (route, i) => {
-          return <RouteWithSubRoutes key={i} {...route} />;
-        })}
-      </Loader>
-    </Router>
-  ), domApp);
-};
-const renderNotFoundPage = () => {
-  // render 404
-  render((
-    <Router history={history}>
-      <Route component={NotFoundPage}/>
-    </Router>
-  ), domApp, () => {
-    showScreenLoader = false;
-  });
-};
+history.listen((location) => {
+  // Listen to history change and load modules accordingly
+  const url = `${location.pathname}${location.search}${location.hash}`;
 
-const renderErrorPage = (err) => {
-  // Render 500
-  render((
-    <ErrorPage error={err} />
-  ), domApp, () => {
-    showScreenLoader = false;
-  });
-};
+  if (!isModuleLoaded(url)) {
 
-// Browser operations
-const initBrowserOperations = () => {
-
-  if (!isBrowser()) return;
-
-  const createHistory = require("history/createBrowserHistory").default;
-
-  history = createHistory();
-
-  // Load in respect to current path on init
-  loadModuleByUrl(window.location.pathname, () => {
-    renderRoutes(window.location.pathname, {isInitialLoad: true});
-    idlePreload(1000);
-  });
-
-  history.listen((location) => {
-    const url = `${location.pathname}${location.search}${location.hash}`;
-
-    if (!isModuleLoaded(url)) {
-
-      // If route is not preloaded in background then show loader
-      if(!isModulePreLoaded(url)) {
-        renderAllRoutes();
-      }
-
-      loadModuleByUrl(url, () => {
-        renderRoutes(url);
-      });
-    } else {
-      renderRoutes(url);
+    // If route is not pre-loaded in background then show loader
+    if(!isModulePreLoaded(url)) {
+      // Let me module load till then show the loader
+      // show loader
+      // renderRoutes(url, {showScreenLoader: true});
     }
-  });
-};
-initBrowserOperations();
+
+    loadModuleByUrl(url, () => {
+      renderRoutes(url);
+    });
+  } else {
+    // If the module is pre-loaded then simple render current
+    // routes.
+    renderRoutes(url);
+  }
+});
 
 /**
  * Load routes when a bundle is included,
  * this will be called from pages
  * @param routes
  */
-export const updateRoutes = (routes) => {
-  "use strict";
-  collectedRoutes = [...routes,...collectedRoutes];
+const updateRoutes = (routes) => {
+  collectedRoutes = [...collectedRoutes, ...routes];
 };
+
+// Add update routes globally
+((w) =>{
+  w.__updateRoutes = updateRoutes;
+})(window);
+
+// Load in respect to current path on init
+loadModuleByUrl(window.location.pathname, () => {
+  renderRoutes(window.location.pathname, { isInitialLoad: true });
+  idlePreload(5000);
+});

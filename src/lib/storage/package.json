@@ -1,0 +1,6 @@
+{
+  "private": true,
+  "name": "Storage",
+  "main": "./storage.server.js",
+  "browser": "./storage.client.js"
+}

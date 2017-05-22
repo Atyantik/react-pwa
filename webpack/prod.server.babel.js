@@ -78,7 +78,7 @@ export default {
             {
               loader: "sass-loader",
               options: {
-                outputStyle: "expanded",
+                outputStyle: "compressed",
                 sourceMap: false,
                 sourceMapContents: false,
               }
@@ -146,8 +146,11 @@ export default {
     publicPath: buildPublicPath,
   },
 
+  node: {
+    __filename: true,
+    __dirname: true
+  },
   target: "node",
-
   devtool: false,
 
   plugins: [
@@ -159,7 +162,7 @@ export default {
       sourceMap: false,
     }),
     new webpack.DefinePlugin({
-      "process.env.NODE_ENV": JSON.stringify("production")
+      "process.env.NODE_ENV": JSON.stringify("production"),
     }),
     // Enable no errors plugin
     new webpack.NoEmitOnErrorsPlugin(),

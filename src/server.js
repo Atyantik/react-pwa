@@ -1,18 +1,36 @@
 import express from "express";
+import serveFavicon from "serve-favicon";
+import path from "path";
+import fs from "fs";
+import cookieParser from "cookie-parser";
 import compression from "compression";
 import _ from "lodash";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
 import {
-  StaticRouter as Router,
-  Route,
-  Switch,
+  StaticRouter as ServerRouter,
+  Route as ServerRoute,
+  Switch as ServerSwitch,
 } from "react-router";
-import Config from "config/config";
+import Config from "config";
 
-import RouteWithSubRoutes from "app/components/route/with-sub-routes";
-import { extractFilesFromAssets } from "utils/bundler";
-import { getModuleByPathname, getRouteFromPath } from "utils";
+import {
+  extractFilesFromAssets,
+  getModuleByPathname,
+  getRouteFromPath
+} from "utils/bundler";
+
+import {
+  getPreloadDataPromises,
+  renderRoutesByUrl,
+  renderNotFoundPage,
+  renderErrorPage,
+} from "utils/renderer";
+
+import Storage from "lib/storage";
+import Api from "lib/api";
+import Routes  from "./routes";
+import Html from "app/components/html";
 
 // Create and express js application
 const app = express();
@@ -20,12 +38,31 @@ const app = express();
 // use compression for all requests
 app.use(compression());
 
+let currentDir = __dirname;
+
+if (process.env.NODE_ENV === "production") {
+  const filename = _.find(process.argv, arg => {
+    return arg.indexOf("/server.js") !== -1;
+  });
+  if (filename) {
+    currentDir = path.dirname(filename);
+  }
+}
+
+const faviconPath = path.resolve(path.join(currentDir, "public", "favicon.ico"));
+if (fs.existsSync(faviconPath)) {
+  app.use(serveFavicon(path.join(currentDir, "public", "favicon.ico")));
+}
+
+// Extract cookies from the request
+app.use(cookieParser());
+
 // Set x-powered-by to false (security issues)
 _.set(app, "locals.settings.x-powered-by", false);
 
 // Add public path to server from public folder
 // This is used when doing server loading
-app.use("/public", express.static("public"));
+app.use("/public", express.static(path.join(currentDir, "public")));
 
 // Middleware to add assets to request
 try {
@@ -38,10 +75,23 @@ try {
   // Do not do anything here.
   // cause the assets are most probably handled by webpack in dev mode
 }
+const getErrorComponent = (err) => {
+  if (!(err instanceof Error)) {
+    err = new Error(err);
+  }
+  err.statusCode = err.statusCode || 500;
+  return renderErrorPage({
+    render: false,
+    Router: ServerRouter,
+    Route: ServerRoute,
+    Switch: ServerSwitch,
+    error: err,
+  });
+};
 
 export default app;
 
-export const startServer = (purge = false) => {
+export const startServer = () => {
 
   /**
    * Send global data to user, as we do not want to send it via
@@ -49,46 +99,24 @@ export const startServer = (purge = false) => {
    */
   app.get("/_globals", (req,res) => {
 
+    // Never ever cache this request
     const { assets } = req;
-    if (purge) {
-      purgeCache([
-        "./routes",
-      ]);
-    }
-    let routes  = require("./routes").default;
     const allCss = extractFilesFromAssets(assets, ".css");
     const allJs = extractFilesFromAssets(assets, ".js");
 
-    // Never ever cache this request as the files must have
-    // changed from the last deploy
     res.setHeader("Content-Type", "application/json");
     // No cache header
     res.setHeader("Cache-Control", "private, no-cache, no-store, must-revalidate");
     res.setHeader("Expires", "-1");
     res.setHeader("Pragma", "no-cache");
 
-    return res.send(JSON.stringify({ routes, allCss, allJs }));
+    return res.send(JSON.stringify({ routes: Routes, allCss, allJs }));
   });
 
   app.get("*", (req, res) => {
+    let routes = _.assignIn({}, Routes);
 
-    /**
-     * Purge and get new routes
-     * @todo: this should be managed in better way! maybe by webpack-dev-server
-     */
-    if (purge) {
-      purgeCache([
-        "./routes",
-        "app/components/error/404",
-        "app/components/error/500",
-        "app/components/html"
-      ]);
-    }
-    let routes  = require("./routes").default;
-    let NotFoundPage = require("app/components/error/404").default;
-    let ErrorPage = require("app/components/error/500").default;
-    let Html = require("app/components/html").default;
-
+    // Get list of assets from request
     const { assets } = req;
 
     /**
@@ -98,15 +126,10 @@ export const startServer = (purge = false) => {
     const allJs = extractFilesFromAssets(assets, ".js");
 
     let mod = getModuleByPathname(routes, req.path);
+    const currentRoutes = getRouteFromPath(routes, req.path);
 
-    /**
-     * Get routes for current module, we can get all the routes,
-     * but that breaks the server side rendering as client will not have
-     * all the routes loaded
-     */
-    const currentModRoutes = _.filter(routes, route => {
-      return route.bundleKey === mod;
-    });
+    const storage = new Storage(req, res);
+    const api = new Api({storage});
 
     /**
      * Get css generated by current route and module
@@ -124,100 +147,62 @@ export const startServer = (purge = false) => {
       return !_.startsWith(fileName, "mod-");
     });
 
-
-    const context = {};
+    const context = {
+      storage,
+      api
+    };
 
     let html, statusCode = 200;
 
-    // Render error
-    const renderError = (err) => {
-      "use strict";
-
-      if (!(err instanceof Error)) {
-        err = new Error(err);
-      }
-
-      let errorStatusCode = err.statusCode || 500;
-      let errorHtml = "";
-
-      // Manage server errors
-      if (errorStatusCode === 500) {
-        errorHtml = ReactDOMServer.renderToStaticMarkup((
-          <Html
-            stylesheets={currentRouteCss}
-            //scripts={currentRouteJs}
-          >
-          <ErrorPage error={err} />
-          </Html>
-        ));
-      } else {
-        errorHtml = ReactDOMServer.renderToStaticMarkup((
-          <Html
-            stylesheets={currentRouteCss}
-            //scripts={currentRouteJs}
-          >
-          <NotFoundPage location={{pathname: req.path}} />
-          </Html>
-        ));
-      }
-      return res.status(errorStatusCode).send(`<!DOCTYPE html>${errorHtml}`);
-    };
+    // Get seo details for the routes in an inherited manner
+    // i.e. get seo details of parent when feasible
+    let seoDetails = {};
+    let routerComponent = null;
 
     try {
-      // Get current routes and data needed to reload
-      const currentRoutes = getRouteFromPath(routes, req.path);
-
-      // Get seo details for the routes in an inherited manner
-      // i.e. get seo details of parent when feasible
-      let seoDetails = {};
 
       // Also preload data required when asked
-      let promises = [];
-
-      // Preload Data
-      _.each(currentRoutes, r => {
-        "use strict";
-
-        // Load data and add it to route itself
-        if (r.preLoadData) {
-          promises.push((() => {
-            // Pass route as reference so that we can modify it while loading data
-            let returnData = r.preLoadData({route: r, match: r.match});
-            if (returnData && _.isFunction(returnData.then)) {
-              return returnData.then(data => {
-                return r.preLoadedData = data;
-              }).catch(err => {
-                throw err;
-              });
-            }
-            return returnData;
-          })());
-        }
-        // Add to seo
-        seoDetails = _.defaults({}, _.get(r, "seo", {}));
+      let promises = getPreloadDataPromises({
+        routes,
+        storage,
+        api
       });
 
       Promise.all(promises).then(() => {
-        "use strict";
 
-        // Once all data has been preloaded and processed
+        // Once all data has been pre-loaded and processed
         _.each(currentRoutes, r => {
           seoDetails = _.defaults({}, _.get(r, "seo", {}), seoDetails);
         });
 
-        const routerComponent = (
-          <Router
-            location={req.path}
-            context={context}
-          >
-            <Switch>
-              {_.map(currentModRoutes, (route, i) => {
-                return <RouteWithSubRoutes key={i} {...route}/>;
-              })}
-              <Route component={NotFoundPage}/>
-            </Switch>
-          </Router>
-        );
+        if (!currentRoutes.length) {
+          routerComponent = renderNotFoundPage({
+            render: false,
+            Router: ServerRouter,
+            url: req.path,
+            Switch: ServerSwitch,
+            Route: ServerRoute,
+            context: context,
+          });
+        } else {
+          routerComponent = renderRoutesByUrl({
+            render: false,
+            Router: ServerRouter,
+            url: req.path,
+            Switch: ServerSwitch,
+            Route: ServerRoute,
+            context: context,
+            routes: routes,
+            storage,
+            api
+          });
+        }
+
+        statusCode = context.status || 200;
+        if (context.url) {
+          // Somewhere a `<Redirect>` was rendered
+          return res.status(statusCode).redirect(context.url);
+        }
 
         html = ReactDOMServer.renderToStaticMarkup((
           <Html
@@ -228,20 +213,32 @@ export const startServer = (purge = false) => {
           {routerComponent}
           </Html>
         ));
-
-        statusCode = context.status || 200;
-        if (context.url) {
-          // Somewhere a `<Redirect>` was rendered
-          return res.status(statusCode).redirect(context.url);
-        }
         return res.status(statusCode).send(`<!DOCTYPE html>${html}`);
 
       }).catch((err) => {
-        renderError(err);
+        routerComponent = getErrorComponent(err);
+        html = ReactDOMServer.renderToStaticMarkup((
+          <Html
+            stylesheets={currentRouteCss}
+            scripts={currentRouteJs}
+          >
+          {routerComponent}
+          </Html>
+        ));
+        return res.status(statusCode).send(`<!DOCTYPE html>${html}`);
       });
       // Get data to load for all the routes
-    } catch (ex) {
-      renderError(ex);
+    } catch (err) {
+      routerComponent = getErrorComponent(err);
+      html = ReactDOMServer.renderToStaticMarkup((
+        <Html
+          stylesheets={currentRouteCss}
+          scripts={currentRouteJs}
+        >
+        {routerComponent}
+        </Html>
+      ));
+      return res.status(statusCode).send(`<!DOCTYPE html>${html}`);
     }
   });
 
@@ -250,51 +247,3 @@ export const startServer = (purge = false) => {
     console.log("App Started ==> Open http://localhost:3000 to see the app");
   });
 };
-
-/**
- * Removes a module from the cache
- */
-function purgeCache(modules) {
-  _.each(modules, moduleName => {
-    "use strict";
-    // Traverse the cache looking for the files
-    // loaded by the specified module name
-    searchCache(moduleName, function (mod) {
-      delete require.cache[mod.id];
-    });
-
-    // Remove cached paths to the module.
-    // Thanks to @bentael for pointing this out.
-    Object.keys(module.constructor._pathCache).forEach(function(cacheKey) {
-      if (cacheKey.indexOf(moduleName)>0) {
-        delete module.constructor._pathCache[cacheKey];
-      }
-    });
-  });
-}
-
-/**
- * Traverses the cache to search for all the cached
- * files of the specified module name
- */
-function searchCache(moduleName, callback) {
-  // Resolve the module identified by the specified name
-  let mod = require.resolve(moduleName);
-
-  // Check if the module has been resolved and found within
-  // the cache
-  if (mod && ((mod = require.cache[mod]) !== undefined)) {
-    // Recursively go over the results
-    (function traverse(mod) {
-      // Go over each of the module's children and
-      // traverse them
-      mod.children.forEach(function (child) {
-        traverse(child);
-      });
-
-      // Call the specified callback providing the
-      // found cached module
-      callback(mod);
-    }(mod));
-  }
-}
