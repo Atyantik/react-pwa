@@ -63,6 +63,13 @@ export default {
         use: [
           {
             loader: "babel-loader",
+          },
+          {
+            loader: "eslint-loader",
+            options: {
+              failOnWarning: false,
+              failOnError: false
+            }
           }
         ]
       },
