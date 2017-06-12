@@ -3,7 +3,7 @@ export default {
     port: 3000,
   },
   //api: {
-    //baseUrl: "https://api.example.com/",
+  // baseUrl: "https://api.example.com/",
   //},
   seo: {
     title: "Common Title",

@@ -21,14 +21,17 @@ import {
   idlePreload,
   isModuleLoaded,
   isModulePreLoaded,
-  getRouteFromPath
+  getRouteFromPath,
 } from "./utils/bundler";
 import { generateMeta } from "./utils/seo";
+import { generateStringHash } from "./utils";
 
 // Collect routes from all the routes
 // loaded over time
 let collectedRoutes = [];
 const history = createHistory();
+let renderedUrlHash = null;
+let previousUrl = null;
 
 // Get our dom app
 const renderRoot = document.getElementById("app");
@@ -98,12 +101,18 @@ const renderRoutes = (
     api
   });
 
-  if (promises.length && !options.isInitialLoad) {
-    options.showScreenLoader = true;
-  }
-
   if (options.showScreenLoader) {
     // Show loader
+    return renderRoutesByUrl({
+      routes: currentRoutes,
+      history: history,
+      renderRoot: renderRoot,
+      url: url,
+      showScreenLoader: true,
+    });
+  }
+
+  if (promises.length && !options.isInitialLoad) {
     renderRoutesByUrl({
       routes: currentRoutes,
       history: history,
@@ -114,15 +123,19 @@ const renderRoutes = (
   }
 
   Promise.all(promises).then(() => {
-
+    options.showScreenLoader = false;
     updateMeta(url);
-
     renderRoutesByUrl({
       routes: currentRoutes,
       history: history,
       renderRoot: renderRoot,
-      url: url
+      url: url,
+      showScreenLoader: false,
     });
+
+    // Keep track of url loaded
+    previousUrl = url;
+    renderedUrlHash = getRouteFromPath(url);
 
   }).catch(err => {
     if (!(err instanceof Error)) {
@@ -137,17 +150,29 @@ const renderRoutes = (
   });
 };
 
-history.listen((location) => {
+const getRouteHashFromPath = (url) => {
+  return generateStringHash(
+    JSON.stringify(
+      getRouteFromPath(collectedRoutes, url)
+    )
+  );
+};
+
+history.listen((location, type) => {
+
   // Listen to history change and load modules accordingly
   const url = `${location.pathname}${location.search}${location.hash}`;
 
   if (!isModuleLoaded(url)) {
 
     // If route is not pre-loaded in background then show loader
+
     if(!isModulePreLoaded(url)) {
       // Let me module load till then show the loader
       // show loader
-      // renderRoutes(url, {showScreenLoader: true});
+      if (previousUrl && previousUrl !== url) {
+        renderRoutes(previousUrl, {showScreenLoader: true});
+      }
     }
 
     loadModuleByUrl(url, () => {
@@ -156,7 +181,15 @@ history.listen((location) => {
   } else {
     // If the module is pre-loaded then simple render current
     // routes.
-    renderRoutes(url);
+    const urlRouteHash = getRouteHashFromPath(url);
+
+    // Render if there is a POP in history or
+    // the module loading is other than the current displayed module
+    if (type && type.toUpperCase() === "POP") {
+      renderRoutes(url);
+    } else if (urlRouteHash !== renderedUrlHash) {
+      renderRoutes(url);
+    }
   }
 });
 
@@ -171,7 +204,14 @@ const updateRoutes = (routes) => {
 
 // Add update routes globally
 ((w) =>{
-  w.__updateRoutes = updateRoutes;
+  w.__updateRoutes = (...args) => {
+    const routesloadEvent = new CustomEvent("routesload");
+    updateRoutes(...args);
+    w.dispatchEvent(routesloadEvent);
+    if (module && module.hot) {
+      module.hot.accept();
+    }
+  };
 })(window);
 
 // Load in respect to current path on init

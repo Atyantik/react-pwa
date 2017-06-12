@@ -44,7 +44,7 @@ export const loadGlobals = async () => {
  * @param pathname
  * @returns {boolean}
  */
-export const getModuleByPathname = (routes, pathname) => {
+export const getModuleByUrl = (routes, pathname) => {
   let moduleName = false;
 
   // Iterate through all the routes to get
@@ -58,7 +58,7 @@ export const getModuleByPathname = (routes, pathname) => {
     // search for sub routes
     if (_.get(route, "abstract", false)) {
       if (_.get(route, "routes", []).length) {
-        moduleName = getModuleByPathname(route.routes, pathname);
+        moduleName = getModuleByUrl(route.routes, pathname);
       }
     } else if(matchPath(pathname, route)) {
       moduleName = route.bundleKey;
@@ -118,15 +118,29 @@ export const loadModuleByUrl = (url, cb = () => {}) => {
   loadGlobals().then(() => {
     // location is an object like window.location
     // Load in respect to path
-    let currentMod = getModuleByPathname(globals.routes, url);
+    let currentMod = getModuleByUrl(globals.routes, url);
+
+    let isLoaded = false;
     const afterLoad = () => {
+      isLoaded = true;
       modulesLoaded.push(currentMod);
       cb();
+      window.removeEventListener("routesload", afterLoad);
+    };
+    window.addEventListener("routesload", afterLoad);
+
+    // Try to load after 5 second even if script does not call event
+    const extendedAfterLoad = () => {
+      setTimeout(() => {
+        if (!isLoaded) {
+          afterLoad();
+        }
+      }, 5000);
     };
 
     let listOfPromises = [];
     _.each(globals.allCss, css => {
-      if (scriptBelongToMod(css,currentMod)) {
+      if (scriptBelongToMod(css, currentMod)) {
         listOfPromises.push(loadStyle(css));
       }
     });
@@ -136,7 +150,7 @@ export const loadModuleByUrl = (url, cb = () => {}) => {
         listOfPromises.push(loadScript(js));
       }
     });
-    Promise.all(listOfPromises).then(afterLoad).catch(afterLoad);
+    Promise.all(listOfPromises).then(extendedAfterLoad).catch(extendedAfterLoad);
   });
 };
 
@@ -147,7 +161,7 @@ export const loadModuleByUrl = (url, cb = () => {}) => {
  */
 export const isModuleLoaded = (url) => {
   "use strict";
-  let mod = getModuleByPathname(globals.routes, url);
+  let mod = getModuleByUrl(globals.routes, url);
   return _.indexOf(modulesLoaded, mod) !== -1;
 };
 
@@ -160,7 +174,7 @@ let preLoadedFiles = [];
 export const isModulePreLoaded = url => {
 
   let modulePreLoaded = true;
-  let mod = getModuleByPathname(globals.routes, url);
+  let mod = getModuleByUrl(globals.routes, url);
 
 
   _.each(globals.allCss, css => {
@@ -414,7 +428,6 @@ export const extractFilesFromAssets = (assets, ext = ".js") => {
  * @param path
  */
 export const getRouteFromPath = (routes, path) => {
-  "use strict";
   let selectedRoute = [];
 
   _.each(routes, route => {

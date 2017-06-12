@@ -1,9 +1,10 @@
 import React from "react";
+import _ from "lodash";
 
 export default class Post extends React.Component {
 
   render() {
-    if (!this.props.preLoadedData.id) {
+    if (!_.get(this.props, "preLoadedData.id", 0)) {
       return null;
     }
     return (

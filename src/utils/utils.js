@@ -132,7 +132,7 @@ export const loadScript = (path, fn = () => {
     s.src = path;
     s.defer = true;
     s.onload = s.onreadystatechange = function () {
-      if (!r && (!this.readyState || this.readyState == "complete")) {
+      if (!r && (!this.readyState || this.readyState === "complete")) {
         r = true;
         fn.call(scope || window, true, s);
         resolve();

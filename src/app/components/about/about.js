@@ -1,8 +1,7 @@
 import React from "react";
-import _ from "lodash";
 import classNames from "classnames";
-import  { Link, Switch } from "react-router-dom";
-import RouteWithSubRoutes from "../route/with-sub-routes";
+import  { Link } from "react-router-dom";
+import { renderSubRoutes } from "../../../utils/renderer";
 import * as styles from "./about.scss";
 
 export default class About extends React.Component {
@@ -29,11 +28,7 @@ export default class About extends React.Component {
           </div>
         </div>
         <div className="offset-sm-1 col-sm-6">
-          <Switch>
-            {_.map(_.get(this.props, "routes", []), (route, i) => {
-              return <RouteWithSubRoutes key={i} {...route}/>;
-            })}
-          </Switch>
+          {renderSubRoutes(this)}
         </div>
       </div>
     );

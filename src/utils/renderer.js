@@ -102,9 +102,9 @@ export const renderRoutesByUrl = ({
           {_.map(currentRoutes, (route, i) => {
             return <RouteWithSubRoutes
               key={i}
+              route={route}
               storage={storage}
               api={api}
-              {...route}
             />;
           })}
         </Switch>
@@ -117,10 +117,24 @@ export const renderRoutesByUrl = ({
   render(component, renderRoot);
 };
 
+export const renderSubRoutes = (component) => {
+  const { routes = [], api, storage } = component.props;
+  return _.map(routes, (route, i) => {
+    return <RouteWithSubRoutes
+      key={i}
+      route={route}
+      api={api}
+      storage={storage}
+    />;
+  });
+};
+
 /**
  * Return of array of promises that needs to be reloaded
  * @param routes
- * @returns Array
+ * @param storage
+ * @param api
+ * @returns {Array}
  */
 export const getPreloadDataPromises = (
   {

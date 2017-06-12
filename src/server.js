@@ -1,7 +1,6 @@
 import express from "express";
 import serveFavicon from "serve-favicon";
 import path from "path";
-import fs from "fs";
 import cookieParser from "cookie-parser";
 import compression from "compression";
 import _ from "lodash";
@@ -16,7 +15,7 @@ import Config from "config";
 
 import {
   extractFilesFromAssets,
-  getModuleByPathname,
+  getModuleByUrl,
   getRouteFromPath
 } from "utils/bundler";
 
@@ -49,10 +48,18 @@ if (process.env.NODE_ENV === "production") {
   }
 }
 
-const faviconPath = path.resolve(path.join(currentDir, "public", "favicon.ico"));
-if (fs.existsSync(faviconPath)) {
-  app.use(serveFavicon(path.join(currentDir, "public", "favicon.ico")));
+try {
+  const faviconPath = path.join(currentDir, "public", "favicon.ico");
+  // eslint-disable-next-line
+  if (path.resolve(faviconPath)) {
+    app.use(serveFavicon(faviconPath));
+  }
+} catch(ex) {
+  // eslint-disable-next-line
+  console.log("Please add favicon @ src/public/favicon.ico for improved performance.");
 }
+
+
 
 // Extract cookies from the request
 app.use(cookieParser());
@@ -114,6 +121,7 @@ export const startServer = () => {
   });
 
   app.get("*", (req, res) => {
+
     let routes = _.assignIn({}, Routes);
 
     // Get list of assets from request
@@ -125,9 +133,8 @@ export const startServer = () => {
     const allCss = extractFilesFromAssets(assets, ".css");
     const allJs = extractFilesFromAssets(assets, ".js");
 
-    let mod = getModuleByPathname(routes, req.path);
+    let mod = getModuleByUrl(routes, req.path);
     const currentRoutes = getRouteFromPath(routes, req.path);
-
     const storage = new Storage(req, res);
     const api = new Api({storage});
 
@@ -149,7 +156,8 @@ export const startServer = () => {
 
     const context = {
       storage,
-      api
+      api,
+      pathname: req.path,
     };
 
     let html, statusCode = 200;

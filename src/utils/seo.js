@@ -301,7 +301,7 @@ const getTextFromHtml = (str = "") => {
  * @param length
  * @returns String
  */
-const trimTillLastSentence = (str, length = 0) => {
+export const trimTillLastSentence = (str, length = 0) => {
   // Get pure text from string provided, necessary
   // to remove html tags
   str = getTextFromHtml(str);
