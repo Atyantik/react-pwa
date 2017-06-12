@@ -2,6 +2,9 @@ export default {
   server: {
     port: 3000,
   },
+  //api: {
+    //baseUrl: "https://api.example.com/",
+  //},
   seo: {
     title: "Common Title",
     site_name: "My Site Name",

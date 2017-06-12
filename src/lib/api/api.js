@@ -8,27 +8,18 @@ class api {
   storage = null;
   constructor({storage}) {
     this.storage = storage;
-    this.setAuthToken(this.storage.getItem("authToken"));
   }
 
   setState(variable, value) {
     _.set(this.appState, variable, value);
     return this;
   }
+
   getState(variable, defaultValue) {
     if (!variable) {
       return this.appState;
     }
     return _.get(this.appState, variable, defaultValue);
-  }
-
-  setAuthToken(token) {
-    _.set(this.appState, "authToken", token);
-    return this;
-  }
-
-  getAuthToken() {
-    return _.get(this.appState, "authToken", "");
   }
 
   checkStatus(response) {
@@ -62,9 +53,6 @@ class api {
       headers: headers,
     }, options);
 
-    if (this.getAuthToken()) {
-      requestOptions.headers.Authorization = `Bearer ${this.getAuthToken()}`;
-    }
     let apiUrl = url;
 
     if (

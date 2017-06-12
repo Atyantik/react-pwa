@@ -68,7 +68,11 @@ Object.defineProperty(obj, "cookieHandler", new (function () {
       if (!sKey) {
         return;
       }
+      if (this[sKey]) {
+        delete this[sKey];
+      }
       document.cookie = encodeURI(sKey) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+
     },
     writable: false,
     configurable: false,
