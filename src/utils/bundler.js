@@ -47,6 +47,8 @@ export const loadGlobals = async () => {
 export const getModuleByUrl = (routes, pathname) => {
   let moduleName = false;
 
+  // Try to get module if exact path is matched
+
   // Iterate through all the routes to get
   // the correct module name for the path
   _.each(routes, route => {
@@ -60,10 +62,31 @@ export const getModuleByUrl = (routes, pathname) => {
       if (_.get(route, "routes", []).length) {
         moduleName = getModuleByUrl(route.routes, pathname);
       }
-    } else if(matchPath(pathname, route)) {
+    } else if(route.path === pathname) {
       moduleName = route.bundleKey;
     }
   });
+
+  if (!moduleName) {
+    // Iterate through all the routes to get
+    // the correct module name for the path
+    _.each(routes, route => {
+
+      // If already found a module name then return
+      if (moduleName) return;
+
+      // if current route is abstract then try to
+      // search for sub routes
+      if (_.get(route, "abstract", false)) {
+        if (_.get(route, "routes", []).length) {
+          moduleName = getModuleByUrl(route.routes, pathname);
+        }
+      } else if(matchPath(pathname, route)) {
+        moduleName = route.bundleKey;
+      }
+    });
+  }
+
   return moduleName;
 };
 
@@ -430,7 +453,11 @@ export const extractFilesFromAssets = (assets, ext = ".js") => {
 export const getRouteFromPath = (routes, path) => {
   let selectedRoute = [];
 
+  // eslint-disable-next-line
+  const bundleKey = getModuleByUrl(routes, path);
+
   _.each(routes, route => {
+    if (route.bundleKey !== bundleKey) return;
     if (_.get(route, "abstract", false)) {
       // If abstract is present then Try to see if sub-routes matches
       // the path.
@@ -462,5 +489,7 @@ export const getRouteFromPath = (routes, path) => {
       }
     }
   });
-  return selectedRoute;
+  // Do not repeat paths even if the provided routes to the function has repeated paths
+  // Thus make them unique by path
+  return _.uniqBy(selectedRoute, "path");
 };

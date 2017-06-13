@@ -4,19 +4,19 @@ import DefaultLayout from "app/components/layout";
 
 const routes = [
   {
-    path: "/blog",
+    path: "/:something",
     exact: true,
-    component: BlogListing,
     layout: DefaultLayout,
+    component: BlogListing,
     preLoadData: async ({ api }) => {
       return api.fetch("https://www.atyantik.com/wp-json/wp/v2/posts");
     },
     bundleKey: "blog",
   },
   {
-    path: "/blog/:id",
-    component: BlogPost,
+    path: "/:something/:id",
     layout: DefaultLayout,
+    component: BlogPost,
     preLoadData: async ({match, api}) => {
       const { params } = match;
       return api.fetch(`https://www.atyantik.com/wp-json/wp/v2/posts/${params.id}`);

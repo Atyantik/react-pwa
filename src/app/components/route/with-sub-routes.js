@@ -73,6 +73,7 @@ class RouteWithSubRoutes extends React.Component {
       path={route.path}
       exact={route.exact}
       render={props => {
+
         return (
           <route.layout
             preLoadedData={route.preLoadedData}
@@ -81,7 +82,10 @@ class RouteWithSubRoutes extends React.Component {
             {...route.props}
             {...props}
           >
-            {this.renderComponent(route, props)}
+            {
+              route.abstract ?
+                this.renderAbstract(route): this.renderComponent(route, props)
+            }
           </route.layout>
         );
       }}
@@ -106,11 +110,11 @@ class RouteWithSubRoutes extends React.Component {
   }
   render() {
     const { route } = this.props;
-    if (route.abstract) {
-      return this.renderAbstract(route);
-    }
     if (route.layout) {
       return this.renderWithLayout(route);
+    }
+    if (route.abstract) {
+      return this.renderAbstract(route);
     }
     return this.renderRoute(route);
   }

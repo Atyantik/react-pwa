@@ -1,6 +1,6 @@
 export default {
   server: {
-    port: 3000,
+    port: 3003,
   },
   //api: {
   // baseUrl: "https://api.example.com/",

@@ -24,13 +24,11 @@ import {
   getRouteFromPath,
 } from "./utils/bundler";
 import { generateMeta } from "./utils/seo";
-import { generateStringHash } from "./utils";
 
 // Collect routes from all the routes
 // loaded over time
 let collectedRoutes = [];
 const history = createHistory();
-let renderedUrlHash = null;
 let previousUrl = null;
 
 // Get our dom app
@@ -135,8 +133,6 @@ const renderRoutes = (
 
     // Keep track of url loaded
     previousUrl = url;
-    renderedUrlHash = getRouteFromPath(url);
-
   }).catch(err => {
     if (!(err instanceof Error)) {
       err = new Error(err);
@@ -149,15 +145,19 @@ const renderRoutes = (
     });
   });
 };
+const isRelatedRoute = (prevUrl, currUrl) => {
+  const prevRoutes = getRouteFromPath(collectedRoutes, prevUrl);
+  const currRoutes = getRouteFromPath(collectedRoutes, currUrl);
+  const currExactRoute = _.find(currRoutes, { match: {isExact: true} });
 
-const getRouteHashFromPath = (url) => {
-  return generateStringHash(
-    JSON.stringify(
-      getRouteFromPath(collectedRoutes, url)
-    )
-  );
+  const isParent = !_.isEmpty(_.find(prevRoutes, currExactRoute));
+  let isChild = false;
+  _.each(prevRoutes, route => {
+    if (isChild) return;
+    isChild = !_.isEmpty(_.find(_.get(route, "routes", []), currExactRoute));
+  });
+  return isParent || isChild;
 };
-
 history.listen((location, type) => {
 
   // Listen to history change and load modules accordingly
@@ -179,15 +179,11 @@ history.listen((location, type) => {
       renderRoutes(url);
     });
   } else {
-    // If the module is pre-loaded then simple render current
-    // routes.
-    const urlRouteHash = getRouteHashFromPath(url);
 
-    // Render if there is a POP in history or
-    // the module loading is other than the current displayed module
-    if (type && type.toUpperCase() === "POP") {
-      renderRoutes(url);
-    } else if (urlRouteHash !== renderedUrlHash) {
+    if (
+      (type && type.toUpperCase() === "POP") ||
+      !isRelatedRoute(previousUrl, url)
+    ) {
       renderRoutes(url);
     }
   }
@@ -208,9 +204,6 @@ const updateRoutes = (routes) => {
     const routesloadEvent = new CustomEvent("routesload");
     updateRoutes(...args);
     w.dispatchEvent(routesloadEvent);
-    if (module && module.hot) {
-      module.hot.accept();
-    }
   };
 })(window);
 

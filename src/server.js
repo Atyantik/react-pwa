@@ -168,10 +168,9 @@ export const startServer = () => {
     let routerComponent = null;
 
     try {
-
       // Also preload data required when asked
       let promises = getPreloadDataPromises({
-        routes,
+        routes: currentRoutes,
         storage,
         api
       });
@@ -200,7 +199,7 @@ export const startServer = () => {
             Switch: ServerSwitch,
             Route: ServerRoute,
             context: context,
-            routes: routes,
+            routes: currentRoutes,
             storage,
             api
           });
@@ -218,7 +217,7 @@ export const startServer = () => {
             scripts={currentRouteJs}
             seo={seoDetails}
           >
-          {routerComponent}
+            {routerComponent}
           </Html>
         ));
         return res.status(statusCode).send(`<!DOCTYPE html>${html}`);
@@ -230,7 +229,7 @@ export const startServer = () => {
             stylesheets={currentRouteCss}
             scripts={currentRouteJs}
           >
-          {routerComponent}
+            {routerComponent}
           </Html>
         ));
         return res.status(statusCode).send(`<!DOCTYPE html>${html}`);
@@ -243,7 +242,7 @@ export const startServer = () => {
           stylesheets={currentRouteCss}
           scripts={currentRouteJs}
         >
-        {routerComponent}
+          {routerComponent}
         </Html>
       ));
       return res.status(statusCode).send(`<!DOCTYPE html>${html}`);

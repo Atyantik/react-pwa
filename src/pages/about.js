@@ -38,6 +38,7 @@ const routes = [
       {
         path: "/about/:section?",
         bundleKey: "about",
+        exact: true,
         component: AboutSection
       }
     ]
