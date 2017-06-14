@@ -1,5 +1,6 @@
 import React from "react";
 import { render as DefaultRender } from "react-dom";
+import { AppContainer as HotAppContainer } from "react-hot-loader";
 import _ from "lodash";
 
 import {
@@ -92,24 +93,26 @@ export const renderRoutesByUrl = ({
   context.storage = storage;
 
   let component = (
-    <Router
-      context={context}
-      location={url}
-      history={history}
-    >
-      <Loader showScreenLoader={showScreenLoader}>
-        <Switch>
-          {_.map(currentRoutes, (route, i) => {
-            return <RouteWithSubRoutes
-              key={i}
-              route={route}
-              storage={storage}
-              api={api}
-            />;
-          })}
-        </Switch>
-      </Loader>
-    </Router>
+    <HotAppContainer>
+      <Router
+        context={context}
+        location={url}
+        history={history}
+      >
+        <Loader showScreenLoader={showScreenLoader}>
+          <Switch>
+            {_.map(currentRoutes, (route, i) => {
+              return <RouteWithSubRoutes
+                key={i}
+                route={route}
+                storage={storage}
+                api={api}
+              />;
+            })}
+          </Switch>
+        </Loader>
+      </Router>
+    </HotAppContainer>
   );
   if (!render) {
     return component;

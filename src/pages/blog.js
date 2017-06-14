@@ -27,6 +27,10 @@ const routes = [
 
 if (typeof window !== "undefined") {
   window.__updateRoutes(routes);
+  if (module.hot) {
+    module.hot.accept();
+    //window.__renderRoutes();
+  }
 }
 
 export default routes;

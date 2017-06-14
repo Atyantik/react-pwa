@@ -23,6 +23,7 @@
     "babel-preset-react": "^6.24.1",
     "babel-register": "^6.24.1",
     "chai": "^4.0.2",
+    "chokidar": "^1.7.0",
     "classnames": "^2.2.5",
     "clean-webpack-plugin": "^0.1.16",
     "compression": "^1.6.2",
@@ -49,6 +50,7 @@
     "react": "^15.5.3",
     "react-addons-test-utils": "^15.4.1",
     "react-dom": "^15.5.3",
+    "react-hot-loader": "next",
     "react-router": "^4.1.1",
     "react-router-dom": "^4.1.1",
     "react-test-renderer": "^15.5.4",
@@ -67,7 +69,7 @@
     "webpack-hot-middleware": "^2.18.0"
   },
   "scripts": {
-    "start": "nodemon --watch src/server.js --watch webpack/dev.babel.js --watch ./bin ./bin/babelize.js ./dev.server.js",
+    "start": "nodemon --watch src/server.js --watch webpack/dev.babel.js --watch ./bin/babelize.js ./dev.server.js",
     "build": "NODE_ENV=production webpack -p --config ./webpack/prod.client.babel.js && NODE_ENV=production webpack -p --config ./webpack/prod.server.babel.js",
     "test": "mocha \"test/**/*.test.js\" --require bin/babelize.js --ignore-babelize-require"
   },

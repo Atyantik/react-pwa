@@ -30,6 +30,7 @@ import { generateMeta } from "./utils/seo";
 let collectedRoutes = [];
 const history = createHistory();
 let previousUrl = null;
+let isHistoryChanging = false;
 
 // Get our dom app
 const renderRoot = document.getElementById("app");
@@ -133,6 +134,7 @@ const renderRoutes = (
 
     // Keep track of url loaded
     previousUrl = url;
+    isHistoryChanging = false;
   }).catch(err => {
     if (!(err instanceof Error)) {
       err = new Error(err);
@@ -159,6 +161,7 @@ const isRelatedRoute = (prevUrl, currUrl) => {
   return isParent || isChild;
 };
 history.listen((location, type) => {
+  isHistoryChanging = true;
 
   // Listen to history change and load modules accordingly
   const url = `${location.pathname}${location.search}${location.hash}`;
@@ -179,7 +182,6 @@ history.listen((location, type) => {
       renderRoutes(url);
     });
   } else {
-
     if (
       (type && type.toUpperCase() === "POP") ||
       !isRelatedRoute(previousUrl, url)
@@ -195,7 +197,19 @@ history.listen((location, type) => {
  * @param routes
  */
 const updateRoutes = (routes) => {
-  collectedRoutes = [...collectedRoutes, ...routes];
+
+  _.each(routes, route => {
+    // remove functions as we cannot use find with functions in object
+    const lessRoute = JSON.parse(JSON.stringify(route));
+    const index = _.findIndex(collectedRoutes, lessRoute);
+    // eslint-disable-next-line
+
+    if(index === -1) {
+      collectedRoutes.push(route);
+    } else {
+      collectedRoutes[index] = route;
+    }
+  });
 };
 
 // Add update routes globally
@@ -205,6 +219,15 @@ const updateRoutes = (routes) => {
     updateRoutes(...args);
     w.dispatchEvent(routesloadEvent);
   };
+
+  if (module.hot) {
+    module.hot.accept();
+    w.__renderRoutes = () => {
+      if (!isHistoryChanging) {
+        renderRoutes(previousUrl);
+      }
+    };
+  }
 })(window);
 
 // Load in respect to current path on init

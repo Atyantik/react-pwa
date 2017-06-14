@@ -15,7 +15,7 @@ export default class About extends React.Component {
             <p>
               <em>Atyantik technologies</em> is a software company based in
               gujarat servicing the needs of all businesses ranging
-              from midsize to large ones.
+              from midsize to large ones
             </p>
           </div>
           <div className={styles["sidebar-module"]}>

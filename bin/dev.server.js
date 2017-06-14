@@ -1,134 +1,29 @@
 /**
  * Work with webpack to run for dev env
  */
-
+import chokidar from "chokidar";
 import _ from "lodash";
+import express from "express";
 import webpack from "webpack";
 import webpackMiddleware from "webpack-dev-middleware";
-// import webpackHotMiddleware from "webpack-hot-middleware";
-import express from "express";
+import webpackHotMiddleware from "webpack-hot-middleware";
+import http from "http";
 import webpackConfig from "../webpack/dev.babel";
-import app, { startServer } from "../src/server";
+import Config from "config";
+//import { startServer } from "../src/server";
 
 // Inform developers that Compilation is in process
 // and wait till its fully done
 // eslint-disable-next-line no-console
 console.log("Creating bundle with Webpack dev server.. Please wait..");
 
+const app = express();
 const compiler = webpack(webpackConfig);
 
 const webpackMiddlewareInstance = webpackMiddleware(compiler, {
-
-  lazy: false,
-  // switch into lazy mode
-  // that means no watching, but recompilation on every request
-
-  watchOptions: {
-    aggregateTimeout: 300,
-    poll: true
-  },
-  // watch options (only lazy: false)
-
+  noInfo: true,
   contentBase: webpackConfig.devServer.contentBase,
-
-  compress: true,
-
   publicPath: webpackConfig.output.publicPath,
-  // public path to bind the middleware to
-  // use the same as in webpack
-
-  stats: {
-    // Add asset Information
-    assets: true,
-
-    // Sort assets by a field
-    assetsSort: "field",
-
-    // Add information about cached (not built) modules
-    cached: true,
-
-    // Show cached assets (setting this to `false` only shows emitted files)
-    cachedAssets: true,
-
-    // Add children information
-    children: false,
-
-    // Add chunk information (setting this to `false` allows for a less verbose output)
-    chunks: false,
-
-    // Add built modules information to chunk information
-    chunkModules: false,
-
-    // Add the origins of chunks and chunk merging info
-    chunkOrigins: false,
-
-    // Sort the chunks by a field
-    chunksSort: "field",
-
-    // `webpack --colors` equivalent
-    colors: true,
-
-    // Display the distance from the entry point for each module
-    depth: false,
-
-    // Display the entry points with the corresponding bundles
-    entrypoints: false,
-
-    // Add errors
-    errors: true,
-
-    // Add details to errors (like resolving log)
-    errorDetails: true,
-
-    // Add the hash of the compilation
-    hash: false,
-
-    // Set the maximum number of modules to be shown
-    maxModules: 2,
-
-    // Add built modules information
-    modules: false,
-
-    // Sort the modules by a field
-    modulesSort: "field",
-
-    // Show performance hint when file size exceeds `performance.maxAssetSize`
-    performance: true,
-
-    // Show the exports of the modules
-    providedExports: false,
-
-    // Add public path information
-    publicPath: false,
-
-    // Add information about the reasons why modules are included
-    reasons: false,
-
-    // Add the source code of modules
-    source: false,
-
-    // Add timing information
-    timings: true,
-
-    // Show which exports of a module are used
-    usedExports: false,
-
-    // Add webpack version information
-    version: true,
-
-    // Add warnings
-    warnings: true,
-
-    // Exclude modules which match one of the given strings or regular expressions
-    exclude: [
-      /node_modules/
-    ]
-  },
-  // options for formatting the statistics
-
-  reporter: null,
-  // Provide a custom reporter to change the way how logs are shown.
-
   serverSideRender: true,
   // Turn off the server-side rendering mode. See Server-Side Rendering part for more info.
 });
@@ -136,8 +31,16 @@ const webpackMiddlewareInstance = webpackMiddleware(compiler, {
 // Use the webpack middleware
 app.use(webpackMiddlewareInstance);
 
+// Use the Webpack Hot middleware
+app.use(webpackHotMiddleware(compiler, {
+  log: false,
+  path: "/__hmr_update",
+  heartbeat: 2000
+}));
+
 // server content from content base
 app.use("/public", express.static(webpackConfig.devServer.contentBase));
+
 // Add assets to request
 app.use(function (req, res, next) {
 
@@ -146,7 +49,6 @@ app.use(function (req, res, next) {
   const publicPath = webpackStats.publicPath;
 
   _.each(assetsByChunkName, (chunkValue, chunkName) => {
-    "use strict";
 
     // If its array then it just contains chunk value as array
     if (_.isArray(chunkValue)) {
@@ -166,7 +68,44 @@ app.use(function (req, res, next) {
   next();
 });
 
-webpackMiddlewareInstance.waitUntilValid(() => {
-  const withPurge = true;
-  startServer(withPurge);
+// Include server routes as a middleware
+app.use(function(req, res, next) {
+  require("../src/server")(req, res, next);
+});
+
+const watcher = chokidar.watch("../src/server");
+
+watcher.on("ready", function() {
+  watcher.on("all", function() {
+    // eslint-disable-next-line
+    console.log("Clearing /src/ module cache from server");
+    Object.keys(require.cache).forEach(function(id) {
+      // eslint-disable-next-line
+      if (/[\/\\]src[\/\\]/.test(id)) delete require.cache[id];
+    });
+  });
+});
+
+
+// Do "hot-reloading" of react stuff on the server
+// Throw away the cached client modules and let them be re-required next time
+compiler.plugin("done", function() {
+  // eslint-disable-next-line
+  console.log("Clearing /src/ module cache from server");
+  Object.keys(require.cache).forEach(function(id) {
+    // eslint-disable-next-line
+    if (/[\/\\]src[\/\\]/.test(id)) delete require.cache[id];
+  });
+});
+
+const server = http.createServer(app);
+const serverPort = _.get(Config, "server.port", 3000);
+server.listen(serverPort, "localhost", function(err) {
+
+  if (err) throw err;
+
+  const addr = server.address();
+  // eslint-disable-next-line
+  console.log("Listening at http://%s:%d", addr.address, addr.port);
+
 });

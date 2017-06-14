@@ -33,7 +33,11 @@ let entries = {};
 
 pages.forEach(page => {
   const slugishName = page.replace(".js", "").replace(/['" \-!@#$%]/g, "_");
-  entries[`mod-${slugishName}`] = path.join(pagesFolder, page);
+  entries[`mod-${slugishName}`] = [
+    "react-hot-loader/patch",
+    path.join(pagesFolder, page),
+    "webpack-hot-middleware/client?path=/__hmr_update&timeout=2000&overlay=true"
+  ];
 });
 
 
@@ -47,7 +51,12 @@ export default {
   // application starts executing. If an array is passed all items will
   // be executed.
   entry: Object.assign({}, {
-    "client": ["babel-polyfill", path.join(srcDir, "client.js")],
+    "client": [
+      "babel-polyfill",
+      "react-hot-loader/patch",
+      path.join(srcDir, "client.js"),
+      "webpack-hot-middleware/client?path=/__hmr_update&timeout=2000&overlay=true"
+    ],
     "common-style": path.join(srcDir, "resources", "css", "style.scss")
   }, entries),
 
