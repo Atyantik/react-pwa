@@ -36,6 +36,7 @@ const app = express.Router();
 // use compression for all requests
 app.use(compression());
 
+
 let currentDir = __dirname;
 
 if (process.env.NODE_ENV === "production") {
@@ -46,7 +47,6 @@ if (process.env.NODE_ENV === "production") {
     currentDir = path.dirname(filename);
   }
 }
-
 try {
   const faviconPath = path.join(currentDir, "public", "favicon.ico");
   // eslint-disable-next-line
@@ -58,28 +58,12 @@ try {
   console.log("Please add favicon @ src/public/favicon.ico for improved performance.");
 }
 
-
 // Extract cookies from the request
 app.use(cookieParser());
 
 // Set x-powered-by to false (security issues)
 _.set(app, "locals.settings.x-powered-by", false);
 
-// Add public path to server from public folder
-// This is used when doing server loading
-app.use("/public", express.static(path.join(currentDir, "public")));
-
-// Middleware to add assets to request
-try {
-  const assets = require("./config/assets").default;
-  app.use(function (req, res, next) {
-    req.assets = assets;
-    next();
-  });
-} catch (ex) {
-  // Do not do anything here.
-  // cause the assets are most probably handled by webpack in dev mode
-}
 const getErrorComponent = (err) => {
   if (!(err instanceof Error)) {
     err = new Error(err);
