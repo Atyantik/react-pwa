@@ -1,6 +1,6 @@
 import _ from "lodash";
-import config from "../config";
-import { isBrowser } from "../utils";
+import config from "../../config/config";
+import { isBrowser } from "./utils";
 
 /**
  * Seo Schema. This can be used while using it in routes

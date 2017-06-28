@@ -1,6 +1,6 @@
 import fetch from "universal-fetch";
 import _ from "lodash";
-import config from "../../config/config";
+import config from "../../../config/config";
 
 class api {
   baseUrl = _.get(config, "api.baseUrl", "");

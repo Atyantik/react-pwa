@@ -5,14 +5,14 @@ export default (props) => {
   "use strict";
 
   switch(_.get(props, "match.params.section", "")) {
-  case "about-us":
-  default:
-    return (
-      <div>
-        <h1>About Us</h1>
-        <h3>The Ultimate Technology Maniacs</h3>
-        <h5>Atyantik <i>means</i> Ultimate</h5>
-        <p>
+    case "about-us":
+    default:
+      return (
+        <div>
+          <h1>About Us</h1>
+          <h3>The Ultimate Technology Maniacs</h3>
+          <h5>Atyantik <i>means</i> Ultimate</h5>
+          <p>
           We are a group of technology maniacs, extremely
           passionate about coding which means we do all
           the IT related tasks, so our clients do not have to.
@@ -22,40 +22,40 @@ export default (props) => {
           relevant software solutions. We love to constantly
           upgrade our technologies and keep our clients informed
           about new developments.
-        </p>
-      </div>
-    );
-  case "we-execute-your-dreams":
-    return (
-      <div>
-        <h1>We execute your dreams</h1>
-        <h5>Beware:: execution process consumes lots of pizza and coffee!</h5>
-        <p>
+          </p>
+        </div>
+      );
+    case "we-execute-your-dreams":
+      return (
+        <div>
+          <h1>We execute your dreams</h1>
+          <h5>Beware:: execution process consumes lots of pizza and coffee!</h5>
+          <p>
           Once a visionary was questioned, “If you are granted a wish,
           what would you ask for? Money or Success?”, he replied very
           beautifully, “Loyal & obedient teammates”.
-        </p>
-        <p>
+          </p>
+          <p>
           Success is measured by other people, satisfaction comes from within.
           A visionary can only be satisfied with Loyal & Obedient teammates
           who believes in his vision and provide their skills for attaining goals.
-        </p>
-      </div>
-    );
-  case "do-not-hire-us":
-    return (
-      <div>
+          </p>
+        </div>
+      );
+    case "do-not-hire-us":
+      return (
         <div>
-          <h1>Don't hire us</h1>
-          <h5>Looking for experts?</h5>
-          <p>
+          <div>
+            <h1>Don't hire us</h1>
+            <h5>Looking for experts?</h5>
+            <p>
             Hiring to us is just creating a temporary relationship! Make us your teammates,
             you share your thoughts and we share our input. We love to innovate.
             Give us the opportunity to be your teammates and create something so wonderful
             that it exceeds all expectations!
-          </p>
+            </p>
+          </div>
         </div>
-      </div>
-    );
+      );
   }
 };

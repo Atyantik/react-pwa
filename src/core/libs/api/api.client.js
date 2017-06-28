@@ -1,5 +1,5 @@
 import Api from "./api";
-import storage from "lib/storage";
+import storage from "core/libs/storage/storage.server";
 
 const apiInstance = new Api({storage});
 export default apiInstance;

@@ -20,18 +20,18 @@ import {
   extractFilesFromAssets,
   getModuleByUrl,
   getRouteFromPath
-} from "utils/bundler";
+} from "core/utils/bundler";
 
 import {
   getPreloadDataPromises,
   renderRoutesByUrl,
   renderNotFoundPage,
   renderErrorPage,
-} from "utils/renderer";
+} from "core/utils/renderer";
 
-import Storage from "lib/storage";
-import Api from "lib/api";
-import configureStore from "lib/store";
+import Storage from "core/libs/storage";
+import Api from "core/libs/api";
+import configureStore from "core/store";
 import Routes  from "./routes";
 import Html from "app/components/html";
 
@@ -185,6 +185,7 @@ app.get("*", (req, res) => {
           Switch: ServerSwitch,
           Route: ServerRoute,
           context: context,
+          history,
           store,
         });
       } else {
@@ -198,7 +199,8 @@ app.get("*", (req, res) => {
           routes: currentRoutes,
           storage,
           store,
-          api
+          api,
+          history
         });
       }
 

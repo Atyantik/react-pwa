@@ -2,7 +2,7 @@ import React from "react";
 //import { createStore, combineReducers } from "redux";
 import { Provider } from "react-redux";
 import { render as DefaultRender } from "react-dom";
-import ConnectedRouter from "lib/ConnectedRouter";
+import ConnectedRouter from "core/libs/ConnectedRouter/ConnectedRouter.server";
 import { AppContainer as HotAppContainer } from "react-hot-loader";
 import _ from "lodash";
 
@@ -12,14 +12,13 @@ import {
   Switch as DefaultSwitch,
 } from "react-router-dom";
 
-import clientStorage from "lib/storage";
-import clientApi from "lib/api";
-import { hideScreenLoader } from "./client";
+import clientStorage from "core/libs/storage/storage.server";
+import clientApi from "core/libs/api/api";
 
-import Loader from "app/components/loader";
+import Loader from "core/components/loader/loader";
 import NotFoundPage from "app/components/error/404";
 import ErrorPage from "app/components/error/500";
-import RouteWithSubRoutes from "app/components/route/with-sub-routes";
+import RouteWithSubRoutes from "core/components/route/with-sub-routes";
 
 import { getRouteFromPath } from "./bundler";
 
@@ -32,7 +31,7 @@ export const renderNotFoundPage = ({
   store,
   context,
   renderRoot = null
-}) => {
+}, callback = () => null) => {
 
 
   let component = (
@@ -49,7 +48,7 @@ export const renderNotFoundPage = ({
     return component;
   }
   // render 404
-  return render(component, renderRoot, hideScreenLoader);
+  return render(component, renderRoot, callback);
 };
 
 export const renderErrorPage = ({
@@ -62,7 +61,7 @@ export const renderErrorPage = ({
   store,
   renderRoot = null,
   error
-}) => {
+}, callback = () => null) => {
 
   context = context || {};
   let component = (
@@ -80,7 +79,7 @@ export const renderErrorPage = ({
     return component;
   }
   // Render 500
-  return render(component, renderRoot, hideScreenLoader);
+  return render(component, renderRoot, callback);
 };
 
 export const renderRoutesByUrl = ({
@@ -95,7 +94,7 @@ export const renderRoutesByUrl = ({
   history,
   store,
   renderRoot = null
-}) => {
+}, callback = () => null) => {
   const currentRoutes = url ? getRouteFromPath(routes, url): routes;
 
   context.api = api;
@@ -129,7 +128,7 @@ export const renderRoutesByUrl = ({
   if (!render) {
     return component;
   }
-  render(component, renderRoot, hideScreenLoader);
+  render(component, renderRoot, callback);
 };
 
 export const renderSubRoutes = (component) => {

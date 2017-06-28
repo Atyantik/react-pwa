@@ -1,6 +1,5 @@
 import createHistory from "history/createBrowserHistory";
-
-import configureStore from "lib/store";
+import configureStore from "core/store";
 
 /**
  * Client utilities
@@ -10,7 +9,7 @@ import {
   updateRoutes,
   isRelatedRoute,
   showScreenLoader
-} from "./utils/client";
+} from "./core/utils/client";
 
 /**
  * Bundling utilities
@@ -20,11 +19,11 @@ import {
   idlePreload,
   isModuleLoaded,
   isModulePreLoaded,
-} from "./utils/bundler";
+} from "./core/utils/bundler";
 
 const hot = !!module.hot;
 
-// Set a namespaced global
+// Set a namespace-d global
 let global = {};
 if (hot && typeof window !== "undefined") {
   global = window["__GLOBALS"] || {};

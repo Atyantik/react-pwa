@@ -3,8 +3,8 @@ import {
   getRouteFromPath,
 } from "./bundler";
 
-import storage from "lib/storage";
-import api from "lib/api";
+import storage from "core/libs/storage";
+import api from "core/libs/api";
 
 /**
  * Rendering utilities
@@ -16,16 +16,16 @@ import {
   getPreloadDataPromises
 } from "./renderer";
 
-import { generateMeta } from "./seo";
+import {generateMeta} from "./seo";
 
 
 export const showScreenLoader = () => {
-  const pageloadstartEvent = new CustomEvent("screenloadstart");
-  window.dispatchEvent(pageloadstartEvent);
+  const screenloadstartEvent = new CustomEvent("screenloadstart");
+  window.dispatchEvent(screenloadstartEvent);
 };
 export const hideScreenLoader = () => {
-  const pageloadendEvent = new CustomEvent("screenloadend");
-  window.dispatchEvent(pageloadendEvent);
+  const screenloadendEvent = new CustomEvent("screenloadend");
+  window.dispatchEvent(screenloadendEvent);
 };
 
 const updateHtmlMeta = (collectedRoutes, url) => {
@@ -50,7 +50,7 @@ const updateHtmlMeta = (collectedRoutes, url) => {
     }
     const metaTag = document.createElement("meta");
     _.each(meta, (value, key) => {
-      if (key === "itemProp")  {
+      if (key === "itemProp") {
         key = "itemprop";
       }
       metaTag.setAttribute(key, value);
@@ -92,7 +92,7 @@ export const renderRoutes = async ({
       renderRoot: renderRoot,
       url: url,
       store
-    });
+    }, hideScreenLoader);
     return Promise.resolve();
   }
 
@@ -116,7 +116,7 @@ export const renderRoutes = async ({
       renderRoot,
       url,
       store
-    });
+    }, hideScreenLoader);
     return Promise.resolve();
   } catch (err) {
     let error = err;
@@ -129,7 +129,7 @@ export const renderRoutes = async ({
       renderRoot: renderRoot,
       error: error,
       store
-    });
+    }, hideScreenLoader);
     return Promise.reject();
   }
 };
@@ -137,7 +137,7 @@ export const renderRoutes = async ({
 export const isRelatedRoute = (prevUrl, currUrl, collectedRoutes) => {
   const prevRoutes = getRouteFromPath(collectedRoutes, prevUrl);
   const currRoutes = getRouteFromPath(collectedRoutes, currUrl);
-  const currExactRoute = _.find(currRoutes, { match: {isExact: true} });
+  const currExactRoute = _.find(currRoutes, {match: {isExact: true}});
 
   const isParent = !_.isEmpty(_.find(prevRoutes, currExactRoute));
   let isChild = false;
@@ -161,7 +161,7 @@ export const updateRoutes = ({routes, collectedRoutes}) => {
     const lessRoute = JSON.parse(JSON.stringify(route));
     const index = _.findIndex(collectedRoutes, lessRoute);
 
-    if(index === -1) {
+    if (index === -1) {
       collectedRoutes.push(route);
     } else {
       collectedRoutes[index] = route;

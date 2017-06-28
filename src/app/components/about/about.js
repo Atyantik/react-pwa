@@ -1,11 +1,10 @@
-import React from "react";
+import React, { Component } from "react";
 import classNames from "classnames";
 import  { Link } from "react-router-dom";
-import { renderSubRoutes } from "../../../utils/renderer";
+import { renderSubRoutes } from "../../../core/utils/renderer";
 import * as styles from "./about.scss";
 
-export default class About extends React.Component {
-
+export default class About extends Component {
   render() {
     return (
       <div className="row mt-3">
@@ -34,3 +33,4 @@ export default class About extends React.Component {
     );
   }
 }
+

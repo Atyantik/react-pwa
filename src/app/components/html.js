@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import _ from "lodash";
-import { generateStringHash } from "../../utils";
-import { generateMeta } from "../../utils/seo";
+import { generateStringHash } from "../../core/utils";
+import { generateMeta } from "../../core/utils/seo";
 
 export default class Html extends React.Component {
 
