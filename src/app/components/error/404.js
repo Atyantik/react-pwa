@@ -1,7 +1,6 @@
 import React from "react";
 
 export default (props) => {
-  "use strict";
   const { location, staticContext } = props;
   if (staticContext) {
     staticContext.status = 404;
@@ -16,11 +15,11 @@ export default (props) => {
    */
   if (typeof window !== "undefined") {
     if (window.__URL_LOADING__) {
-      alert("Am here");
       window.location.reload(false);
       return null;
     }
   }
+  alert("am here in 404");
   return (
     <div className="container text-center mt-5">
       <h1 className="mt-5">404</h1>

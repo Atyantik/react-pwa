@@ -12,6 +12,10 @@ import {
   Switch as ServerSwitch,
 } from "react-router";
 
+import createHistory from "history/createMemoryHistory";
+
+import { routerMiddleware } from "react-router-redux";
+
 import {
   extractFilesFromAssets,
   getModuleByUrl,
@@ -27,8 +31,10 @@ import {
 
 import Storage from "lib/storage";
 import Api from "lib/api";
+import configureStore from "lib/store";
 import Routes  from "./routes";
 import Html from "app/components/html";
+
 
 // Create and express js application
 const app = express.Router();
@@ -64,7 +70,7 @@ app.use(cookieParser());
 // Set x-powered-by to false (security issues)
 _.set(app, "locals.settings.x-powered-by", false);
 
-const getErrorComponent = (err) => {
+const getErrorComponent = (err, store) => {
   if (!(err instanceof Error)) {
     err = new Error(err);
   }
@@ -75,6 +81,7 @@ const getErrorComponent = (err) => {
     Route: ServerRoute,
     Switch: ServerSwitch,
     error: err,
+    store
   });
 };
 
@@ -145,6 +152,16 @@ app.get("*", (req, res) => {
   let seoDetails = {};
   let routerComponent = null;
 
+  const history = createHistory();
+  const historyMiddleware = routerMiddleware(history);
+
+  // Create redux store
+  let store = configureStore({
+    middleware: [
+      historyMiddleware
+    ]
+  });
+
   try {
     // Also preload data required when asked
     let promises = getPreloadDataPromises({
@@ -168,6 +185,7 @@ app.get("*", (req, res) => {
           Switch: ServerSwitch,
           Route: ServerRoute,
           context: context,
+          store,
         });
       } else {
         routerComponent = renderRoutesByUrl({
@@ -179,6 +197,7 @@ app.get("*", (req, res) => {
           context: context,
           routes: currentRoutes,
           storage,
+          store,
           api
         });
       }
@@ -201,7 +220,7 @@ app.get("*", (req, res) => {
       return res.status(statusCode).send(`<!DOCTYPE html>${html}`);
 
     }).catch((err) => {
-      routerComponent = getErrorComponent(err);
+      routerComponent = getErrorComponent(err, store);
       html = ReactDOMServer.renderToStaticMarkup((
         <Html
           stylesheets={currentRouteCss}
@@ -214,7 +233,7 @@ app.get("*", (req, res) => {
     });
     // Get data to load for all the routes
   } catch (err) {
-    routerComponent = getErrorComponent(err);
+    routerComponent = getErrorComponent(err, store);
     html = ReactDOMServer.renderToStaticMarkup((
       <Html
         stylesheets={currentRouteCss}

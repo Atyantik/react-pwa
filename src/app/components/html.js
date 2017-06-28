@@ -31,29 +31,29 @@ export default class Html extends React.Component {
     const { stylesheets, scripts } = this.props;
     return (
       <html>
-      <head>
-        <title>{this.getTitle()}</title>
-        {
-          _.map(this.getMeta(), (meta, i) => {
-            return <meta key={i} {...meta} />;
-          })
-        }
-        {
-          _.map(stylesheets, path => {
-            const pathHash = generateStringHash(path, "CSS");
-            return <link rel="stylesheet" key={pathHash} id={pathHash} href={path} />;
-          })
-        }
-      </head>
-      <body>
-      <div id="app">{this.props.children}</div>
-      {
-        _.map(scripts, path => {
-          const pathHash = generateStringHash(path, "JS");
-          return <script type="text/javascript" key={pathHash} id={pathHash} src={path} />;
-        })
-      }
-      </body>
+        <head>
+          <title>{this.getTitle()}</title>
+          {
+            _.map(this.getMeta(), (meta, i) => {
+              return <meta key={i} {...meta} />;
+            })
+          }
+          {
+            _.map(stylesheets, path => {
+              const pathHash = generateStringHash(path, "CSS");
+              return <link rel="stylesheet" key={pathHash} id={pathHash} href={path} />;
+            })
+          }
+        </head>
+        <body>
+          <div id="app">{this.props.children}</div>
+          {
+            _.map(scripts, path => {
+              const pathHash = generateStringHash(path, "JS");
+              return <script type="text/javascript" key={pathHash} id={pathHash} src={path} />;
+            })
+          }
+        </body>
       </html>
     );
   }

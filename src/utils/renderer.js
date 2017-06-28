@@ -1,5 +1,8 @@
 import React from "react";
+//import { createStore, combineReducers } from "redux";
+import { Provider } from "react-redux";
 import { render as DefaultRender } from "react-dom";
+import ConnectedRouter from "lib/ConnectedRouter";
 import { AppContainer as HotAppContainer } from "react-hot-loader";
 import _ from "lodash";
 
@@ -11,6 +14,7 @@ import {
 
 import clientStorage from "lib/storage";
 import clientApi from "lib/api";
+import { hideScreenLoader } from "./client";
 
 import Loader from "app/components/loader";
 import NotFoundPage from "app/components/error/404";
@@ -25,23 +29,27 @@ export const renderNotFoundPage = ({
   Switch = DefaultSwitch,
   Route = DefaultRoute,
   history,
+  store,
   context,
   renderRoot = null
 }) => {
 
+
   let component = (
-    <Router context={context} history={history} >
-      <Switch>
-        <Route component={NotFoundPage} />
-      </Switch>
-    </Router>
+    <Provider store={store}>
+      <ConnectedRouter Router={Router} context={context} history={history}>
+        <Switch>
+          <Route component={NotFoundPage} />
+        </Switch>
+      </ConnectedRouter>
+    </Provider>
   );
   // If render is set false explicitly then just return the component
   if (!render) {
     return component;
   }
   // render 404
-  return render(component, renderRoot);
+  return render(component, renderRoot, hideScreenLoader);
 };
 
 export const renderErrorPage = ({
@@ -51,25 +59,28 @@ export const renderErrorPage = ({
   Route = DefaultRoute,
   context,
   history,
+  store,
   renderRoot = null,
   error
 }) => {
 
   context = context || {};
   let component = (
-    <Router context={context} history={history} >
-      <Switch>
-        <Route onRender={() => {
-          return <ErrorPage error={error} />;
-        }} />
-      </Switch>
-    </Router>
+    <Provider store={store}>
+      <ConnectedRouter Router={Router} context={context} history={history} >
+        <Switch>
+          <Route onRender={() => {
+            return <ErrorPage error={error} />;
+          }} />
+        </Switch>
+      </ConnectedRouter>
+    </Provider>
   );
   if (!render) {
     return component;
   }
   // Render 500
-  return render(component, renderRoot);
+  return render(component, renderRoot, hideScreenLoader);
 };
 
 export const renderRoutesByUrl = ({
@@ -80,44 +91,45 @@ export const renderRoutesByUrl = ({
   storage = clientStorage,
   routes,
   url,
-  context,
+  context = {},
   history,
-  renderRoot = null,
-  showScreenLoader = false,
+  store,
+  renderRoot = null
 }) => {
   const currentRoutes = url ? getRouteFromPath(routes, url): routes;
-
-  context = context || {};
 
   context.api = api;
   context.storage = storage;
 
   let component = (
     <HotAppContainer>
-      <Router
-        context={context}
-        location={url}
-        history={history}
-      >
-        <Loader showScreenLoader={showScreenLoader}>
-          <Switch>
-            {_.map(currentRoutes, (route, i) => {
-              return <RouteWithSubRoutes
-                key={i}
-                route={route}
-                storage={storage}
-                api={api}
-              />;
-            })}
-          </Switch>
-        </Loader>
-      </Router>
+      <Provider store={store}>
+        <ConnectedRouter
+          context={context}
+          location={url}
+          history={history}
+          Router={Router}
+        >
+          <Loader>
+            <Switch>
+              {_.map(currentRoutes, (route, i) => {
+                return <RouteWithSubRoutes
+                  key={i}
+                  route={route}
+                  storage={storage}
+                  api={api}
+                />;
+              })}
+            </Switch>
+          </Loader>
+        </ConnectedRouter>
+      </Provider>
     </HotAppContainer>
   );
   if (!render) {
     return component;
   }
-  render(component, renderRoot);
+  render(component, renderRoot, hideScreenLoader);
 };
 
 export const renderSubRoutes = (component) => {
