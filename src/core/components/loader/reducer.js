@@ -6,11 +6,10 @@ const initialState = {
 
 export const screenLoader = (state = initialState, action) => {
   switch (action.type) {
-    case [SCREEN_STATE]:
+    case SCREEN_STATE:
       return _.assign({}, state, {
         [SCREEN_STATE]: action.state
       });
-      break;
     default:
       return state;
   }

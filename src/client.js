@@ -39,7 +39,7 @@ global.history = global.history || createHistory();
 
 // Create redux store
 global.store = global.store || configureStore({
-  history,
+  history: global.history,
 });
 
 // Store previous url
@@ -54,13 +54,9 @@ global.renderRoot = global.renderRoot || document.getElementById("app");
 
 const renderRoutesWrapper = ({
   url = global.previousUrl,
-  options = {
-    showScreenLoader: false
-  }
 }) => {
   return renderRoutes({
     url,
-    options,
     store: global.store,
     history: global.history,
     renderRoot: global.renderRoot,
@@ -89,7 +85,7 @@ global.unlisten = global.history.listen((location, type) => {
       // Let me module load till then show the loader
       // show loader
       if (global.previousUrl && global.previousUrl !== url) {
-        showScreenLoader();
+        showScreenLoader(global.store);
       }
     }
 
@@ -127,8 +123,6 @@ global.unlisten = global.history.listen((location, type) => {
   if (hot) {
     w.__renderRoutes = () => {
       if (!global.isHistoryChanging) {
-        // eslint-disable-next-line
-        console.log(global.previousUrl, global.collectedRoutes);
         renderRoutesWrapper({
           url: global.previousUrl
         });

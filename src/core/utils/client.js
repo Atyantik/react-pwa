@@ -16,16 +16,18 @@ import {
   getPreloadDataPromises
 } from "./renderer";
 
-import {generateMeta} from "./seo";
+import { generateMeta } from "./seo";
+import { screenLoading, screenLoaded, SCREEN_STATE, SCREEN_LOADED } from "../components/loader/action";
 
 
-export const showScreenLoader = () => {
-  const screenloadstartEvent = new CustomEvent("screenloadstart");
-  window.dispatchEvent(screenloadstartEvent);
+export const showScreenLoader = (store) => {
+  store.dispatch(screenLoading());
 };
-export const hideScreenLoader = () => {
-  const screenloadendEvent = new CustomEvent("screenloadend");
-  window.dispatchEvent(screenloadendEvent);
+export const hideScreenLoader = (store) => {
+  const state = store.getState();
+  const screenState = _.get(state.screenLoader, SCREEN_STATE, SCREEN_LOADED);
+  if (screenState === SCREEN_LOADED) return;
+  store.dispatch(screenLoaded());
 };
 
 const updateHtmlMeta = (collectedRoutes, url) => {
@@ -92,7 +94,9 @@ export const renderRoutes = async ({
       renderRoot: renderRoot,
       url: url,
       store
-    }, hideScreenLoader);
+    }, () => {
+      hideScreenLoader(store);
+    });
     return Promise.resolve();
   }
 
@@ -104,7 +108,7 @@ export const renderRoutes = async ({
   });
 
   if (promises.length && !options.isInitialLoad) {
-    showScreenLoader();
+    showScreenLoader(store);
   }
 
   try {
@@ -116,7 +120,9 @@ export const renderRoutes = async ({
       renderRoot,
       url,
       store
-    }, hideScreenLoader);
+    }, () => {
+      hideScreenLoader(store);
+    });
     return Promise.resolve();
   } catch (err) {
     let error = err;
@@ -125,11 +131,13 @@ export const renderRoutes = async ({
     }
     error.statusCode = error.statusCode || 500;
     renderErrorPage({
-      history: history,
+      history,
       renderRoot: renderRoot,
       error: error,
       store
-    }, hideScreenLoader);
+    }, () => {
+      hideScreenLoader(store);
+    });
     return Promise.reject();
   }
 };

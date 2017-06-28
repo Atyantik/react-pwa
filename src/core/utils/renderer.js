@@ -1,8 +1,7 @@
 import React from "react";
-//import { createStore, combineReducers } from "redux";
 import { Provider } from "react-redux";
 import { render as DefaultRender } from "react-dom";
-import ConnectedRouter from "core/libs/ConnectedRouter/ConnectedRouter.server";
+import ConnectedRouter from "core/libs/ConnectedRouter";
 import { AppContainer as HotAppContainer } from "react-hot-loader";
 import _ from "lodash";
 

@@ -1,11 +1,12 @@
 import { createStore, combineReducers, applyMiddleware, compose } from "redux";
 import { routerReducer, routerMiddleware } from "react-router-redux";
-import {  } from "react-router-redux";
+import * as coreReducers from "./reducers";
 
 const createReducer = (reducers = {}) => {
   return combineReducers({
     ...reducers,
-    routing: routerReducer
+    ...coreReducers,
+    router: routerReducer
   });
 };
 
@@ -22,10 +23,9 @@ export default function configureStore({
   // Add history middleware
   const historyMiddleware = routerMiddleware(history);
   middleware.push(historyMiddleware);
-
+  
   const store = createStore(createReducer(), initialState, composeEnhancers(applyMiddleware(...middleware)));
   store.asyncReducers = {};
-
   return store;
 }
 
