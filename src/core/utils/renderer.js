@@ -153,7 +153,8 @@ export const getPreloadDataPromises = (
   {
     routes,
     storage,
-    api
+    api,
+    store
   }
 ) => {
   let promises = [];
@@ -164,7 +165,7 @@ export const getPreloadDataPromises = (
       promises.push((() => {
 
         // Pass route as reference so that we can modify it while loading data
-        let returnData = r.preLoadData({route: r, match: r.match, storage, api});
+        let returnData = r.preLoadData({route: r, match: r.match, storage, api, store});
         if (returnData && _.isFunction(returnData.then)) {
           return returnData.then(data => {
             return r.preLoadedData = data;

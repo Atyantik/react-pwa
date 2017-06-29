@@ -29,7 +29,12 @@ export default function configureStore({
   return store;
 }
 
-export function injectAsyncReducer(store, name, asyncReducer) {
-  store.asyncReducers[name] = asyncReducer;
+export function injectAsyncReducers(store, asyncReducers) {
+  store.asyncReducers = {
+    ...store.asyncReducers,
+    ...asyncReducers,
+  };
+  // eslint-disable-next-line
+  console.log(store.asyncReducers);
   store.replaceReducer(createReducer(store.asyncReducers));
 }

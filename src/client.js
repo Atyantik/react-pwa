@@ -1,5 +1,7 @@
+/* eslint-disable */
+import _ from "lodash";
 import createHistory from "history/createBrowserHistory";
-import configureStore from "core/store";
+import configureStore, { injectAsyncReducers } from "core/store";
 
 /**
  * Client utilities
@@ -52,9 +54,11 @@ global.isHistoryChanging = global.isHistoryChanging || false;
 // Get our dom app
 global.renderRoot = global.renderRoot || document.getElementById("app");
 
-const renderRoutesWrapper = ({
-  url = global.previousUrl,
-}) => {
+const renderRoutesWrapper = (
+  {
+    url = global.previousUrl,
+  }
+) => {
   return renderRoutes({
     url,
     store: global.store,
@@ -69,17 +73,9 @@ const renderRoutesWrapper = ({
   });
 };
 
-if (global.unlisten) global.unlisten();
-
-global.unlisten = global.history.listen((location, type) => {
-
-  global.isHistoryChanging = true;
-
-  // Listen to history change and load modules accordingly
-  const url = `${location.pathname}${location.search}${location.hash}`;
-
+const updateByUrl = (url) => {
   if (!isModuleLoaded(url)) {
-
+    
     // If route is not pre-loaded in background then show loader
     if(!isModulePreLoaded(url)) {
       // Let me module load till then show the loader
@@ -88,38 +84,58 @@ global.unlisten = global.history.listen((location, type) => {
         showScreenLoader(global.store);
       }
     }
-
+    
     loadModuleByUrl(url, () => {
       renderRoutesWrapper({
         url,
       }).then(() => {
         global.isHistoryChanging = false;
+        global.history.timeTravel = false;
       });
     });
-
+    
   } else {
     if (
-      (type && type.toUpperCase() === "POP") ||
       !isRelatedRoute(global.previousUrl, url)
     ) {
       renderRoutesWrapper({
         url,
       }).then(() => {
         global.isHistoryChanging = false;
+        global.history.timeTravel = false;
       });
     }
+  }
+};
+
+if (global.unsubscribe) global.unsubscribe();
+
+global.unsubscribe = global.store.subscribe(() => {
+  
+  const state = global.store.getState();
+  const url = _.get(state, "router.location.pathname", global.previousUrl);
+  const historyUrl = _.get(global.history, "location.pathname", url);
+  
+  if (url !== global.previousUrl) {
+    global.previousUrl = url;
+    if (historyUrl !== url) {
+      global.history.timeTravel = true;
+      global.history.replace(url, state);
+    }
+    global.isHistoryChanging = true;
+    updateByUrl(url);
   }
 });
 
 // Add update routes globally
 ((w) =>{
-  w.__updateRoutes = ({ routes }) => {
+  w.__updatePage = ({ routes, reducers }) => {
     const routesloadEvent = new CustomEvent("routesload");
-
+    injectAsyncReducers(global.store, reducers);
     updateRoutes({ routes, collectedRoutes: global.collectedRoutes });
     w.dispatchEvent(routesloadEvent);
   };
-
+  
   if (hot) {
     w.__renderRoutes = () => {
       if (!global.isHistoryChanging) {

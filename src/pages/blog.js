@@ -26,7 +26,7 @@ const routes = [
 ];
 
 if (typeof window !== "undefined") {
-  window.__updateRoutes({ routes });
+  window.__updatePage({ routes });
   if (module.hot) {
     module.hot.accept();
     //window.__renderRoutes();

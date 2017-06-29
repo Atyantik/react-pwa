@@ -104,7 +104,8 @@ export const renderRoutes = async ({
   let promises = getPreloadDataPromises({
     routes: currentRoutes,
     storage,
-    api
+    api,
+    store
   });
 
   if (promises.length && !options.isInitialLoad) {

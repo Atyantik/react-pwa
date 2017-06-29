@@ -14,8 +14,6 @@ import {
 
 import createHistory from "history/createMemoryHistory";
 
-import { routerMiddleware } from "react-router-redux";
-
 import {
   extractFilesFromAssets,
   getModuleByUrl,
@@ -153,13 +151,9 @@ app.get("*", (req, res) => {
   let routerComponent = null;
 
   const history = createHistory();
-  const historyMiddleware = routerMiddleware(history);
-
   // Create redux store
   let store = configureStore({
-    middleware: [
-      historyMiddleware
-    ]
+    history
   });
 
   try {
@@ -167,7 +161,8 @@ app.get("*", (req, res) => {
     let promises = getPreloadDataPromises({
       routes: currentRoutes,
       storage,
-      api
+      api,
+      store
     });
 
     Promise.all(promises).then(() => {

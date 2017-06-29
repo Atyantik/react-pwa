@@ -16,6 +16,8 @@ export default class ConnectedRouter extends Component {
   };
 
   handleLocationChange = location => {
+    // Add a parameter of time travel
+    if (this.props.history.timeTravel) return;
     this.store.dispatch({
       type: LOCATION_CHANGE,
       payload: location
