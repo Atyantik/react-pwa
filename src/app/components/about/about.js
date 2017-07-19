@@ -12,7 +12,7 @@ export default class About extends Component {
           <div className={classNames("sidebar-module", styles["sidebar-module-inset"])}>
             <h4>About</h4>
             <p>
-              <em>Atyantik technologies</em> is a software company based in
+              <em>Atyantik technologies Pvt. Ltd.</em> is a software company based in
               gujarat servicing the needs of all businesses ranging
               from midsize to large ones
             </p>

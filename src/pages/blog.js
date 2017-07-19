@@ -4,7 +4,7 @@ import DefaultLayout from "app/components/layout";
 
 const routes = [
   {
-    path: "/:something",
+    path: "/blog",
     exact: true,
     layout: DefaultLayout,
     component: BlogListing,
@@ -14,7 +14,7 @@ const routes = [
     bundleKey: "blog",
   },
   {
-    path: "/:something/:id",
+    path: "/blog/:id",
     layout: DefaultLayout,
     component: BlogPost,
     preLoadData: async ({match, api}) => {
@@ -29,8 +29,8 @@ if (typeof window !== "undefined") {
   window.__updatePage({ routes });
   if (module.hot) {
     module.hot.accept();
-    //window.__renderRoutes();
   }
+  window.__renderRoutes();
 }
 
 export default routes;

@@ -20,8 +20,9 @@ export default class ErrorPage extends Component {
         <h1 className="mt-5">500</h1>
         <p className="h3">Server error occurred.</p>
         {
-          !!error.stack &&
-          showStack &&
+          true ||
+          ( !!error.stack &&
+          showStack ) &&
           (
             <pre className={styles.error}>
               {error.stack}

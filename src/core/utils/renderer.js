@@ -54,7 +54,6 @@ export const renderErrorPage = ({
   render = DefaultRender,
   Router = DefaultRouter,
   Switch = DefaultSwitch,
-  Route = DefaultRoute,
   context,
   history,
   store,
@@ -64,16 +63,17 @@ export const renderErrorPage = ({
 
   context = context || {};
   let component = (
-    <Provider store={store}>
-      <ConnectedRouter Router={Router} context={context} history={history} >
-        <Switch>
-          <Route onRender={() => {
-            return <ErrorPage error={error} />;
-          }} />
-        </Switch>
-      </ConnectedRouter>
-    </Provider>
+    <HotAppContainer>
+      <Provider store={store}>
+        <ConnectedRouter Router={Router} context={context} history={history} >
+          <Switch>
+            <ErrorPage error={error} />
+          </Switch>
+        </ConnectedRouter>
+      </Provider>
+    </HotAppContainer>
   );
+  
   if (!render) {
     return component;
   }

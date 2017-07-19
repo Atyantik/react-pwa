@@ -50,6 +50,9 @@ global.previousUrl = global.previousUrl || null;
 // Store state if we are working with history change
 global.isHistoryChanging = global.isHistoryChanging || false;
 
+// Store state if we are working with history change
+global.isInitialLoad = typeof global.isInitialLoad === Boolean ? global.isInitialLoad: true;
+
 
 // Get our dom app
 global.renderRoot = global.renderRoot || document.getElementById("app");
@@ -64,9 +67,13 @@ const renderRoutesWrapper = (
     store: global.store,
     history: global.history,
     renderRoot: global.renderRoot,
-    collectedRoutes: global.collectedRoutes
+    collectedRoutes: global.collectedRoutes,
+    options: {
+      isInitialLoad: global.isInitialLoad
+    }
   }).then(() => {
     global.previousUrl = url;
+    global.isInitialLoad = false;
   }).catch((ex) => {
     // eslint-disable-next-line
     console.log(ex);
@@ -136,15 +143,15 @@ global.unsubscribe = global.store.subscribe(() => {
     w.dispatchEvent(routesloadEvent);
   };
   
-  if (hot) {
-    w.__renderRoutes = () => {
-      if (!global.isHistoryChanging) {
-        renderRoutesWrapper({
-          url: global.previousUrl
-        });
-      }
-    };
-  }
+  // if (hot) {
+  w.__renderRoutes = () => {
+    if (!global.isHistoryChanging) {
+      renderRoutesWrapper({
+        url: global.previousUrl
+      });
+    }
+  };
+  // }
 })(window);
 
 global.previousUrl = window.location.pathname;

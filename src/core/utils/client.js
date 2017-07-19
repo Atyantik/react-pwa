@@ -17,7 +17,7 @@ import {
 } from "./renderer";
 
 import { generateMeta } from "./seo";
-import { screenLoading, screenLoaded, SCREEN_STATE, SCREEN_LOADED } from "../components/loader/action";
+import { screenLoading, screenLoaded, SCREEN_STATE_LOADED } from "../components/loader/action";
 
 
 export const showScreenLoader = (store) => {
@@ -25,8 +25,8 @@ export const showScreenLoader = (store) => {
 };
 export const hideScreenLoader = (store) => {
   const state = store.getState();
-  const screenState = _.get(state.screenLoader, SCREEN_STATE, SCREEN_LOADED);
-  if (screenState === SCREEN_LOADED) return;
+  const screenState = _.get(state, "screen.state", SCREEN_STATE_LOADED);
+  if (screenState === SCREEN_STATE_LOADED) return;
   store.dispatch(screenLoaded());
 };
 
@@ -139,7 +139,7 @@ export const renderRoutes = async ({
     }, () => {
       hideScreenLoader(store);
     });
-    return Promise.reject();
+    return Promise.reject(err);
   }
 };
 

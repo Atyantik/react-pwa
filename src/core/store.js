@@ -34,7 +34,5 @@ export function injectAsyncReducers(store, asyncReducers) {
     ...store.asyncReducers,
     ...asyncReducers,
   };
-  // eslint-disable-next-line
-  console.log(store.asyncReducers);
   store.replaceReducer(createReducer(store.asyncReducers));
 }

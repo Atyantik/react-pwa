@@ -1,14 +1,14 @@
 import _ from "lodash";
-import { SCREEN_STATE, SCREEN_LOADED } from "./action";
+import { SCREEN_STATE_CHANGE, SCREEN_STATE_LOADED } from "./action";
 const initialState = {
-  [SCREEN_STATE]: SCREEN_LOADED
+  "state": SCREEN_STATE_LOADED
 };
 
-export const screenLoader = (state = initialState, action) => {
+export const screen = (state = initialState, action) => {
   switch (action.type) {
-    case SCREEN_STATE:
+    case SCREEN_STATE_CHANGE:
       return _.assign({}, state, {
-        [SCREEN_STATE]: action.state
+        "state": action.state
       });
     default:
       return state;

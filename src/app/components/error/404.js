@@ -19,7 +19,6 @@ export default (props) => {
       return null;
     }
   }
-  alert("am here in 404");
   return (
     <div className="container text-center mt-5">
       <h1 className="mt-5">404</h1>

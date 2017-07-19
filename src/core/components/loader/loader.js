@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { SCREEN_STATE, SCREEN_LOADING } from "./action";
+import { SCREEN_STATE_LOADING } from "./action";
 import * as styles from "./loader.scss";
 
 @connect( state => {
   return {
-    showScreenLoader: state.screenLoader[SCREEN_STATE] === SCREEN_LOADING
+    screenState: state.screen.state
   };
 })
 export default class Loader extends Component {
@@ -13,7 +13,7 @@ export default class Loader extends Component {
     return (
       <div>
         {
-          this.props.showScreenLoader &&
+          this.props.screenState === SCREEN_STATE_LOADING &&
           (
             <div className={styles["loader-section"]}>
               <div className={styles["screen-loader"]} />
