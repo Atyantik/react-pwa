@@ -5,13 +5,9 @@ import { Link } from "react-router-dom";
 
 const Header = (props) => {
   return (
-    <nav className="navbar navbar-toggleable-md navbar-light bg-faded">
+    <nav className="navbar navbar-toggleable-md navbar-light">
       <div className="container">
-        <button className="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span className="navbar-toggler-icon" />
-        </button>
         <Link className="navbar-brand" to="/">Logo</Link>
-
         <div className="collapse navbar-collapse">
           <ul className="navbar-nav mr-auto">
             <li className={classNames("nav-item", {active: props.url === "/"})}>

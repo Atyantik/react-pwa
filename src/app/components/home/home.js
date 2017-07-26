@@ -1,5 +1,7 @@
 import React, { Component } from "react";
+import Fold from "core/components/fold";
 import ReactLogo from "resources/images/reactjs.svg";
+import SmallImage from "resources/images/small.jpg";
 
 export default class Home extends Component {
   render() {
@@ -18,18 +20,22 @@ export default class Home extends Component {
           magna gravida posuere. Sed at velit at est dictum mollis. Pellentesque
           ullamcorper dapibus nulla, efficitur pharetra nisi sodales ut.
         </p>
-        <p>
-          Cras at elementum magna. Proin sed vulputate erat. Quisque magna nibh,
-          posuere in mattis id, consectetur non nunc. Sed sodales diam risus,
-          non facilisis augue cursus id. Nulla non magna at tellus tempor
-          efficitur id nec ex. Vestibulum a ex a dolor dapibus vulputate.
-          Etiam ac diam vestibulum, commodo lacus nec, feugiat diam. Mauris
-          sollicitudin pellentesque pretium. Suspendisse at tempus lectus.
-          Vivamus euismod velit quis tincidunt pulvinar. In posuere, libero sed
-          condimentum fringilla, tortor mi maximus dolor, eget aliquam turpis
-          libero at sem. Ut pulvinar, odio a vestibulum pretium, ante leo volutpat
-          massa, in suscipit diam tortor id odio. Nunc convallis vitae felis eget aliquet.
-        </p>
+        <Fold>
+          <p>
+            Cras at elementum magna. Proin sed vulputate erat. Quisque magna nibh,
+            posuere in mattis id, consectetur non nunc. Sed sodales diam risus,
+            non facilisis augue cursus id. Nulla non magna at tellus tempor
+            efficitur id nec ex. Vestibulum a ex a dolor dapibus vulputate.
+            Etiam ac diam vestibulum, commodo lacus nec, feugiat diam. Mauris
+            sollicitudin pellentesque pretium. Suspendisse at tempus lectus.
+            Vivamus euismod velit quis tincidunt pulvinar. In posuere, libero sed
+            condimentum fringilla, tortor mi maximus dolor, eget aliquam turpis
+            libero at sem. Ut pulvinar, odio a vestibulum pretium, ante leo volutpat
+            massa, in suscipit diam tortor id odio. Nunc convallis vitae felis eget aliquet.
+          </p>
+          <p>Image sample converted to webp, uploaded/coded as jpg</p>
+          <img className="img-fluid mx-auto d-block" src={SmallImage} alt="Small Image" />
+        </Fold>
       </div>
     );
   }

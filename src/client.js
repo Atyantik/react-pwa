@@ -53,6 +53,21 @@ global.isHistoryChanging = global.isHistoryChanging || false;
 // Store state if we are working with history change
 global.isInitialLoad = typeof global.isInitialLoad === Boolean ? global.isInitialLoad: true;
 
+global.isSWInitialized = typeof global.isSWInitialized === Boolean ? global.isSWInitialized: false;
+
+// Check for service worker
+const hasServiceWorker = !!_.get(window, "navigator.serviceWorker", false);
+if (!global.isSWInitialized) {
+  const serviceWorker = _.get(window, "navigator.serviceWorker", {
+    register: async () => Promise.reject("Browser does not support service workers!")
+  });
+  serviceWorker.register("/sw.js", {scope: "/"}).catch(err => {
+    // eslint-disable-next-line
+    console.log("Cannot register Service Worker: ", err);
+  });
+  global.isSWInitialized = true;
+}
+
 
 // Get our dom app
 global.renderRoot = global.renderRoot || document.getElementById("app");
@@ -156,7 +171,9 @@ global.unsubscribe = global.store.subscribe(() => {
 
 global.previousUrl = window.location.pathname;
 loadModuleByUrl(global.previousUrl, () => {
-  idlePreload(5000);
+  // Start preloading data if service worker is not
+  // supported. We can cache data with serviceWorker
+  !hasServiceWorker && idlePreload(5000);
 });
 
 if (hot) module.hot.accept();

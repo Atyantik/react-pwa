@@ -23,7 +23,7 @@ import path from "path";
  *    client.js --> Client entry js
  *    routes.js --> Consolidated routes
  *    server.js --> Server instance
- *    startServer.js --> Simple start server
+ *    start-server.js --> Simple start server
  */
 
 /**

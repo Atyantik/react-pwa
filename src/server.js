@@ -31,7 +31,8 @@ import Storage from "core/libs/storage";
 import Api from "core/libs/api";
 import configureStore from "core/store";
 import Routes  from "./routes";
-import Html from "app/components/html";
+import config from "./config";
+import Html from "core/components/html";
 
 
 // Create and express js application
@@ -90,7 +91,7 @@ const getErrorComponent = (err, store) => {
 app.get("/_globals", (req, res) => {
 
   // Never ever cache this request
-  const {assets} = req;
+  const { assets } = req;
   const allCss = extractFilesFromAssets(assets, ".css");
   const allJs = extractFilesFromAssets(assets, ".js");
 
@@ -101,6 +102,28 @@ app.get("/_globals", (req, res) => {
   res.setHeader("Pragma", "no-cache");
 
   return res.send(JSON.stringify({routes: Routes, allCss, allJs}));
+});
+
+app.get("/manifest.json", (req, res) => {
+  
+  const { pwa } = config;
+  
+  const availableSizes = [72, 96, 128, 144, 152, 192, 384, 512];
+  const icons = availableSizes.map(size => {
+    return {
+      "src": require(`resources/images/pwa/icon-${size}x${size}.png`),
+      sizes: `${size}x${size}`
+    };
+  });
+  _.set(pwa, "icons", icons);
+  
+  res.setHeader("Content-Type", "application/manifest+json");
+  // No cache header
+  res.setHeader("Cache-Control", "private, no-cache, no-store, must-revalidate");
+  res.setHeader("Expires", "-1");
+  res.setHeader("Pragma", "no-cache");
+  
+  return res.send(JSON.stringify(pwa));
 });
 
 app.get("*", (req, res) => {
@@ -134,7 +157,7 @@ app.get("*", (req, res) => {
    */
   const currentRouteJs = _.filter(allJs, js => {
     const fileName = js.split("/").pop();
-    return !_.startsWith(fileName, "mod-");
+    return !_.startsWith(fileName, "mod-") && !_.startsWith(fileName, "service-worker.js");
   });
 
   const context = {

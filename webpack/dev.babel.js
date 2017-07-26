@@ -24,7 +24,7 @@ import {
   srcDir,
   buildDir,
   buildPublicPath,
-  srcPublicDir
+  srcPublicDir, distPublicDir, distDir
 } from "../directories";
 
 const pagesFolder = path.join(srcDir, "pages");
@@ -41,12 +41,126 @@ pages.forEach(page => {
 });
 
 
-export default {
+const rules = [
+  // Rules for js or jsx files. Use the babel loader.
+  // Other babel configuration can be found in .babelrc
+  {
+    test: /\.jsx?$/,
+    include: srcDir,
+    use: [
+      {
+        loader: "babel-loader",
+      },
+      {
+        loader: "eslint-loader",
+        options: {
+          failOnWarning: false,
+          failOnError: false
+        }
+      }
+    ]
+  },
+  {
+    test: /\.(sass|scss|css)$/, //Check for sass or scss file names,
+    exclude: [
+      path.join(srcDir, "resources"),
+    ],
+    use: [
+      {
+        loader: "style-loader",
+        options: { sourceMap: true }
+      },
+      {
+        loader: "css-loader",
+        options: {
+          modules: true,
+          localIdentName: "[name]__[local]",
+          sourceMap: true,
+          minimize: false,
+          importLoaders: 2
+        }
+      },
+      {
+        loader: "postcss-loader",
+        options: { sourceMap: true }
+      },
+      {
+        loader: "sass-loader",
+        options: {
+          outputStyle: "expanded",
+          sourceMap: true,
+          sourceMapContents: true,
+        }
+      }
+    ]
+  },
+  {
+    test: /\.(eot|svg|ttf|woff|woff2)$/,
+    include: [
+      path.join(srcDir, "resources", "fonts"),
+    ],
+    use: "file-loader?outputPath=fonts/&name=[name].[ext]"
+  },
+  {
+    test: /\.svg$/i,
+    include: [
+      path.join(srcDir, "resources", "images"),
+    ],
+    use: [
+      "file-loader?outputPath=images/&name=[name].[ext]",
+    ]
+  },
+  {
+    test: /\.(jpe?g|png|gif)$/i,
+    include: [
+      path.join(srcDir, "resources", "images"),
+    ],
+    use: [
+      "file-loader?outputPath=images/&name=[name].webp",
+      "webp-loader?{quality: 80}",
+    ]
+  },
+  {
+    test: /\.(sass|scss|css)$/, //Check for sass or scss file names,
+    include: [
+      path.join(srcDir, "resources"),
+    ],
+    use: ExtractTextPlugin.extract({
+      fallback: "style-loader",
+      use: [
+        {
+          loader: "css-loader",
+          options: {
+            modules: true,
+            localIdentName: "[local]",
+            sourceMap: true,
+            minimize: false,
+            importLoaders: 2
+          }
+        },
+        {
+          loader: "postcss-loader",
+          options: { sourceMap: true }
+        },
+        {
+          loader: "sass-loader",
+          options: {
+            outputStyle: "expanded",
+            sourceMap: true,
+            sourceMapContents: true,
+          }
+        }
+      ]
+    }),
+  },
+];
 
+const commonClientConfig = {
+  name: "common-client",
   // The base directory, an absolute path, for resolving entry points
   // and loaders from configuration. Lets keep it to /src
   context: srcDir,
-
+  
   // The point or points to enter the application. At this point the
   // application starts executing. If an array is passed all items will
   // be executed.
@@ -55,17 +169,121 @@ export default {
       "babel-polyfill",
       "react-hot-loader/patch",
       path.join(srcDir, "client.js"),
-      "webpack-hot-middleware/client?path=/__hmr_update&timeout=2000&overlay=true"
+      "webpack-hot-middleware/client?name=common-client&path=/__hmr_update&timeout=2000&overlay=true"
     ],
     "common-style": path.join(srcDir, "resources", "css", "style.scss")
   }, entries),
+  
+  //These options determine how the different types of modules within
+  // a project will be treated.
+  module: {
+    rules,
+  },
+  output: {
+    
+    // Output everything in build folder (dist/public/build)
+    path: buildDir,
+    
+    // The file name to output
+    filename: "[name].[hash].bundle.js",
+    
+    // public path is assets path
+    publicPath: buildPublicPath,
+  },
+  
+  resolve: {
+    modules: [
+      "node_modules",
+      srcDir
+    ],
+  },
+  
+  devServer: {
+    // Do not open browser when dev server is started
+    open: false,
+    
+    // the base of content, in our case its the "src/public" folder
+    contentBase: srcPublicDir,
+    
+    compress: true,
+    
+    // Show errors and warning on overlap
+    overlay: {
+      warnings: true,
+      errors: true
+    },
+  },
+  
+  devtool: "source-map",
+  
+  plugins: [
+    
+    // Hot module replacement for getting latest updates
+    // thus no reload required
+    new webpack.HotModuleReplacementPlugin(),
+    
+    // Create common chunk of data
+    // Break data in common so that we have minimum data to load
+    new webpack.optimize.CommonsChunkPlugin({
+      name: "commons-vendor",
+      filename: "common-0-vendor-[hash].js",
+      minChunks: function (module) {
+        
+        if(module.resource && (/^.*\.(css|scss|sass)$/).test(module.resource)) {
+          return false;
+        }
+        
+        // this assumes your vendor imports exist in the node_modules directory
+        return module.context &&
+          (
+            module.context.indexOf("node_modules") !== -1 ||
+            (module.resource && module.resource.indexOf("/src/client") !== -1)
+          );
+      },
+    }),
+    
+    // Extract the CSS so that it can be moved to CDN as desired
+    // Also extracted CSS can be loaded parallel
+    new ExtractTextPlugin("[name].[hash].min.css"),
+    
+    // Enable no errors plugin
+    new webpack.NoEmitOnErrorsPlugin(),
+    
+    // Sass loader options for autoprefix
+    new webpack.LoaderOptionsPlugin({
+      options: {
+        context: "/",
+        sassLoader: {
+          includePaths: [srcDir]
+        },
+        postcss: function () {
+          return [autoprefixer];
+        }
+      }
+    })
+  ]
+};
 
+const serviceWorkerConfig = {
+  name: "service-worker",
+  // The base directory, an absolute path, for resolving entry points
+  // and loaders from configuration. Lets keep it to /src
+  context: srcDir,
+  
+  // The point or points to enter the application. At this point the
+  // application starts executing. If an array is passed all items will
+  // be executed.
+  entry: Object.assign({}, {
+    "service-worker": [
+      "babel-polyfill",
+      path.join(srcDir, "service-worker.js"),
+    ]
+  }),
+  
   //These options determine how the different types of modules within
   // a project will be treated.
   module: {
     rules: [
-      // Rules for js or jsx files. Use the babel loader.
-      // Other babel configuration can be found in .babelrc
       {
         test: /\.jsx?$/,
         include: srcDir,
@@ -83,160 +301,70 @@ export default {
         ]
       },
       {
-        test: /\.(sass|scss|css)$/, //Check for sass or scss file names,
+        test: /\.(sass|scss)$/,
         exclude: [
           path.join(srcDir, "resources"),
         ],
-        use: [
-          {
-            loader: "style-loader",
-            options: { sourceMap: true }
-          },
-          {
-            loader: "css-loader",
-            options: {
-              modules: true,
-              localIdentName: "[name]__[local]",
-              sourceMap: true,
-              minimize: false,
-              importLoaders: 2
-            }
-          },
-          {
-            loader: "postcss-loader",
-            options: { sourceMap: true }
-          },
-          {
-            loader: "sass-loader",
-            options: {
-              outputStyle: "expanded",
-              sourceMap: true,
-              sourceMapContents: true,
-            }
-          }
-        ]
-      },
-      {
-        test: /\.(eot|svg|ttf|woff|woff2)$/,
-        include: [
-          path.join(srcDir, "resources", "fonts"),
-        ],
-        use: "file-loader?outputPath=fonts/&name=[name].[ext]"
-      },
-      {
-        test: /\.(jpe?g|png|gif|svg)$/i,
-        include: [
-          path.join(srcDir, "resources", "images"),
-        ],
-        use: [
-          "file-loader?outputPath=images/&name=[name].[ext]",
-        ]
-      },
-      {
-        test: /\.(sass|scss|css)$/, //Check for sass or scss file names,
-        include: [
-          path.join(srcDir, "resources"),
-        ],
-        use: ExtractTextPlugin.extract({
+        loader: ExtractTextPlugin.extract({
           fallback: "style-loader",
           use: [
             {
               loader: "css-loader",
               options: {
                 modules: true,
-                localIdentName: "[local]",
-                sourceMap: true,
-                minimize: false,
-                importLoaders: 2
+                localIdentName: "[name]__[local]___[hash:base64:5]",
+                minimize: true,
+                sourceMap: false,
+                importLoaders: 2,
               }
             },
             {
               loader: "postcss-loader",
-              options: { sourceMap: true }
+              options: {
+                sourceMap: false
+              }
             },
             {
               loader: "sass-loader",
               options: {
-                outputStyle: "expanded",
-                sourceMap: true,
-                sourceMapContents: true,
+                outputStyle: "compressed",
+                sourceMap: false,
+                sourceMapContents: false,
               }
-            }
+            },
           ]
         }),
       },
     ],
   },
   output: {
-
-    // Output everything in build folder (dist/public/build)
-    path: buildDir,
-
+    
+    // Output everything in build folder (dist)
+    path: distDir,
+    
     // The file name to output
-    filename: "[name].[hash].bundle.js",
-
+    filename: "[name].js",
+    
     // public path is assets path
-    publicPath: buildPublicPath,
+    publicPath: "/",
   },
-
+  
   resolve: {
     modules: [
       "node_modules",
       srcDir
     ],
   },
-
-  devServer: {
-    // Do not open browser when dev server is started
-    open: false,
-
-    // the base of content, in our case its the "src/public" folder
-    contentBase: srcPublicDir,
-
-    compress: true,
-
-    // Show errors and warning on overlap
-    overlay: {
-      warnings: true,
-      errors: true
-    },
-  },
-
+  
   devtool: "source-map",
-
+  
   plugins: [
-
-    // Hot module replacement for getting latest updates
-    // thus no reload required
-    new webpack.HotModuleReplacementPlugin(),
-
-    // Create common chunk of data
-    // Break data in common so that we have minimum data to load
-    new webpack.optimize.CommonsChunkPlugin({
-      name: "commons-vendor",
-      filename: "common-0-vendor-[hash].js",
-      minChunks: function (module) {
-
-        if(module.resource && (/^.*\.(css|scss|sass)$/).test(module.resource)) {
-          return false;
-        }
-
-        // this assumes your vendor imports exist in the node_modules directory
-        return module.context &&
-          (
-            module.context.indexOf("node_modules") !== -1 ||
-            (module.resource && module.resource.indexOf("/src/client") !== -1)
-          );
-      },
-    }),
-
-    // Extract the CSS so that it can be moved to CDN as desired
-    // Also extracted CSS can be loaded parallel
-    new ExtractTextPlugin("[name].[hash].min.css"),
-
+  
     // Enable no errors plugin
     new webpack.NoEmitOnErrorsPlugin(),
-
+    
+    new ExtractTextPlugin("service-worker.min.css"),
+    
     // Sass loader options for autoprefix
     new webpack.LoaderOptionsPlugin({
       options: {
@@ -249,5 +377,7 @@ export default {
         }
       }
     })
-  ],
+  ]
 };
+// export default commonClientConfig;
+export default [commonClientConfig, serviceWorkerConfig];

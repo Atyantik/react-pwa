@@ -1,4 +1,5 @@
 import path from "path";
+import fs from "fs";
 import webpack from "webpack";
 import AssetsPlugin from "assets-webpack-plugin";
 import CleanWebpackPlugin from "clean-webpack-plugin";
@@ -29,6 +30,9 @@ import {
   buildDir,
   buildPublicPath
 } from "../directories";
+
+import rules from "./prod.rules";
+
 const configDirName = "config";
 // Config dir is the dir that contains all the configurations
 const configDir = path.join(srcDir, configDirName);
@@ -40,12 +44,11 @@ const AssetsPluginInstance = new AssetsPlugin({
   path: configDir,
   update: true,
   prettyPrint: true,
+  assetsRegex: /\.(jpe?g|png|gif|svg)\?./i,
   processOutput: function (assets) {
     return `export default ${JSON.stringify(assets)};`;
   }
 });
-
-import fs from "fs";
 
 const pagesFolder = path.join(srcDir, "pages");
 const pages = fs.readdirSync(pagesFolder);
@@ -76,129 +79,7 @@ export default {
   //These options determine how the different types of modules within
   // a project will be treated.
   module: {
-    rules: [
-      // Rules for js or jsx files. Use the babel loader.
-      // Other babel configuration can be found in .babelrc
-      {
-        test: /\.jsx?$/,
-        include: srcDir,
-        use: [
-          {
-            loader: "babel-loader",
-          }
-        ]
-      },
-      {
-        test: /\.(sass|scss)$/, //Check for sass or scss file names
-        exclude: [
-          path.join(srcDir, "resources"),
-        ],
-        loader: ExtractTextPlugin.extract({
-          fallback: "style-loader",
-          use: [
-            {
-              loader: "css-loader",
-              options: {
-                modules: true,
-                localIdentName: "[name]__[local]___[hash:base64:5]",
-                minimize: true,
-                sourceMap: false,
-                importLoaders: 2,
-              }
-            },
-            {
-              loader: "postcss-loader",
-              options: {
-                sourceMap: false
-              }
-            },
-            {
-              loader: "sass-loader",
-              options: {
-                outputStyle: "compressed",
-                sourceMap: false,
-                sourceMapContents: false,
-              }
-            },
-          ]
-        }),
-      },
-      {
-        test: /\.(jpe?g|png|gif|svg)$/,
-        include: [
-          path.join(srcDir, "resources", "images"),
-        ],
-        use: [
-          "url-loader?limit=10240&hash=sha512&digest=hex&outputPath=images/&name=[name]-[hash].[ext]",
-          {
-            loader: "img-loader",
-            options: {
-              enabled: true,
-              gifsicle: {
-                interlaced: false
-              },
-              mozjpeg: {
-                progressive: true,
-                arithmetic: false
-              },
-              optipng: false, // disabled
-              pngquant: {
-                floyd: 0.5,
-                speed: 2
-              },
-              svgo: {
-                plugins: [
-                  { removeTitle: true },
-                  { convertPathData: false }
-                ]
-              }
-            }
-          }
-        ]
-      },
-      {
-        test: /\.(eot|svg|ttf|woff|woff2)$/,
-        include: [
-          path.join(srcDir, "resources", "fonts"),
-        ],
-        loader: "file-loader?outputPath=fonts/&name=[name]-[hash].[ext]"
-      },
-      {
-        test: /\.(sass|scss|css)$/, //Check for sass or scss file names,
-        include: [
-          path.join(srcDir, "resources"),
-        ],
-        loader: ExtractTextPlugin.extract({
-          fallback: "style-loader?sourceMap=false",
-          use: [
-            {
-              loader: "css-loader",
-              options: {
-                modules: true,
-                localIdentName: "[local]",
-                minimize: true,
-                sourceMap: false,
-                importLoaders: 2,
-              }
-            },
-            {
-              loader: "postcss-loader",
-              options: {
-                sourceMap: false
-              }
-            },
-            {
-              loader: "sass-loader",
-              options: {
-                outputStyle: "expanded",
-                sourceMap: false,
-                sourceMapContents: false,
-              }
-            },
-          ]
-        }),
-      },
-    ],
+    rules: rules({}),
   },
 
   resolve: {

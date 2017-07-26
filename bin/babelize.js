@@ -55,7 +55,10 @@ const allowedImageExtensions = _.get(appConfig, "config.images.allowedExtensions
 
 _.each(allowedImageExtensions, ext => {
   require.extensions[ext] = function (module, filename) {
-    module.exports = `${directories.buildPublicPath}images/${filename.split("/").pop()}`;
+    let name = filename.split("/").pop();
+    name = name.replace(ext, "");
+    const customExt = ext !== ".svg" ? ".webp" : ext;
+    module.exports = `${directories.buildPublicPath}images/${name}${customExt}`;
   };
 });
 

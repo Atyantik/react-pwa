@@ -11,6 +11,7 @@ const Footer = () => {
           <a
             href="https://www.atyantik.com"
             target="_blank"
+            rel="noopener"
           >
             Atyantik Technologies Private Limited
           </a>

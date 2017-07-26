@@ -20,12 +20,14 @@ import autoprefixer from "autoprefixer";
 
 import {
   srcDir,
-  distDir,
-  buildPublicPath,
+  distDir, distPublicDir,
 } from "../directories";
 
-export default {
+import rules from "./prod.rules";
 
+export default [{
+  
+  name: "server",
   // The base directory, an absolute path, for resolving entry points
   // and loaders from configuration. Lets keep it to /src
   context: srcDir,
@@ -36,97 +38,13 @@ export default {
   entry: [
     "babel-polyfill",
     // Initial entry point
-    path.join(srcDir, "startServer.js"),
+    path.join(srcDir, "start-server.js"),
   ],
 
   //These options determine how the different types of modules within
   // a project will be treated.
   module: {
-    rules: [
-      // Rules for js or jsx files. Use the babel loader.
-      // Other babel configuration can be found in .babelrc
-      {
-        test: /\.jsx?$/,
-        include: srcDir,
-        use: [
-          {
-            loader: "babel-loader",
-          }
-        ]
-      },
-      {
-        test: /\.(sass|scss)$/, //Check for sass or scss file names
-        loader: ExtractTextPlugin.extract({
-          fallback: "style-loader",
-          use: [
-            {
-              loader: "css-loader",
-              options: {
-                modules: true,
-                localIdentName: "[name]__[local]___[hash:base64:5]",
-                minimize: true,
-                sourceMap: false,
-                importLoaders: 2,
-              }
-            },
-            {
-              loader: "postcss-loader",
-              options: {
-                sourceMap: false
-              }
-            },
-            {
-              loader: "sass-loader",
-              options: {
-                outputStyle: "compressed",
-                sourceMap: false,
-                sourceMapContents: false,
-              }
-            },
-          ]
-        }),
-      },
-      {
-        test: /\.(eot|svg|ttf|woff|woff2)$/,
-        include: [
-          path.join(srcDir, "resources", "fonts"),
-        ],
-        loader: "file-loader?outputPath=fonts/&name=[name]-[hash].[ext]"
-      },
-      {
-        test: /\.(jpe?g|png|gif|svg)$/,
-        include: [
-          path.join(srcDir, "resources", "images"),
-        ],
-        use: [
-          "url-loader?limit=10240&hash=sha512&digest=hex&outputPath=images/&name=[name]-[hash].[ext]",
-          {
-            loader: "img-loader",
-            options: {
-              enabled: true,
-              gifsicle: {
-                interlaced: false
-              },
-              mozjpeg: {
-                progressive: true,
-                arithmetic: false
-              },
-              optipng: false, // disabled
-              pngquant: {
-                floyd: 0.5,
-                speed: 2
-              },
-              svgo: {
-                plugins: [
-                  { removeTitle: true },
-                  { convertPathData: false }
-                ]
-              }
-            }
-          }
-        ]
-      },
-    ],
+    rules: rules({imageOutputPath: "public/build/images/"}),
   },
   resolve: {
     modules: [
@@ -143,7 +61,7 @@ export default {
     filename: "server.js",
 
     // public path is assets path
-    publicPath: buildPublicPath,
+    publicPath: "/",
   },
 
   node: {
@@ -183,4 +101,75 @@ export default {
       }
     })
   ],
-};
+},
+{
+  name: "service-worker",
+    
+  // The base directory, an absolute path, for resolving entry points
+  // and loaders from configuration. Lets keep it to /src
+  context: srcDir,
+    
+  // The point or points to enter the application. At this point the
+  // application starts executing. If an array is passed all items will
+  // be executed.
+  entry: {
+    "service-worker" : [
+      "babel-polyfill",
+      // Initial entry point
+      path.join(srcDir, "service-worker.js"),
+    ]
+  },
+    
+  // These options determine how the different types of modules within
+  // a project will be treated.
+  module: {
+    rules: rules({}),
+  },
+  resolve: {
+    modules: [
+      "node_modules",
+      srcDir
+    ],
+  },
+  output: {
+      
+    // Output everything in dist folder
+    path: distDir,
+      
+    // The file name to output
+    filename: "[name].js",
+      
+    // public path is assets path
+    publicPath: "/",
+  },
+  target: "web",
+  devtool: false,
+    
+  plugins: [
+      
+    // Uglify the output so that we have the most optimized code
+    new UglifyJSPlugin({
+      compress: true,
+      comments: false,
+      sourceMap: false,
+    }),
+    new webpack.DefinePlugin({
+      "process.env.NODE_ENV": JSON.stringify("production"),
+    }),
+    // Enable no errors plugin
+    new webpack.NoEmitOnErrorsPlugin(),
+    
+    // Sass loader options for autoprefix
+    new webpack.LoaderOptionsPlugin({
+      options: {
+        context: "/",
+        sassLoader: {
+          includePaths: [srcDir]
+        },
+        postcss: function () {
+          return [autoprefixer];
+        }
+      }
+    })
+  ],
+}];
