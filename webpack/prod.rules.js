@@ -1,4 +1,5 @@
 import path from "path";
+import multi from "multi-loader";
 /**
  * @description It moves all the require("style.css")s in entry chunks into
  * a separate single CSS file. So your styles are no longer inlined
@@ -9,8 +10,9 @@ import path from "path";
 import ExtractTextPlugin from "extract-text-webpack-plugin";
 
 import {
-  srcDir
-} from "../directories";
+  srcDir,
+  images,
+} from "../settings";
 
 export default ({ imageOutputPath = "images/" }) => {
   return [
@@ -28,7 +30,7 @@ export default ({ imageOutputPath = "images/" }) => {
   
     //Check for sass or scss file names directory other than resources.
     {
-      test: /\.(sass|scss)$/,
+      test: /\.(sass|scss|css)$/,
       exclude: [
         path.join(srcDir, "resources"),
       ],
@@ -63,12 +65,54 @@ export default ({ imageOutputPath = "images/" }) => {
       }),
     },
   
+    // Managing styles present in resources folder, they do not need complex IdentName
+    // Just [local]
+    {
+      test: /\.(sass|scss|css)$/, //Check for sass or scss file names,
+      include: [
+        path.join(srcDir, "resources"),
+      ],
+      use: ExtractTextPlugin.extract({
+        fallback: "style-loader",
+        use: [
+          {
+            loader: "css-loader",
+            options: {
+              modules: true,
+              localIdentName: "[local]",
+              sourceMap: true,
+              minimize: false,
+              importLoaders: 2
+            }
+          },
+          {
+            loader: "postcss-loader",
+            options: { sourceMap: true }
+          },
+          {
+            loader: "sass-loader",
+            options: {
+              outputStyle: "expanded",
+              sourceMap: true,
+              sourceMapContents: true,
+            }
+          }
+        ]
+      }),
+    },
+  
+    // Manage fonts
+    {
+      test: /\.(eot|svg|ttf|woff|woff2)$/,
+      include: [
+        path.join(srcDir, "resources", "fonts"),
+      ],
+      loader: "file-loader?outputPath=fonts/&name=[name]-[hash].[ext]"
+    },
+    
     // Handle svg files without converting them to base64 backward compatibility issue
     {
       test: /\.svg$/,
-      include: [
-        path.join(srcDir, "resources", "images"),
-      ],
       use: [
         `file-loader?hash=sha512&digest=hex&outputPath=${imageOutputPath}&name=[name]-[hash].[ext]`,
         {
@@ -85,114 +129,15 @@ export default ({ imageOutputPath = "images/" }) => {
         },
       ]
     },
-    
-    // Manage PWA icons
+  
     {
-      test: /\.(jpe?g|png)$/,
-      include: [
-        path.join(srcDir, "resources", "images", "pwa"),
-      ],
+      test: /\.(jpe?g|png|gif)$/i,
       use: [
-        `file-loader?hash=sha512&digest=hex&outputPath=${imageOutputPath}pwa/&name=[name]-[hash].[ext]`,
-        {
-          loader: "img-loader",
-          options: {
-            enabled: true,
-            gifsicle: {
-              interlaced: false
-            },
-            mozjpeg: {
-              progressive: true,
-              arithmetic: false
-            },
-            optipng: false, // disabled
-            pngquant: {
-              floyd: 0.5,
-              speed: 2
-            },
-          }
-        }
+        multi(...[
+          ...(images.useWebP ? [`file-loader?outputPath=${imageOutputPath}&name=[name].[ext].webp!webp-loader?{quality: 80}`] : []),
+          `file-loader?outputPath=${imageOutputPath}&name=[name].[ext]`,
+        ])
       ]
-    },
-  
-    // Add webp loading to jpeg/png/gif files, this causes issues with large files
-    // remove webp in such case
-    {
-      test: /\.(jpe?g|png|gif)$/,
-      include: [
-        path.join(srcDir, "resources", "images"),
-      ],
-      exclude: [
-        path.join(srcDir, "resources", "images", "pwa"),
-      ],
-      use: [
-        `url-loader?limit=10240&hash=sha512&digest=hex&outputPath=${imageOutputPath}&name=[name]-[hash].webp`,
-        {
-          loader: "img-loader",
-          options: {
-            enabled: true,
-            gifsicle: {
-              interlaced: false
-            },
-            mozjpeg: {
-              progressive: true,
-              arithmetic: false
-            },
-            optipng: false, // disabled
-            pngquant: {
-              floyd: 0.5,
-              speed: 2
-            },
-          }
-        },
-        "webp-loader?{quality: 80}",
-      ]
-    },
-  
-    // Manage fonts
-    {
-      test: /\.(eot|svg|ttf|woff|woff2)$/,
-      include: [
-        path.join(srcDir, "resources", "fonts"),
-      ],
-      loader: "file-loader?outputPath=fonts/&name=[name]-[hash].[ext]"
-    },
-  
-    // Manage CSS and SASS from resources directory
-    {
-      test: /\.(sass|scss|css)$/, //Check for sass or scss file names,
-      include: [
-        path.join(srcDir, "resources"),
-      ],
-      loader: ExtractTextPlugin.extract({
-        fallback: "style-loader?sourceMap=false",
-        use: [
-          {
-            loader: "css-loader",
-            options: {
-              modules: true,
-              localIdentName: "[local]",
-              minimize: true,
-              sourceMap: false,
-              importLoaders: 2,
-            }
-          },
-          {
-            loader: "postcss-loader",
-            options: {
-              sourceMap: false
-            }
-          },
-          {
-            loader: "sass-loader",
-            options: {
-              outputStyle: "expanded",
-              sourceMap: false,
-              sourceMapContents: false,
-            }
-          },
-        ]
-      }),
     },
   ];
 };

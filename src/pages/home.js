@@ -1,5 +1,5 @@
-import Home from "app/components/home";
-import DefaultLayout from "app/components/layout";
+import Home from "../app/components/home";
+import DefaultLayout from "../app/components/layout";
 
 const routes = [
   {

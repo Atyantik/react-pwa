@@ -1,6 +1,6 @@
-import BlogListing from "app/components/blog";
-import BlogPost from "app/components/blog/post";
-import DefaultLayout from "app/components/layout";
+import BlogListing from "../app/components/blog";
+import BlogPost from "../app/components/blog/post";
+import DefaultLayout from "../app/components/layout";
 
 const routes = [
   {

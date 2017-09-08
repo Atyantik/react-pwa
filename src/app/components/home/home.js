@@ -1,7 +1,12 @@
 import React, { Component } from "react";
-import Fold from "core/components/fold";
-import ReactLogo from "resources/images/reactjs.svg";
-import SmallImage from "resources/images/small.jpg";
+import Fold from "../../../core/components/fold" ;
+import ReactLogo from "../../../resources/images/reactjs.svg";
+import SmallImage from "../../../resources/images/small.jpg";
+//import SmallImageSrcSet from "../../../resources/images/small.jpg?sizes=100w+200w";
+
+//eslint-disable-next-line
+//console.log(SmallImageSrcSet);
+
 
 export default class Home extends Component {
   render() {
@@ -34,7 +39,12 @@ export default class Home extends Component {
             massa, in suscipit diam tortor id odio. Nunc convallis vitae felis eget aliquet.
           </p>
           <p>Image sample converted to webp, uploaded/coded as jpg</p>
-          <img className="img-fluid mx-auto d-block" src={SmallImage} alt="Small Image" />
+          <picture>
+            <source srcSet={`${SmallImage}.webp`} type="image/webp" />
+            <source srcSet={SmallImage} type="image/jpeg" />
+            <img className="img-fluid mx-auto d-block" src={SmallImage} alt="Small Image" />
+          </picture>
+          
         </Fold>
       </div>
     );

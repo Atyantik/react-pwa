@@ -2,6 +2,7 @@
  * @author: Atyantik Technologies Private Limited
  */
 import webpack from "webpack";
+import multi from "multi-loader";
 
 /**
  * @description It moves all the require("style.css")s in entry chunks into
@@ -24,15 +25,19 @@ import {
   srcDir,
   buildDir,
   buildPublicPath,
-  srcPublicDir, distPublicDir, distDir
-} from "../directories";
+  srcPublicDir,
+  distDir,
+  isolateVendorScripts,
+  enableServiceWorker,
+  images,
+} from "../settings";
 
 const pagesFolder = path.join(srcDir, "pages");
 const pages = fs.readdirSync(pagesFolder);
 let entries = {};
 
 pages.forEach(page => {
-  const slugishName = page.replace(".js", "").replace(/['" \-!@#$%]/g, "_");
+  const slugishName = page.replace(".js", "").replace(/['" !@#$%]/g, "_");
   entries[`mod-${slugishName}`] = [
     "react-hot-loader/patch",
     path.join(pagesFolder, page),
@@ -53,16 +58,15 @@ const rules = [
       },
       {
         loader: "eslint-loader",
-        options: {
-          failOnWarning: false,
-          failOnError: false
-        }
       }
     ]
   },
+  
+  // Managing styles which are not present in resources folder
   {
-    test: /\.(sass|scss|css)$/, //Check for sass or scss file names,
+    test: /\.(sass|scss|css)$/, // Check for sass or scss file names,
     exclude: [
+      // We do not want to include sass|scss|css from resources with local ident
       path.join(srcDir, "resources"),
     ],
     use: [
@@ -94,32 +98,8 @@ const rules = [
       }
     ]
   },
-  {
-    test: /\.(eot|svg|ttf|woff|woff2)$/,
-    include: [
-      path.join(srcDir, "resources", "fonts"),
-    ],
-    use: "file-loader?outputPath=fonts/&name=[name].[ext]"
-  },
-  {
-    test: /\.svg$/i,
-    include: [
-      path.join(srcDir, "resources", "images"),
-    ],
-    use: [
-      "file-loader?outputPath=images/&name=[name].[ext]",
-    ]
-  },
-  {
-    test: /\.(jpe?g|png|gif)$/i,
-    include: [
-      path.join(srcDir, "resources", "images"),
-    ],
-    use: [
-      "file-loader?outputPath=images/&name=[name].webp",
-      "webp-loader?{quality: 80}",
-    ]
-  },
+  // Managing styles present in resources folder, they do not need complex IdentName
+  // Just [local]
   {
     test: /\.(sass|scss|css)$/, //Check for sass or scss file names,
     include: [
@@ -152,6 +132,32 @@ const rules = [
         }
       ]
     }),
+  },
+  
+  // Managing fonts
+  {
+    test: /\.(eot|ttf|woff|woff2)$/,
+    use: "file-loader?outputPath=fonts/&name=[name].[ext]"
+  },
+  
+  // Manage svg from overall application
+  {
+    test: /\.svg$/i,
+    use: [
+      "file-loader?outputPath=images/&name=[name].[ext]",
+    ]
+  },
+  
+  // Manage images
+  // Create webp copy of jpeg,png and gif images if useWebP is set to true
+  {
+    test: /\.(jpe?g|png|gif)$/i,
+    use: [
+      multi(...[
+        ...(images.useWebP ? ["file-loader?outputPath=images/&name=[name].[ext].webp!webp-loader?{quality: 80}"] : []),
+        "file-loader?outputPath=images/&name=[name].[ext]",
+      ])
+    ]
   },
 ];
 
@@ -214,7 +220,7 @@ const commonClientConfig = {
     },
   },
   
-  devtool: "source-map",
+  devtool: "eval-source-map",
   
   plugins: [
     
@@ -224,23 +230,27 @@ const commonClientConfig = {
     
     // Create common chunk of data
     // Break data in common so that we have minimum data to load
-    new webpack.optimize.CommonsChunkPlugin({
-      name: "commons-vendor",
-      filename: "common-0-vendor-[hash].js",
-      minChunks: function (module) {
-        
-        if(module.resource && (/^.*\.(css|scss|sass)$/).test(module.resource)) {
-          return false;
-        }
-        
-        // this assumes your vendor imports exist in the node_modules directory
-        return module.context &&
-          (
-            module.context.indexOf("node_modules") !== -1 ||
-            (module.resource && module.resource.indexOf("/src/client") !== -1)
-          );
-      },
-    }),
+    ...(
+      isolateVendorScripts ? [
+        new webpack.optimize.CommonsChunkPlugin({
+          name: "commons-vendor",
+          filename: "common-0-vendor-[hash].js",
+          minChunks: function (module) {
+            
+            if(module.resource && (/^.*\.(css|scss|sass)$/).test(module.resource)) {
+              return false;
+            }
+            
+            // this assumes your vendor imports exist in the node_modules directory
+            return module.context &&
+              (
+                module.context.indexOf("node_modules") !== -1 ||
+                (module.resource && module.resource.indexOf("/src/client") !== -1)
+              );
+          },
+        })
+      ]: []
+    ),
     
     // Extract the CSS so that it can be moved to CDN as desired
     // Also extracted CSS can be loaded parallel
@@ -264,6 +274,10 @@ const commonClientConfig = {
   ]
 };
 
+/**
+ * Service worker need to only worry about JavaScript and CSS every other thing should be
+ * available via cache or install activity
+ */
 const serviceWorkerConfig = {
   name: "service-worker",
   // The base directory, an absolute path, for resolving entry points
@@ -293,47 +307,8 @@ const serviceWorkerConfig = {
           },
           {
             loader: "eslint-loader",
-            options: {
-              failOnWarning: false,
-              failOnError: false
-            }
           }
         ]
-      },
-      {
-        test: /\.(sass|scss)$/,
-        exclude: [
-          path.join(srcDir, "resources"),
-        ],
-        loader: ExtractTextPlugin.extract({
-          fallback: "style-loader",
-          use: [
-            {
-              loader: "css-loader",
-              options: {
-                modules: true,
-                localIdentName: "[name]__[local]___[hash:base64:5]",
-                minimize: true,
-                sourceMap: false,
-                importLoaders: 2,
-              }
-            },
-            {
-              loader: "postcss-loader",
-              options: {
-                sourceMap: false
-              }
-            },
-            {
-              loader: "sass-loader",
-              options: {
-                outputStyle: "compressed",
-                sourceMap: false,
-                sourceMapContents: false,
-              }
-            },
-          ]
-        }),
       },
     ],
   },
@@ -356,28 +331,21 @@ const serviceWorkerConfig = {
     ],
   },
   
-  devtool: "source-map",
+  devtool: "eval-source-map",
   
   plugins: [
-  
     // Enable no errors plugin
     new webpack.NoEmitOnErrorsPlugin(),
-    
-    new ExtractTextPlugin("service-worker.min.css"),
-    
-    // Sass loader options for autoprefix
-    new webpack.LoaderOptionsPlugin({
-      options: {
-        context: "/",
-        sassLoader: {
-          includePaths: [srcDir]
-        },
-        postcss: function () {
-          return [autoprefixer];
-        }
-      }
-    })
   ]
 };
-// export default commonClientConfig;
-export default [commonClientConfig, serviceWorkerConfig];
+
+// Export the client config by default
+let exportConfig = commonClientConfig;
+
+// service worker is enabled for the application
+// export multiple config
+if (enableServiceWorker) {
+  exportConfig = [commonClientConfig, serviceWorkerConfig];
+}
+export default exportConfig;
+

@@ -1,7 +1,9 @@
+import componentMap from "../../config/classMap";
 /**
  * Check if current script is running in browser or not
  * @returns {boolean}
  */
+
 export const isBrowser = () => {
   return typeof window !== "undefined" && typeof document !== "undefined";
 };
@@ -162,4 +164,14 @@ export const generateStringHash = (str, namespace) => {
     hash |= 0; // Convert to 32bit integer
   }
   return hash;
+};
+
+/**
+ * Get component via componentMap in settings
+ * @param componentReference
+ */
+export const getComponent = (componentReference) => {
+  const component = componentMap[componentReference] || false;
+  if (!component) throw new Error(`Cannot find component with reference ${componentReference}`);
+  return component;
 };

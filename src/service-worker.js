@@ -4,14 +4,14 @@ import _ from "lodash";
 
 // import Offline from "app/components/offline";
 /* eslint-disable */
-// ASSETS variable is inserted by dev.server.js & server.js on fly.
+// ASSETS variable is inserted by dev.middleware.js & middleware.js on fly.
 // So lets save it to variable
 let WEB_ASSETS = ASSETS || [];
 
 // As service worker has special scope for self lets store it to variable
 const serviceWorker = self;
 
-// VERSION is a variable injected by dev.server.js & server.js on fly. its basically hash of the
+// VERSION is a variable injected by dev.middleware.js & middleware.js on fly. its basically hash of the
 // service worker generated.
 const APP_CACHE_PREFIX = "app-cache";
 const CACHE_NAME = `${APP_CACHE_PREFIX}-${VERSION}`;

@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { matchPath } from "react-router";
-import api from "core/libs/api";
+import api from "../libs/api";
 import {
   isBrowser,
   loadScript,

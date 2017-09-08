@@ -28,18 +28,18 @@ require("babel-register")(config);
 require("babel-polyfill");
 
 
-const directories = require("../directories");
+const directories = require("../settings");
 
 /**
  * try to include src to path, but with last priority
  */
-try {
-  const extraIncludePaths = [ directories.srcDir ];
-  process.env.NODE_PATH = `${process.env.NODE_PATH}:${extraIncludePaths.join(":")}`;
-  require("module").Module._initPaths();
-} catch (ex) {
-  // Do nothing
-}
+// try {
+//   const extraIncludePaths = [ directories.srcDir ];
+//   process.env.NODE_PATH = `${process.env.NODE_PATH}:${extraIncludePaths.join(":")}`;
+//   require("module").Module._initPaths();
+// } catch (ex) {
+//   // Do nothing
+// }
 
 const _  = require("lodash");
 const appConfig = require(`${directories.srcDir}/config`);
@@ -55,10 +55,8 @@ const allowedImageExtensions = _.get(appConfig, "config.images.allowedExtensions
 
 _.each(allowedImageExtensions, ext => {
   require.extensions[ext] = function (module, filename) {
-    let name = filename.split("/").pop();
-    name = name.replace(ext, "");
-    const customExt = ext !== ".svg" ? ".webp" : ext;
-    module.exports = `${directories.buildPublicPath}images/${name}${customExt}`;
+    const name = filename.split("/").pop().replace(ext, "");
+    module.exports = `${directories.buildPublicPath}images/${name}${ext}`;
   };
 });
 

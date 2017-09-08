@@ -6,7 +6,10 @@ import _ from "lodash";
 import express from "express";
 import compression from "compression";
 import http from "http";
-import Config from "config";
+import Config from "./config";
+import ServerMiddleware from "./core/server/middleware";
+import assets from "./config/assets";
+import {enableServiceWorker} from "../settings";
 
 const app = express();
 const server = http.createServer(app);
@@ -14,6 +17,7 @@ const serverPort = _.get(Config, "server.port", 3000);
 
 let currentDir = __dirname;
 
+// Set appropriate currentDir when build and run in production mode
 const filename = _.find(process.argv, arg => {
   return arg.indexOf("/server.js") !== -1;
 });
@@ -41,27 +45,43 @@ const getAllAssets = () => {
 };
 
 // Serve service worker via /service-worker.js
-const serviceWorkerContents = fs.readFileSync(path.resolve(path.join(currentDir, "service-worker.js")), "utf-8");
-const swVersionHash = crypto.createHash("md5").update(serviceWorkerContents).digest("hex");
-
-app.get("/sw.js", function (req, res) {
-  const assets = getAllAssets();
+if (enableServiceWorker) {
   
-  res.setHeader("Content-Type", "application/javascript");
-  // No cache header
-  res.setHeader("Cache-Control", "private, no-cache, no-store, must-revalidate");
-  res.setHeader("Expires", "-1");
-  res.setHeader("Pragma", "no-cache");
-  res.send(`
-    var VERSION = "${swVersionHash}";
-    var ASSETS = ${JSON.stringify(assets)};
-    ${serviceWorkerContents}
-  `);
-});
+  let cachedswResponseText = null;
+  const getServiceWorkerContent = () => {
+    if (cachedswResponseText) return cachedswResponseText;
+    // Get contents of service worker
+    const serviceWorkerContents = fs.readFileSync(path.resolve(path.join(currentDir, "service-worker.js")), "utf-8");
+  
+    // Create a response text without Version number
+    let swResponseText = `
+    var ASSETS = ${JSON.stringify(getAllAssets())};
+      ${serviceWorkerContents}
+    `;
+    // Create an MD5 hash of response and then append it to response
+    const swVersionHash = crypto.createHash("md5").update(swResponseText).digest("hex");
+    swResponseText = `
+      var VERSION = "${swVersionHash}";
+      ${swResponseText}
+    `;
+    cachedswResponseText = swResponseText;
+    return swResponseText;
+  };
+  
+  app.get("/sw.js", function (req, res) {
+    
+    const swResponseText = getServiceWorkerContent();
+    res.setHeader("Content-Type", "application/javascript");
+    // No cache header
+    res.setHeader("Cache-Control", "private, no-cache, no-store, must-revalidate");
+    res.setHeader("Expires", "-1");
+    res.setHeader("Pragma", "no-cache");
+    res.send(swResponseText);
+  });
+}
 
 // Middleware to add assets to request
 try {
-  const assets = require("./config/assets").default;
   app.use(function (req, res, next) {
     req.assets = assets;
     next();
@@ -72,9 +92,7 @@ try {
 }
 
 // Include server routes as a middleware
-app.use(function(req, res, next) {
-  require("./server")(req, res, next);
-});
+app.use(ServerMiddleware);
 
 
 server.listen(serverPort, "localhost", function(err) {

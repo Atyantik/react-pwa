@@ -20,8 +20,8 @@ import autoprefixer from "autoprefixer";
 
 import {
   srcDir,
-  distDir, distPublicDir,
-} from "../directories";
+  distDir,
+} from "../settings";
 
 import rules from "./prod.rules";
 
@@ -31,7 +31,7 @@ export default [{
   // The base directory, an absolute path, for resolving entry points
   // and loaders from configuration. Lets keep it to /src
   context: srcDir,
-
+  
   // The point or points to enter the application. At this point the
   // application starts executing. If an array is passed all items will
   // be executed.
@@ -40,7 +40,7 @@ export default [{
     // Initial entry point
     path.join(srcDir, "start-server.js"),
   ],
-
+  
   //These options determine how the different types of modules within
   // a project will be treated.
   module: {
@@ -53,26 +53,26 @@ export default [{
     ],
   },
   output: {
-
+    
     // Output everything in dist folder
     path: distDir,
-
+    
     // The file name to output
     filename: "server.js",
-
+    
     // public path is assets path
     publicPath: "/",
   },
-
+  
   node: {
     __filename: true,
     __dirname: true
   },
   target: "node",
   devtool: false,
-
+  
   plugins: [
-
+    
     // Uglify the output so that we have the most optimized code
     new UglifyJSPlugin({
       compress: true,
@@ -80,11 +80,11 @@ export default [{
       sourceMap: false,
     }),
     new webpack.DefinePlugin({
-      "process.env.NODE_ENV": JSON.stringify("production"),
+      "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "production"),
     }),
     // Enable no errors plugin
     new webpack.NoEmitOnErrorsPlugin(),
-
+    
     // Extract the CSS so that it can be moved to CDN as desired
     // Also extracted CSS can be loaded parallel
     new ExtractTextPlugin("server.min.css"),
@@ -154,11 +154,11 @@ export default [{
       sourceMap: false,
     }),
     new webpack.DefinePlugin({
-      "process.env.NODE_ENV": JSON.stringify("production"),
+      "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "production"),
     }),
     // Enable no errors plugin
     new webpack.NoEmitOnErrorsPlugin(),
-    
+      
     // Sass loader options for autoprefix
     new webpack.LoaderOptionsPlugin({
       options: {

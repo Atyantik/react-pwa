@@ -23,6 +23,13 @@ import {
   isModulePreLoaded,
 } from "./core/utils/bundler";
 
+/**
+ * Settings
+ */
+import {
+  enableServiceWorker
+} from "../settings";
+
 const hot = !!module.hot;
 
 // Set a namespace-d global
@@ -57,7 +64,8 @@ global.isSWInitialized = typeof global.isSWInitialized === Boolean ? global.isSW
 
 // Check for service worker
 const hasServiceWorker = !!_.get(window, "navigator.serviceWorker", false);
-if (!global.isSWInitialized) {
+
+if (!global.isSWInitialized && enableServiceWorker) {
   const serviceWorker = _.get(window, "navigator.serviceWorker", {
     register: async () => Promise.reject("Browser does not support service workers!")
   });
