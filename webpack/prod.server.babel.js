@@ -18,12 +18,10 @@ import ExtractTextPlugin from "extract-text-webpack-plugin";
  */
 import autoprefixer from "autoprefixer";
 
-import {
-  srcDir,
-  distDir,
-} from "../settings";
+import { srcDir, distDir } from "../directories";
 
 import rules from "./prod.rules";
+import {enableServiceWorker} from "../settings";
 
 export default [{
   
@@ -99,77 +97,83 @@ export default [{
           return [autoprefixer];
         }
       }
-    })
+    }),
   ],
 },
-{
-  name: "service-worker",
+...(enableServiceWorker ? [
+  {
+    name: "service-worker",
+  
+    // The base directory, an absolute path, for resolving entry points
+    // and loaders from configuration. Lets keep it to /src
+    context: srcDir,
+  
+    // The point or points to enter the application. At this point the
+    // application starts executing. If an array is passed all items will
+    // be executed.
+    entry: {
+      "service-worker" : [
+        "babel-polyfill",
+        // Initial entry point
+        path.join(srcDir, "service-worker.js"),
+      ]
+    },
+  
+    // These options determine how the different types of modules within
+    // a project will be treated.
+    module: {
+      rules: rules({}),
+    },
+    resolve: {
+      modules: [
+        "node_modules",
+        srcDir
+      ],
+    },
+    output: {
     
-  // The base directory, an absolute path, for resolving entry points
-  // and loaders from configuration. Lets keep it to /src
-  context: srcDir,
+      // Output everything in dist folder
+      path: distDir,
     
-  // The point or points to enter the application. At this point the
-  // application starts executing. If an array is passed all items will
-  // be executed.
-  entry: {
-    "service-worker" : [
-      "babel-polyfill",
-      // Initial entry point
-      path.join(srcDir, "service-worker.js"),
-    ]
-  },
+      // The file name to output
+      filename: "[name].js",
     
-  // These options determine how the different types of modules within
-  // a project will be treated.
-  module: {
-    rules: rules({}),
-  },
-  resolve: {
-    modules: [
-      "node_modules",
-      srcDir
-    ],
-  },
-  output: {
-      
-    // Output everything in dist folder
-    path: distDir,
-      
-    // The file name to output
-    filename: "[name].js",
-      
-    // public path is assets path
-    publicPath: "/",
-  },
-  target: "web",
-  devtool: false,
+      // public path is assets path
+      publicPath: "/",
+    },
+    target: "web",
+    devtool: false,
+  
+    plugins: [
     
-  plugins: [
-      
-    // Uglify the output so that we have the most optimized code
-    new UglifyJSPlugin({
-      compress: true,
-      comments: false,
-      sourceMap: false,
-    }),
-    new webpack.DefinePlugin({
-      "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "production"),
-    }),
-    // Enable no errors plugin
-    new webpack.NoEmitOnErrorsPlugin(),
-      
-    // Sass loader options for autoprefix
-    new webpack.LoaderOptionsPlugin({
-      options: {
-        context: "/",
-        sassLoader: {
-          includePaths: [srcDir]
-        },
-        postcss: function () {
-          return [autoprefixer];
+      // Uglify the output so that we have the most optimized code
+      new UglifyJSPlugin({
+        compress: true,
+        comments: false,
+        sourceMap: false,
+      }),
+      new webpack.DefinePlugin({
+        "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "production"),
+      }),
+      // Enable no errors plugin
+      new webpack.NoEmitOnErrorsPlugin(),
+    
+      // Extract the CSS so that it can be moved to CDN as desired
+      // Also extracted CSS can be loaded parallel
+      new ExtractTextPlugin("service-worker.min.css"),
+    
+      // Sass loader options for autoprefix
+      new webpack.LoaderOptionsPlugin({
+        options: {
+          context: "/",
+          sassLoader: {
+            includePaths: [srcDir]
+          },
+          postcss: function () {
+            return [autoprefixer];
+          }
         }
-      }
-    })
-  ],
-}];
+      }),
+    ],
+  }
+] : [])];

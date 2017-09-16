@@ -9,7 +9,7 @@ import http from "http";
 import Config from "./config";
 import ServerMiddleware from "./core/server/middleware";
 import assets from "./config/assets";
-import {enableServiceWorker} from "../settings";
+import { enableServiceWorker } from "../settings";
 
 const app = express();
 const server = http.createServer(app);

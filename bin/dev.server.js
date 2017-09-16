@@ -12,6 +12,7 @@ import http from "http";
 import webpackConfig from "../webpack/dev.babel";
 import Config from "../src/config";
 import {
+  enableServiceWorker,
   isomorphicDevelopment
 } from "../settings";
 
@@ -30,12 +31,13 @@ if (_.isArray(webpackConfig)) {
 
 // Compile common & client configurations
 const commonClientCompiler = webpack(commonClientConfig);
+
 const commonClientMiddlewareInstance = webpackMiddleware(commonClientCompiler, {
+  stats: "errors-only",
   noInfo: true,
   contentBase: commonClientConfig.devServer.contentBase,
   publicPath: commonClientConfig.output.publicPath,
   serverSideRender: true,
-  // Turn on the server-side rendering mode. See Server-Side Rendering part for more info.
 });
 
 // Use the webpack middleware
@@ -49,7 +51,7 @@ app.use(webpackHotMiddleware(commonClientCompiler, {
   heartbeat: 2000
 }));
 
-if (serviceWorkerConfig !== null) {
+if (enableServiceWorker && serviceWorkerConfig !== null) {
   const serviceWorkerCompiler = webpack(serviceWorkerConfig);
   const serviceWorkerMiddlewareInstance = webpackMiddleware(serviceWorkerCompiler, {
     noInfo: true,
@@ -98,9 +100,10 @@ app.use("/public", express.static(commonClientConfig.devServer.contentBase));
 
 // Add assets to request
 app.use(function (req, res, next) {
+  // get stats from webpack
   let webpackStats = res.locals.webpackStats.toJson();
-  let assets = {};
   
+  let assets = {};
   if (!webpackStats.children || webpackStats.children.length <= 1) {
     webpackStats = [webpackStats];
   } else {
@@ -131,15 +134,17 @@ app.use(function (req, res, next) {
     assets = {...assets, ...assetsByChunkName};
   });
   req.assets = assets;
+  
   next();
 });
 
 // Include server routes as a middleware
 app.use(function(req, res, next) {
   // We need to require this run time!
+  // Also we use require so that we can clear the cache
+  // in isomorphic development mode
   require("../src/server").default(req, res, next);
 });
-
 
 const clearRequireCache = () => {
   // eslint-disable-next-line
@@ -149,23 +154,18 @@ const clearRequireCache = () => {
   });
 };
 
-if (process.env.NODE_ENV === "development" && isomorphicDevelopment) {
-  
+if (isomorphicDevelopment) {
   const watcher = chokidar.watch("../src");
   watcher.on("ready", function() {
     watcher.on("all", clearRequireCache);
   });
 }
 
-
-
 // Do "hot-reloading" of react stuff on the server
 // Throw away the cached client modules and let them be re-required next time
 commonClientCompiler.plugin("done", function() {
   
-  if (process.env.NODE_ENV === "development" && isomorphicDevelopment) {
-    clearRequireCache();
-  }
+  if (isomorphicDevelopment) clearRequireCache();
   
   const addr = server.address();
   // eslint-disable-next-line
@@ -174,6 +174,7 @@ commonClientCompiler.plugin("done", function() {
 
 const server = http.createServer(app);
 const serverPort = _.get(Config, "server.port", 3000);
-server.listen(serverPort, "localhost", function(err) {
+
+server.listen(serverPort, "0.0.0.0", function(err) {
   if (err) throw err;
 });

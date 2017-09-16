@@ -76,6 +76,14 @@ if (!global.isSWInitialized && enableServiceWorker) {
   global.isSWInitialized = true;
 }
 
+// Unregister previously registered service worker if any!
+if (hasServiceWorker && !enableServiceWorker) {
+  window.navigator.serviceWorker.getRegistrations().then(registrations => {
+    for(let registration of registrations) {
+      registration.unregister();
+    }
+  });
+}
 
 // Get our dom app
 global.renderRoot = global.renderRoot || document.getElementById("app");

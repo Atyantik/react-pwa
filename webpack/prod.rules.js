@@ -9,10 +9,8 @@ import multi from "multi-loader";
  */
 import ExtractTextPlugin from "extract-text-webpack-plugin";
 
-import {
-  srcDir,
-  images,
-} from "../settings";
+import { images } from "../settings";
+import { srcDir } from "../directories";
 
 export default ({ imageOutputPath = "images/" }) => {
   return [

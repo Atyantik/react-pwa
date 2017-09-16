@@ -2,6 +2,11 @@
  * @author: Atyantik Technologies Private Limited
  */
 import webpack from "webpack";
+
+/**
+ * @description Enable multiple loaders to be executed parallel for a single
+ * RegExp match
+ */
 import multi from "multi-loader";
 
 /**
@@ -12,35 +17,48 @@ import multi from "multi-loader";
  * the CSS bundle is loaded in parallel to the JS bundle.
  */
 import ExtractTextPlugin from "extract-text-webpack-plugin";
+
 /**
  * @description PostCSS plugin to parse CSS and add vendor prefixes
  * to CSS rules using values from Can I Use. It is recommended by Google
  * and used in Twitter and Taobao.
  */
 import autoprefixer from "autoprefixer";
+
+/**
+ * Get path from nodejs
+ */
 import path from "path";
+
+/**
+ * Get FS filesystem from nodejs
+ */
 import fs from "fs";
 
 import {
-  srcDir,
-  buildDir,
-  buildPublicPath,
-  srcPublicDir,
-  distDir,
-  isolateVendorScripts,
   enableServiceWorker,
+  enableCommonStyles,
   images,
+  isolateVendorScripts,
 } from "../settings";
 
-const pagesFolder = path.join(srcDir, "pages");
-const pages = fs.readdirSync(pagesFolder);
+import {
+  buildDir,
+  buildPublicPath,
+  distDir,
+  pagesDir,
+  srcDir,
+  srcPublicDir,
+} from "../directories";
+
+const pages = fs.readdirSync(pagesDir);
 let entries = {};
 
 pages.forEach(page => {
   const slugishName = page.replace(".js", "").replace(/['" !@#$%]/g, "_");
   entries[`mod-${slugishName}`] = [
     "react-hot-loader/patch",
-    path.join(pagesFolder, page),
+    path.join(pagesDir, page),
     "webpack-hot-middleware/client?path=/__hmr_update&timeout=2000&overlay=true"
   ];
 });
@@ -65,10 +83,12 @@ const rules = [
   // Managing styles which are not present in resources folder
   {
     test: /\.(sass|scss|css)$/, // Check for sass or scss file names,
-    exclude: [
-      // We do not want to include sass|scss|css from resources with local ident
-      path.join(srcDir, "resources"),
-    ],
+    ...(enableCommonStyles ? {
+      exclude: [
+        // We do not want to include sass|scss|css from resources with local ident
+        path.join(srcDir, "resources"),
+      ]
+    }: {}),
     use: [
       {
         loader: "style-loader",
@@ -98,16 +118,20 @@ const rules = [
       }
     ]
   },
+  
   // Managing styles present in resources folder, they do not need complex IdentName
   // Just [local]
-  {
-    test: /\.(sass|scss|css)$/, //Check for sass or scss file names,
-    include: [
-      path.join(srcDir, "resources"),
-    ],
-    use: ExtractTextPlugin.extract({
-      fallback: "style-loader",
+  ...(enableCommonStyles ? [
+    {
+      test: /\.(sass|scss|css)$/, //Check for sass or scss file names,
+      include: [
+        path.join(srcDir, "resources"),
+      ],
       use: [
+        {
+          loader: "style-loader",
+          options: { sourceMap: true }
+        },
         {
           loader: "css-loader",
           options: {
@@ -130,9 +154,9 @@ const rules = [
             sourceMapContents: true,
           }
         }
-      ]
-    }),
-  },
+      ],
+    }
+  ]: {}),
   
   // Managing fonts
   {
@@ -177,7 +201,9 @@ const commonClientConfig = {
       path.join(srcDir, "client.js"),
       "webpack-hot-middleware/client?name=common-client&path=/__hmr_update&timeout=2000&overlay=true"
     ],
-    "common-style": path.join(srcDir, "resources", "css", "style.scss")
+    ...(enableCommonStyles ? {
+      "common-style": path.join(srcDir, "resources", "css", "style.scss")
+    }: {})
   }, entries),
   
   //These options determine how the different types of modules within
@@ -211,7 +237,7 @@ const commonClientConfig = {
     // the base of content, in our case its the "src/public" folder
     contentBase: srcPublicDir,
     
-    compress: true,
+    compress: false,
     
     // Show errors and warning on overlap
     overlay: {
@@ -275,7 +301,7 @@ const commonClientConfig = {
 };
 
 /**
- * Service worker need to only worry about JavaScript and CSS every other thing should be
+ * Service worker need to only worry about JavaScript, other thing should be
  * available via cache or install activity
  */
 const serviceWorkerConfig = {
@@ -310,6 +336,83 @@ const serviceWorkerConfig = {
           }
         ]
       },
+  
+      {
+        test: /\.(sass|scss|css)$/,
+        ...(enableCommonStyles ? {
+          exclude: [
+            // We do not want to include sass|scss|css from resources with local ident
+            path.join(srcDir, "resources"),
+          ]
+        }: {}),
+        loader: ExtractTextPlugin.extract({
+          fallback: "style-loader",
+          use: [
+            {
+              loader: "css-loader",
+              options: {
+                modules: true,
+                localIdentName: "[name]__[local]___[hash:base64:5]",
+                minimize: true,
+                sourceMap: false,
+                importLoaders: 2,
+              }
+            },
+            {
+              loader: "postcss-loader",
+              options: {
+                sourceMap: false
+              }
+            },
+            {
+              loader: "sass-loader",
+              options: {
+                outputStyle: "compressed",
+                sourceMap: false,
+                sourceMapContents: false,
+              }
+            },
+          ]
+        }),
+      },
+  
+      // Managing styles present in resources folder, they do not need complex IdentName
+      // Just [local]
+      ...(enableCommonStyles? [
+        {
+          test: /\.(sass|scss|css)$/, //Check for sass or scss file names,
+          include: [
+            path.join(srcDir, "resources"),
+          ],
+          use: ExtractTextPlugin.extract({
+            fallback: "style-loader",
+            use: [
+              {
+                loader: "css-loader",
+                options: {
+                  modules: true,
+                  localIdentName: "[local]",
+                  sourceMap: true,
+                  minimize: false,
+                  importLoaders: 2
+                }
+              },
+              {
+                loader: "postcss-loader",
+                options: { sourceMap: true }
+              },
+              {
+                loader: "sass-loader",
+                options: {
+                  outputStyle: "expanded",
+                  sourceMap: true,
+                  sourceMapContents: true,
+                }
+              }
+            ]
+          }),
+        }
+      ]: {}),
     ],
   },
   output: {
@@ -336,6 +439,13 @@ const serviceWorkerConfig = {
   plugins: [
     // Enable no errors plugin
     new webpack.NoEmitOnErrorsPlugin(),
+  
+    // Extract the CSS so that it can be moved to CDN as desired
+    // Also extracted CSS can be loaded parallel
+    new ExtractTextPlugin({
+      filename: "service-worker.[hash].min.css",
+      disable: true,
+    }),
   ]
 };
 
@@ -348,4 +458,3 @@ if (enableServiceWorker) {
   exportConfig = [commonClientConfig, serviceWorkerConfig];
 }
 export default exportConfig;
-

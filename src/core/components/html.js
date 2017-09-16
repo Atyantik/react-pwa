@@ -2,8 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import _ from "lodash";
 import { generateStringHash } from "../utils/utils";
-import { generateMeta} from "../utils/seo";
-import {enableServiceWorker} from "../../../settings";
+import { generateMeta } from "../utils/seo";
+import { enableServiceWorker } from "../../../settings";
 
 export default class Html extends React.Component {
   

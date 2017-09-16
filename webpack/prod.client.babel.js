@@ -23,14 +23,17 @@ import ExtractTextPlugin from "extract-text-webpack-plugin";
 import autoprefixer from "autoprefixer";
 
 import {
+  isolateVendorScripts
+} from "../settings";
+
+import {
   srcDir,
   rootDir,
   srcPublicDir,
   distPublicDir,
   buildDir,
   buildPublicPath,
-  isolateVendorScripts
-} from "../settings";
+} from "../directories";
 
 import rules from "./prod.rules";
 
