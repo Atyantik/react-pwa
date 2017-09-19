@@ -30,7 +30,7 @@ export const isolateVendorScripts = true;
  * Enable service worker for application
  * @type {boolean}
  */
-export const enableServiceWorker = false;
+export const enableServiceWorker = true;
 
 /**
  * Enable common styles. This if some one wants to integrate a common css framework

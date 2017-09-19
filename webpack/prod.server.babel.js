@@ -38,7 +38,7 @@ export default [{
   entry: [
     "babel-polyfill",
     // Initial entry point
-    path.join(srcDir, "start-server.js"),
+    path.join(srcDir, "core/start-server.js"),
   ],
   
   //These options determine how the different types of modules within

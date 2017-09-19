@@ -6,10 +6,10 @@ import _ from "lodash";
 import express from "express";
 import compression from "compression";
 import http from "http";
-import Config from "./config";
-import ServerMiddleware from "./core/server/middleware";
-import assets from "./config/assets";
-import { enableServiceWorker } from "../settings";
+import Config from "../config/config";
+import UserServerMiddleware from "../server";
+import assets from "../config/assets";
+import { enableServiceWorker } from "../../settings";
 
 const app = express();
 const server = http.createServer(app);
@@ -92,10 +92,9 @@ try {
 }
 
 // Include server routes as a middleware
-app.use(ServerMiddleware);
+app.use(UserServerMiddleware);
 
-
-server.listen(serverPort, "localhost", function(err) {
+server.listen(serverPort, "0.0.0.0", function(err) {
   if (err) throw err;
   const addr = server.address();
   // eslint-disable-next-line

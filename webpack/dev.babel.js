@@ -249,6 +249,10 @@ const commonClientConfig = {
   devtool: "eval-source-map",
   
   plugins: [
+  
+    new webpack.DefinePlugin({
+      "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "development"),
+    }),
     
     // Hot module replacement for getting latest updates
     // thus no reload required
@@ -437,6 +441,10 @@ const serviceWorkerConfig = {
   devtool: "eval-source-map",
   
   plugins: [
+    new webpack.DefinePlugin({
+      "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "development"),
+    }),
+    
     // Enable no errors plugin
     new webpack.NoEmitOnErrorsPlugin(),
   

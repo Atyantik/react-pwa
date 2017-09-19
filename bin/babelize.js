@@ -30,6 +30,7 @@ require("babel-polyfill");
 
 
 const settings = require("../settings");
+const directories = require("../directories");
 const _  = require("lodash");
 
 const allowedImageExtensions = _.get(settings, "images.allowedExtensions", [
@@ -44,7 +45,7 @@ const allowedImageExtensions = _.get(settings, "images.allowedExtensions", [
 _.each(allowedImageExtensions, ext => {
   require.extensions[ext] = function (module, filename) {
     const name = filename.split("/").pop().replace(ext, "");
-    module.exports = `${settings.buildPublicPath}images/${name}${ext}`;
+    module.exports = `${directories.buildPublicPath}images/${name}${ext}`;
   };
 });
 
