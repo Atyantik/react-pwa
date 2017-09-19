@@ -1,4 +1,6 @@
 import path from "path";
+
+// A loader that splits a module into multiple modules loaded with different loaders.
 import multi from "multi-loader";
 /**
  * @description It moves all the require("style.css")s in entry chunks into
@@ -9,7 +11,7 @@ import multi from "multi-loader";
  */
 import ExtractTextPlugin from "extract-text-webpack-plugin";
 
-import { images } from "../settings";
+import { images, enableCommonStyles } from "../settings";
 import { srcDir } from "../directories";
 
 export default ({ imageOutputPath = "images/" }) => {
@@ -29,9 +31,11 @@ export default ({ imageOutputPath = "images/" }) => {
     //Check for sass or scss file names directory other than resources.
     {
       test: /\.(sass|scss|css)$/,
-      exclude: [
-        path.join(srcDir, "resources"),
-      ],
+      ...(enableCommonStyles ? {
+        exclude: [
+          path.join(srcDir, "resources"),
+        ]
+      }: {}),
       loader: ExtractTextPlugin.extract({
         fallback: "style-loader",
         use: [
@@ -65,43 +69,45 @@ export default ({ imageOutputPath = "images/" }) => {
   
     // Managing styles present in resources folder, they do not need complex IdentName
     // Just [local]
-    {
-      test: /\.(sass|scss|css)$/, //Check for sass or scss file names,
-      include: [
-        path.join(srcDir, "resources"),
-      ],
-      use: ExtractTextPlugin.extract({
-        fallback: "style-loader",
-        use: [
-          {
-            loader: "css-loader",
-            options: {
-              modules: true,
-              localIdentName: "[local]",
-              sourceMap: true,
-              minimize: false,
-              importLoaders: 2
+    ...(enableCommonStyles ? [
+      {
+        test: /\.(sass|scss|css)$/, //Check for sass or scss file names,
+        include: [
+          path.join(srcDir, "resources"),
+        ],
+        use: ExtractTextPlugin.extract({
+          fallback: "style-loader",
+          use: [
+            {
+              loader: "css-loader",
+              options: {
+                modules: true,
+                localIdentName: "[local]",
+                sourceMap: true,
+                minimize: false,
+                importLoaders: 2
+              }
+            },
+            {
+              loader: "postcss-loader",
+              options: { sourceMap: true }
+            },
+            {
+              loader: "sass-loader",
+              options: {
+                outputStyle: "expanded",
+                sourceMap: true,
+                sourceMapContents: true,
+              }
             }
-          },
-          {
-            loader: "postcss-loader",
-            options: { sourceMap: true }
-          },
-          {
-            loader: "sass-loader",
-            options: {
-              outputStyle: "expanded",
-              sourceMap: true,
-              sourceMapContents: true,
-            }
-          }
-        ]
-      }),
-    },
+          ]
+        }),
+      }
+    ]: {}),
   
-    // Manage fonts
+    // Manage fonts other than svg format
     {
-      test: /\.(eot|svg|ttf|woff|woff2)$/,
+      test: /\.(eot|ttf|woff|woff2)$/,
       include: [
         path.join(srcDir, "resources", "fonts"),
       ],

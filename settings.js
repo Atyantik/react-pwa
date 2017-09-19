@@ -24,13 +24,13 @@ export const images = {
  *
  * @type {boolean}
  */
-export const isolateVendorScripts = false;
+export const isolateVendorScripts = true;
 
 /**
  * Enable service worker for application
  * @type {boolean}
  */
-export const enableServiceWorker = true;
+export const enableServiceWorker = false;
 
 /**
  * Enable common styles. This if some one wants to integrate a common css framework

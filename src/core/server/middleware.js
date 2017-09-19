@@ -36,8 +36,9 @@ import Html from "../components/html";
 import {
   enableServiceWorker,
   isomorphicDevelopment,
-  publicDirName
 } from "../../../settings";
+
+import { publicDirName } from "../../../directories";
 
 
 // Create and express js application
@@ -168,7 +169,7 @@ app.get("*", (req, res) => {
   const allCss = extractFilesFromAssets(assets, ".css");
   const allJs = extractFilesFromAssets(assets, ".js");
 
-  let mod = getModuleByUrl(routes, req.path);
+  let mod = getModuleByUrl(req.path, routes);
   const currentRoutes = getRouteFromPath(routes, req.path);
   const storage = new Storage(req, res);
   const api = new Api({storage});
@@ -232,7 +233,6 @@ app.get("*", (req, res) => {
           Switch: ServerSwitch,
           Route: ServerRoute,
           context: context,
-          history,
           store,
         });
       } else if (
@@ -249,8 +249,7 @@ app.get("*", (req, res) => {
           routes: currentRoutes,
           storage,
           store,
-          api,
-          history
+          api
         });
       }
 

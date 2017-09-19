@@ -1,6 +1,8 @@
 import path from "path";
 import webpack from "webpack";
 import UglifyJSPlugin from "uglifyjs-webpack-plugin";
+import WebpackDeleteAfterEmit from "webpack-delete-after-emit";
+
 
 /**
  * @description It moves all the require("style.css")s in entry chunks into
@@ -98,6 +100,12 @@ export default [{
         }
       }
     }),
+    // We are extracting server.min.css so that we do not have any window code in server.js
+    // but we still need the css class names that are generated. Thus we remove the server.min.css
+    // after the build process
+    new WebpackDeleteAfterEmit({
+      globs: ["server.min.css"]
+    })
   ],
 },
 ...(enableServiceWorker ? [
@@ -174,6 +182,13 @@ export default [{
           }
         }
       }),
+  
+      // We are extracting server.min.css so that we do not have any window code in service-worker.js
+      // but we still need the css class names that are generated. Thus we remove the server.min.css
+      // after the build process
+      new WebpackDeleteAfterEmit({
+        globs: ["service-worker.min.css"]
+      })
     ],
   }
 ] : [])];

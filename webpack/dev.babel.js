@@ -443,8 +443,7 @@ const serviceWorkerConfig = {
     // Extract the CSS so that it can be moved to CDN as desired
     // Also extracted CSS can be loaded parallel
     new ExtractTextPlugin({
-      filename: "service-worker.[hash].min.css",
-      disable: true,
+      filename: "service-worker.min.css"
     }),
   ]
 };
