@@ -207,7 +207,8 @@ app.get("*", (req, res) => {
   const history = createHistory();
   // Create redux store
   let store = configureStore({
-    history
+    history,
+    initialState: res.locals.initialStoreState || {}
   });
 
   try {

@@ -163,7 +163,9 @@ export const renderRoutes = async ({
     return Promise.resolve();
   } catch (err) {
     let error = err;
-    if (!(error instanceof Error)) {
+    if (err && err.error instanceof Error) {
+      error = err.error;
+    } else if (!(err instanceof Error)) {
       error = new Error(err);
     }
     
@@ -192,7 +194,6 @@ export const renderRoutes = async ({
         scrollToTop(currentRoutes);
       });
     }
-    
     return Promise.reject(err);
   }
 };

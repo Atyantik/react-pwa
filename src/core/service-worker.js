@@ -181,6 +181,7 @@ serviceWorker.addEventListener("fetch", event => {
           }
           // eslint-disable-next-line
           log(`Nothing just throwing error: ${event.request.url}`);
+          
           throw ex;
         });
       })
