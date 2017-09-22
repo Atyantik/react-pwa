@@ -2511,8 +2511,8 @@ eslint-scope@^3.7.1:
     estraverse "^4.1.1"
 
 eslint@^4.6.1:
-  version "4.7.1"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-4.7.1.tgz#849804136953ebe366782f9f8611e2cbd1b54681"
+  version "4.7.2"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-4.7.2.tgz#ff6f5f5193848a27ee9b627be3e73fb9cb5e662e"
   dependencies:
     ajv "^5.2.0"
     babel-code-frame "^6.22.0"
@@ -4091,6 +4091,10 @@ isarray@0.0.1:
 isarray@1.0.0, isarray@^1.0.0, isarray@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/isarray/-/isarray-1.0.0.tgz#bb935d48582cba168c06834957a54a3e07124f11"
+
+isbot@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/isbot/-/isbot-2.1.0.tgz#bdd83ea6f010d1a1bf221302f605d07f4b73b8bc"
 
 isexe@^2.0.0:
   version "2.0.0"
@@ -6922,8 +6926,8 @@ squeak@^1.0.0:
     lpad-align "^1.0.1"
 
 srcset-loader@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/srcset-loader/-/srcset-loader-2.1.0.tgz#e74f377a08b318c7c577648d5db3e23d99680a3f"
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/srcset-loader/-/srcset-loader-2.2.0.tgz#998d2995641897c8039379cd15ae22ed7ddfeeba"
   dependencies:
     datauri "1.0.5"
     get-pixels "3.3.0"
