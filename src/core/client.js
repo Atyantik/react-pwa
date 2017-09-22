@@ -51,6 +51,9 @@ const hot = !!module.hot;
 // Set a namespace-d global when in development mode
 let global = {};
 
+// Custom reducers
+let [reduxReducers, reduxInitialState] = [null, {}];
+
 const start = () => {
   if (hot && typeof window !== "undefined") {
     global = window["__GLOBALS"] || {};
@@ -67,11 +70,13 @@ const start = () => {
   // Create redux store
   global.store = global.store || configureStore({
     history: global.history,
-    initialState: {
+    
+    initialState: _.assignIn({}, {
       network: {
         state: window.navigator.onLine ? NETWORK_STATE_ONLINE: NETWORK_STATE_OFFLINE,
       }
-    }
+    }, reduxInitialState),
+    ...(reduxReducers ? { reducers: reduxReducers} : {})
   });
 
   // Store previous url
@@ -328,8 +333,11 @@ const start = () => {
 };
 
 export default {
-  init: (globalSettings = {}) => {
-    global = globalSettings;
+  setReduxInitialState: (initialState) => {
+    reduxInitialState = initialState;
+  },
+  setReduxReducers: (reducers) => {
+    reduxReducers = reducers;
   },
   start,
 };

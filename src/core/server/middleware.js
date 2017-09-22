@@ -208,7 +208,13 @@ app.get("*", (req, res) => {
   // Create redux store
   let store = configureStore({
     history,
-    initialState: res.locals.initialStoreState || {}
+    // Combine initial state with our default state
+    initialState: _.assignIn({}, _.get(res,"locals.reduxInitialState", {})),
+    
+    // Add reducers if provided in locals
+    ...( typeof res.locals["reduxReducers"] !== "undefined" ? {
+      reducers: res.locals["reduxReducers"]
+    } : {})
   });
 
   try {

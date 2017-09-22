@@ -6,7 +6,6 @@ const app = express.Router();
  * --- Your custom code START ---
  */
 
-
 /**
  * --- Your custom code END ---
  */
