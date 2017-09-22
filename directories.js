@@ -71,7 +71,7 @@ const pagesDirName = "pages";
  * and the files will be dropped in the path relative to distribution folder
  * @type {string}
  */
-export const buildPublicPath = `/${publicDirName}/${buildDirName}/`;
+export const buildPublicPath = "/" + publicDirName + "/" + buildDirName + "/";
 
 // Directory structure
 // Root dir is the project root

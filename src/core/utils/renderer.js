@@ -170,7 +170,7 @@ export const renderRoutesByUrl = ({
   store,
   renderRoot = null
 }, callback = () => null) => {
-  const currentRoutes = url ? getRouteFromPath(routes, url): routes;
+  const currentRoutes = url ? getRouteFromPath(url, routes): routes;
   
   context.api = api;
   context.storage = storage;

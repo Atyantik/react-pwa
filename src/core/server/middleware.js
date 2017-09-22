@@ -33,6 +33,7 @@ import configureStore from "../store";
 import Routes  from "../../routes";
 import config from "../../config/config";
 import Html from "../components/html";
+import { pageCache, infiniteCache } from "../libs/cache/memory";
 import {
   enableServiceWorker,
   isomorphicDevelopment,
@@ -40,13 +41,14 @@ import {
 
 import { publicDirName } from "../../../directories";
 
+const __development = process.env.NODE_ENV === "development";
 
 // Create and express js application
 const app = express.Router();
 
 // When not developing code, enabling it during development
 // will take up un-necessary time and resources
-if (process.env.NODE_ENV !== "development") {
+if (!__development) {
   
   // use compression for all requests
   app.use(compression());
@@ -69,7 +71,7 @@ app.use(cookieParser());
 let currentDir = __dirname;
 
 // Set appropriate currentDir when build and run in production mode
-if (process.env.NODE_ENV !== "development") {
+if (!__development) {
   const filename = _.find(process.argv, arg => {
     return arg.indexOf("/server.js") !== -1;
   });
@@ -111,7 +113,7 @@ const getErrorComponent = (err, store) => {
  * Send global data to user, as we do not want to send it via
  * window object
  */
-app.get("/_globals", (req, res) => {
+app.get("/_globals", infiniteCache(), (req, res) => {
 
   // Never ever cache this request
   const { assets } = req;
@@ -134,7 +136,7 @@ app.get("/_globals", (req, res) => {
 if (enableServiceWorker) {
 
   // Only if service worker is enabled then emit manifest.json
-  app.get("/manifest.json", (req, res) => {
+  app.get("/manifest.json", infiniteCache(), (req, res) => {
   
     const { pwa } = config;
   
@@ -157,9 +159,9 @@ if (enableServiceWorker) {
   });
 }
 
-app.get("*", (req, res) => {
-
-  let routes = _.assignIn({}, Routes);
+app.get("*", pageCache(_.cloneDeep(Routes)), (req, res) => {
+  
+  let routes = _.cloneDeep(Routes);
 
   // Get list of assets from request
   const { assets } = req;
@@ -171,7 +173,7 @@ app.get("*", (req, res) => {
   const allJs = extractFilesFromAssets(assets, ".js");
 
   let mod = getModuleByUrl(req.path, routes);
-  const currentRoutes = getRouteFromPath(routes, req.path);
+  const currentRoutes = getRouteFromPath(req.path, routes);
   const storage = new Storage(req, res);
   const api = new Api({storage});
 
@@ -244,8 +246,7 @@ app.get("*", (req, res) => {
           store,
         });
       } else if (
-        (process.env.NODE_ENV === "development" && isomorphicDevelopment) ||
-        (process.env.NODE_ENV !== "development")
+        (__development && isomorphicDevelopment) || !__development
       ) {
         routerComponent = renderRoutesByUrl({
           render: false,

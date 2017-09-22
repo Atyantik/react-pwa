@@ -57,9 +57,9 @@ const scrollToTop = (currentRoutes = []) => {
   return smoothScroll(undefined, scrollTop);
 };
 
-const updateHtmlMeta = (collectedRoutes, url) => {
+const updateHtmlMeta = url => {
   
-  const currentRoutes = getRouteFromPath(collectedRoutes, url);
+  const currentRoutes = getRouteFromPath(url);
   
   let seoData = {};
   _.each(currentRoutes, r => {
@@ -116,7 +116,7 @@ export const renderRoutes = async ({
 }) => {
   
   // Get current routes from the routes we need to load data
-  const currentRoutes = getRouteFromPath(collectedRoutes, url);
+  const currentRoutes = getRouteFromPath(url, collectedRoutes);
   
   // If no routes are matching our criteria, that means we have a 404
   // else react-router is taking care of it.
@@ -149,7 +149,7 @@ export const renderRoutes = async ({
   
   try {
     await Promise.all(promises);
-    updateHtmlMeta(collectedRoutes, url);
+    updateHtmlMeta(url);
     renderRoutesByUrl({
       routes: currentRoutes,
       history,
@@ -198,9 +198,9 @@ export const renderRoutes = async ({
   }
 };
 
-export const isRelatedRoute = (prevUrl, currUrl, collectedRoutes) => {
-  const prevRoutes = getRouteFromPath(collectedRoutes, prevUrl);
-  const currRoutes = getRouteFromPath(collectedRoutes, currUrl);
+export const isRelatedRoute = (prevUrl, currUrl) => {
+  const prevRoutes = getRouteFromPath(prevUrl);
+  const currRoutes = getRouteFromPath(currUrl);
   const currExactRoute = _.find(currRoutes, {match: {isExact: true}});
   
   const isParent = !_.isEmpty(_.find(prevRoutes, currExactRoute));

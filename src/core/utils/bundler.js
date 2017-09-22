@@ -9,7 +9,9 @@ import {
 } from "./utils";
 
 let globalsLoaded = false;
-let globals = {};
+let globals = {
+  routes: []
+};
 
 /**
  * Load globals through the express route, we don't want to increase size of page
@@ -457,11 +459,11 @@ export const extractFilesFromAssets = (assets, ext = ".js") => {
 };
 
 /**
- * Get route from path
+ * Get routes from path
  * @param routes
  * @param path
  */
-export const getRouteFromPath = (routes, path) => {
+export const getRouteFromPath = (path, routes = globals.routes) => {
   let selectedRoute = [];
   
   const changeMatchToNull =(route) => {
@@ -491,7 +493,7 @@ export const getRouteFromPath = (routes, path) => {
         // If subRoutes are found to match the provided path,
         // that means we can add the abstract path to list of
         // our routes
-        const subRoutes = getRouteFromPath(route.routes, path);
+        const subRoutes = getRouteFromPath(path, route.routes);
         
         if (subRoutes.length) {
           // Add abstract path to our list in expected order and then
@@ -511,7 +513,7 @@ export const getRouteFromPath = (routes, path) => {
       if(match) {
         selectedRoute.push(_.assignIn(route, {match: match}));
         if (route.routes && route.routes.length) {
-          selectedRoute.push(...getRouteFromPath(route.routes, path));
+          selectedRoute.push(...getRouteFromPath(path, route.routes));
         }
       } else {
         changeMatchToNull(route);
@@ -521,4 +523,14 @@ export const getRouteFromPath = (routes, path) => {
   // Do not repeat paths even if the provided routes to the function has repeated paths
   // Thus make them unique by path
   return _.uniqBy(selectedRoute, "path");
+};
+
+/**
+ * Get end/exact route for path
+ * @param routes
+ * @param path
+ */
+export const getExactRouteFromPath = (path, routes = globals.routes) => {
+  const currentRoutes = getRouteFromPath(path, routes);
+  return _.find(currentRoutes, r => _.get(r, "match.isExact", false));
 };

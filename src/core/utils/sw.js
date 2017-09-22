@@ -119,7 +119,7 @@ export const getOfflineHtml = (url = "/") => {
   
   const globals = serviceWorker._GLOBALS;
   let routes = _.assignIn({}, _.get(globals, "routes", []));
-  const currentRoutes = getRouteFromPath(routes, url);
+  const currentRoutes = getRouteFromPath(url, routes);
   
   const allCss = _.get(globals, "allCss", []);
   const allJs = _.get(globals, "allJs", []);
