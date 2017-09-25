@@ -52,14 +52,4 @@ export default {
       }
     ],
   },
-  images: {
-    allowedExtensions: [
-      ".jpeg",
-      ".jpg",
-      ".png",
-      ".gif",
-      ".svg",
-      ".bmp",
-    ],
-  },
 };

@@ -10,7 +10,11 @@ import webpackMiddleware from "webpack-dev-middleware";
 import webpackHotMiddleware from "webpack-hot-middleware";
 import http from "http";
 import webpackConfig from "../webpack/dev.babel";
-import Config from "config";
+import Config from "../src/config";
+import {
+  enableServiceWorker,
+  isomorphicDevelopment
+} from "../settings";
 
 // Inform developers that Compilation is in process
 // and wait till its fully done
@@ -27,12 +31,13 @@ if (_.isArray(webpackConfig)) {
 
 // Compile common & client configurations
 const commonClientCompiler = webpack(commonClientConfig);
+
 const commonClientMiddlewareInstance = webpackMiddleware(commonClientCompiler, {
+  stats: "errors-only",
   noInfo: true,
   contentBase: commonClientConfig.devServer.contentBase,
   publicPath: commonClientConfig.output.publicPath,
   serverSideRender: true,
-  // Turn off the server-side rendering mode. See Server-Side Rendering part for more info.
 });
 
 // Use the webpack middleware
@@ -46,7 +51,7 @@ app.use(webpackHotMiddleware(commonClientCompiler, {
   heartbeat: 2000
 }));
 
-if (serviceWorkerConfig !== null) {
+if (enableServiceWorker && serviceWorkerConfig !== null) {
   const serviceWorkerCompiler = webpack(serviceWorkerConfig);
   const serviceWorkerMiddlewareInstance = webpackMiddleware(serviceWorkerCompiler, {
     noInfo: true,
@@ -71,28 +76,34 @@ if (serviceWorkerConfig !== null) {
     );
     
     const serviceWorkerContents = serviceWorkerMiddlewareInstance.fileSystem.readFileSync(`${serviceWorkerConfig.output.path}/service-worker.js`, "utf-8");
-    const swVersionHash = crypto.createHash("md5").update(serviceWorkerContents).digest("hex");
-    // eslint-disable-next-line
+    let swResponseText = `
+      var ASSETS = ${JSON.stringify(assets)};
+      ${serviceWorkerContents}
+    `;
+    const swVersionHash = crypto.createHash("md5").update(swResponseText).digest("hex");
+    swResponseText = `
+      var VERSION = "${swVersionHash}";
+      ${swResponseText}
+    `;
+    
     res.setHeader("Content-Type", "application/javascript");
     // No cache header
     res.setHeader("Cache-Control", "private, no-cache, no-store, must-revalidate");
     res.setHeader("Expires", "-1");
     res.setHeader("Pragma", "no-cache");
-    res.send(`
-      var VERSION = "${swVersionHash}";
-      var ASSETS = ${JSON.stringify(assets)};
-      ${serviceWorkerContents}
-    `);
+    res.send(swResponseText);
   });
 }
 
 // server content from content base
 app.use("/public", express.static(commonClientConfig.devServer.contentBase));
+
 // Add assets to request
 app.use(function (req, res, next) {
+  // get stats from webpack
   let webpackStats = res.locals.webpackStats.toJson();
-  let assets = {};
   
+  let assets = {};
   if (!webpackStats.children || webpackStats.children.length <= 1) {
     webpackStats = [webpackStats];
   } else {
@@ -102,12 +113,11 @@ app.use(function (req, res, next) {
   _.each(webpackStats, stat => {
     const assetsByChunkName = stat.assetsByChunkName;
     const publicPath = stat.publicPath;
-
+    
     _.each(assetsByChunkName, (chunkValue, chunkName) => {
 
       // If its array then it just contains chunk value as array
       if (_.isArray(chunkValue)) {
-        //console.log(chunkValue);
         _.each(chunkValue, (path, index) => {
           assetsByChunkName[chunkName][index] = `${publicPath}${path}`;
         });
@@ -117,43 +127,45 @@ app.use(function (req, res, next) {
             assetsByChunkName[chunkName][subChunkType][subChunkIndex] = `${publicPath}${subChunkValue}`;
           });
         });
+      } else if (_.isString(chunkValue)) {
+        assetsByChunkName[chunkName] = `${publicPath}${chunkValue}`;
       }
     });
     assets = {...assets, ...assetsByChunkName};
   });
-  
   req.assets = assets;
+  
   next();
 });
 
 // Include server routes as a middleware
 app.use(function(req, res, next) {
-  require("../src/server")(req, res, next);
+  // We need to require this run time!
+  // Also we use require so that we can clear the cache
+  // in isomorphic development mode
+  require("../src/server").default(req, res, next);
 });
 
-const watcher = chokidar.watch("../src/server");
-
-watcher.on("ready", function() {
-  watcher.on("all", function() {
-    // eslint-disable-next-line
-    console.log("Clearing /src/ module cache from server");
-    Object.keys(require.cache).forEach(function(id) {
-      // eslint-disable-next-line
-      if (/[\/\\]src[\/\\]/.test(id)) delete require.cache[id];
-    });
+const clearRequireCache = () => {
+  // eslint-disable-next-line
+  console.log("Clearing module cache...");
+  Object.keys(require.cache).forEach(function(id) {
+    delete require.cache[id];
   });
-});
+};
 
+if (isomorphicDevelopment) {
+  const watcher = chokidar.watch("../src");
+  watcher.on("ready", function() {
+    watcher.on("all", clearRequireCache);
+  });
+}
 
 // Do "hot-reloading" of react stuff on the server
 // Throw away the cached client modules and let them be re-required next time
 commonClientCompiler.plugin("done", function() {
-  // eslint-disable-next-line
-  console.log("Clearing /src/ module cache from server");
-  Object.keys(require.cache).forEach(function(id) {
-    // eslint-disable-next-line
-    if (/[\/\\]src[\/\\]/.test(id)) delete require.cache[id];
-  });
+  
+  if (isomorphicDevelopment) clearRequireCache();
   
   const addr = server.address();
   // eslint-disable-next-line
@@ -162,6 +174,7 @@ commonClientCompiler.plugin("done", function() {
 
 const server = http.createServer(app);
 const serverPort = _.get(Config, "server.port", 3000);
-server.listen(serverPort, "localhost", function(err) {
+
+server.listen(serverPort, "0.0.0.0", function(err) {
   if (err) throw err;
 });

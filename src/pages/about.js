@@ -1,7 +1,7 @@
-import About from "app/components/about";
-import DefaultLayout from "app/components/layout";
-import AboutSection from "app/components/about/section";
-import * as AboutReducers from "app/components/about/reducer";
+import About from "../app/components/about";
+import DefaultLayout from "../app/components/layout";
+import AboutSection from "../app/components/about/section";
+import * as AboutReducers from "../app/components/about/reducer";
 
 export const reducers = {
   ...AboutReducers

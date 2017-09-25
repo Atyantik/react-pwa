@@ -43,7 +43,6 @@ const metaKeys = [
  * @returns {Array}
  */
 export const generateMeta = (data) => {
-  "use strict";
   let seoData = _.defaults(data, seoSchema);
   let generatedSchema = [];
   const desc155words = trimTillLastSentence(seoData.description, 155);
@@ -229,6 +228,8 @@ export const generateMeta = (data) => {
 
   const userMeta = _.get(seoData, "meta", []);
   addUpdateMeta(generatedSchema, userMeta);
+  
+  generatedSchema = _.uniqWith(generatedSchema, _.isEqual);
 
   return generatedSchema;
 };

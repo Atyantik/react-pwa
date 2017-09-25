@@ -11,21 +11,22 @@ const createReducer = (reducers = {}) => {
 };
 
 let composeEnhancers = compose;
-if (typeof window !== "undefined" && process.env.NODE_ENV !== "production") {
+if (typeof window !== "undefined") {
   composeEnhancers = window["__REDUX_DEVTOOLS_EXTENSION_COMPOSE__"] || compose;
 }
 
 export default function configureStore({
   initialState = {},
   history,
-  middleware = []
+  middleware = [],
+  reducers = {}
 }) {
   // Add history middleware
   const historyMiddleware = routerMiddleware(history);
   middleware.push(historyMiddleware);
   
-  const store = createStore(createReducer(), initialState, composeEnhancers(applyMiddleware(...middleware)));
-  store.asyncReducers = {};
+  const store = createStore(createReducer(reducers), initialState, composeEnhancers(applyMiddleware(...middleware)));
+  store.asyncReducers = reducers;
   return store;
 }
 

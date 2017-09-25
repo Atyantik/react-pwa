@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Redirect } from "react-router-dom";
 import classNames from "classnames";
 import  { Link } from "react-router-dom";
 import { renderSubRoutes } from "../../../core/utils/renderer";
@@ -8,6 +9,7 @@ export default class About extends Component {
   render() {
     return (
       <div className="row mt-3">
+        <Redirect to={"/contact"} />
         <div className="col-sm-3 blog-sidebar">
           <div className={classNames("sidebar-module", styles["sidebar-module-inset"])}>
             <h4>About</h4>

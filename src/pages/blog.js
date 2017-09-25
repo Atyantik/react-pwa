@@ -1,6 +1,6 @@
-import BlogListing from "app/components/blog";
-import BlogPost from "app/components/blog/post";
-import DefaultLayout from "app/components/layout";
+import BlogListing from "../app/components/blog";
+import BlogPost from "../app/components/blog/post";
+import DefaultLayout from "../app/components/layout";
 
 const routes = [
   {
@@ -9,7 +9,7 @@ const routes = [
     layout: DefaultLayout,
     component: BlogListing,
     preLoadData: async ({ api }) => {
-      return api.fetch("https://www.atyantik.com/wp-json/wp/v2/posts");
+      return api.fetch("https://www.atyantik.com/wp-json/wp/v2/posts", { swcache: 20000 });
     },
     bundleKey: "blog",
   },
@@ -19,7 +19,7 @@ const routes = [
     component: BlogPost,
     preLoadData: async ({match, api}) => {
       const { params } = match;
-      return api.fetch(`https://www.atyantik.com/wp-json/wp/v2/posts/${params.id}`);
+      return api.fetch(`https://www.atyantik.com/wp-json/wp/v2/posts/${params.id}`, { swcache: 20000 });
     },
     bundleKey: "blog",
   }

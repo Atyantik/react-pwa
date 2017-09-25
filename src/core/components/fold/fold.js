@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import _ from "lodash";
 const SHOW_TIMEOUT = 50;
 
 /**
@@ -74,7 +75,14 @@ export default class Fold extends Component {
   }
   
   render() {
-    if (this.state.visible) {
+    if (this.state.visible)  {
+      
+      if (!this.props.children) return null;
+      
+      if (_.isArray(this.props.children)) {
+        return <div>{this.props.children}</div>;
+      }
+      
       return this.props.children;
     }
     
@@ -84,8 +92,8 @@ export default class Fold extends Component {
       placeholderStyle
     } = this.props;
     
-    return placeholder || (
-      <div className={placeholderClassName} style={placeholderStyle} />
-    );
+    if (placeholder) return placeholder;
+    
+    return <div className={placeholderClassName} style={placeholderStyle} />;
   }
 }
