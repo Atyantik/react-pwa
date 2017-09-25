@@ -159,23 +159,23 @@ let modulesLoaded = [];
  * @param cb
  */
 export const loadModuleByUrl = (url, cb = () => {}) => {
+  
   if (!isBrowser()) {
     cb();
     return;
   }
-  if (isModuleLoaded(url)) {
-    return cb();
-  }
+  
   loadGlobals().then(() => {
+    
+    const currentMod = getModuleByUrl(url, globals.routes);
+    
     // location is an object like window.location
     // Load in respect to path
-    let currentMod = getModuleByUrl(url, globals.routes);
-    
     let isLoaded = false;
     const afterLoad = () => {
       isLoaded = true;
       modulesLoaded.push(currentMod);
-      cb();
+      cb(currentMod);
       window.removeEventListener("routesload", afterLoad);
     };
     window.addEventListener("routesload", afterLoad);
@@ -210,8 +210,8 @@ export const loadModuleByUrl = (url, cb = () => {}) => {
  * @param url
  * @returns {boolean}
  */
-export const isModuleLoaded = (url) => {
-  let mod = getModuleByUrl(url, globals.routes);
+export const isModuleLoaded = (url, routes = globals.routes) => {
+  let mod = getModuleByUrl(url, routes);
   return _.indexOf(modulesLoaded, mod) !== -1;
 };
 

@@ -29,7 +29,7 @@ import {
 import {
   loadModuleByUrl,
   idlePreload,
-  getModuleByUrl,
+  getModuleByUrl, isModuleLoaded,
 } from "./utils/bundler";
 
 import { trackPageView } from "./utils/analytics";
@@ -80,9 +80,6 @@ const start = () => {
     }, reduxInitialState),
     ...(reduxReducers ? { reducers: reduxReducers} : {})
   });
-
-  // Store state if we are working with history change
-  global.isHistoryChanging = global.isHistoryChanging || false;
 
   // check if application is loaded initially or its just a hot update from HMR
   global.isInitialLoad = typeof global.isInitialLoad === Boolean ? global.isInitialLoad: true;
@@ -198,15 +195,11 @@ const start = () => {
         isInitialLoad: global.isInitialLoad
       }
     }).then(() => {
-      global.previousUrl = url;
       global.isInitialLoad = false;
-      global.isHistoryChanging = false;
     }).catch((ex) => {
       // eslint-disable-next-line
       console.log(ex);
-      global.previousUrl = url;
       global.isInitialLoad = false;
-      global.isHistoryChanging = false;
     });
   };
   
@@ -237,16 +230,23 @@ const start = () => {
         scrollToTop();
       });
     }
-    // Load module and render
-    loadModuleByUrl(url, () => {
-      renderRoutesWrapper({ url });
-    });
+    
+    //eslint-disable-next-line
+    console.log(getModuleByUrl(url), isModuleLoaded(url, global.collectedRoutes));
+    
+    if (isModuleLoaded(url, global.collectedRoutes)) {
+      return renderRoutesWrapper({ url });
+    }
+    // Load module, as the module load automatically triggers __renderRoutes,
+    // it should just work fine
+    loadModuleByUrl(url);
   };
   
   
   if (global.unlisten) global.unlisten();
   
   global.unlisten = global.history.listen( location => {
+  
     // Set the record for last changed url
     global.previousUrl = location.pathname;
     
@@ -255,8 +255,6 @@ const start = () => {
       delete window["ignoreHistoryChange"];
       return false;
     }
-    
-    global.isHistoryChanging = true;
     updateByUrl(location.pathname);
   });
 
@@ -284,11 +282,7 @@ const start = () => {
     };
     
     w.__renderRoutes = () => {
-      if (!global.isHistoryChanging) {
-        renderRoutesWrapper({
-          url: global.previousUrl
-        });
-      }
+      renderRoutesWrapper({url: global.previousUrl});
     };
     
   })(window);
