@@ -118,9 +118,6 @@ export const renderRoutes = async ({
   // Get current routes from the routes we need to load data
   const currentRoutes = getRouteFromPath(url, collectedRoutes);
   
-  //eslint-disable-next-line
-  console.log(url, currentRoutes);
-  
   // If no routes are matching our criteria, that means we have a 404
   // else react-router is taking care of it.
   if (!currentRoutes.length) {

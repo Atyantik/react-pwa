@@ -46,7 +46,9 @@ export default class Html extends React.Component {
           }
         </head>
         <body>
-          <div id="app" dangerouslySetInnerHTML={{ __html: this.props.children}} />
+          <div id="app">
+            {this.props.children}
+          </div>
           {
             _.map(scripts, path => {
               const pathHash = generateStringHash(path, "JS");

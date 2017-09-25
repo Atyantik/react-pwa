@@ -262,13 +262,13 @@ app.get("*", pageCache(_.cloneDeep(Routes)), (req, res) => {
         });
       }
 
-      html = ReactDOMServer.renderToStaticMarkup((
+      html = ReactDOMServer.renderToString((
         <Html
           stylesheets={currentRouteCss}
           scripts={currentRouteJs}
           seo={seoDetails}
         >
-          {routerComponent ? ReactDOMServer.renderToString(routerComponent): ""}
+          {routerComponent}
         </Html>
       ));
   
@@ -281,12 +281,12 @@ app.get("*", pageCache(_.cloneDeep(Routes)), (req, res) => {
 
     }).catch((err) => {
       routerComponent = getErrorComponent(err, store);
-      html = ReactDOMServer.renderToStaticMarkup((
+      html = ReactDOMServer.renderToString((
         <Html
           stylesheets={currentRouteCss}
           scripts={currentRouteJs}
         >
-          {routerComponent ? ReactDOMServer.renderToString(routerComponent): ""}
+          {routerComponent}
         </Html>
       ));
       return res.status(err.statusCode || 500).send(`<!DOCTYPE html>${html}`);
@@ -294,12 +294,12 @@ app.get("*", pageCache(_.cloneDeep(Routes)), (req, res) => {
     // Get data to load for all the routes
   } catch (err) {
     routerComponent = getErrorComponent(err, store);
-    html = ReactDOMServer.renderToStaticMarkup((
+    html = ReactDOMServer.renderToString((
       <Html
         stylesheets={currentRouteCss}
         scripts={currentRouteJs}
       >
-        {routerComponent ? ReactDOMServer.renderToString(routerComponent): ""}
+        {routerComponent}
       </Html>
     ));
     return res.status(err.statusCode || 500).send(`<!DOCTYPE html>${html}`);
