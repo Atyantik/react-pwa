@@ -18,8 +18,9 @@ import {
 import {
   renderRoutes,
   updateRoutes,
-  isRelatedRoute,
-  showScreenLoader
+  showScreenLoader,
+  scrollToTop,
+  hideScreenLoader,
 } from "./utils/client";
 
 /**
@@ -28,7 +29,6 @@ import {
 import {
   loadModuleByUrl,
   idlePreload,
-  isModuleLoaded,
   getModuleByUrl,
 } from "./utils/bundler";
 
@@ -45,6 +45,8 @@ import ApiInstance from "./libs/api";
 import {
   enableServiceWorker
 } from "../../settings";
+
+import { renderNotFoundPage } from "./utils/renderer";
 
 const hot = !!module.hot;
 
@@ -79,9 +81,6 @@ const start = () => {
     ...(reduxReducers ? { reducers: reduxReducers} : {})
   });
 
-  // Store previous url
-  global.previousUrl = global.previousUrl || null;
-
   // Store state if we are working with history change
   global.isHistoryChanging = global.isHistoryChanging || false;
 
@@ -90,6 +89,9 @@ const start = () => {
 
   // Check if service worker already initialized
   global.isSWInitialized = typeof global.isSWInitialized === Boolean ? global.isSWInitialized: false;
+  
+  // Set previous url
+  global.previousUrl = global.previousUrl || "";
 
   // Check if current browser/client supports service worker
   const supportsServiceWorker = !!_.get(window, "navigator.serviceWorker", false);
@@ -185,6 +187,7 @@ const start = () => {
   const renderRoutesWrapper = ({
     url = global.previousUrl,
   }) => {
+    
     return renderRoutes({
       url: url,
       store: global.store,
@@ -201,12 +204,13 @@ const start = () => {
     }).catch((ex) => {
       // eslint-disable-next-line
       console.log(ex);
+      global.previousUrl = url;
+      global.isInitialLoad = false;
       global.isHistoryChanging = false;
     });
   };
   
   const updateByUrl = url => {
-    
     // Show screen loader asap
     !global.isInitialLoad && showScreenLoader(global.store);
     
@@ -222,73 +226,38 @@ const start = () => {
     if (!module) {
       // If no module found for the route simple ask to render it as it will display
       // 404 page
-      return renderRoutesWrapper({
-        url,
+      return renderNotFoundPage({
+        history: global.history,
+        renderRoot: global.renderRoot,
+        url: url,
+        routes: [],
+        store: global.store
+      }, () => {
+        !global.isInitialLoad && hideScreenLoader(global.store);
+        scrollToTop();
       });
     }
-    
-    if (!isModuleLoaded(url)) {
-      loadModuleByUrl(url, () => {
-        renderRoutesWrapper({ url });
-      });
-      
-    } else {
-      if (
-        !isRelatedRoute(global.previousUrl, url)
-      ) {
-        // This happens when the new url is child of previous url
-        // i.e. the urls are related to each-other
-        renderRoutesWrapper({ url });
-      }
-      // if they are related route then let the react-router handle the stuff!
-      // We just don't render it ourselves but we still need the trigger for page-track and
-      // everything.
-    }
+    // Load module and render
+    loadModuleByUrl(url, () => {
+      renderRoutesWrapper({ url });
+    });
   };
   
-  if (global.unsubscribe) global.unsubscribe();
   
-  global.unsubscribe = global.store.subscribe(() => {
+  if (global.unlisten) global.unlisten();
+  
+  global.unlisten = global.history.listen( location => {
+    // Set the record for last changed url
+    global.previousUrl = location.pathname;
     
-    // Get state of store
-    const state = global.store.getState();
-    
-    // Get location.pathname from the store via router middleware
-    const url = _.get(state, "router.location.pathname", global.previousUrl);
-    
-    // get location.search from the store via router middleware
-    const urlSearch  = _.get(state, "router.location.search", global.previousSearch);
-    
-    // get url directly via history
-    const historyUrl = _.get(global.history, "location.pathname", url);
-    
-    //@todo Improve ignore history change
-    // When user tries to change history and does not want our application to take
-    // action on it, then simply set the parameters and let it go.
     if (window["ignoreHistoryChange"]) {
-      global.previousUrl = url;
       window["ignoreHistoryChange"] = null;
       delete window["ignoreHistoryChange"];
       return false;
     }
     
-    if (url !== global.previousUrl) {
-      global.previousUrl = url;
-      global.previousSearch = urlSearch;
-      if (historyUrl !== url) {
-        global.history.timeTravel = true;
-        global.history.replace(url, state);
-      }
-      global.isHistoryChanging = true;
-      updateByUrl(url);
-    } else if (urlSearch !== global.previousSearch) {
-      global.previousSearch = urlSearch;
-      global.isHistoryChanging = true;
-      updateByUrl(url);
-    } else if (url !== historyUrl) {
-      global.isHistoryChanging = true;
-      updateByUrl(historyUrl);
-    }
+    global.isHistoryChanging = true;
+    updateByUrl(location.pathname);
   });
 
   // Add update routes globally
@@ -328,7 +297,7 @@ const start = () => {
   loadModuleByUrl(global.previousUrl, () => {
     // Start preloading data if service worker is not
     // supported. We can cache data with serviceWorker
-    !supportsServiceWorker && idlePreload(5000);
+    (!supportsServiceWorker || !enableServiceWorker) && idlePreload(5000);
   });
 };
 

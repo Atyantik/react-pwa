@@ -57,8 +57,13 @@ export const getModuleByUrl = (pathname, routes = globals.routes) => {
   
   // Try to get module if exact path is matched
   
-  // Iterate through all the routes to get
-  // the correct module name for the path
+  /**
+   * Iterate through all the routes to get
+   * the correct module name for the path.
+   * This iteration is for exact match with pathname
+   * thus giving more priority to /about/about-us to more than
+   * /:something/:sub-something
+   */
   _.each(routes, route => {
     
     // If already found a module name then return
@@ -75,6 +80,10 @@ export const getModuleByUrl = (pathname, routes = globals.routes) => {
     }
   });
   
+  /**
+   * If no module name is found via match of react-router
+   * i.e. using matchPath
+   */
   if (!moduleName) {
     // Iterate through all the routes to get
     // the correct module name for the path
@@ -151,7 +160,11 @@ let modulesLoaded = [];
  */
 export const loadModuleByUrl = (url, cb = () => {}) => {
   if (!isBrowser()) {
+    cb();
     return;
+  }
+  if (isModuleLoaded(url)) {
+    return cb();
   }
   loadGlobals().then(() => {
     // location is an object like window.location
@@ -207,32 +220,6 @@ export const isModuleLoaded = (url) => {
  * @type {Array}
  */
 let preLoadedFiles = [];
-
-export const isModulePreLoaded = url => {
-  
-  let modulePreLoaded = true;
-  let mod = getModuleByUrl(url, globals.routes);
-  
-  
-  _.each(globals.allCss, css => {
-    if (scriptBelongToMod(css, mod)) {
-      let scriptHash = generateStringHash(css, "PRELOAD");
-      if (_.indexOf(preLoadedFiles, scriptHash) === -1) {
-        modulePreLoaded = false;
-      }
-    }
-  });
-  
-  _.each(globals.allJs, js => {
-    if (scriptBelongToMod(js, mod)) {
-      let scriptHash = generateStringHash(js, "PRELOAD");
-      if (_.indexOf(preLoadedFiles, scriptHash) === -1) {
-        modulePreLoaded = false;
-      }
-    }
-  });
-  return modulePreLoaded;
-};
 /**
  * Get list of pending pre-loads files
  * @returns {[*,*]}
@@ -475,7 +462,6 @@ export const getRouteFromPath = (path, routes = globals.routes) => {
     }
   };
   
-  // eslint-disable-next-line
   const bundleKey = getModuleByUrl(path, routes);
   
   _.each(routes, route => {

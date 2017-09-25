@@ -42,7 +42,7 @@ export const hideScreenLoader = (store) => {
   store.dispatch(screenLoaded());
 };
 
-const scrollToTop = (currentRoutes = []) => {
+export const scrollToTop = (currentRoutes = []) => {
   if (process.env.NODE_ENV === "development") {
     return;
   }
@@ -118,6 +118,9 @@ export const renderRoutes = async ({
   // Get current routes from the routes we need to load data
   const currentRoutes = getRouteFromPath(url, collectedRoutes);
   
+  //eslint-disable-next-line
+  console.log(url, currentRoutes);
+  
   // If no routes are matching our criteria, that means we have a 404
   // else react-router is taking care of it.
   if (!currentRoutes.length) {
@@ -142,10 +145,6 @@ export const renderRoutes = async ({
     store,
     url: window.location.href.replace(window.location.origin, "")
   });
-  
-  if (promises.length && !options.isInitialLoad) {
-    showScreenLoader(store);
-  }
   
   try {
     await Promise.all(promises);
@@ -203,6 +202,8 @@ export const isRelatedRoute = (prevUrl, currUrl) => {
   const currRoutes = getRouteFromPath(currUrl);
   const currExactRoute = _.find(currRoutes, {match: {isExact: true}});
   
+  // eslint-disable-next-line
+  console.log(prevRoutes, currRoutes, currExactRoute);debugger;
   const isParent = !_.isEmpty(_.find(prevRoutes, currExactRoute));
   let isChild = false;
   _.each(prevRoutes, route => {
