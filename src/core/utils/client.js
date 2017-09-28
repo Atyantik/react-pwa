@@ -26,14 +26,23 @@ import { screenLoading, screenLoaded, SCREEN_STATE_LOADED } from "../components/
 // no sense in displaying the loader, rather wait for 100 milli-second and then show screen-loader
 let screenLoaderTimeout = 0;
 const waitTime = 100;
+
+/**
+ * Show screen loader and trigger dispatch accordingly
+ * @param store
+ */
 export const showScreenLoader = (store) => {
   screenLoaderTimeout && clearTimeout(screenLoaderTimeout);
   screenLoaderTimeout = setTimeout(() => {
     store.dispatch(screenLoading());
     screenLoaderTimeout = 0;
   }, waitTime);
-  
 };
+
+/**
+ * Hide screen-loader
+ * @param store
+ */
 export const hideScreenLoader = (store) => {
   screenLoaderTimeout && clearTimeout(screenLoaderTimeout);
   const state = store.getState();
@@ -42,6 +51,10 @@ export const hideScreenLoader = (store) => {
   store.dispatch(screenLoaded());
 };
 
+/**
+ * Scroll to top for the specified route
+ * @param currentRoutes
+ */
 export const scrollToTop = (currentRoutes = []) => {
   if (process.env.NODE_ENV === "development") {
     return;
@@ -57,6 +70,10 @@ export const scrollToTop = (currentRoutes = []) => {
   return smoothScroll(undefined, scrollTop);
 };
 
+/**
+ * Update meta-data for the specified url
+ * @param url
+ */
 const updateHtmlMeta = url => {
   
   const currentRoutes = getRouteFromPath(url);
@@ -194,22 +211,6 @@ export const renderRoutes = async ({
   }
 };
 
-export const isRelatedRoute = (prevUrl, currUrl) => {
-  const prevRoutes = getRouteFromPath(prevUrl);
-  const currRoutes = getRouteFromPath(currUrl);
-  const currExactRoute = _.find(currRoutes, {match: {isExact: true}});
-  
-  // eslint-disable-next-line
-  console.log(prevRoutes, currRoutes, currExactRoute);debugger;
-  const isParent = !_.isEmpty(_.find(prevRoutes, currExactRoute));
-  let isChild = false;
-  _.each(prevRoutes, route => {
-    if (isChild) return;
-    isChild = !_.isEmpty(_.find(_.get(route, "routes", []), currExactRoute));
-  });
-  return isParent || isChild;
-};
-
 /**
  * Load routes when a bundle is included,
  * this will be called from pages
@@ -296,3 +297,4 @@ export const smoothScroll = (eID, padding = 0, speedMultiplier = 1) => {
     leapY -= step; if (leapY < stopY) leapY = stopY; timer++;
   }
 };
+

@@ -50,11 +50,8 @@ const routes = [
   }
 ];
 
-if (typeof window !== "undefined") {
-  window.__updatePage({ routes, reducers });
-  if (module.hot) {
-    module.hot.accept();
-  }
+if (process.env.NODE_ENV !== "development" && typeof window !== "undefined") {
+  window.__updatePage({ routes });
   window.__renderRoutes();
 }
 

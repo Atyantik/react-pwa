@@ -17,9 +17,18 @@ import clientApi from "../libs/api";
 
 
 import RouteWithSubRoutes from "../components/route/with-sub-routes";
-
 import { getRouteFromPath } from "./bundler";
-import { getComponent } from "./utils";
+import componentMap from "../../config/classMap";
+
+/**
+ * Get component via componentMap in settings
+ * @param componentReference
+ */
+const getComponent = (componentReference) => {
+  const component = componentMap[componentReference] || false;
+  if (!component) throw new Error(`Cannot find component with reference ${componentReference}`);
+  return component;
+};
 
 const RootComponent = getComponent("root");
 const Loader  = getComponent("loader");

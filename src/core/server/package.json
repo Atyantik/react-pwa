@@ -1,0 +1,6 @@
+{
+  "name": "Server",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./middleware.js"
+}

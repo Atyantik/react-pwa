@@ -74,7 +74,7 @@ export default {
   entry: Object.assign({}, {
     "client": [
       "babel-polyfill",
-      path.join(srcDir, "client.js"),
+      path.join(srcDir, "core/client/prod.client.js"),
       path.join(srcDir, "resources", "css", "style.scss")
     ]
   }, entries),

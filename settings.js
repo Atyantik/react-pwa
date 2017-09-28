@@ -1,13 +1,5 @@
 export const images = {
-  useWebP: true,
-  allowedExtensions: [
-    ".bmp",
-    ".gif",
-    ".jpeg",
-    ".jpg",
-    ".png",
-    ".svg",
-  ],
+  useWebP: true
 };
 
 /**
@@ -39,11 +31,3 @@ export const enableServiceWorker = false;
  * @type {boolean}
  */
 export const enableCommonStyles = true;
-
-/**
- * Isomorphic (Server rendering is disabled when developing app i.e. NODE_ENV = development) by default
- * This settings help you manipulate the setting, if server side rendering should be cached or not!
- *
- * Setting it to true might cause severe performance issues
- */
-export const isomorphicDevelopment = false;

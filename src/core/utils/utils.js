@@ -1,5 +1,4 @@
-import componentMap from "../../config/classMap";
-
+import _ from "lodash";
 /**
  * Check if current script is running in browser or not
  * @returns {boolean}
@@ -166,11 +165,48 @@ export const generateStringHash = (str, namespace) => {
 
 
 /**
- * Get component via componentMap in settings
- * @param componentReference
+ * Extract files from given assets collection
+ * @param assets
+ * @param ext
+ * @returns {[*,*,*]}
  */
-export const getComponent = (componentReference) => {
-  const component = componentMap[componentReference] || false;
-  if (!component) throw new Error(`Cannot find component with reference ${componentReference}`);
-  return component;
+export const extractFilesFromAssets = (assets, ext = ".js") => {
+  let common = [];
+  let dev = [];
+  let other = [];
+  
+  const addToList = (file) => {
+    
+    let fileName = file.split("/").pop();
+    
+    if (_.startsWith(fileName, "common")) {
+      common.push(file);
+      return;
+    }
+    if (_.startsWith(fileName, "dev")) {
+      dev.push(file);
+      return;
+    }
+    other.push(file);
+  };
+  
+  _.each(assets, asset => {
+    if (_.isArray(asset) || _.isObject(asset)) {
+      _.each(asset, file => {
+        if (_.endsWith(file, ext)) {
+          addToList(file);
+        }
+      });
+    } else {
+      if (_.endsWith(asset, ext)) {
+        addToList(asset);
+      }
+    }
+  });
+  
+  return [
+    ...common.sort(),
+    ...dev.sort(),
+    ...other.sort(),
+  ];
 };

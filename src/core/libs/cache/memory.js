@@ -2,8 +2,6 @@ import mcache from "memory-cache";
 import _ from "lodash";
 import isBot from "isbot";
 
-import { getExactRouteFromPath } from "../../utils/bundler";
-
 
 const __development = process.env.NODE_ENV === "development";
 /**
@@ -17,6 +15,8 @@ export const pageCache = (routes = []) => {
   
     // Disable cache when env development
     if (__development) return next();
+    
+    const getExactRouteFromPath = require("../../utils/bundler").getExactRouteFromPath;
   
     const bot = isBot(_.get(req, "headers.user-agent", ""));
     let key = `__express__${req.originalUrl || req.url}`;

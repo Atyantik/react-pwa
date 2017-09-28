@@ -1,6 +1,6 @@
 {
   "name": "react-redux-progressive-app",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "description": "Boilerplate for react, redux with server-side rendering and support for progressive web application",
   "main": "index.js",
   "engines": {
@@ -10,6 +10,7 @@
   "devDependencies": {
     "assets-webpack-plugin": "^3.5.1",
     "autoprefixer": "^7.1.4",
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.0",
     "babel-loader": "^7.1.2",
@@ -81,9 +82,9 @@
     "webpack-hot-middleware": "^2.19.1"
   },
   "scripts": {
-    "start": "cross-env NODE_ENV=development nodemon --watch src/server.js --watch webpack/dev.babel.js --watch .bin/ ./bin/babelize.js ./dev.server.js",
+    "start": "cross-env NODE_ENV=development babel-node ./src/server.js",
     "build": "cross-env NODE_ENV=production webpack -p --config ./webpack/prod.client.babel.js && cross-env NODE_ENV=production webpack -p --verbose --config ./webpack/prod.server.babel.js",
-    "test": "cross-env NODE_ENV=test mocha \"test/**/*.test.js\" --require bin/babelize.js --ignore-babelize-require"
+    "test": "cross-env NODE_ENV=test mocha \"test/**/*.test.js\""
   },
   "keywords": [
     "es7",

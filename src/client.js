@@ -1,7 +1,3 @@
-import CoreClient from "./core/client";
-
-// Initialize the core client with default values
-CoreClient.start();
-
-const hot = !!module.hot;
-if (hot) module.hot.accept();
+export const reduxInitialState = {};
+export const reduxReducers = null;
+if (module.hot) module.hot.accept();

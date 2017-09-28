@@ -9,10 +9,14 @@ import {
 } from "./utils";
 
 let globalsLoaded = false;
+
 let globals = {
   routes: []
 };
 
+export const setGlobalRoutes = (routes) => {
+  globals.routes = _.cloneDeep(routes);
+};
 /**
  * Load globals through the express route, we don't want to increase size of page
  * adding it to script tag
@@ -169,6 +173,9 @@ export const loadModuleByUrl = (url, cb = () => {}) => {
     
     const currentMod = getModuleByUrl(url, globals.routes);
     
+    //eslint-disable-next-line
+    debugger;
+    
     // location is an object like window.location
     // Load in respect to path
     let isLoaded = false;
@@ -181,7 +188,9 @@ export const loadModuleByUrl = (url, cb = () => {}) => {
     window.addEventListener("routesload", afterLoad);
     
     // Try to load after 5 second even if script does not call event
-    const extendedAfterLoad = () => {
+    const extendedAfterLoad = (ex) => {
+      // eslint-disable-next-line
+      console.log(ex);
       setTimeout(() => {
         if (!isLoaded) {
           afterLoad();
@@ -396,53 +405,6 @@ export const idlePreload = (idleTime = 10000) => {
     window.onkeypress = resetTimer;
     timerEventInitialized = true;
   }
-};
-
-/**
- * Extract files from given assets collection
- * @param assets
- * @param ext
- * @returns {[*,*,*]}
- */
-export const extractFilesFromAssets = (assets, ext = ".js") => {
-  let common = [];
-  let dev = [];
-  let other = [];
-  
-  const addToList = (file) => {
-    
-    let fileName = file.split("/").pop();
-    
-    if (_.startsWith(fileName, "common")) {
-      common.push(file);
-      return;
-    }
-    if (_.startsWith(fileName, "dev")) {
-      dev.push(file);
-      return;
-    }
-    other.push(file);
-  };
-  
-  _.each(assets, asset => {
-    if (_.isArray(asset) || _.isObject(asset)) {
-      _.each(asset, file => {
-        if (_.endsWith(file, ext)) {
-          addToList(file);
-        }
-      });
-    } else {
-      if (_.endsWith(asset, ext)) {
-        addToList(asset);
-      }
-    }
-  });
-  
-  return [
-    ...common.sort(),
-    ...dev.sort(),
-    ...other.sort(),
-  ];
 };
 
 /**

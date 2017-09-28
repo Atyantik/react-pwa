@@ -10,13 +10,9 @@ const routes = [
     bundleKey: "home",
   }
 ];
-
 if (typeof window !== "undefined") {
-  window.__updatePage({ routes });
-  if (module.hot) {
-    module.hot.accept();
-  }
-  window.__renderRoutes();
+  window.__updatePage && window.__updatePage({ routes });
+  window.__renderRoutes && window.__renderRoutes();
 }
 
 export default routes;

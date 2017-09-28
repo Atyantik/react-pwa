@@ -168,7 +168,7 @@ const rules = [
   {
     test: /\.svg$/i,
     use: [
-      "file-loader?outputPath=images/&name=[name].[ext]",
+      "file-loader?outputPath=images/&name=[hash].[ext]",
     ]
   },
   
@@ -178,8 +178,8 @@ const rules = [
     test: /\.(jpe?g|png|gif)$/i,
     use: [
       multi(...[
-        ...(images.useWebP ? ["file-loader?outputPath=images/&name=[name].[ext].webp!webp-loader?{quality: 80}"] : []),
-        "file-loader?outputPath=images/&name=[name].[ext]",
+        ...(images.useWebP ? ["file-loader?outputPath=images/&name=[hash].[ext].webp!webp-loader?{quality: 80}"] : []),
+        "file-loader?outputPath=images/&name=[hash].[ext]",
       ])
     ]
   },
@@ -198,7 +198,7 @@ const commonClientConfig = {
     "client": [
       "babel-polyfill",
       "react-hot-loader/patch",
-      path.join(srcDir, "client.js"),
+      path.join(srcDir, "core/client/dev.client.js"),
       "webpack-hot-middleware/client?name=common-client&path=/__hmr_update&timeout=2000&overlay=true"
     ],
     ...(enableCommonStyles ? {

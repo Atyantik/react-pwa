@@ -2,11 +2,7 @@ import React, { Component } from "react";
 import Fold from "../../../core/components/fold" ;
 import ReactLogo from "../../../resources/images/reactjs.svg";
 import SmallImage from "../../../resources/images/small.jpg";
-//import SmallImageSrcSet from "../../../resources/images/small.jpg?sizes=100w+200w";
-
-//eslint-disable-next-line
-//console.log(SmallImageSrcSet);
-
+// import SmallImageSrcset from "srcset-loader!../../../resources/images/mario-large.png?sizes=100w+200w+400w";
 
 export default class Home extends Component {
   render() {
@@ -40,8 +36,6 @@ export default class Home extends Component {
           </p>
           <p>Image sample converted to webp, uploaded/coded as jpg</p>
           <picture>
-            <source srcSet={`${SmallImage}.webp`} type="image/webp" />
-            <source srcSet={SmallImage} type="image/jpeg" />
             <img className="img-fluid mx-auto d-block" src={SmallImage} alt="Small Image" />
           </picture>
           
