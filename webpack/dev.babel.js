@@ -4,12 +4,6 @@
 import webpack from "webpack";
 
 /**
- * @description Enable multiple loaders to be executed parallel for a single
- * RegExp match
- */
-import multi from "multi-loader";
-
-/**
  * @description It moves all the require("style.css")s in entry chunks into
  * a separate single CSS file. So your styles are no longer inlined
  * into the JS bundle, but separate in a CSS bundle file (styles.css).
@@ -30,15 +24,10 @@ import autoprefixer from "autoprefixer";
  */
 import path from "path";
 
-/**
- * Get FS filesystem from nodejs
- */
 import fs from "fs";
 
 import {
   enableServiceWorker,
-  enableCommonStyles,
-  images,
   isolateVendorScripts,
 } from "../settings";
 
@@ -46,22 +35,13 @@ import {
   buildDir,
   buildPublicPath,
   distDir,
-  pagesDir,
   srcDir,
   srcPublicDir,
 } from "../directories";
 
-const pages = fs.readdirSync(pagesDir);
-let entries = {};
+import { getStylesRule } from "./utils";
 
-pages.forEach(page => {
-  const slugishName = page.replace(".js", "").replace(/['" !@#$%]/g, "_");
-  entries[`mod-${slugishName}`] = [
-    "react-hot-loader/patch",
-    path.join(pagesDir, page),
-    "webpack-hot-middleware/client?path=/__hmr_update&timeout=2000&overlay=true"
-  ];
-});
+let entries = {};
 
 
 const rules = [
@@ -73,117 +53,38 @@ const rules = [
     use: [
       {
         loader: "babel-loader",
-      },
-      {
-        loader: "eslint-loader",
       }
     ]
   },
-  
-  // Managing styles which are not present in resources folder
-  {
-    test: /\.(sass|scss|css)$/, // Check for sass or scss file names,
-    ...(enableCommonStyles ? {
-      exclude: [
-        // We do not want to include sass|scss|css from resources with local ident
-        path.join(srcDir, "resources"),
-      ]
-    }: {}),
-    use: [
-      {
-        loader: "style-loader",
-        options: { sourceMap: true }
-      },
-      {
-        loader: "css-loader",
-        options: {
-          modules: true,
-          localIdentName: "[name]__[local]",
-          sourceMap: true,
-          minimize: false,
-          importLoaders: 2
-        }
-      },
-      {
-        loader: "postcss-loader",
-        options: { sourceMap: true }
-      },
-      {
-        loader: "sass-loader",
-        options: {
-          outputStyle: "expanded",
-          sourceMap: true,
-          sourceMapContents: true,
-        }
-      }
-    ]
-  },
-  
-  // Managing styles present in resources folder, they do not need complex IdentName
-  // Just [local]
-  ...(enableCommonStyles ? [
-    {
-      test: /\.(sass|scss|css)$/, //Check for sass or scss file names,
-      include: [
-        path.join(srcDir, "resources"),
-      ],
-      use: [
-        {
-          loader: "style-loader",
-          options: { sourceMap: true }
-        },
-        {
-          loader: "css-loader",
-          options: {
-            modules: true,
-            localIdentName: "[local]",
-            sourceMap: true,
-            minimize: false,
-            importLoaders: 2
-          }
-        },
-        {
-          loader: "postcss-loader",
-          options: { sourceMap: true }
-        },
-        {
-          loader: "sass-loader",
-          options: {
-            outputStyle: "expanded",
-            sourceMap: true,
-            sourceMapContents: true,
-          }
-        }
-      ],
-    }
-  ]: {}),
+  ...[getStylesRule({ isResource: false })],
+  ...[getStylesRule({ isResource: true })],
   
   // Managing fonts
   {
     test: /\.(eot|ttf|woff|woff2)$/,
-    use: "file-loader?outputPath=fonts/&name=[name].[ext]"
-  },
-  
-  // Manage svg from overall application
-  {
-    test: /\.svg$/i,
-    use: [
-      "file-loader?outputPath=images/&name=[hash].[ext]",
-    ]
+    use: "file-loader?outputPath=fonts/&name=[hash].[ext]"
   },
   
   // Manage images
-  // Create webp copy of jpeg,png and gif images if useWebP is set to true
   {
-    test: /\.(jpe?g|png|gif)$/i,
+    test: /\.(jpe?g|png|svg|gif|webp)$/i,
+    // match one of the loader's main parameters (sizes and placeholder)
+    resourceQuery: /[?&](sizes|placeholder)(=|&|\[|$)/i,
     use: [
-      multi(...[
-        ...(images.useWebP ? ["file-loader?outputPath=images/&name=[hash].[ext].webp!webp-loader?{quality: 80}"] : []),
-        "file-loader?outputPath=images/&name=[hash].[ext]",
-      ])
+      "pwa-srcset-loader",
+    ]
+  },
+  {
+    test: /\.(jpe?g|png|gif|svg|webp)$/i,
+    // match one of the loader's main parameters (sizes and placeholder)
+    use: [
+      `file-loader?outputPath=images/&name=[path][hash].[ext]&context=${srcDir}`
     ]
   },
 ];
+
+const commonStylePath = path.join(srcDir, "resources", "css", "style.scss");
+const hasCommonStyle = fs.existsSync(commonStylePath);
 
 const commonClientConfig = {
   name: "common-client",
@@ -201,8 +102,8 @@ const commonClientConfig = {
       path.join(srcDir, "core/client/dev.client.js"),
       "webpack-hot-middleware/client?name=common-client&path=/__hmr_update&timeout=2000&overlay=true"
     ],
-    ...(enableCommonStyles ? {
-      "common-style": path.join(srcDir, "resources", "css", "style.scss")
+    ...(hasCommonStyle ? {
+      "common-style": commonStylePath
     }: {})
   }, entries),
   
@@ -225,9 +126,14 @@ const commonClientConfig = {
   
   resolve: {
     modules: [
-      "node_modules",
-      srcDir
+      "node_modules"
     ],
+  },
+  resolveLoader: {
+    modules: [
+      "node_modules",
+      path.resolve(path.join(srcDir, "core", "webpack", "loaders"))
+    ]
   },
   
   devServer: {
@@ -282,10 +188,6 @@ const commonClientConfig = {
       ]: []
     ),
     
-    // Extract the CSS so that it can be moved to CDN as desired
-    // Also extracted CSS can be loaded parallel
-    new ExtractTextPlugin("[name].[hash].min.css"),
-    
     // Enable no errors plugin
     new webpack.NoEmitOnErrorsPlugin(),
     
@@ -334,89 +236,12 @@ const serviceWorkerConfig = {
         use: [
           {
             loader: "babel-loader",
-          },
-          {
-            loader: "eslint-loader",
           }
         ]
       },
   
-      {
-        test: /\.(sass|scss|css)$/,
-        ...(enableCommonStyles ? {
-          exclude: [
-            // We do not want to include sass|scss|css from resources with local ident
-            path.join(srcDir, "resources"),
-          ]
-        }: {}),
-        loader: ExtractTextPlugin.extract({
-          fallback: "style-loader",
-          use: [
-            {
-              loader: "css-loader",
-              options: {
-                modules: true,
-                localIdentName: "[name]__[local]___[hash:base64:5]",
-                minimize: true,
-                sourceMap: false,
-                importLoaders: 2,
-              }
-            },
-            {
-              loader: "postcss-loader",
-              options: {
-                sourceMap: false
-              }
-            },
-            {
-              loader: "sass-loader",
-              options: {
-                outputStyle: "compressed",
-                sourceMap: false,
-                sourceMapContents: false,
-              }
-            },
-          ]
-        }),
-      },
-  
-      // Managing styles present in resources folder, they do not need complex IdentName
-      // Just [local]
-      ...(enableCommonStyles? [
-        {
-          test: /\.(sass|scss|css)$/, //Check for sass or scss file names,
-          include: [
-            path.join(srcDir, "resources"),
-          ],
-          use: ExtractTextPlugin.extract({
-            fallback: "style-loader",
-            use: [
-              {
-                loader: "css-loader",
-                options: {
-                  modules: true,
-                  localIdentName: "[local]",
-                  sourceMap: true,
-                  minimize: false,
-                  importLoaders: 2
-                }
-              },
-              {
-                loader: "postcss-loader",
-                options: { sourceMap: true }
-              },
-              {
-                loader: "sass-loader",
-                options: {
-                  outputStyle: "expanded",
-                  sourceMap: true,
-                  sourceMapContents: true,
-                }
-              }
-            ]
-          }),
-        }
-      ]: {}),
+      ...[getStylesRule({isResource: false, extract: true})],
+      ...[getStylesRule({isResource: true, extract: true})],
     ],
   },
   output: {

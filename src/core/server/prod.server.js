@@ -41,6 +41,7 @@ import Routes from "../../routes";
 import {extractFilesFromAssets} from "../utils/utils";
 import {publicDirName} from "../../../directories";
 import {enableServiceWorker} from "../../../settings";
+import config from "../../config";
 
 
 /**
@@ -150,6 +151,29 @@ if (enableServiceWorker) {
     res.setHeader("Expires", "-1");
     res.setHeader("Pragma", "no-cache");
     res.send(swResponseText);
+  });
+  
+  // Only if service worker is enabled then emit manifest.json
+  app.get("/manifest.json", infiniteCache(), (req, res) => {
+    
+    const { pwa } = config;
+    
+    const availableSizes = [72, 96, 128, 144, 152, 192, 384, 512];
+    const icons = availableSizes.map(size => {
+      return {
+        "src": require(`../../resources/images/pwa/icon-${size}x${size}.png`),
+        sizes: `${size}x${size}`
+      };
+    });
+    _.set(pwa, "icons", icons);
+    
+    res.setHeader("Content-Type", "application/manifest+json");
+    // No cache header
+    res.setHeader("Cache-Control", "private, no-cache, no-store, must-revalidate");
+    res.setHeader("Expires", "-1");
+    res.setHeader("Pragma", "no-cache");
+    
+    return res.send(JSON.stringify(pwa));
   });
 }
 

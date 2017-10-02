@@ -41,6 +41,11 @@
     "file-loader": "^0.11.2",
     "glob": "^7.1.2",
     "history": "^4.7.2",
+    "imagemin-gifsicle": "^5.2.0",
+    "imagemin-loader": "^1.0.7",
+    "imagemin-mozjpeg": "^6.0.0",
+    "imagemin-optipng": "^5.2.1",
+    "imagemin-svgo": "^5.2.2",
     "img-loader": "^2.0.0",
     "isbot": "^2.1.0",
     "lodash": "^4.17.4",
@@ -83,8 +88,9 @@
   },
   "scripts": {
     "start": "cross-env NODE_ENV=development babel-node ./src/server.js",
+    "lint": "eslint --ignore-path .gitignore src webpack",
     "build": "cross-env NODE_ENV=production webpack -p --config ./webpack/prod.client.babel.js && cross-env NODE_ENV=production webpack -p --verbose --config ./webpack/prod.server.babel.js",
-    "test": "cross-env NODE_ENV=test mocha \"test/**/*.test.js\""
+    "test": "npm run lint && cross-env NODE_ENV=test mocha --compilers js:babel-core/register \"src/**/*.test.js\""
   },
   "keywords": [
     "es7",

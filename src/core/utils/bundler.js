@@ -188,9 +188,7 @@ export const loadModuleByUrl = (url, cb = () => {}) => {
     window.addEventListener("routesload", afterLoad);
     
     // Try to load after 5 second even if script does not call event
-    const extendedAfterLoad = (ex) => {
-      // eslint-disable-next-line
-      console.log(ex);
+    const extendedAfterLoad = () => {
       setTimeout(() => {
         if (!isLoaded) {
           afterLoad();

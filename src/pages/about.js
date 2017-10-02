@@ -50,9 +50,4 @@ const routes = [
   }
 ];
 
-if (process.env.NODE_ENV !== "development" && typeof window !== "undefined") {
-  window.__updatePage({ routes });
-  window.__renderRoutes();
-}
-
 export default routes;

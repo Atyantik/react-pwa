@@ -62,6 +62,9 @@ pages.forEach(page => {
   entries[`mod-${slugishName}`] = path.join(pagesFolder, page);
 });
 
+const commonStylePath = path.join(srcDir, "resources", "css", "style.scss");
+const hasCommonStyle = fs.existsSync(commonStylePath);
+
 export default {
   
   // The base directory, an absolute path, for resolving entry points
@@ -75,7 +78,7 @@ export default {
     "client": [
       "babel-polyfill",
       path.join(srcDir, "core/client/prod.client.js"),
-      path.join(srcDir, "resources", "css", "style.scss")
+      (hasCommonStyle ? path.join(srcDir, "resources", "css", "style.scss"): undefined)
     ]
   }, entries),
   
@@ -87,9 +90,15 @@ export default {
   
   resolve: {
     modules: [
-      "node_modules",
-      srcDir
+      "node_modules"
     ],
+  },
+  
+  resolveLoader: {
+    modules: [
+      "node_modules",
+      path.resolve(path.join(srcDir, "core", "webpack", "loaders"))
+    ]
   },
   
   output: {
@@ -155,7 +164,7 @@ export default {
     }),
     
     // Enable no errors plugin
-    new webpack.NoEmitOnErrorsPlugin(),
+    // new webpack.NoEmitOnErrorsPlugin(),
     
     // Extract the CSS so that it can be moved to CDN as desired
     // Also extracted CSS can be loaded parallel

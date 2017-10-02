@@ -22,12 +22,4 @@ export const isolateVendorScripts = true;
  * Enable service worker for application
  * @type {boolean}
  */
-export const enableServiceWorker = false;
-
-/**
- * Enable common styles. This if some one wants to integrate a common css framework
- * as boostrap and dont want to use the customized class for them. Its also important
- * when using 3rd party css and use it directly in application
- * @type {boolean}
- */
-export const enableCommonStyles = true;
+export const enableServiceWorker = true;

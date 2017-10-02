@@ -4,7 +4,7 @@ import http from "http";
 import serverMiddleware from "./core/server/middleware";
 import Config from "./config";
 
-const app = express.Router();
+const app = express();
 /**
  * --- Your custom code START ---
  */
