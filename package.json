@@ -60,6 +60,7 @@
     "postcss-smart-import": "^0.7.5",
     "precss": "^2.0.0",
     "prop-types": "^15.5.10",
+    "pwa-srcset-loader": "^1.1.1",
     "react": "^16.0.0-rc.3",
     "react-dom": "^16.0.0-rc.2",
     "react-hot-loader": "^3.0.0-beta.7",
