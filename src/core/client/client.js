@@ -67,7 +67,7 @@ if (!reduxInitialState) reduxInitialState = {};
 global.collectedRoutes = global.collectedRoutes || [];
 
 // Create enhanced history with
-global.history = global.history || createHistory();
+window.__history = global.history = global.history || createHistory();
 
 // Create redux store
 global.store = global.store || configureStore({

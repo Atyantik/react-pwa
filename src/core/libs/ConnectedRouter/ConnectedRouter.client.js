@@ -10,14 +10,20 @@ export default class ConnectedRouter extends Component {
     children: PropTypes.node,
     Router: PropTypes.any.isRequired,
   };
-
+  
   static contextTypes = {
     store: PropTypes.object
   };
+  
+  constructor(props) {
+    super(props);
+    const { history } = this.props;
+    if (history) {
+      this.unsubscribeFromHistory = history.listen(this.handleLocationChange);
+    }
+  }
 
   handleLocationChange = location => {
-    // Add a parameter of time travel
-    if (this.props.history.timeTravel) return;
     this.store.dispatch({
       type: LOCATION_CHANGE,
       payload: location
@@ -28,11 +34,6 @@ export default class ConnectedRouter extends Component {
     const { store:propsStore, history } = this.props;
     this.store = propsStore || this.context.store;
     this.handleLocationChange(history.location);
-  }
-
-  componentDidMount() {
-    const { history } = this.props;
-    this.unsubscribeFromHistory = history.listen(this.handleLocationChange);
   }
 
   componentWillUnmount() {

@@ -60,7 +60,6 @@
     "postcss-smart-import": "^0.7.5",
     "precss": "^2.0.0",
     "prop-types": "^15.5.10",
-    "pwa-srcset-loader": "^1.1.1",
     "react": "^16.0.0-rc.3",
     "react-dom": "^16.0.0-rc.2",
     "react-hot-loader": "^3.0.0-beta.7",
@@ -73,7 +72,6 @@
     "redux": "^3.7.2",
     "sass-loader": "^6.0.6",
     "serve-favicon": "^2.4.3",
-    "srcset-loader": "^2.1.0",
     "strict-uri-encode": "^2.0.0",
     "style-loader": "^0.18.2",
     "uglify-js": "^3.0.28",
@@ -88,7 +86,7 @@
     "webpack-hot-middleware": "^2.19.1"
   },
   "scripts": {
-    "start": "cross-env NODE_ENV=development babel-node ./src/server.js",
+    "start": "cross-env NODE_ENV=development nodemon --exec babel-node --watch ./src/server.js --watch ./src/client.js --watch ./src/core --watch ./webpack ./src/server.js",
     "lint": "eslint --ignore-path .gitignore src webpack",
     "build": "cross-env NODE_ENV=production webpack -p --config ./webpack/prod.client.babel.js && cross-env NODE_ENV=production webpack -p --verbose --config ./webpack/prod.server.babel.js",
     "test": "npm run lint && cross-env NODE_ENV=test mocha --compilers js:babel-core/register \"src/**/*.test.js\""

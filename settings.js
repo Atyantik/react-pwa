@@ -22,4 +22,4 @@ export const isolateVendorScripts = true;
  * Enable service worker for application
  * @type {boolean}
  */
-export const enableServiceWorker = true;
+export const enableServiceWorker = false;

@@ -3,6 +3,8 @@ import Fold from "../../../core/components/fold" ;
 import ReactLogo from "../../../resources/images/reactjs.svg";
 import SmallImage from "../../../resources/images/mario-large.png?sizes=100w+200w+800w+1000w&placeholder";
 
+console.log(SmallImage);
+
 export default class Home extends Component {
   render() {
 
@@ -34,6 +36,10 @@ export default class Home extends Component {
             massa, in suscipit diam tortor id odio. Nunc convallis vitae felis eget aliquet.
           </p>
           <p>Image sample converted to webp, uploaded/coded as jpg</p>
+          {/*<Picture
+            image={SmallImage}
+            alt="Small Image"
+          />*/}
           <picture>
             {Array.map(SmallImage, (img, index) => {
               return <source type={img.type} srcSet={img.srcSet} key={index}/>;
