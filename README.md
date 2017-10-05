@@ -33,6 +33,10 @@ The best way to get your application SEO-ed is enable Server side rendering i.e.
 ##### SEO
 Our customized routes enable creating meta tags to create Twitter, Google+, Linkedin, Facebook cards. We know how important SEO is to an application.  
 
+##### Content Folding
+Show only relevant data when loading via server. Fold your content to save bytes.  
+
+
 ##### Page Caching
 Well now you can cache a page in SSR. Pretty simple. just add cache option to route 
 
