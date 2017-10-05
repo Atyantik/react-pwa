@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Redirect } from "react-router-dom";
 import classNames from "classnames";
 import  { Link } from "react-router-dom";
 import { renderSubRoutes } from "../../../core/utils/renderer";
