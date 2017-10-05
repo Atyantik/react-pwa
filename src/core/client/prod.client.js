@@ -129,14 +129,6 @@ if (!global.isSWInitialized && supportsServiceWorker) {
   global.isSWInitialized = true;
 }
 
-// Unregister previously registered service worker if any
-if (supportsServiceWorker) {
-  window.navigator.serviceWorker.getRegistrations().then(registrations => {
-    for(let registration of registrations) {
-      registration.unregister();
-    }
-  });
-}
 loadModuleByUrl(global.previousUrl, () => {
   // Start preloading data if service worker is not
   // supported. We can cache data with serviceWorker

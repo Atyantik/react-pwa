@@ -222,9 +222,7 @@ serviceWorker.addEventListener("install", function(event) {
             return Promise.resolve();
           })
       ]
-    ).then(() => {
-      return serviceWorker.skipWaiting();
-    })
+    ).then(() => serviceWorker.skipWaiting())
   );
 });
 
