@@ -1,13 +1,11 @@
 import React, { Component } from "react";
 import Fold from "../../../core/components/fold" ;
 import ReactLogo from "../../../resources/images/reactjs.svg";
-import SmallImage from "../../../resources/images/mario-large.png?sizes=100w+200w+800w+1000w&placeholder";
-
-console.log(SmallImage);
+import SmallImage from "../../../resources/images/mario-large.png?sizes=100w+200w+400w+800w&placeholder";
+import Picture from "../../../core/components/picture/picture";
 
 export default class Home extends Component {
   render() {
-
     return (
       <div className="mt-4">
         <img style={{ maxWidth: "150px" }} className="img-fluid mx-auto d-block" src={ReactLogo} alt="ReactJS"/>
@@ -36,16 +34,10 @@ export default class Home extends Component {
             massa, in suscipit diam tortor id odio. Nunc convallis vitae felis eget aliquet.
           </p>
           <p>Image sample converted to webp, uploaded/coded as jpg</p>
-          {/*<Picture
+          <Picture
             image={SmallImage}
             alt="Small Image"
-          />*/}
-          <picture>
-            {Array.map(SmallImage, (img, index) => {
-              return <source type={img.type} srcSet={img.srcSet} key={index}/>;
-            })}
-            <img className="img-fluid mx-auto d-block" src={SmallImage[0].placeholder.url} alt="Small Image" />
-          </picture>
+          />
         </Fold>
       </div>
     );

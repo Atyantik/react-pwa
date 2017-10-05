@@ -65,13 +65,6 @@ app.use("/public", express.static(commonClientConfig.devServer.contentBase));
 // Compile common & client configurations
 const commonClientCompiler = webpack(commonClientConfig);
 
-commonClientCompiler.plugin("done", function() {
-  
-  //eslint-disable-next-line
-  console.log("Webpack-dev-server completed compiling code. You can now access the url.");
-  
-});
-
 const commonClientMiddlewareInstance = webpackMiddleware(commonClientCompiler, {
   stats: "errors-only",
   noInfo: true,
