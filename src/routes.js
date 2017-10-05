@@ -1,11 +1,14 @@
-import Home from "./pages/home";
-import About from "./pages/about";
-import Contact from "./pages/contact";
-import Blog from "./pages/blog";
+import { configureRoutes } from "./core/utils/bundler";
 
-export default [
-  ...Home,
-  ...About,
-  ...Contact,
-  ...Blog,
-];
+// routes
+import * as Home from "./pages/home";
+import * as About from "./pages/about";
+import * as Contact from "./pages/contact";
+import * as Blog from "./pages/blog";
+
+export default configureRoutes([
+  Home,
+  About,
+  Contact,
+  Blog,
+]);

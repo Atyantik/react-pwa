@@ -86,7 +86,7 @@ export default class Picture extends Component {
     return (
       <picture className={pictureClassName}>
         {Array.map(image, (img, index) => {
-          return <source type={img.type} srcSet={this.getSrcSet(img)} src={this.getSourceSrc(img)} key={index}/>;
+          return <source type={img.type} srcSet={this.getSrcSet(img)} key={index}/>;
         })}
         <img className={imgClassName} src={this.getFallbackSrc(image)} alt={alt} />
       </picture>

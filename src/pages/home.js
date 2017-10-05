@@ -7,7 +7,6 @@ const routes = [
     exact: true,
     component: Home,
     layout: DefaultLayout,
-    bundleKey: "home",
   }
 ];
 export default routes;

@@ -45,6 +45,18 @@ let entries = {};
 
 
 const rules = [
+  {
+    test: /pages\/.*\.jsx?$/,
+    include: srcDir,
+    use: [
+      {
+        loader: "babel-loader",
+      },
+      {
+        loader: "route-loader",
+      }
+    ]
+  },
   // Rules for js or jsx files. Use the babel loader.
   // Other babel configuration can be found in .babelrc
   {

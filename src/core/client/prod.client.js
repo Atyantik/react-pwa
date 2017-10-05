@@ -1,7 +1,7 @@
 import _ from "lodash";
 import global, {renderRoutesWrapper} from "./client";
 import {hideScreenLoader, scrollToTop, showScreenLoader, updateRoutes} from "../utils/client";
-import {getModuleByUrl, idlePreload, isModuleLoaded, loadModuleByUrl} from "../utils/bundler";
+import {configureRoutes, getModuleByUrl, idlePreload, isModuleLoaded, loadModuleByUrl} from "../utils/bundler";
 import {renderNotFoundPage} from "../utils/renderer";
 import {injectAsyncReducers} from "../store";
 import {enableServiceWorker} from "../../../settings";
@@ -13,10 +13,13 @@ const supportsServiceWorker = !!_.get(window, "navigator.serviceWorker", false);
 // Add update routes globally
 ((w) =>{
   
-  w.__updatePage = ({ routes, reducers }) => {
+  w.__updatePage = ({ routes, bundleKey, reducers }) => {
     const routesloadEvent = new CustomEvent("routesload");
     injectAsyncReducers(global.store, reducers);
-    updateRoutes({ routes, collectedRoutes: global.collectedRoutes });
+    updateRoutes({
+      routes: configureRoutes([{default: routes, bundleKey: bundleKey}]),
+      collectedRoutes: global.collectedRoutes
+    });
     w.dispatchEvent(routesloadEvent);
   };
   

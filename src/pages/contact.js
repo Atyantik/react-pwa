@@ -6,7 +6,6 @@ const routes = [
     component: Contact,
     layout: false,
     exact: true,
-    bundleKey: "contact",
   }
 ];
 
