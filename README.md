@@ -76,7 +76,7 @@ Load appropriate srcset and make your site load fast for different view-port dev
 - Use yarn to install dependencies: `yarn`
 - run `yarn start` to see the example app at http://localhost:3003.
 - To build the application you should run `yarn build`
-- To build and run PWA demo use the command `yarn build && nodejs dist/server.js`  
+- To build and run PWA demo use the command `yarn build && node dist/server.js`  
 
 Now you are all set, Get your hands dirty with this awesome boilerplate.  
 
