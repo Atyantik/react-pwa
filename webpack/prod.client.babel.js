@@ -58,7 +58,7 @@ const pagesFolder = path.join(srcDir, "pages");
 const pages = fs.readdirSync(pagesFolder);
 let entries = {};
 pages.forEach(page => {
-  const slugishName = page.replace(".js", "").replace(/['" !@#$%]/g, "_");
+  const slugishName = page.replace(/\.jsx?$/, "");
   entries[`mod-${slugishName}`] = path.join(pagesFolder, page);
 });
 

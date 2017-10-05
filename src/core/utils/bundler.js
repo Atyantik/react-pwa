@@ -48,10 +48,6 @@ export const loadGlobals = async () => {
 
 /**
  * Get requested module by specifying path
- * @todo >>> Improve function to cover the scenario where no bundleKey for child is
- * present but present for parent route. In such case make the bundleKey of parent
- * as the Module we are searching for
- * <<<
  * @param pathname
  * @param routes
  * @returns {boolean}
@@ -108,14 +104,7 @@ export const getModuleByUrl = (pathname, routes = globals.routes) => {
     });
   }
   
-  return slugify(moduleName);
-};
-
-const slugify = (str) => {
-  if (_.isString(str)) {
-    return str.replace(/['" !@#$%]/g, "_");
-  }
-  return str;
+  return moduleName;
 };
 
 /**
@@ -425,12 +414,7 @@ export const getRouteFromPath = (path, routes = globals.routes) => {
   const bundleKey = getModuleByUrl(path, routes);
   
   _.each(routes, route => {
-    
-    const badKeyMatch = route.bundleKey.match(/['" !@#$%]/g);
-    if (badKeyMatch && badKeyMatch.length) {
-      throw new Error(`Invalid bundle key: ${route.bundleKey}. ['" !@#$%] characters are not allowed in bundleKey and filenames in pages.`);
-    }
-    if (slugify(route.bundleKey) !== bundleKey) return;
+    if (route.bundleKey !== bundleKey) return;
     if (_.get(route, "abstract", false)) {
       // If abstract is present then Try to see if sub-routes matches
       // the path.

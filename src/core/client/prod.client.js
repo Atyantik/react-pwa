@@ -20,6 +20,9 @@ const supportsServiceWorker = !!_.get(window, "navigator.serviceWorker", false);
       routes: configureRoutes([{default: routes, bundleKey: bundleKey}]),
       collectedRoutes: global.collectedRoutes
     });
+    
+    console.log(global.collectedRoutes);
+    
     w.dispatchEvent(routesloadEvent);
   };
   
