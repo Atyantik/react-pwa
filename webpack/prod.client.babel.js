@@ -21,11 +21,6 @@ import ExtractTextPlugin from "extract-text-webpack-plugin";
  * and used in Twitter and Taobao.
  */
 import autoprefixer from "autoprefixer";
-
-import {
-  isolateVendorScripts
-} from "../settings";
-
 import {
   srcDir,
   rootDir,
@@ -36,6 +31,8 @@ import {
 } from "../directories";
 
 import rules from "./prod.rules";
+
+const isolateVendorScripts = false;
 
 const configDirName = "config";
 // Config dir is the dir that contains all the configurations

@@ -16,9 +16,6 @@ import webpack from "webpack";
 import webpackMiddleware from "webpack-dev-middleware";
 import webpackHotMiddleware from "webpack-hot-middleware";
 import webpackConfig from "../../../webpack/dev.babel";
-import {
-  enableServiceWorker
-} from "../../../settings";
 
 import {extractFilesFromAssets} from "../utils/utils";
 import Html from "../components/html";
@@ -26,6 +23,8 @@ import {publicDirName} from "../../../directories";
 import {infiniteCache} from "../libs/cache/memory";
 
 const app = express();
+
+const enableServiceWorker = false;
 
 // Extract cookies from the request, making it available as
 // Object request.cookie.user etc..

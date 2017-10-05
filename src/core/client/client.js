@@ -25,13 +25,6 @@ import {
  */
 import ApiInstance from "../libs/api";
 
-/**
- * Settings
- */
-import {
-  enableServiceWorker
-} from "../../../settings";
-
 // Polyfill for CustomEvent
 (function(w) {
   if ( typeof w.CustomEvent === "function" ) return false; //If not IE
@@ -90,9 +83,6 @@ global.isSWInitialized = typeof global.isSWInitialized === Boolean ? global.isSW
 // Set previous url
 global.previousUrl = global.previousUrl || "";
 
-// Check if current browser/client supports service worker
-const supportsServiceWorker = !!_.get(window, "navigator.serviceWorker", false);
-
 // Monitor online and offline state of application
 /**
  * Need to check for online/offline status
@@ -113,70 +103,6 @@ window.addEventListener("offline", setNetworkOffline);
 
 /** Api requires store to check the network status */
 ApiInstance.setStore(global.store);
-
-/**
- * Service worker configuration
- */
-if (!global.isSWInitialized && enableServiceWorker && supportsServiceWorker) {
-  const serviceWorker = _.get(window, "navigator.serviceWorker", {
-    register: async () => Promise.reject("Browser does not support service workers!")
-  });
-  
-  // Register service worker
-  serviceWorker.register("/sw.js", {scope: "/"})
-    .then(reg => {
-      
-      // Inform API that it can now accept sw cache global
-      ApiInstance.setState("SW_ENABLED", true);
-      reg.onupdatefound = function() {
-        let installingWorker = reg.installing;
-        installingWorker.onstatechange = function() {
-          switch (installingWorker.state) {
-            case "activated":
-              // eslint-disable-next-line
-              console.log("Updated service worker");
-              break;
-          }
-        };
-      };
-    })
-    .catch(err => {
-      // eslint-disable-next-line
-      console.log("Cannot register Service Worker: ", err);
-    });
-  
-  // @todo handle messaging via service worker
-  if (serviceWorker.addEventListener) {
-    serviceWorker.addEventListener("message", (event) => {
-      let message = event.data;
-      try {
-        message = JSON.parse(event.data);
-      } catch (ex) {
-        if (_.isString(event.data)) {
-          message = {
-            message: event.data
-          };
-        }
-      }
-      /**
-       * @todo Enable messaging via Service worker
-       */
-      // do nothing with messages as of now
-      // eslint-disable-next-line
-      console.log(message);
-    });
-  }
-  global.isSWInitialized = true;
-}
-
-// Unregister previously registered service worker if any when enableServiceWorker = false
-if (supportsServiceWorker && !enableServiceWorker) {
-  window.navigator.serviceWorker.getRegistrations().then(registrations => {
-    for(let registration of registrations) {
-      registration.unregister();
-    }
-  });
-}
 
 // Get our dom app
 global.renderRoot = global.renderRoot || document.getElementById("app");

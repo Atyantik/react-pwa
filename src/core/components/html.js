@@ -3,7 +3,8 @@ import PropTypes from "prop-types";
 import _ from "lodash";
 import { generateStringHash } from "../utils/utils";
 import { generateMeta } from "../utils/seo";
-import { enableServiceWorker } from "../../../settings";
+
+const __development = process.env.NODE_ENV === "development";
 
 export default class Html extends React.Component {
   
@@ -35,7 +36,7 @@ export default class Html extends React.Component {
           <title>{this.getTitle()}</title>
           {/** The url /manifest.json is a url handled via the server.js **/}
           {
-            enableServiceWorker &&
+            !__development &&
             (<link rel="manifest" href={"/manifest.json"} />)
           }
           

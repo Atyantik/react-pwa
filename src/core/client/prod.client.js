@@ -4,7 +4,7 @@ import {hideScreenLoader, scrollToTop, showScreenLoader, updateRoutes} from "../
 import {configureRoutes, getModuleByUrl, idlePreload, isModuleLoaded, loadModuleByUrl} from "../utils/bundler";
 import {renderNotFoundPage} from "../utils/renderer";
 import {injectAsyncReducers} from "../store";
-import {enableServiceWorker} from "../../../settings";
+import ApiInstance from "../libs/api";
 
 
 // Check if current browser/client supports service worker
@@ -20,8 +20,6 @@ const supportsServiceWorker = !!_.get(window, "navigator.serviceWorker", false);
       routes: configureRoutes([{default: routes, bundleKey: bundleKey}]),
       collectedRoutes: global.collectedRoutes
     });
-    
-    console.log(global.collectedRoutes);
     
     w.dispatchEvent(routesloadEvent);
   };
@@ -75,8 +73,72 @@ global.unlisten = global.history.listen( location => {
 });
 
 global.previousUrl = window.location.pathname;
+
+/**
+ * Service worker configuration
+ */
+if (!global.isSWInitialized && supportsServiceWorker) {
+  const serviceWorker = _.get(window, "navigator.serviceWorker", {
+    register: async () => Promise.reject("Browser does not support service workers!")
+  });
+  
+  // Register service worker
+  serviceWorker.register("/sw.js", {scope: "/"})
+    .then(reg => {
+      
+      // Inform API that it can now accept sw cache global
+      ApiInstance.setState("SW_ENABLED", true);
+      reg.onupdatefound = function() {
+        let installingWorker = reg.installing;
+        installingWorker.onstatechange = function() {
+          switch (installingWorker.state) {
+            case "activated":
+              // eslint-disable-next-line
+              console.log("Updated service worker");
+              break;
+          }
+        };
+      };
+    })
+    .catch(err => {
+      // eslint-disable-next-line
+      console.log("Cannot register Service Worker: ", err);
+    });
+  
+  // @todo handle messaging via service worker
+  if (serviceWorker.addEventListener) {
+    serviceWorker.addEventListener("message", (event) => {
+      let message = event.data;
+      try {
+        message = JSON.parse(event.data);
+      } catch (ex) {
+        if (_.isString(event.data)) {
+          message = {
+            message: event.data
+          };
+        }
+      }
+      /**
+       * @todo Enable messaging via Service worker
+       */
+      // do nothing with messages as of now
+      // eslint-disable-next-line
+      console.log(message);
+    });
+  }
+  global.isSWInitialized = true;
+}
+
+// Unregister previously registered service worker if any
+if (supportsServiceWorker) {
+  window.navigator.serviceWorker.getRegistrations().then(registrations => {
+    for(let registration of registrations) {
+      registration.unregister();
+    }
+  });
+}
 loadModuleByUrl(global.previousUrl, () => {
   // Start preloading data if service worker is not
   // supported. We can cache data with serviceWorker
-  (!supportsServiceWorker || !enableServiceWorker) && idlePreload(5000);
+  !supportsServiceWorker && idlePreload(5000);
 });

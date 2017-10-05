@@ -40,7 +40,6 @@ import Html from "../components/html";
 import Routes from "../../routes";
 import {extractFilesFromAssets} from "../utils/utils";
 import {publicDirName} from "../../../directories";
-import {enableServiceWorker} from "../../../settings";
 import config from "../../config";
 
 
@@ -118,64 +117,61 @@ try {
   // cause the assets are most probably handled by webpack
 }
 
-// Serve service worker via /service-worker.js
-if (enableServiceWorker) {
+
+let cachedswResponseText = null;
+const getServiceWorkerContent = () => {
+  if (cachedswResponseText) return cachedswResponseText;
+  // Get contents of service worker
+  const serviceWorkerContents = fs.readFileSync(path.resolve(path.join(currentDir, "service-worker.js")), "utf-8");
   
-  let cachedswResponseText = null;
-  const getServiceWorkerContent = () => {
-    if (cachedswResponseText) return cachedswResponseText;
-    // Get contents of service worker
-    const serviceWorkerContents = fs.readFileSync(path.resolve(path.join(currentDir, "service-worker.js")), "utf-8");
-    
-    // Create a response text without Version number
-    let swResponseText = `
-      var ASSETS = ${JSON.stringify(getAllAssets())};
-      ${serviceWorkerContents}
-    `;
-    // Create an MD5 hash of response and then append it to response
-    const swVersionHash = crypto.createHash("md5").update(swResponseText).digest("hex");
-    swResponseText = `
-      var VERSION = "${swVersionHash}";
-      ${swResponseText}
-    `;
-    cachedswResponseText = swResponseText;
-    return swResponseText;
-  };
+  // Create a response text without Version number
+  let swResponseText = `
+    var ASSETS = ${JSON.stringify(getAllAssets())};
+    ${serviceWorkerContents}
+  `;
+  // Create an MD5 hash of response and then append it to response
+  const swVersionHash = crypto.createHash("md5").update(swResponseText).digest("hex");
+  swResponseText = `
+    var VERSION = "${swVersionHash}";
+    ${swResponseText}
+  `;
+  cachedswResponseText = swResponseText;
+  return swResponseText;
+};
+
+app.get("/sw.js", function (req, res) {
   
-  app.get("/sw.js", function (req, res) {
-    
-    const swResponseText = getServiceWorkerContent();
-    res.setHeader("Content-Type", "application/javascript");
-    // No cache header
-    res.setHeader("Cache-Control", "private, no-cache, no-store, must-revalidate");
-    res.setHeader("Expires", "-1");
-    res.setHeader("Pragma", "no-cache");
-    res.send(swResponseText);
+  const swResponseText = getServiceWorkerContent();
+  res.setHeader("Content-Type", "application/javascript");
+  // No cache header
+  res.setHeader("Cache-Control", "private, no-cache, no-store, must-revalidate");
+  res.setHeader("Expires", "-1");
+  res.setHeader("Pragma", "no-cache");
+  res.send(swResponseText);
+});
+
+// Only if service worker is enabled then emit manifest.json
+app.get("/manifest.json", infiniteCache(), (req, res) => {
+  
+  const { pwa } = config;
+  
+  const availableSizes = [72, 96, 128, 144, 152, 192, 384, 512];
+  const icons = availableSizes.map(size => {
+    return {
+      "src": require(`../../resources/images/pwa/icon-${size}x${size}.png`),
+      sizes: `${size}x${size}`
+    };
   });
+  _.set(pwa, "icons", icons);
   
-  // Only if service worker is enabled then emit manifest.json
-  app.get("/manifest.json", infiniteCache(), (req, res) => {
-    
-    const { pwa } = config;
-    
-    const availableSizes = [72, 96, 128, 144, 152, 192, 384, 512];
-    const icons = availableSizes.map(size => {
-      return {
-        "src": require(`../../resources/images/pwa/icon-${size}x${size}.png`),
-        sizes: `${size}x${size}`
-      };
-    });
-    _.set(pwa, "icons", icons);
-    
-    res.setHeader("Content-Type", "application/manifest+json");
-    // No cache header
-    res.setHeader("Cache-Control", "private, no-cache, no-store, must-revalidate");
-    res.setHeader("Expires", "-1");
-    res.setHeader("Pragma", "no-cache");
-    
-    return res.send(JSON.stringify(pwa));
-  });
-}
+  res.setHeader("Content-Type", "application/manifest+json");
+  // No cache header
+  res.setHeader("Cache-Control", "private, no-cache, no-store, must-revalidate");
+  res.setHeader("Expires", "-1");
+  res.setHeader("Pragma", "no-cache");
+  
+  return res.send(JSON.stringify(pwa));
+});
 
 /**
  * Try to get the public dir

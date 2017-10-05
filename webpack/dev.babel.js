@@ -27,11 +27,6 @@ import path from "path";
 import fs from "fs";
 
 import {
-  enableServiceWorker,
-  isolateVendorScripts,
-} from "../settings";
-
-import {
   buildDir,
   buildPublicPath,
   distDir,
@@ -43,6 +38,7 @@ import { getStylesRule } from "./utils";
 
 let entries = {};
 
+const isolateVendorScripts = false;
 
 const rules = [
   {
@@ -293,12 +289,4 @@ const serviceWorkerConfig = {
   ]
 };
 
-// Export the client config by default
-let exportConfig = commonClientConfig;
-
-// service worker is enabled for the application
-// export multiple config
-if (enableServiceWorker) {
-  exportConfig = [commonClientConfig, serviceWorkerConfig];
-}
-export default exportConfig;
+export default [commonClientConfig, serviceWorkerConfig];
