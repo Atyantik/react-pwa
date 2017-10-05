@@ -120,7 +120,7 @@ serviceWorker.addEventListener("fetch", event => {
   }
   
   // If the request is for _globals create a new dummy response automatically
-  if (requestUrl.indexOf("_globals") !== -1) {
+  if (!_.isEmpty(_GLOBALS) && requestUrl.indexOf("_globals") !== -1) {
     log(`Dummy response for globals: ${event.request.url}`);
     return event.respondWith(new Response(
       JSON.stringify(_GLOBALS),
