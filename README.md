@@ -8,6 +8,16 @@ A highly scalable, Progressive Web Application foundation with the best Develope
 
 [Watch it in action: Checkout the demo](https://react-pwa.now.sh/)
 
+##### Results
+We haven't implemented CDN yet, thus a bit of variation in performance.
+###### GTMetrix
+![GTMetrix Performance](https://www.atyantik.com/wp-content/uploads/2017/10/GTMetrix.png)
+Don't go with images, [Check for yourself at GTMetrix](https://gtmetrix.com/reports/react-pwa.now.sh/XLLjOm78)  
+
+###### Pingdom
+![Pingdom Performance](https://www.atyantik.com/wp-content/uploads/2017/10/pingdom.png)
+Don't go with images, [Check for yourself at Pingdom](https://tools.pingdom.com/#!/YB2qd/https://react-pwa.now.sh)
+
 #### Features
 ##### Code splitting
 The very difficulty faced when developing enterprise application is code splitting. We don't need everything in single JS file. Why not create individual JS files for respective module/page!
