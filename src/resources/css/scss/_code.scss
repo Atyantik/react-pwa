@@ -62,3 +62,23 @@ pre {
   max-height: $pre-scrollable-max-height;
   overflow-y: scroll;
 }
+code {
+  background: rgba($gray-300, .8);
+  border-radius: 3px;
+  color: $red;
+  font-size: .7em;
+  padding: 1px 5px;
+}
+
+pre {
+  @include shadow(1px 1px 5px 0 rgba($gray-400, .2));
+  background: rgba($gray-300, .8);
+  border-radius: 3px;
+  padding: 10px;
+  .keyword {
+    color: $blue;
+  }
+  .string {
+    color: $green;
+  }
+}

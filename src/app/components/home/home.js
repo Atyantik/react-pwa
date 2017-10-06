@@ -9,7 +9,7 @@ export default class Home extends Component {
     return (
       <div className="mt-4">
         <img style={{ maxWidth: "150px" }} className="img-fluid mx-auto d-block" src={ReactLogo} alt="ReactJS"/>
-        <h1>React ES6 SEO Boilerplate</h1>
+        <h1 className="h2 text-center mt-3">React PWA</h1>
         <p>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit.
           Mauris bibendum enim quis ligula congue consequat. Maecenas
@@ -35,8 +35,10 @@ export default class Home extends Component {
           </p>
           <p>Image sample converted to webp, uploaded/coded as jpg</p>
           <Picture
+            pictureClassName="d-inline-block my-4"
             image={SmallImage}
             alt="Small Image"
+            imgClassName="mw-100"
           />
         </Fold>
       </div>
