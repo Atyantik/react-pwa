@@ -10,9 +10,15 @@ A highly scalable, Progressive Web Application foundation with the best Develope
 
 ##### Results
 We haven't implemented CDN yet, thus a bit of variation in performance.
+###### Chrome Lighthouse
+![Lighthouse Performance](https://www.atyantik.com/wp-content/uploads/2017/10/Lighthouse-Performance-Report-React-PWA.png)
+Don't go with image, [Check for yourself in your browser](https://developers.google.com/web/tools/lighthouse/)
+*We ommited the performance as it was just **82** (pretty good huh??). Cause of server latency. Server is located somewhere in USA and we are in India*
+
+Don't go with image, [Check for yourself at GTMetrix](https://gtmetrix.com/reports/react-pwa.now.sh/XLLjOm78)
 ###### GTMetrix
 ![GTMetrix Performance](https://www.atyantik.com/wp-content/uploads/2017/10/GTMetrix.png)
-Don't go with images, [Check for yourself at GTMetrix](https://gtmetrix.com/reports/react-pwa.now.sh/XLLjOm78)  
+Don't go with image, [Check for yourself at GTMetrix](https://gtmetrix.com/reports/react-pwa.now.sh/XLLjOm78)  
 
 ###### Pingdom
 ![Pingdom Performance](https://www.atyantik.com/wp-content/uploads/2017/10/pingdom.png)
