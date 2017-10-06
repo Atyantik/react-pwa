@@ -1,6 +1,6 @@
 import React from "react";
 import { Provider } from "react-redux";
-import { render as DefaultRender } from "react-dom";
+import { hydrate as DefaultRender } from "react-dom";
 import { AppContainer as HotAppContainer } from "react-hot-loader";
 import _ from "lodash";
 
