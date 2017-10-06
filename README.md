@@ -6,6 +6,8 @@
 # React PWA
 A highly scalable, Progressive Web Application foundation with the best Developer Experience.
 
+[Watch it in action: Checkout the demo](https://react-pwa.now.sh/)
+
 #### Features
 ##### Code splitting
 The very difficulty faced when developing enterprise application is code splitting. We don't need everything in single JS file. Why not create individual JS files for respective module/page!
