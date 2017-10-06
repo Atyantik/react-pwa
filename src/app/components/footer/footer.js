@@ -6,7 +6,7 @@ const Footer = () => {
   return (
     <footer className={styles.footer} >
       <div className="container">
-        <span className="text-muted">
+        <span>
           Powered by&nbsp;
           <a
             href="https://www.atyantik.com"
