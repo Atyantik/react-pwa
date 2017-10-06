@@ -6,38 +6,69 @@
 // which weren't expecting the images within themselves to be involuntarily resized.
 // See also https://github.com/twbs/bootstrap/issues/18178
 .img-fluid {
-  @include img-fluid;
+    @include img-fluid;
 }
 
 
 // Image thumbnails
 .img-thumbnail {
-  padding: $thumbnail-padding;
-  background-color: $thumbnail-bg;
-  border: $thumbnail-border-width solid $thumbnail-border-color;
-  @include border-radius($thumbnail-border-radius);
-  @include transition($thumbnail-transition);
-  @include box-shadow($thumbnail-box-shadow);
-
-  // Keep them at most 100% wide
-  @include img-fluid;
+    padding: $thumbnail-padding;
+    background-color: $thumbnail-bg;
+    border: $thumbnail-border-width solid $thumbnail-border-color;
+    @include border-radius($thumbnail-border-radius);
+    @include transition($thumbnail-transition);
+    @include box-shadow($thumbnail-box-shadow); // Keep them at most 100% wide
+    @include img-fluid;
 }
 
 //
 // Figures
 //
-
 .figure {
-  // Ensures the caption's text aligns with the image.
-  display: inline-block;
+    // Ensures the caption's text aligns with the image.
+    display: inline-block;
 }
 
 .figure-img {
-  margin-bottom: ($spacer / 2);
-  line-height: 1;
+    margin-bottom: ($spacer / 2);
+    line-height: 1;
 }
 
 .figure-caption {
-  font-size: $figure-caption-font-size;
-  color: $figure-caption-color;
+    font-size: $figure-caption-font-size;
+    color: $figure-caption-color;
+}
+
+//arc shape
+.shape {
+    position: relative;
+    .curve {
+        position: relative;
+        overflow: hidden;
+        height: 5rem;
+        margin-top: -5rem;
+        z-index: 9;
+        &:before {
+            content: '';
+            border-radius: 100%;
+            position: absolute;
+            background: $white;
+            right: -12.5rem;
+            left: -12.5rem;
+            bottom: -12.5rem;
+            top: 0;
+        }
+    }
+    .round-shape {
+        @include circle(6.625rem, $white);
+        @include transform(translate(-50%, 0));
+        position: absolute;
+        top: 0;
+        margin-top: -2.8125rem;
+        left: 50%;
+        z-index: 10;
+        .w-icon {
+            max-width: 3.4375rem;
+        }
+    }
 }

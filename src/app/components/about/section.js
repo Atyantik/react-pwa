@@ -9,9 +9,9 @@ export default (props) => {
     default:
       return (
         <div>
-          <h1>About Us</h1>
-          <h3>The Ultimate Technology Maniacs</h3>
-          <h5>Atyantik <i>means</i> Ultimate</h5>
+          <h1 className="h2">About Us</h1>
+          <h3 className="h4">The Ultimate Technology Maniacs</h3>
+          <h5 className="h6">Atyantik <i>means</i> Ultimate</h5>
           <p>
           We are a group of technology maniacs, extremely
           passionate about coding which means we do all
@@ -28,8 +28,8 @@ export default (props) => {
     case "we-execute-your-dreams":
       return (
         <div>
-          <h1>We execute your dreams</h1>
-          <h5>Beware:: execution process consumes lots of pizza and coffee!</h5>
+          <h1 className="h2">We execute your dreams</h1>
+          <h5 className="h6">Beware:: execution process consumes lots of pizza and coffee!</h5>
           <p>
           Once a visionary was questioned, “If you are granted a wish,
           what would you ask for? Money or Success?”, he replied very
@@ -46,8 +46,8 @@ export default (props) => {
       return (
         <div>
           <div>
-            <h1>Don't hire us</h1>
-            <h5>Looking for experts?</h5>
+            <h1 className="h2">Don't hire us</h1>
+            <h5 className="h6">Looking for experts?</h5>
             <p>
             Hiring to us is just creating a temporary relationship! Make us your teammates,
             you share your thoughts and we share our input. We love to innovate.

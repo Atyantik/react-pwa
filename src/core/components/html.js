@@ -21,7 +21,7 @@ export default class Html extends React.Component {
   
   getTitle() {
     const allMeta = this.getMeta();
-    const metaForTitle = _.find(allMeta, {itemProp: "name"});
+    const metaForTitle = _.find(allMeta, {name: "title"});
     if (metaForTitle) {
       return metaForTitle.content;
     }

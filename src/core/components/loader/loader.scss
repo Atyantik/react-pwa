@@ -4,10 +4,10 @@
 @include keyframes(wave) {
     0%,
     100% {
-        @include shadow(0 0 0 $gray-light, 0 0 0 $gray-light);
+        @include shadow(0 0 0 $gray-500, 0 0 0 $gray-500);
     }
     50% {
-        @include shadow(0 -1em 0 $gray-light, 0 1em 0 $gray-light);
+        @include shadow(0 -1em 0 $gray-500, 0 1em 0 $gray-500);
     }
 }
 
@@ -25,7 +25,7 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    background: $gray-light;
+    background: $gray-500;
     @include animation(wave 1s ease-in-out infinite);
     animation-delay: 0.4s;
     width: 1em;

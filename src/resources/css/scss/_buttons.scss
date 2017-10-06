@@ -23,7 +23,7 @@
   &:focus,
   &.focus {
     outline: 0;
-    box-shadow: $btn-focus-box-shadow;
+    // box-shadow: $btn-focus-box-shadow;
   }
 
   // Disabled comes first so active can properly restyle
@@ -51,43 +51,16 @@ fieldset[disabled] a.btn {
 // Alternate buttons
 //
 
-.btn-primary {
-  @include button-variant($btn-primary-color, $btn-primary-bg, $btn-primary-border-color);
-}
-.btn-secondary {
-  @include button-variant($btn-secondary-color, $btn-secondary-bg, $btn-secondary-border-color);
-}
-.btn-info {
-  @include button-variant($btn-info-color, $btn-info-bg, $btn-info-border-color);
-}
-.btn-success {
-  @include button-variant($btn-success-color, $btn-success-bg, $btn-success-border-color);
-}
-.btn-warning {
-  @include button-variant($btn-warning-color, $btn-warning-bg, $btn-warning-border-color);
-}
-.btn-danger {
-  @include button-variant($btn-danger-color, $btn-danger-bg, $btn-danger-border-color);
+@each $color, $value in $theme-colors {
+  .btn-#{$color} {
+    @include button-variant($value, $value);
+  }
 }
 
-// Remove all backgrounds
-.btn-outline-primary {
-  @include button-outline-variant($btn-primary-bg, $btn-primary-color);
-}
-.btn-outline-secondary {
-  @include button-outline-variant($btn-secondary-border-color, $btn-secondary-color);
-}
-.btn-outline-info {
-  @include button-outline-variant($btn-info-bg, $btn-info-color);
-}
-.btn-outline-success {
-  @include button-outline-variant($btn-success-bg, $btn-success-color);
-}
-.btn-outline-warning {
-  @include button-outline-variant($btn-warning-bg, $btn-warning-color);
-}
-.btn-outline-danger {
-  @include button-outline-variant($btn-danger-bg, $btn-danger-color);
+@each $color, $value in $theme-colors {
+  .btn-outline-#{$color} {
+    @include button-outline-variant($value, #fff);
+  }
 }
 
 
@@ -112,6 +85,7 @@ fieldset[disabled] a.btn {
   &:focus,
   &:active {
     border-color: transparent;
+    box-shadow: none;
   }
   @include hover {
     border-color: transparent;
@@ -165,4 +139,60 @@ input[type="button"] {
   &.btn-block {
     width: 100%;
   }
+}
+
+//add  triangle icon in button
+.triangle {
+    position: relative;
+    text-align: left;
+    margin-top: -4px;
+    border-top-right-radius: 30%;
+    &:before,
+    &:after {
+        border-top-right-radius: 30%;
+        content: '';
+        position: absolute;
+        background-color: inherit;
+    }
+    &:before {
+        @include transform(rotate(-135deg) skewX(-45deg) scale(1.414, .707) translate(0, -50%));
+    }
+    &:after {
+        @include transform(rotate(135deg) skewY(-45deg) scale(.707, 1.414) translate(50%));
+    }
+}
+.triangle-down {
+    @include triangle(down, .5rem, $white);
+}
+
+.triangle-up {
+    @include triangle(up, .5rem, $white);
+}
+
+.triangle-right {
+    @include triangle(right, .5rem, $white);
+}
+
+.triangle-left {
+    @include triangle(left, .5rem, $white);
+}
+.btn-hover {
+    &:hover {
+        .triangle-down,
+        .triangle-up,
+        .triangle-right,
+        .triangle-left {
+            background-color: $white !important;
+        }
+    }
+}
+.has-icon {
+    padding: .6875rem;
+    .icon {
+        font-size: 1.5em;
+        width: 1em;
+        line-height: 0;
+        display: inline-block;
+        vertical-align: middle;
+    }
 }

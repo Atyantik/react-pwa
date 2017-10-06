@@ -1,7 +1,0 @@
-{
-"version": 3,
-"mappings": "AAyPQ,sGAA8F;ACrPlG,sBAAY;ECHZ,OAAO,EAAE,IAAI;EACb,gBAAgB,EF85BU,IAAM;EE75BhC,MAAM,EAAE,+BAA0B;EAClC,KAAK,EAAE,IAAI;EACX,SAAS,EAAE,KAAK;EC6GhB,kBAAkB,EAAE,uCAAO;EAC3B,eAAe,EAAE,uCAAO;EACxB,UAAU,EAAE,uCAAO;EChHnB,aAAa,EFGU,GAAG;ADA1B,mBAAM;EACF,SAAS,EAAE,KAAK;EAChB,MAAM,EAAE,MAAM",
-"sources": ["../../_variables.scss","form-layout.scss","../../components/_white-box.scss","../../_mixins.scss","../../mixins/_border-radius.scss"],
-"names": [],
-"file": "form-layout.css"
-}

@@ -54,7 +54,7 @@ export const generateMeta = (data) => {
    */
   // Meta name
   generatedSchema.push({
-    itemProp: "name",
+    name: "title",
     content: seoData.title,
   });
   // Twitter title
@@ -118,7 +118,7 @@ export const generateMeta = (data) => {
    */
   // Meta description
   generatedSchema.push({
-    itemProp: "description",
+    name: "description",
     content: desc155words,
   });
   generatedSchema.push({

@@ -5,41 +5,27 @@
 // Grid containers
 //
 // Define the maximum width of `.container` for different screen sizes.
-@mixin _assert-ascending($map, $map-name) {
-  $prev-key: null;
-  $prev-num: null;
-  @each $key, $num in $map {
-    @if $prev-num == null {
-      // Do nothing
-    } @else if not comparable($prev-num, $num) {
-      @warn "Potentially invalid value for #{$map-name}: This map must be in ascending order, but key '#{$key}' has value #{$num} whose unit makes it incomparable to #{$prev-num}, the value of the previous key '#{$prev-key}' !";
-    } @else if $prev-num >= $num {
-      @warn "Invalid value for #{$map-name}: This map must be in ascending order, but key '#{$key}' has value #{$num} which isn't greater than #{$prev-num}, the value of the previous key '#{$prev-key}' !";
-    }
-    $prev-key: $key;
-    $prev-num: $num;
-  }
+$container-max-widths: ( sm: 1000px, md: 1100px, lg: 1200px) !default;
+$screen-size-xl: 1200px !default;
+$screen-size-lg: 992px !default;
+$screen-size-md: 768px !default;
+$screen-size-sm: 576px !default;
+$screen-size-xs: 374px !default;
+
+$h1-font-sm-size: 2.5rem !default;
+$h2-font-sm-size: 2rem !default;
+$h3-font-sm-size: 1.75rem !default;
+$h4-font-sm-size: 1.5rem !default;
+$h5-font-sm-size: 1.25rem !default;
+$h6-font-sm-size: 1rem !default;
+
+@media(max-width: $screen-size-md){
+  h1, .h1 { font-size: $h1-font-sm-size; }
+  h2, .h2 { font-size: $h2-font-sm-size; }
+  h3, .h3 { font-size: $h3-font-sm-size; }
+  h4, .h4 { font-size: $h4-font-sm-size; }
+  h5, .h5 { font-size: $h5-font-sm-size; }
+  h6, .h6 { font-size: $h6-font-sm-size; }
 }
 
-$container-max-widths: (
-        sm: 400px,
-        md: 600px,
-        lg: 800px,
-        xl: 1000px
-) !default;
-@include _assert-ascending($container-max-widths, "$container-max-widths");
 
-
-// Grid columns
-//
-// Set the number of columns and specify the width of the gutters.
-
-$grid-columns:               12 !default;
-$grid-gutter-width-base:     30px !default;
-$grid-gutter-widths: (
-        xs: 10px,
-        sm: $grid-gutter-width-base,
-        md: $grid-gutter-width-base,
-        lg: $grid-gutter-width-base,
-        xl: $grid-gutter-width-base
-) !default;
