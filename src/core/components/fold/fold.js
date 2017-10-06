@@ -28,16 +28,6 @@ export default class Fold extends Component {
     placeholder: PropTypes.element,
   
     /**
-     Sets the className of the default placeholder
-     */
-    placeholderClassName: PropTypes.string,
-  
-    /**
-     Sets the style of the default placeholder
-     */
-    placeholderStyle: PropTypes.object,
-  
-    /**
      Tell to skip server side rendering
      */
     skip: PropTypes.bool
@@ -86,14 +76,8 @@ export default class Fold extends Component {
       return this.props.children;
     }
     
-    const {
-      placeholder,
-      placeholderClassName,
-      placeholderStyle
-    } = this.props;
+    if (this.props.placeholder) return <this.props.placeholder />;
     
-    if (placeholder) return placeholder;
-    
-    return <div className={placeholderClassName} style={placeholderStyle} />;
+    return null;
   }
 }

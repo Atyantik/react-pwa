@@ -20,7 +20,7 @@ export default class Home extends Component {
           magna gravida posuere. Sed at velit at est dictum mollis. Pellentesque
           ullamcorper dapibus nulla, efficitur pharetra nisi sodales ut.
         </p>
-        <Fold>
+        <Fold placeholder={() => <div className="text-center mt-3 mb-3">Loading folded content.. Please wait..</div>}>
           <p>
             Cras at elementum magna. Proin sed vulputate erat. Quisque magna nibh,
             posuere in mattis id, consectetur non nunc. Sed sodales diam risus,
