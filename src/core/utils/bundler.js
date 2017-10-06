@@ -470,11 +470,11 @@ export const getExactRouteFromPath = (path, routes = globals.routes) => {
 const addBundleKeyToRoutes = (routes, bundleKey = "") => {
   if (!_.isArray(routes)) {
     routes.bundleKey = bundleKey;
-    _.isArray(routes.routes) && addBundleKeyToRoutes(routes.routes);
+    _.isArray(routes.routes) && addBundleKeyToRoutes(routes.routes, bundleKey);
   } else {
     _.each(routes, route => {
       route.bundleKey = bundleKey;
-      _.isArray(route.routes) && addBundleKeyToRoutes(route.routes);
+      _.isArray(route.routes) && addBundleKeyToRoutes(route.routes, bundleKey);
     });
   }
   return routes;
