@@ -16,7 +16,7 @@ const app = express();
 app.use(serverMiddleware);
 
 const server = http.createServer(app);
-const serverPort = _.get(Config, "server.port", 3000);
+const serverPort = process.env.PORT || _.get(Config, "server.port", 3000);
 
 server.listen(serverPort, "0.0.0.0", function(err) {
   if (err) throw err;
