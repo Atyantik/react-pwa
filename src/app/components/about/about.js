@@ -26,7 +26,7 @@ export default class About extends Component {
             </ol>
           </div>
         </div>
-        <div className="offset-sm-1 col-sm-6">
+        <div className="pl-4 col-sm-6">
           {renderSubRoutes(this)}
         </div>
       </div>

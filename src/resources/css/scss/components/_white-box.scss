@@ -1,9 +1,0 @@
-@mixin white-box {
-    padding: 2rem;
-    background-color: $white;
-    border: 1px solid rgba($gray, 0.2);
-    width: 100%;
-    max-width: 30rem;
-    @include shadow(1px 1px 5px 0px rgba($gray-light, 0.2));
-    @include border-radius(5px);
-}

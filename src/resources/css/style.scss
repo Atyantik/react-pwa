@@ -1,19 +1,15 @@
 /*!
- * Bootstrap v4.0.0-alpha.6 (https://getbootstrap.com)
+ * Bootstrap v4.0.0-beta (https://getbootstrap.com)
  * Copyright 2011-2017 The Bootstrap Authors
  * Copyright 2011-2017 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
-
 @import "libs/FontAwesome/font-awesome.scss";
-// Core variables and mixins
 @import "scss/custom";
+@import "scss/functions";
 @import "scss/variables";
 @import "scss/mixins";
-// Reset and dependencies
-// @import "scss/normalize";
 @import "scss/print";
-// Core CSS
 @import "scss/reboot";
 @import "scss/type";
 @import "scss/images";
@@ -22,22 +18,19 @@
 @import "scss/tables";
 @import "scss/forms";
 @import "scss/buttons";
-// Components
+@import "scss/transitions";
+@import "scss/dropdown";
+@import "scss/button-group";
 @import "scss/input-group";
 @import "scss/custom-forms";
+@import "scss/nav";
 @import "scss/card";
 @import "scss/breadcrumb";
 @import "scss/pagination";
+@import "scss/badge";
 @import "scss/alert";
+@import "scss/media";
+@import "scss/list-group";
+@import "scss/close";
 @import "scss/tooltip";
-@import "scss/nav";
-@import "scss/navbar";
-@import "scss/responsive-embed";
-// Components w/ JavaScript
-@import "scss/modal";
-// Utility classes
-@import "scss/layout";
 @import "scss/utilities";
-
-
-
