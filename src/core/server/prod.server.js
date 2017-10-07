@@ -105,16 +105,15 @@ const hstsSettings = _.get(config, "hsts", {
   includeSubDomains: true, // Must be enabled to be approved by Google
   preload: true,
 });
-// Enable hsts for https sites
+
 if (hstsSettings.enabled) {
   app.use(hsts(_.assignIn(hstsSettings, {
+    // Enable hsts for https sites
     setIf: function (req) {
       return req.secure || (req.headers["x-forwarded-proto"] === "https");
     }
   })));
 }
-
-
 
 const cacheTime = 86400000*30;     // 30 days;
 app.use("/public", express.static(path.join(currentDir, "public"), {
