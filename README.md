@@ -57,7 +57,7 @@ Show only relevant data when loading via server. Fold your content to save bytes
 ##### Page Caching
 Well now you can cache a page in SSR. Pretty simple. just add cache option to route 
 
-`{ cache: { enabled: true, duration: 10000}}`
+`{ cache: { enable: true, duration: 10000}}`
  
 this helps you cache page when rendered via server. Why increase server load when page is static and cacheable! 
 
