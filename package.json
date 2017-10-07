@@ -1,6 +1,6 @@
 {
   "name": "react-redux-progressive-app",
-  "version": "0.1.1",
+  "version": "0.2.2",
   "description": "Boilerplate for react, redux with server-side rendering and support for progressive web application",
   "main": "index.js",
   "engines": {
