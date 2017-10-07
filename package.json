@@ -1,8 +1,7 @@
 {
-  "name": "react-redux-progressive-app",
+  "name": "react-pwa",
   "version": "0.2.2",
-  "description": "Boilerplate for react, redux with server-side rendering and support for progressive web application",
-  "main": "index.js",
+  "description": "A highly scalable, Progressive Web Application foundation with the best Developer Experience (DX).",
   "engines": {
     "node": ">= 8.4.0"
   },
