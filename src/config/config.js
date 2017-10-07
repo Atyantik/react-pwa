@@ -4,8 +4,8 @@ export default {
   },
   hsts: {
     enabled: true,
-    // Must be at least 18 weeks to be approved by Google
-    maxAge: 10886400,
+    // mageAge: Must be at least 18 weeks to be approved by Google, but we are setting it to 1 year
+    maxAge: 31536000,
     // Must be enabled to be approved by Google
     includeSubDomains: true,
     preload: true,

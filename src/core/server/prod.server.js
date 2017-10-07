@@ -98,9 +98,10 @@ app.use(compression());
 
 
 // Add hsts settings for secure site
+// mageAge: Must be at least 18 weeks to be approved by Google, but we are setting it to 1 year
 const hstsSettings = _.get(config, "hsts", {
   enabled: true,
-  maxAge: 10886400,        // Must be at least 18 weeks to be approved by Google
+  maxAge: 31536000,
   includeSubDomains: true, // Must be enabled to be approved by Google
   preload: true,
 });
