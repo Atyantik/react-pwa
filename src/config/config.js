@@ -8,7 +8,7 @@ export default {
     maxAge: 31536000,
     // Must be enabled to be approved by Google
     includeSubDomains: true,
-    preload: true,
+    preload: false,
   },
   pwa: {
     "name": "React Redux PWA Seo-ed",

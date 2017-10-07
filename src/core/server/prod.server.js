@@ -103,7 +103,7 @@ const hstsSettings = _.get(config, "hsts", {
   enabled: true,
   maxAge: 31536000,
   includeSubDomains: true, // Must be enabled to be approved by Google
-  preload: true,
+  preload: false,
 });
 
 if (hstsSettings.enabled) {
