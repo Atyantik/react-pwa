@@ -82,8 +82,12 @@ Make your application super fast with WebP support. Read more about it at
 Optimize your images when you create a build. this does slow the build process, but is totally worth it when your site loads fast. We are using imagemin plugins to optimize 
 SVG, JPEG, GIF & PNG  
 
-##### PWA - SrcSet Loader
+##### PWA - SrcSet Loader (Progressive Image Loading)
 Load appropriate srcset and make your site load fast for different view-port devices. We support srcset with WebP out of the box.  
+
+##### HSTS Supported
+Enable HSTS for secure sites. Options to define maxAge and preload of HSTS. All with very simple configuration.  
+   
 
 
 ### Quick start
