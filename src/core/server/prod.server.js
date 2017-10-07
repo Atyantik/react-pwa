@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import hsts from "hsts";
 import cookieParser from "cookie-parser";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
@@ -94,6 +95,25 @@ app.use(cookieParser());
 
 // use compression for all requests
 app.use(compression());
+
+
+// Add hsts settings for secure site
+const hstsSettings = _.get(config, "hsts", {
+  enabled: true,
+  maxAge: 10886400,        // Must be at least 18 weeks to be approved by Google
+  includeSubDomains: true, // Must be enabled to be approved by Google
+  preload: true,
+});
+// Enable hsts for https sites
+if (hstsSettings.enabled) {
+  app.use(hsts(_.assignIn(hstsSettings, {
+    setIf: function (req) {
+      return req.secure || (req.headers["x-forwarded-proto"] === "https");
+    }
+  })));
+}
+
+
 
 const cacheTime = 86400000*30;     // 30 days;
 app.use("/public", express.static(path.join(currentDir, "public"), {

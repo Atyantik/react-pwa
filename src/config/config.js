@@ -2,6 +2,14 @@ export default {
   server: {
     port: 3003,
   },
+  hsts: {
+    enabled: true,
+    // Must be at least 18 weeks to be approved by Google
+    maxAge: 10886400,
+    // Must be enabled to be approved by Google
+    includeSubDomains: true,
+    preload: true,
+  },
   pwa: {
     "name": "React Redux PWA Seo-ed",
     "short_name": "RRPS",
