@@ -40,6 +40,14 @@ const Header = (props) => {
             Contact
           </Link>
         </li>
+        <li className="nav-item">
+          <Link
+            className={classNames("nav-link", {active: props.url === "/progressive-image-rendering"})}
+            to="/progressive-image-rendering"
+          >
+            Progressive Image Rendering
+          </Link>
+        </li>
       </ul>
     </div>
   );

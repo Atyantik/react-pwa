@@ -1,6 +1,7 @@
 import _ from "lodash";
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import Fold from "../fold/fold";
 
 export default class Picture extends Component {
   static propTypes = {
@@ -85,9 +86,11 @@ export default class Picture extends Component {
     const { image } = this.state;
     return (
       <picture className={pictureClassName}>
-        {Array.map(image, (img, index) => {
-          return <source type={img.type} srcSet={this.getSrcSet(img)} key={index}/>;
-        })}
+        <Fold>
+          {Array.map(image, (img, index) => {
+            return <source type={img.type} srcSet={this.getSrcSet(img)} key={index}/>;
+          })}
+        </Fold>
         <img className={imgClassName} src={this.getFallbackSrc(image)} alt={alt} />
       </picture>
     );

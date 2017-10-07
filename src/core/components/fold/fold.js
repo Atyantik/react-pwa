@@ -25,10 +25,13 @@ export default class Fold extends Component {
     /**
      Pass in another element to render when skipping server side rendering
      */
-    placeholder: PropTypes.element,
+    placeholder: PropTypes.oneOfType([
+      PropTypes.func,
+      PropTypes.element
+    ]),
   
     /**
-     Tell to skip server side rendering
+     * Tell to skip server side rendering
      */
     skip: PropTypes.bool
   };
@@ -65,13 +68,9 @@ export default class Fold extends Component {
   }
   
   render() {
-    if (this.state.visible)  {
+    if (this.state.visible || !this.props.skip) {
       
       if (!this.props.children) return null;
-      
-      if (_.isArray(this.props.children)) {
-        return <div>{this.props.children}</div>;
-      }
       
       return this.props.children;
     }
