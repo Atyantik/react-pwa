@@ -1,5 +1,5 @@
-[![devDependencies Status](https://david-dm.org/Atyantik/react-seo.svg)](https://david-dm.org/Atyantik/react-pwa?type=dev)
-[![devDependencies Status](https://david-dm.org/Atyantik/react-seo/dev-status.svg)](https://david-dm.org/Atyantik/react-pwa?type=dev)
+[![devDependencies Status](https://david-dm.org/Atyantik/react-pwa.svg)](https://david-dm.org/Atyantik/react-pwa?type=dev)
+[![devDependencies Status](https://david-dm.org/Atyantik/react-pwa/dev-status.svg)](https://david-dm.org/Atyantik/react-pwa?type=dev)
 [![Build Status](https://travis-ci.org/Atyantik/react-pwa.svg?branch=master)](https://travis-ci.org/Atyantik/react-pwa)
 
 
