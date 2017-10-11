@@ -61,7 +61,7 @@ export const trackPageView = async (location = "", title = "") => {
   }
   let t = title;
   if (!t) {
-    t = "";
+    t = _.get(document, "title", "");
   }
 
   // Facebook track page view

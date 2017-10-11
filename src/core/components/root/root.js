@@ -28,7 +28,7 @@ export default class CoreRoot extends Component {
   loadGoogleAnalytics() {
     if(typeof window === "undefined") return;
     window.dataLayer = window.dataLayer || [];
-    const gtag = function (){
+    const gtag = window.gtag = window.gtag || function (){
       window.dataLayer.push(arguments);
     };
     gtag("js", new Date());
