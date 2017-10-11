@@ -41,6 +41,8 @@ global.unlisten = global.history.listen( location => {
     return false;
   }
   updateByUrl(location.pathname);
+  
+  global.onPageChange && _.isFunction(global.onPageChange) && global.onPageChange();
 });
 
 updateByUrl(window.location.pathname);

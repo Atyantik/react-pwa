@@ -79,6 +79,7 @@ export const trackPageView = async (location = "", title = "") => {
     "virtualPageUrl": loc,
     "virtualPageTitle": t
   });
+  return Promise.resolve();
 };
 
 export const track = async (str, metaData = {}) => {

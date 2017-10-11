@@ -70,6 +70,9 @@ global.unlisten = global.history.listen( location => {
     return false;
   }
   updateByUrl(location.pathname);
+  
+  // Execute onPageChange Event
+  global.onPageChange && _.isFunction(global.onPageChange) && global.onPageChange();
 });
 
 global.previousUrl = window.location.pathname;

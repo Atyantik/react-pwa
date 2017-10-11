@@ -50,17 +50,19 @@ if (hot && typeof window !== "undefined") {
 }
 
 // Custom reducers
-let { reduxReducers, reduxInitialState } = customClient;
+let { reduxReducers, reduxInitialState, onPageChange } = customClient;
 if (!reduxReducers) reduxReducers = null;
 if (!reduxInitialState) reduxInitialState = {};
 
+// Provide onPageChange to globals
+global.onPageChange = onPageChange;
 
 // Collect routes from all the routes
 // loaded over time
 global.collectedRoutes = global.collectedRoutes || [];
 
 // Create enhanced history with
-window.__history = global.history = global.history || createHistory();
+global.history = global.history || createHistory();
 
 // Create redux store
 global.store = global.store || configureStore({
