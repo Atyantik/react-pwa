@@ -160,7 +160,12 @@ class api {
         .then(data => {
           resolve(data);
         }).catch(error => {
-          error.networkState = _.get(this.store.getState(), "network.state", NETWORK_STATE_ONLINE);
+          
+          if (!this.store) {
+            error.networkState = NETWORK_STATE_ONLINE;
+          } else {
+            error.networkState = _.get(this.store.getState(), "network.state", NETWORK_STATE_ONLINE);
+          }
         
           if (error && error.response && typeof error.response.text === "function") {
             error.response.text().then(text => {
