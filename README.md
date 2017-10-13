@@ -1,4 +1,4 @@
-[![Dependencies Status](https://david-dm.org/Atyantik/react-pwa.svg)](https://david-dm.org/Atyantik/react-pwa)
+[![Backers on Open Collective](https://opencollective.com/react-pwa/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/react-pwa/sponsors/badge.svg)](#sponsors) [![Dependencies Status](https://david-dm.org/Atyantik/react-pwa.svg)](https://david-dm.org/Atyantik/react-pwa)
 [![devDependencies Status](https://david-dm.org/Atyantik/react-pwa/dev-status.svg)](https://david-dm.org/Atyantik/react-pwa?type=dev)
 [![Build Status](https://travis-ci.org/Atyantik/react-pwa.svg?branch=master)](https://travis-ci.org/Atyantik/react-pwa)
 
@@ -107,12 +107,41 @@ Now you are all set, Get your hands dirty with this awesome boilerplate.
 ### Testing
 *We have not written any test cases yet. Yet mocha is all set to test the application we need contributors for the purpose*  
 
-### License
-This project is licensed under the MIT license, Copyright (c) 2017 Atyantik Technologies Private Limited. For more information see LICENSE.md.  
-
 
 ### Need contributors.
+
+
+This project exists thanks to all the people who contribute. [[Contribute]](CONTRIBUTING.md).
+<a href="graphs/contributors"><img src="https://opencollective.com/react-pwa/contributors.svg?width=890" /></a>
+
 We are actively looking for contributors for testing, and documentation.
 Please contact us: admin [at] atyantik.com or contact [at] atyantik.com  
 
 Visit us at [Atyantik Technologies Private Limited](https://www.atyantik.com)
+
+### Backers
+
+Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/react-pwa#backer)]
+
+<a href="https://opencollective.com/react-pwa#backers" target="_blank"><img src="https://opencollective.com/react-pwa/backers.svg?width=890"></a>
+
+
+### Sponsors
+
+Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/react-pwa#sponsor)]
+
+<a href="https://opencollective.com/react-pwa/sponsor/0/website" target="_blank"><img src="https://opencollective.com/react-pwa/sponsor/0/avatar.svg"></a>
+<a href="https://opencollective.com/react-pwa/sponsor/1/website" target="_blank"><img src="https://opencollective.com/react-pwa/sponsor/1/avatar.svg"></a>
+<a href="https://opencollective.com/react-pwa/sponsor/2/website" target="_blank"><img src="https://opencollective.com/react-pwa/sponsor/2/avatar.svg"></a>
+<a href="https://opencollective.com/react-pwa/sponsor/3/website" target="_blank"><img src="https://opencollective.com/react-pwa/sponsor/3/avatar.svg"></a>
+<a href="https://opencollective.com/react-pwa/sponsor/4/website" target="_blank"><img src="https://opencollective.com/react-pwa/sponsor/4/avatar.svg"></a>
+<a href="https://opencollective.com/react-pwa/sponsor/5/website" target="_blank"><img src="https://opencollective.com/react-pwa/sponsor/5/avatar.svg"></a>
+<a href="https://opencollective.com/react-pwa/sponsor/6/website" target="_blank"><img src="https://opencollective.com/react-pwa/sponsor/6/avatar.svg"></a>
+<a href="https://opencollective.com/react-pwa/sponsor/7/website" target="_blank"><img src="https://opencollective.com/react-pwa/sponsor/7/avatar.svg"></a>
+<a href="https://opencollective.com/react-pwa/sponsor/8/website" target="_blank"><img src="https://opencollective.com/react-pwa/sponsor/8/avatar.svg"></a>
+<a href="https://opencollective.com/react-pwa/sponsor/9/website" target="_blank"><img src="https://opencollective.com/react-pwa/sponsor/9/avatar.svg"></a>
+
+
+
+### License
+This project is licensed under the MIT license, Copyright (c) 2017 Atyantik Technologies Private Limited. For more information see LICENSE.md.  
