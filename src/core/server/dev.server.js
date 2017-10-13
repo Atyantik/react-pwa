@@ -19,7 +19,7 @@ import webpackConfig from "../../../webpack/dev.babel";
 
 import {extractFilesFromAssets} from "../utils/utils";
 import Html from "../components/html";
-import {publicDirName} from "../../../directories";
+import {publicDirName, srcPublicDir} from "../../../directories";
 import {infiniteCache} from "../libs/cache/memory";
 
 const app = express();
@@ -37,7 +37,7 @@ console.log("Creating bundle with Webpack dev server.. Please wait..");
  * Try to serve favicon
  */
 try {
-  const faviconPath = path.join(__dirname, publicDirName, "favicon.ico");
+  const faviconPath = path.join(srcPublicDir, "favicon.ico");
   if (path.resolve(faviconPath)) {
     app.use(serveFavicon(faviconPath));
   }
