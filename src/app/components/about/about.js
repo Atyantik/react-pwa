@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import classNames from "classnames";
 import  { Link } from "react-router-dom";
 import { renderSubRoutes } from "../../../core/utils/renderer";
+import Transition from "../../../core/components/transition";
 import * as styles from "./about.scss";
 
 export default class About extends Component {
@@ -27,7 +28,14 @@ export default class About extends Component {
           </div>
         </div>
         <div className="pl-4 col-sm-6">
-          {renderSubRoutes(this)}
+          <Transition
+            duration={500}
+            className={styles["animator"]}
+            onEnterClassName={styles["fade-in"]}
+            onExitClassName={styles["fade-out"]}
+          >
+            {renderSubRoutes(this)}
+          </Transition>
         </div>
       </div>
     );

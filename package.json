@@ -71,6 +71,7 @@
     "react-test-render": "^1.0.3",
     "react-test-renderer": "^16.0.0",
     "react-transform-hmr": "^1.0.4",
+    "react-transition-group": "^2.2.1",
     "redux": "^3.7.2",
     "sass-loader": "^6.0.6",
     "serve-favicon": "^2.4.3",

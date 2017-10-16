@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { SCREEN_STATE_LOADING } from "../screen/action";
+import { SCREEN_STATE_LOADING } from "../../../core/components/screen/action";
 import * as styles from "./loader.scss";
+import Header from "../header";
+import Footer from "../footer";
+import Transition from "../../../core/components/transition/transition";
 
 @connect( state => {
   return {
@@ -23,7 +26,16 @@ export default class Loader extends Component {
             </div>
           )
         }
-        {this.props.children || null}
+        <Header />
+        <Transition
+          timeout={500}
+          className={styles["animator"]}
+          onEnterClassName={styles["fade-in"]}
+          onExitClassName={styles["fade-out"]}
+        >
+          {this.props.children || null}
+        </Transition>
+        <Footer />
       </div>
     );
   }

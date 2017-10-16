@@ -50,6 +50,7 @@ export default class Html extends React.Component {
           <div id="app">
             {this.props.children}
           </div>
+          <div id="temp" />
           {
             _.map(scripts, path => {
               const pathHash = generateStringHash(path, "JS");

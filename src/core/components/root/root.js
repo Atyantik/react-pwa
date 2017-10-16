@@ -2,7 +2,7 @@ import { Component } from "react";
 import _ from "lodash";
 import { connect } from "react-redux";
 import {loadScript, loadStyle} from "../../utils/utils";
-import { screenLoaded } from "../loader/action";
+import { screenLoaded } from "../screen/action";
 
 const __development = process.env.NODE_ENV === "development";
 

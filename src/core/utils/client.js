@@ -19,7 +19,13 @@ import {
 } from "./renderer";
 
 import { generateMeta } from "./seo";
-import { screenLoading, screenLoaded, SCREEN_STATE_LOADED } from "../components/loader/action";
+import {
+  screenLoading,
+  screenLoaded,
+  SCREEN_STATE_LOADED,
+  screenPageEnter,
+  screenPageExit
+} from "../components/screen/action";
 
 // We require this cause we display screen loader as soon as there is
 // url change, but if the loader function is completed in 100 milli-second then there is
@@ -50,6 +56,23 @@ export const hideScreenLoader = (store) => {
   if (screenState === SCREEN_STATE_LOADED) return;
   store.dispatch(screenLoaded());
 };
+
+const ANIMATION_TIMEOUT = 500;
+export const animateFadeIn = (global) => {
+  return new Promise(resolve => {
+    if (global.isInitialLoad) return resolve();
+    global.store.dispatch(screenPageEnter());
+    setTimeout(resolve, ANIMATION_TIMEOUT/2);
+  });
+};
+export const animateFadeOut = (global) => {
+  return new Promise(resolve => {
+    if (global.isInitialLoad) return resolve();
+    global.store.dispatch(screenPageExit());
+    setTimeout(resolve, ANIMATION_TIMEOUT/2);
+  });
+};
+
 
 /**
  * Scroll to top for the specified route

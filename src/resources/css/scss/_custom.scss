@@ -19,21 +19,6 @@ $h4-font-sm-size: 1.5rem !default;
 $h5-font-sm-size: 1.25rem !default;
 $h6-font-sm-size: 1rem !default;
 
-
-@keyframes intro {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
-main, footer {
-  animation: intro 0.7s both;
-  animation-delay: 0.2s;
-}
-
 @media(max-width: $screen-size-md){
   h1, .h1 { font-size: $h1-font-sm-size; }
   h2, .h2 { font-size: $h2-font-sm-size; }
@@ -42,5 +27,3 @@ main, footer {
   h5, .h5 { font-size: $h5-font-sm-size; }
   h6, .h6 { font-size: $h6-font-sm-size; }
 }
-
-
