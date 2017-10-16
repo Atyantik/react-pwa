@@ -20,7 +20,6 @@ import webpackConfig from "../../../webpack/dev.babel";
 import {extractFilesFromAssets} from "../utils/utils";
 import Html from "../components/html";
 import {publicDirName, srcPublicDir} from "../../../directories";
-import {infiniteCache} from "../libs/cache/memory";
 
 const app = express();
 
@@ -180,7 +179,7 @@ if (enableServiceWorker && serviceWorkerConfig !== null) {
  * Send global data to user, as we do not want to send it via
  * window object
  */
-app.get("/_globals", infiniteCache(), (req, res) => {
+app.get("/_globals", (req, res) => {
   
   // Never ever cache this request
   const {cssAssets, jsAssets} = req;

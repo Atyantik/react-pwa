@@ -95,14 +95,12 @@ export const scrollToTop = (currentRoutes = []) => {
 
 /**
  * Update meta-data for the specified url
- * @param url
+ * @param routes
  */
-const updateHtmlMeta = url => {
-  
-  const currentRoutes = getRouteFromPath(url);
+const updateHtmlMeta = routes => {
   
   let seoData = {};
-  _.each(currentRoutes, r => {
+  _.each(routes, r => {
     seoData = _.defaults({}, _.get(r, "seo", {}), seoData);
   });
   
@@ -180,12 +178,13 @@ export const renderRoutes = async ({
     storage,
     api,
     store,
-    url: window.location.href.replace(window.location.origin, "")
+    url: window.location.href.replace(window.location.origin, ""),
+    host: `${window.location.protocol}//${window.location.host}`
   });
   
   try {
     await Promise.all(promises);
-    updateHtmlMeta(url);
+    updateHtmlMeta(currentRoutes);
     renderRoutesByUrl({
       routes: currentRoutes,
       history,
