@@ -1,2 +1,2 @@
-export * from "./components/loader/reducer";
+export * from "./components/screen/reducer";
 export * from "./libs/network/reducer";

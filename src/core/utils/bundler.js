@@ -162,9 +162,6 @@ export const loadModuleByUrl = (url, cb = () => {}) => {
     
     const currentMod = getModuleByUrl(url, globals.routes);
     
-    //eslint-disable-next-line
-    debugger;
-    
     // location is an object like window.location
     // Load in respect to path
     let isLoaded = false;
