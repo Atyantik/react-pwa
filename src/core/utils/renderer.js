@@ -242,6 +242,7 @@ export const renderSubRoutes = (component) => {
  * @param api
  * @param store
  * @param url
+ * @param host
  * @returns {Array}
  */
 export const getPreloadDataPromises = (
@@ -250,7 +251,8 @@ export const getPreloadDataPromises = (
     storage,
     api,
     store,
-    url
+    url,
+    host
   }
 ) => {
   let promises = [];
@@ -261,7 +263,19 @@ export const getPreloadDataPromises = (
       promises.push((() => {
         
         // Pass route as reference so that we can modify it while loading data
-        let returnData = r.preLoadData({route: r, match: r.match, storage, api, store, url});
+        const staticRoute = JSON.parse(JSON.stringify(r));
+        let returnData = r.preLoadData({
+          route: staticRoute,
+          match: r.match,
+          storage,
+          api,
+          store,
+          url,
+          host,
+          updateSeo: function(seoData = {}) {
+            return r.seo = _.defaults({}, _.get(r, "seo", {}), seoData);
+          }
+        });
         if (returnData && _.isFunction(returnData.then)) {
           return returnData.then(data => {
             return r.preLoadedData = data;

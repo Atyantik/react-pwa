@@ -299,7 +299,8 @@ app.get("*", pageCache(_.cloneDeep(Routes)), (req, res) => {
       routes: currentRoutes,
       storage,
       api,
-      store
+      store,
+      host: `${(req.headers["x-forwarded-protocol"] || req.headers["protocol"] || req.protocol)}://${(req.headers["x-host"] || req.headers["host"] || "")}`
     });
     
     Promise.all(promises).then(() => {
