@@ -1,6 +1,9 @@
 import _ from "lodash";
 import global, {renderRoutesWrapper} from "./client";
-import {hideScreenLoader, scrollToTop, showScreenLoader, updateRoutes} from "../utils/client";
+import {
+  animateFadeIn, animateFadeOut, hideScreenLoader, scrollToTop, showScreenLoader,
+  updateRoutes
+} from "../utils/client";
 import {configureRoutes, getModuleByUrl, idlePreload, isModuleLoaded, loadModuleByUrl} from "../utils/bundler";
 import {renderNotFoundPage} from "../utils/renderer";
 import {injectAsyncReducers} from "../store";
@@ -31,32 +34,36 @@ const supportsServiceWorker = !!_.get(window, "navigator.serviceWorker", false);
 })(window);
 
 const updateByUrl = (url) => {
-  // Show screen loader asap
-  !global.isInitialLoad && showScreenLoader(global.store);
+  animateFadeOut(global).then(() => {
+    // Show screen loader asap
+    !global.isInitialLoad && showScreenLoader(global.store);
   
-  const module = getModuleByUrl(url);
+    const module = getModuleByUrl(url);
   
-  if (!module) {
-    // If no module found for the route simple ask to render it as it will display
-    // 404 page
-    return renderNotFoundPage({
-      history: global.history,
-      renderRoot: global.renderRoot,
-      url: url,
-      routes: [],
-      store: global.store
-    }, () => {
-      !global.isInitialLoad && hideScreenLoader(global.store);
-      scrollToTop();
-    });
-  }
+    if (!module) {
+      // If no module found for the route simple ask to render it as it will display
+      // 404 page
+      return renderNotFoundPage({
+        history: global.history,
+        renderRoot: global.renderRoot,
+        url: url,
+        routes: [],
+        store: global.store
+      }, () => {
+        !global.isInitialLoad && hideScreenLoader(global.store);
+        scrollToTop();
+      });
+    }
   
-  if (isModuleLoaded(url, global.collectedRoutes)) {
-    return renderRoutesWrapper({ url });
-  }
-  // Load module, as the module load automatically triggers __renderRoutes,
-  // it should just work fine
-  loadModuleByUrl(url);
+    if (isModuleLoaded(url, global.collectedRoutes)) {
+      return renderRoutesWrapper({ url }).then(() => {
+        animateFadeIn(global);
+      });
+    }
+    // Load module, as the module load automatically triggers __renderRoutes,
+    // it should just work fine
+    loadModuleByUrl(url);
+  });
 };
 
 global.unlisten = global.history.listen( location => {

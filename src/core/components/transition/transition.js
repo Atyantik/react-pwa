@@ -30,9 +30,9 @@ export default class Transition extends Component {
     const { className, onEnterClassName, onExitClassName } = this.props;
     return (
       <div className={`${className} ${this.props.screenAnimation === SCREEN_STATE_PAGE_EXIT ? onExitClassName: onEnterClassName}`}>
-        <Dumb>
-          {this.props.children || null}
-        </Dumb>
+        {/*<Dumb>*/}
+        {this.props.children || null}
+        {/*</Dumb>*/}
       </div>
     );
   }

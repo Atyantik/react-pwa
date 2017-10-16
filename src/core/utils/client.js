@@ -57,7 +57,7 @@ export const hideScreenLoader = (store) => {
   store.dispatch(screenLoaded());
 };
 
-const ANIMATION_TIMEOUT = 500;
+const ANIMATION_TIMEOUT = 400;
 export const animateFadeIn = (global) => {
   return new Promise(resolve => {
     if (global.isInitialLoad) return resolve();

@@ -18,6 +18,7 @@ export default class Loader extends Component {
   render() {
     return (
       <div>
+        <Header />
         {
           this.props.screenState === SCREEN_STATE_LOADING &&
           (
@@ -26,9 +27,7 @@ export default class Loader extends Component {
             </div>
           )
         }
-        <Header />
         <Transition
-          timeout={500}
           className={styles["animator"]}
           onEnterClassName={styles["fade-in"]}
           onExitClassName={styles["fade-out"]}

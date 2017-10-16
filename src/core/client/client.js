@@ -17,6 +17,7 @@ import {
  * Client utilities
  */
 import {
+  animateFadeIn,
   renderRoutes
 } from "../utils/client";
 
@@ -122,10 +123,12 @@ export const renderRoutesWrapper = ({ url = global.previousUrl }) => {
     }
   }).then(() => {
     global.isInitialLoad = false;
+    animateFadeIn(global);
   }).catch((ex) => {
     // eslint-disable-next-line
     console.log(ex);
     global.isInitialLoad = false;
+    animateFadeIn(global);
   });
 };
 

@@ -12,12 +12,12 @@
 }
 
 .loader-section {
-    position: fixed;
-    height: 200vh;
-    width: 200vw;
-    top: -50vh;
-    left: -50vw;
-    background-color: $white;
+    position: absolute;
+    width: 100%;
+    min-height: 220px;
+    /* top: auto; */
+    /* left: 0vw; */
+    background-color: #fff;
     z-index: 9999;
 }
 
@@ -63,9 +63,9 @@
 
 .animator {
     opacity: 1;
-    -webkit-transition: opacity 0.25s linear;
-    -moz-transition: opacity 0.25s linear;
-    transition: opacity 0.25s linear;
+    -webkit-transition: opacity 0.2s linear;
+    -moz-transition: opacity 0.2s linear;
+    transition: opacity 0.2s linear;
 }
 .animator.fade-in {
     opacity: 1;
