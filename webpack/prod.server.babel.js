@@ -82,9 +82,6 @@ export default [{
       compress: true,
       comments: false,
       sourceMap: false,
-      exclude: [
-        /workbox-sw\.prod.*\.js$/
-      ]
     }),
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "production"),
@@ -165,9 +162,6 @@ export default [{
       compress: true,
       comments: false,
       sourceMap: false,
-      exclude: [
-        /workbox-sw\.prod.*\.js$/
-      ]
     }),
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "production"),
