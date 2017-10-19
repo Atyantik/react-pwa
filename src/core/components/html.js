@@ -45,6 +45,13 @@ export default class Html extends React.Component {
               return <meta key={i} {...meta} />;
             })
           }
+          {/** Loading Styles **/}
+          {
+            _.map(stylesheets, path => {
+              const pathHash = generateStringHash(path, "CSS");
+              return <link rel="stylesheet" type="text/css" key={pathHash} id={pathHash} href={path} />;
+            })
+          }
         </head>
         <body>
           <div id="app">
@@ -55,13 +62,6 @@ export default class Html extends React.Component {
             _.map(scripts, path => {
               const pathHash = generateStringHash(path, "JS");
               return <script type="text/javascript" key={pathHash} id={pathHash} src={path} defer />;
-            })
-          }
-          {/** Loading Styles @ bottom of page to give the best **/}
-          {
-            _.map(stylesheets, path => {
-              const pathHash = generateStringHash(path, "CSS");
-              return <link rel="stylesheet" type="text/css" key={pathHash} id={pathHash} href={path} />;
             })
           }
         </body>

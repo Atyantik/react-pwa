@@ -1,6 +1,6 @@
 import _ from "lodash";
 
-import WorkboxSW from "workbox-sw";
+import WorkboxSW from "./libs/workbox-sw";
 // As service worker has special scope for self lets store it to variable
 // eslint-disable-next-line
 const serviceWorker = self;
