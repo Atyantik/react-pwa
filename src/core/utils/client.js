@@ -319,4 +319,3 @@ export const smoothScroll = (eID, padding = 0, speedMultiplier = 1) => {
     leapY -= step; if (leapY < stopY) leapY = stopY; timer++;
   }
 };
-
