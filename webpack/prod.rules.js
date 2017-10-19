@@ -69,45 +69,45 @@ export default ({ imageOutputPath = "images/" }) => {
       ],
       use: [
         `file-loader?outputPath=${imageOutputPath}/&name=[path][hash].[ext]&context=${srcDir}`,
-        // {
-        //   loader: "imagemin-loader",
-        //   options: {
-        //     plugins: [
-        //       {
-        //         use: "imagemin-pngquant",
-        //         options: {
-        //           quality: 80
-        //         }
-        //       },
-        //       {
-        //         use: "imagemin-mozjpeg",
-        //         options: {
-        //           quality: 80
-        //         }
-        //       },
-        //       {
-        //         use: "imagemin-svgo",
-        //         options: {
-        //           removeTitle: true,
-        //           removeDesc: true,
-        //         }
-        //       },
-        //       {
-        //         use: "imagemin-gifsicle",
-        //         options: {
-        //           optimizationLevel: 3
-        //         }
-        //       },
-        //       {
-        //         use: "imagemin-optipng",
-        //         options: {
-        //           optimizationLevel: 7
-        //         }
-        //       }
-        //
-        //     ]
-        //   }
-        // }
+        {
+          loader: "imagemin-loader",
+          options: {
+            plugins: [
+              {
+                use: "imagemin-pngquant",
+                options: {
+                  quality: 80
+                }
+              },
+              {
+                use: "imagemin-mozjpeg",
+                options: {
+                  quality: 80
+                }
+              },
+              {
+                use: "imagemin-svgo",
+                options: {
+                  removeTitle: true,
+                  removeDesc: true,
+                }
+              },
+              {
+                use: "imagemin-gifsicle",
+                options: {
+                  optimizationLevel: 3
+                }
+              },
+              {
+                use: "imagemin-optipng",
+                options: {
+                  optimizationLevel: 7
+                }
+              }
+      
+            ]
+          }
+        }
       ]
     }
   ];

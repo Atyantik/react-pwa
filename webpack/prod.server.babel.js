@@ -78,11 +78,11 @@ export default [{
   plugins: [
     
     // Uglify the output so that we have the most optimized code
-    // new UglifyJSPlugin({
-    //   compress: true,
-    //   comments: false,
-    //   sourceMap: false,
-    // }),
+    new UglifyJSPlugin({
+      compress: true,
+      comments: false,
+      sourceMap: false,
+    }),
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "production"),
     }),
@@ -158,11 +158,11 @@ export default [{
   plugins: [
     
     // Uglify the output so that we have the most optimized code
-    // new UglifyJSPlugin({
-    //   compress: true,
-    //   comments: false,
-    //   sourceMap: false,
-    // }),
+    new UglifyJSPlugin({
+      compress: true,
+      comments: false,
+      sourceMap: false,
+    }),
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "production"),
     }),

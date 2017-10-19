@@ -122,11 +122,11 @@ export default {
     AssetsPluginInstance,
     
     // Uglify the output so that we have the most optimized code
-    // new UglifyJSPlugin({
-    //   compress: true,
-    //   comments: false,
-    //   sourceMap: false,
-    // }),
+    new UglifyJSPlugin({
+      compress: true,
+      comments: false,
+      sourceMap: false,
+    }),
     
     // Create common chunk of data
     // Break data in common so that we have minimum data to load
