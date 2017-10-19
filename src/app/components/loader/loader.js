@@ -4,7 +4,7 @@ import { SCREEN_STATE_LOADING } from "../../../core/components/screen/action";
 import * as styles from "./loader.scss";
 import Header from "../header";
 import Footer from "../footer";
-import Transition from "../../../core/components/transition/transition";
+import Transition from "../../../core/components/transition";
 
 @connect( state => {
   return {

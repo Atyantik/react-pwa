@@ -12,12 +12,6 @@ import {
 })
 export default class Transition extends Component {
   animationState = "stopped";
-  constructor(props) {
-    super(props);
-    this.state = {
-      mounted: false
-    };
-  }
   componentDidMount() {
     this.setState({mounted: true});
   }
@@ -32,13 +26,9 @@ export default class Transition extends Component {
       this.animationState = "stopped";
     }
   }
-  getOnEnterClassName(props) {
-    return this.state.mounted ? props.onEnterClassName: "";
-  }
   
   render() {
-    const { style, className, onExitClassName } = this.props;
-    const onEnterClassName = this.getOnEnterClassName(this.props);
+    const { style, className, onEnterClassName, onExitClassName } = this.props;
     return (
       <div style={style} className={`${className} ${this.props.screenAnimation === SCREEN_STATE_PAGE_EXIT ? onExitClassName: onEnterClassName}`}>
         {this.props.children || null}
