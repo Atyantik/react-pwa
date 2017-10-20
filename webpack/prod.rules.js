@@ -41,20 +41,13 @@ export default ({ imageOutputPath = "images/" }) => {
     ...[getStylesRule({development: false, extract: true, isResource: false})],
     ...[getStylesRule({development: false, extract: true, isResource: true})],
   
-    // Manage fonts other than svg format
     {
-      test: /\.(eot|ttf|woff|woff2|svg)$/,
-      include: [
-        path.join(srcDir, "resources", "fonts"),
-      ],
+      test: /\.(eot|ttf|woff|woff2)$/,
       loader: `file-loader?outputPath=fonts/&name=[path][hash].[ext]&context=${srcDir}`
     },
   
     {
       test: /\.(jpe?g|png|svg|gif|webp)$/i,
-      exclude: [
-        path.join(srcDir, "resources", "fonts"),
-      ],
       // match one of the loader's main parameters (sizes and placeholder)
       resourceQuery: /[?&](sizes|placeholder)(=|&|\[|$)/i,
       use: [
@@ -64,9 +57,6 @@ export default ({ imageOutputPath = "images/" }) => {
     {
       test: /\.(jpe?g|png|gif|svg|webp)$/i,
       // match one of the loader's main parameters (sizes and placeholder)
-      exclude: [
-        path.join(srcDir, "resources", "fonts"),
-      ],
       use: [
         `file-loader?outputPath=${imageOutputPath}/&name=[path][hash].[ext]&context=${srcDir}`,
         {
