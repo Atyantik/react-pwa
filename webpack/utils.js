@@ -1,7 +1,7 @@
 import path from "path";
 import ExtractTextPlugin from "extract-text-webpack-plugin";
 
-import {srcDir} from "../directories";
+import {rootDir, srcDir} from "../directories";
 const __development = process.env.NODE_ENV === "development";
 
 /**
@@ -60,6 +60,7 @@ export const getStylesRule = (
     ...(isResource ? {
       include: [
         path.join(srcDir, "resources"),
+        path.join(rootDir, "node_modules"),
       ]
     }: {}),
   
@@ -67,6 +68,7 @@ export const getStylesRule = (
     ...(!isResource ? {
       exclude: [
         path.join(srcDir, "resources"),
+        path.join(rootDir, "node_modules"),
       ]
     }: {}),
     
