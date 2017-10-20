@@ -1,5 +1,3 @@
-import path from "path";
-
 /**
  * @description It moves all the require("style.css")s in entry chunks into
  * a separate single CSS file. So your styles are no longer inlined
