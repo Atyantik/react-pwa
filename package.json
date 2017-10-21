@@ -91,7 +91,7 @@
   "scripts": {
     "start": "cross-env NODE_ENV=development nodemon --exec babel-node --watch ./src/server.js --watch ./src/client.js --watch ./src/core --watch ./webpack ./src/server.js",
     "lint": "eslint --ignore-path .gitignore src webpack",
-    "build": "cross-env NODE_ENV=production webpack -p --config ./webpack/prod.client.babel.js && cross-env NODE_ENV=production webpack -p --verbose --config ./webpack/prod.server.babel.js",
+    "build": "cross-env NODE_ENV=production webpack -p --config ./webpack/prod.client.babel.js && cross-env NODE_ENV=production webpack -p --config ./webpack/prod.server.babel.js",
     "test": "npm run lint && cross-env NODE_ENV=test mocha --require babel-core/register \"src/**/*.test.js\"",
     "postinstall": "opencollective postinstall"
   },

@@ -30,7 +30,7 @@ import {
   buildPublicPath,
 } from "../directories";
 
-import rules from "./prod.rules";
+import rules, { stats } from "./prod.rules";
 
 const isolateVendorScripts = false;
 
@@ -112,6 +112,9 @@ export default {
   
   devtool: false,
   
+  // Stats from rules
+  stats,
+  
   plugins: [
     // While building remove the dist dir
     new CleanWebpackPlugin(["dist"], {
@@ -123,7 +126,9 @@ export default {
     
     // Uglify the output so that we have the most optimized code
     new UglifyJSPlugin({
-      compress: true,
+      compress: {
+        warnings: false,
+      },
       comments: false,
       sourceMap: false,
     }),

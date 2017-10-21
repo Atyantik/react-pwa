@@ -22,7 +22,7 @@ import autoprefixer from "autoprefixer";
 
 import { srcDir, distDir } from "../directories";
 
-import rules from "./prod.rules";
+import rules, { stats } from "./prod.rules";
 
 export default [{
   
@@ -69,17 +69,20 @@ export default [{
   },
   
   node: {
-    __filename: true,
-    __dirname: true
+    __filename: false,
+    __dirname: false
   },
   target: "node",
   devtool: false,
+  stats,
   
   plugins: [
     
     // Uglify the output so that we have the most optimized code
     new UglifyJSPlugin({
-      compress: true,
+      compress: {
+        warnings: false,
+      },
       comments: false,
       sourceMap: false,
     }),
@@ -154,12 +157,15 @@ export default [{
   },
   target: "web",
   devtool: false,
+  stats,
   
   plugins: [
     
     // Uglify the output so that we have the most optimized code
     new UglifyJSPlugin({
-      compress: true,
+      compress: {
+        warnings: false,
+      },
       comments: false,
       sourceMap: false,
     }),
@@ -193,5 +199,4 @@ export default [{
       globs: ["service-worker.min.css"]
     })
   ],
-}
-];
+}];

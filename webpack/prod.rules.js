@@ -9,6 +9,18 @@
 import { srcDir } from "../directories";
 import {getStylesRule} from "./utils";
 
+// minimal logging
+export const stats = {
+  assets: false,
+  colors: true,
+  version: false,
+  hash: false,
+  timings: false,
+  chunks: false,
+  chunkModules: false,
+  children: false
+};
+
 export default ({ imageOutputPath = "images/" }) => {
   return [
     // Rules for js or jsx files. Use the babel loader.
