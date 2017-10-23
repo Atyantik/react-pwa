@@ -62,9 +62,10 @@ if (filename) {
 let allAssets = [];
 const getAllAssets = () => {
   if (_.isEmpty(allAssets)) {
-    allAssets = glob.sync(path.join(currentDir, "public") + "/**/*");
+    const publicDirPrefix = path.join(currentDir, publicDirName);
+    allAssets = glob.sync( publicDirPrefix + "/**/*");
     allAssets = _.filter(
-      _.map(allAssets, a => a.replace(currentDir, "")),
+      _.map(allAssets, a => a.replace(publicDirPrefix, "")),
       a => !!path.extname(a)
     );
   }
@@ -118,7 +119,7 @@ if (hstsSettings.enabled) {
 }
 
 const cacheTime = 86400000*30;     // 30 days;
-app.use("/public", express.static(path.join(currentDir, "public"), {
+app.use(express.static(path.join(currentDir, "public"), {
   maxAge: cacheTime
 }));
 

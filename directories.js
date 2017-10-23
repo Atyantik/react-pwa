@@ -66,12 +66,16 @@ const srcDirName = "src";
  * @type {string}
  */
 const pagesDirName = "pages";
+
+export const buildPath = "/" + buildDirName + "/";
 /**
  * @description buildPublicPath is the path that would be used by dev server
  * and the files will be dropped in the path relative to distribution folder
  * @type {string}
  */
-export const buildPublicPath = "/" + publicDirName + "/" + buildDirName + "/";
+export const buildPublicPath = "/" + publicDirName + buildPath;
+
+
 
 // Directory structure
 // Root dir is the project root

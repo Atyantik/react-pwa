@@ -68,7 +68,7 @@ export default ({ imageOutputPath = "images/" }) => {
       test: /\.(jpe?g|png|gif|svg|webp)$/i,
       // match one of the loader's main parameters (sizes and placeholder)
       use: [
-        `file-loader?outputPath=${imageOutputPath}/&name=[path][hash].[ext]&context=${srcDir}`,
+        `file-loader?outputPath=${imageOutputPath}&name=[path][hash].[ext]&context=${srcDir}`,
         {
           loader: "imagemin-loader",
           options: {

@@ -27,7 +27,7 @@ import {
   srcPublicDir,
   distPublicDir,
   buildDir,
-  buildPublicPath,
+  buildPath,
 } from "../directories";
 
 import rules, { stats } from "./prod.rules";
@@ -107,7 +107,7 @@ export default {
     filename: "[name].[chunkhash].bundle.js",
     
     // public path is assets path
-    publicPath: buildPublicPath,
+    publicPath: buildPath,
   },
   
   devtool: false,

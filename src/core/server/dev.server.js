@@ -58,7 +58,7 @@ if (_.isArray(webpackConfig)) {
 }
 
 // server content from content base
-app.use("/public", express.static(commonClientConfig.devServer.contentBase));
+app.use(express.static(commonClientConfig.devServer.contentBase));
 
 // Compile common & client configurations
 const commonClientCompiler = webpack(commonClientConfig);

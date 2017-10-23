@@ -109,7 +109,7 @@ export const getModuleByUrl = (pathname, routes = globals.routes) => {
 
 /**
  * Check if script requested belongs to the modules specified
- * check if public/build/mod-home-cat-1982Aasdd12ascgt3.bundle.js
+ * check if build/mod-home-cat-1982Aasdd12ascgt3.bundle.js
  * belongs to home module or home-cat module
  *
  * @param script
