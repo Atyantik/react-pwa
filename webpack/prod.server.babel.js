@@ -81,11 +81,13 @@ export default [{
     
     // Uglify the output so that we have the most optimized code
     new UglifyJSPlugin({
-      compress: {
-        warnings: false,
+      uglifyOptions: {
+        compress: {
+          warnings: false,
+        },
       },
-      comments: false,
       sourceMap: false,
+      parallel: 3,
     }),
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "production"),
@@ -171,11 +173,13 @@ export default [{
     
     // Uglify the output so that we have the most optimized code
     new UglifyJSPlugin({
-      compress: {
-        warnings: false,
+      uglifyOptions: {
+        compress: {
+          warnings: false,
+        },
       },
-      comments: false,
       sourceMap: false,
+      parallel: 3,
     }),
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "production"),

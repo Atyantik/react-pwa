@@ -78,7 +78,7 @@
     "strict-uri-encode": "^2.0.0",
     "style-loader": "^0.19.0",
     "uglify-js": "^3.0.28",
-    "uglifyjs-webpack-plugin": "^0.4.6",
+    "uglifyjs-webpack-plugin": "^1.0.1",
     "universal-fetch": "^1.0.0",
     "url-loader": "^0.6.2",
     "webp-loader": "^0.2.1",
@@ -94,7 +94,6 @@
     "lint": "eslint --ignore-path .gitignore src webpack",
     "build": "cross-env NODE_ENV=production webpack -p --config ./webpack/prod.client.babel.js && cross-env NODE_ENV=production webpack -p --config ./webpack/prod.server.babel.js",
     "test": "npm run lint && cross-env NODE_ENV=test mocha --require babel-core/register \"src/**/*.test.js\"",
-
     "docker:dev:image": "docker build -t react-pwa -f docker/Dockerfile .",
     "docker:dev:start": "docker run -it -v \"$PWD/src\":\"/app/src\" -p 3003:3003 react-pwa",
     "docker:dev:list": "docker run -it -v \"$PWD/src\":\"/app/src\" -p 3003:3003 react-pwa yarn lint",
@@ -102,7 +101,6 @@
     "docker:prod:build": "docker run -it -v \"$PWD/src\":\"/app/src\" -v \"$PWD/dist\":\"/app/dist\" react-pwa yarn build",
     "docker:prod:image": "npm run docker:dev:image && npm run docker:prod:build && docker build -t react-pwa-prod -f docker/prod/Dockerfile .",
     "docker:prod:start": "docker run -it -p 3003:3003 react-pwa-prod",
-
     "postinstall": "opencollective postinstall"
   },
   "keywords": [

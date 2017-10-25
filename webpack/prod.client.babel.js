@@ -126,11 +126,13 @@ export default {
     
     // Uglify the output so that we have the most optimized code
     new UglifyJSPlugin({
-      compress: {
-        warnings: false,
+      uglifyOptions: {
+        compress: {
+          warnings: false,
+        },
       },
-      comments: false,
       sourceMap: false,
+      parallel: 3,
     }),
     
     // Create common chunk of data

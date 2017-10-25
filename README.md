@@ -107,6 +107,28 @@ Now you are all set, Get your hands dirty with this awesome boilerplate.
 ### Testing
 *We have not written any test cases yet. Yet mocha is all set to test the application we need contributors for the purpose*  
 
+### Docker support
+Now easily manage docker-build, given Docker is properly configured and the terminal that is running the nodejs has access to docker command.
+
+#####Working with docker:
+
+`yarn docker:dev:image` 
+
+Will create a development image named "react-pwa" which will be used during application development and running.
+If anything new is added to package.json `yarn docker:dev:image` must be rebuild to get the latest nodejs packages
+
+`yarn docker:dev:start`  
+will start the application in docker mode.  
+ 
+`yarn docker:prod:build`  
+will start the build the application for production  
+ 
+`yarn docker:prod:image`  
+will create a docker image that can be deployed easily to any docker-hub and can create production containers  
+
+`yarn docker:prod:start`  
+will start the application in production mode, its necessary to create docker:prod:image prior to docker:prod:start  
+
 
 ### Need contributors.
 
