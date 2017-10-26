@@ -26,7 +26,7 @@ export default ({ imageOutputPath = "images/" }) => {
     // Rules for js or jsx files. Use the babel loader.
     // Other babel configuration can be found in .babelrc
     {
-      test: /pages\/.*\.jsx?$/,
+      test: /pages(\/|\\).*\.jsx?$/,
       include: srcDir,
       use: [
         {

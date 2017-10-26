@@ -42,7 +42,7 @@ const isolateVendorScripts = false;
 
 const rules = [
   {
-    test: /pages\/.*\.jsx?$/,
+    test: /pages(\/|\\).*\.jsx?$/,
     include: srcDir,
     use: [
       {
