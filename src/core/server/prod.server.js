@@ -42,8 +42,6 @@ import Routes from "../../routes";
 import {extractFilesFromAssets} from "../utils/utils";
 import {publicDirName} from "../../../directories";
 import config from "../../config";
-
-
 /**
  * Set current dir for better computation
  * @type {String}
@@ -214,7 +212,6 @@ try {
  * window object
  */
 app.get("/_globals", infiniteCache(), (req, res) => {
-  
   // Never ever cache this request
   const {assets} = req;
   const allCss = extractFilesFromAssets(assets, ".css");

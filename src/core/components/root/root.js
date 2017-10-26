@@ -28,13 +28,11 @@ export default class CoreRoot extends Component {
   loadGoogleAnalytics() {
     if(typeof window === "undefined") return;
     window.dataLayer = window.dataLayer || [];
-    const gtag = window.gtag = window.gtag || function (){
-      window.dataLayer.push(arguments);
-    };
-    gtag("js", new Date());
-  
-    gtag("config", "UA-107873544-1");
-    loadScript("https://www.googletagmanager.com/gtag/js?id=UA-107873544-1").catch();
+    window.dataLayer.push({
+      "gtm.start": new Date().getTime(),
+      event: "gtm.js"
+    });
+    loadScript("https://www.googletagmanager.com/gtm.js?id=GTM-MN267L6").catch();
   }
   
   componentDidMount() {

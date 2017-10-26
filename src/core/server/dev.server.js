@@ -20,7 +20,6 @@ import webpackConfig from "../../../webpack/dev.babel";
 import {extractFilesFromAssets} from "../utils/utils";
 import Html from "../components/html";
 import {publicDirName, srcPublicDir} from "../../../directories";
-
 const app = express();
 
 const enableServiceWorker = false;

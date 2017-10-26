@@ -34,35 +34,39 @@ const supportsServiceWorker = !!_.get(window, "navigator.serviceWorker", false);
 })(window);
 
 const updateByUrl = (url) => {
-  animateFadeOut(global).then(() => {
-    // Show screen loader asap
-    !global.isInitialLoad && showScreenLoader(global.store);
-  
-    const module = getModuleByUrl(url);
-  
-    if (!module) {
-      // If no module found for the route simple ask to render it as it will display
-      // 404 page
-      return renderNotFoundPage({
-        history: global.history,
-        renderRoot: global.renderRoot,
-        url: url,
-        routes: [],
-        store: global.store
-      }, () => {
-        !global.isInitialLoad && hideScreenLoader(global.store);
-        scrollToTop();
-      });
-    }
-  
-    if (isModuleLoaded(url, global.collectedRoutes)) {
-      return renderRoutesWrapper({ url }).then(() => {
-        animateFadeIn(global);
-      });
-    }
-    // Load module, as the module load automatically triggers __renderRoutes,
-    // it should just work fine
-    loadModuleByUrl(url);
+  return new Promise(resolve => {
+    animateFadeOut(global).then(() => {
+      // Show screen loader asap
+      !global.isInitialLoad && showScreenLoader(global.store);
+    
+      const module = getModuleByUrl(url);
+    
+      if (!module) {
+        // If no module found for the route simple ask to render it as it will display
+        // 404 page
+        renderNotFoundPage({
+          history: global.history,
+          renderRoot: global.renderRoot,
+          url: url,
+          routes: [],
+          store: global.store
+        }, () => {
+          !global.isInitialLoad && hideScreenLoader(global.store);
+          scrollToTop();
+        });
+        return resolve();
+      }
+    
+      if (isModuleLoaded(url, global.collectedRoutes)) {
+        return renderRoutesWrapper({ url }).then(() => {
+          animateFadeIn(global);
+          resolve();
+        });
+      }
+      // Load module, as the module load automatically triggers __renderRoutes,
+      // it should just work fine
+      loadModuleByUrl(url, resolve);
+    });
   });
 };
 
@@ -76,10 +80,11 @@ global.unlisten = global.history.listen( location => {
     delete window["ignoreHistoryChange"];
     return false;
   }
-  updateByUrl(location.pathname);
+  updateByUrl(location.pathname).then(() => {
+    // Execute onPageChange Event
+    global.onPageChange && _.isFunction(global.onPageChange) && global.onPageChange();
+  });
   
-  // Execute onPageChange Event
-  global.onPageChange && _.isFunction(global.onPageChange) && global.onPageChange();
 });
 
 global.previousUrl = window.location.pathname;
