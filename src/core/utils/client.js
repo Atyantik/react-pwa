@@ -128,6 +128,7 @@ const updateHtmlMeta = routes => {
     });
     head.appendChild(metaTag);
   });
+  document.title = title;
   head.getElementsByTagName("title")[0].innerHTML = title;
 };
 

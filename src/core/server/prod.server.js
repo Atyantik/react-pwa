@@ -5,7 +5,6 @@ import React from "react";
 import ReactDOMServer from "react-dom/server";
 import serveFavicon from "serve-favicon";
 import express from "express";
-import EventEmitter from "fbemitter";
 import glob from "glob";
 import path from "path";
 import fs from "fs";
@@ -43,8 +42,6 @@ import Routes from "../../routes";
 import {extractFilesFromAssets} from "../utils/utils";
 import {publicDirName} from "../../../directories";
 import config from "../../config";
-
-const events = new EventEmitter();
 /**
  * Set current dir for better computation
  * @type {String}
@@ -226,16 +223,11 @@ app.get("/_globals", infiniteCache(), (req, res) => {
   res.setHeader("Expires", "-1");
   res.setHeader("Pragma", "no-cache");
   
-  const response = {
+  return res.send(JSON.stringify({
     routes: Routes,
     allCss,
     allJs
-  };
-  
-  const newResponse = events.emit("response:before:_globals", response);
-  console.log(newResponse);
-  
-  return res.send(JSON.stringify(response));
+  }));
 });
 
 app.get("*", pageCache(_.cloneDeep(Routes)), (req, res) => {
@@ -388,4 +380,3 @@ app.get("*", pageCache(_.cloneDeep(Routes)), (req, res) => {
 });
 
 export default app;
-export { events };

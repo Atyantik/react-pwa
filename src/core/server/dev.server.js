@@ -11,7 +11,6 @@ import ReactDOMServer from "react-dom/server";
 import serveFavicon from "serve-favicon";
 import express from "express";
 import path from "path";
-import EventEmitter from "fbemitter";
 
 import webpack from "webpack";
 import webpackMiddleware from "webpack-dev-middleware";
@@ -21,8 +20,6 @@ import webpackConfig from "../../../webpack/dev.babel";
 import {extractFilesFromAssets} from "../utils/utils";
 import Html from "../components/html";
 import {publicDirName, srcPublicDir} from "../../../directories";
-
-const events = new EventEmitter();
 const app = express();
 
 const enableServiceWorker = false;
@@ -192,15 +189,10 @@ app.get("/_globals", (req, res) => {
   res.setHeader("Expires", "-1");
   res.setHeader("Pragma", "no-cache");
   
-  const response = {
+  return res.send(JSON.stringify({
     allCss: cssAssets,
     allJs: jsAssets
-  };
-  
-  const newResponse = events.emit("response:before:_globals", response);
-  console.log(newResponse);
-  
-  return res.send(JSON.stringify(response));
+  }));
 });
 
 app.get("*", (req, res) => {
@@ -236,4 +228,3 @@ app.get("*", (req, res) => {
 if (module.hot) module.hot.accept();
 
 export default app;
-export { events };

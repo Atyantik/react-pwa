@@ -1,18 +1,13 @@
 import express from "express";
 import _ from "lodash";
 import http from "http";
-import serverMiddleware, { events as serverEvents } from "./core/server/middleware";
+import serverMiddleware from "./core/server/middleware";
 import Config from "./config";
 
 const app = express();
 /**
  * --- Your custom code START ---
  */
-serverEvents.addListener("response:before:_globals", function(response) {
-  return new Promise(resolve => {
-    resolve();
-  });
-});
 /**
  * --- Your custom code END ---
  */

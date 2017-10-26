@@ -9,28 +9,32 @@ setGlobalRoutes(Routes);
 global.collectedRoutes = _.cloneDeep(Routes);
 
 const updateByUrl = (url) => {
-  animateFadeOut(global).then(() => {
-    // Show screen loader asap
-    !global.isInitialLoad && showScreenLoader(global.store);
-  
-    const module = getModuleByUrl(url, global.collectedRoutes);
-  
-    if (!module) {
-      // If no module found for the route simple ask to render it as it will display
-      // 404 page
-      return renderNotFoundPage({
-        history: global.history,
-        renderRoot: global.renderRoot,
-        url: url,
-        routes: [],
-        store: global.store
-      }, () => {
-        !global.isInitialLoad && hideScreenLoader(global.store);
+  return new Promise(resolve => {
+    animateFadeOut(global).then(() => {
+      // Show screen loader asap
+      !global.isInitialLoad && showScreenLoader(global.store);
+    
+      const module = getModuleByUrl(url, global.collectedRoutes);
+    
+      if (!module) {
+        // If no module found for the route simple ask to render it as it will display
+        // 404 page
+        renderNotFoundPage({
+          history: global.history,
+          renderRoot: global.renderRoot,
+          url: url,
+          routes: [],
+          store: global.store
+        }, () => {
+          !global.isInitialLoad && hideScreenLoader(global.store);
+          animateFadeIn(global);
+        });
+        return resolve();
+      }
+      return renderRoutesWrapper({ url }).then(() => {
         animateFadeIn(global);
+        resolve();
       });
-    }
-    return renderRoutesWrapper({ url }).then(() => {
-      animateFadeIn(global);
     });
   });
 };
@@ -45,9 +49,9 @@ global.unlisten = global.history.listen( location => {
     delete window["ignoreHistoryChange"];
     return false;
   }
-  updateByUrl(location.pathname);
-  
-  global.onPageChange && _.isFunction(global.onPageChange) && global.onPageChange();
+  updateByUrl(location.pathname).then(() => {
+    global.onPageChange && _.isFunction(global.onPageChange) && global.onPageChange();
+  });
 });
 
 updateByUrl(window.location.pathname);
