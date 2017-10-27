@@ -165,7 +165,8 @@ Support this project by becoming a sponsor. Your logo will show up here with a l
 
 ### Supporters
 ##### Browser stack
-Thanks to Browser stack we are able to test the PWA nature of application on various mobiles and write automated test cases.
+Thanks to Browser stack we are able to test the PWA nature of application on various mobiles and write automated test cases.  
+
 [![Browser Stack](https://www.atyantik.com/wp-content/uploads/2017/10/Browser-Stack-Logo.png)](https://www.browserstack.com)
 
 
