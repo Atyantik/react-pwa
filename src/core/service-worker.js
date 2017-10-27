@@ -25,7 +25,6 @@ self.addEventListener("install", (event) => {
 });
 
 const getOfflineHtml = () => {
-  console.log(_GLOBALS);
   const allCss = _.get(_GLOBALS, "allCss", []);
   const allJs = _.get(_GLOBALS, "allJs", []);
   
