@@ -26,8 +26,14 @@ import {
  */
 import ApiInstance from "../libs/api";
 
-// Polyfill for CustomEvent
+// Polyfill for CustomEvent & window.location.origin
 (function(w) {
+  // Adding origin to non-supported browsers
+  if (!w.location.origin) {
+    w.location.origin = w.location.protocol + "//" + w.location.hostname + (w.location.port ? ":" + w.location.port: "");
+  }
+  
+  // Adding custom event
   if ( typeof w.CustomEvent === "function" ) return false; //If not IE
   function CustomEvent ( event, params ) {
     params = params || { bubbles: false, cancelable: false, detail: undefined };

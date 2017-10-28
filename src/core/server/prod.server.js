@@ -290,6 +290,8 @@ app.get("*", pageCache(_.cloneDeep(Routes)), (req, res) => {
   // i.e. get seo details of parent when feasible
   let seoDetails = {};
   let routerComponent = null;
+  const requestHost = `${(req.headers["x-forwarded-protocol"] || req.headers["protocol"] || req.protocol)}://${(req.headers["x-host"] || req.headers["host"] || "")}`;
+  const currentUrl = `${requestHost}${req.path}`;
   
   try {
     // Also preload data required when asked
@@ -298,7 +300,7 @@ app.get("*", pageCache(_.cloneDeep(Routes)), (req, res) => {
       storage,
       api,
       store,
-      host: `${(req.headers["x-forwarded-protocol"] || req.headers["protocol"] || req.protocol)}://${(req.headers["x-host"] || req.headers["host"] || "")}`
+      host: requestHost
     });
     
     Promise.all(promises).then(() => {
@@ -340,6 +342,8 @@ app.get("*", pageCache(_.cloneDeep(Routes)), (req, res) => {
           stylesheets={currentRouteCss}
           scripts={currentRouteJs}
           seo={seoDetails}
+          baseUrl={requestHost}
+          url={currentUrl}
         >
           {routerComponent}
         </Html>
@@ -358,6 +362,8 @@ app.get("*", pageCache(_.cloneDeep(Routes)), (req, res) => {
         <Html
           stylesheets={currentRouteCss}
           scripts={currentRouteJs}
+          baseUrl={requestHost}
+          url={currentUrl}
         >
           {routerComponent}
         </Html>
@@ -371,6 +377,8 @@ app.get("*", pageCache(_.cloneDeep(Routes)), (req, res) => {
       <Html
         stylesheets={currentRouteCss}
         scripts={currentRouteJs}
+        baseUrl={requestHost}
+        url={currentUrl}
       >
         {routerComponent}
       </Html>

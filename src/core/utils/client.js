@@ -112,7 +112,7 @@ const updateHtmlMeta = routes => {
     seoData = _.defaults({}, _.get(r, "seo", {}), seoData);
   });
   
-  const allMeta = generateMeta(seoData);
+  const allMeta = generateMeta(seoData, {baseUrl: window.location.origin, url: window.location.href});
   
   // Remove all meta tags
   const head = document.head;

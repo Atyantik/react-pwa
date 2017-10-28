@@ -40,15 +40,17 @@ const metaKeys = [
  * Return array of meta tags required for the route
  * Pass seo data to the function and get array of meta data
  * @param data
+ * @param options
  * @returns {Array}
  */
-export const generateMeta = (data) => {
+export const generateMeta = (data, options = { baseUrl: "", url: "" }) => {
   let seoData = _.defaults(data, seoSchema);
   let generatedSchema = [];
   const desc155words = trimTillLastSentence(seoData.description, 155);
   const desc200words = trimTillLastSentence(seoData.description, 200);
   const hasImage = !!seoData.image.length;
-
+  const baseUrl = options.baseUrl.replace(/\/$/, "");
+  
   /**
    * Manage name/title
    */
@@ -66,7 +68,7 @@ export const generateMeta = (data) => {
     property: "og:title",
     content: seoData.title
   });
-
+  
   /**
    * Manage keywords
    */
@@ -82,7 +84,7 @@ export const generateMeta = (data) => {
       content: seoData.keywords.join(","),
     });
   }
-
+  
   /**
    * Manage twitter site & author
    */
@@ -93,7 +95,7 @@ export const generateMeta = (data) => {
       content: twitterSite
     });
   }
-
+  
   const twitterCreator =_.get(seoData, "twitter.creator", "");
   if (twitterCreator.length) {
     generatedSchema.push({
@@ -101,7 +103,7 @@ export const generateMeta = (data) => {
       content: twitterCreator
     });
   }
-
+  
   /**
    * Manage facebook admins
    */
@@ -112,7 +114,7 @@ export const generateMeta = (data) => {
       content: fbAdmins.join(",")
     });
   }
-
+  
   /**
    * Manage description
    */
@@ -129,7 +131,7 @@ export const generateMeta = (data) => {
     property: "og:description",
     content: seoData.description
   });
-
+  
   /**
    * Site name
    */
@@ -139,31 +141,35 @@ export const generateMeta = (data) => {
       content: seoData.site_name,
     });
   }
-
+  
   /**
    * Manage Primary Image
    */
   if (hasImage) {
+    let fullImageUrl = seoData.image;
+    if (!_.startsWith(fullImageUrl, "http")) {
+      fullImageUrl = `${baseUrl}${!_.startsWith(seoData.image,"/")?"/":""}${fullImageUrl}`;
+    }
     generatedSchema.push({
       itemProp: "image",
-      content: seoData.image
+      content: fullImageUrl
     });
     generatedSchema.push({
       name: "twitter:image:src",
-      content: seoData.image
+      content: fullImageUrl
     });
     generatedSchema.push({
       property: "og:image",
-      content: seoData.image
+      content: fullImageUrl
     });
   }
-
+  
   // Add type of twitter card
   generatedSchema.push({
     name: "twitter:card",
     content: (hasImage ? "summary_large_image" : "summary")
   });
-
+  
   /**
    * Manage Type article/product/music/movie etc
    */
@@ -171,7 +177,7 @@ export const generateMeta = (data) => {
     property: "og:type",
     content: seoData.type,
   });
-
+  
   let twitterDataCounter = 1;
   _.each(seoData.type_details, (value, key) => {
     if (_.isObject(value)) {
@@ -210,8 +216,8 @@ export const generateMeta = (data) => {
       }
     }
   });
-
-  let url = _.get(seoData, "url", "");
+  
+  let url = _.get(seoData, "url", _.get(options, "url", ""));
   if (!url.length && isBrowser()) {
     url = _.get(window, "location.href", "");
   }
@@ -221,16 +227,16 @@ export const generateMeta = (data) => {
       content: url
     });
   }
-
+  
   // Add config meta
   const configMeta = _.get(config, "seo.meta", []);
   addUpdateMeta(generatedSchema, configMeta);
-
+  
   const userMeta = _.get(seoData, "meta", []);
   addUpdateMeta(generatedSchema, userMeta);
   
   generatedSchema = _.uniqWith(generatedSchema, _.isEqual);
-
+  
   return generatedSchema;
 };
 
