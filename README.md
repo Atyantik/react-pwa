@@ -5,6 +5,8 @@
 
 
 # React PWA
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/Atyantik/react-pwa.svg)](https://greenkeeper.io/)
 A highly scalable, Progressive Web Application foundation with the best Developer Experience.
 
 [Watch it in action: Checkout the demo](https://react-pwa.now.sh/)
