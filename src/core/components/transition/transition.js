@@ -1,36 +1,40 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import {
-  SCREEN_STATE_PAGE_ENTER,
+  ANIMATE_PAGE,
   SCREEN_STATE_PAGE_EXIT
 } from "../screen/action";
 
 @connect( state => {
   return {
-    screenAnimation: state.screen.animation
+    screenAnimation: state.screen.animation,
+    animateSection: state.screen.animate_section
   };
 })
 export default class Transition extends Component {
-  animationState = "stopped";
-  componentDidMount() {
-    this.setState({mounted: true});
-  }
-  componentWillReceiveProps(nextProps) {
-    if (this.animationState === "starting") {
-      this.animationState = "started";
-    }
-    if (nextProps.screenAnimation === SCREEN_STATE_PAGE_EXIT) {
-      this.animationState = "starting";
-    }
-    if (nextProps.screenAnimation === SCREEN_STATE_PAGE_ENTER) {
-      this.animationState = "stopped";
-    }
+  static propTypes = {
+    sectionName: PropTypes.string,
+  };
+  static defaultProps = {
+    sectionName: ANIMATE_PAGE
+  };
+  shouldComponentUpdate(nextProps) {
+    return nextProps.animateSection === this.props.sectionName &&
+      this.props.screenAnimation !== nextProps.screenAnimation;
   }
   
   render() {
     const { style, className, onEnterClassName, onExitClassName } = this.props;
+    let animationClass = onEnterClassName;
+    if (
+      this.props.screenAnimation === SCREEN_STATE_PAGE_EXIT &&
+      this.props.animateSection === this.props.sectionName
+    ) {
+      animationClass = onExitClassName;
+    }
     return (
-      <div style={style} className={`${className} ${this.props.screenAnimation === SCREEN_STATE_PAGE_EXIT ? onExitClassName: onEnterClassName}`}>
+      <div style={style} className={`${className} ${animationClass}`}>
         {this.props.children || null}
       </div>
     );

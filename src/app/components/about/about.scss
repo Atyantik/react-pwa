@@ -6,3 +6,15 @@
 .sidebar-module {
   padding: 1rem;
 }
+.animator {
+  opacity: 0;
+  -webkit-transition: opacity 0.2s linear;
+  -moz-transition: opacity 0.2s linear;
+  transition: opacity 0.2s linear;
+}
+.animator.fade-in {
+  opacity: 1;
+}
+.animator.fade-out {
+  opacity: 0;
+}

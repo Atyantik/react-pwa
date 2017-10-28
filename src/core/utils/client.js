@@ -24,7 +24,7 @@ import {
   screenLoaded,
   SCREEN_STATE_LOADED,
   screenPageEnter,
-  screenPageExit
+  screenPageExit, SCREEN_STATE_PAGE_ENTER, SCREEN_STATE_PAGE_EXIT
 } from "../components/screen/action";
 
 // We require this cause we display screen loader as soon as there is
@@ -61,6 +61,9 @@ const ANIMATION_TIMEOUT = 400;
 export const animateFadeIn = (global) => {
   return new Promise(resolve => {
     if (global.isInitialLoad) return resolve();
+    const state = global.store.getState();
+    const animationState = _.get(state, "screen.animation", SCREEN_STATE_PAGE_ENTER);
+    if (animationState === SCREEN_STATE_PAGE_ENTER) return;
     global.store.dispatch(screenPageEnter());
     setTimeout(resolve, ANIMATION_TIMEOUT/2);
   });
@@ -68,6 +71,11 @@ export const animateFadeIn = (global) => {
 export const animateFadeOut = (global) => {
   return new Promise(resolve => {
     if (global.isInitialLoad) return resolve();
+    
+    const state = global.store.getState();
+    const animationState = _.get(state, "screen.animation", SCREEN_STATE_PAGE_ENTER);
+    if (animationState === SCREEN_STATE_PAGE_EXIT) return;
+    
     global.store.dispatch(screenPageExit());
     setTimeout(resolve, ANIMATION_TIMEOUT/2);
   });
