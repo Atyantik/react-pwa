@@ -10,10 +10,7 @@ A highly scalable, Progressive Web Application foundation with the best Develope
 [https://www.reactpwa.com is build with this awesome framework. Why don't you check it out.](https://www.reactpwa.com/)
 
 ###### Add to home screen and make your application behave like a Native APP
-![Homescreen Prompt](https://www.atyantik.com/wp-content/uploads/2017/10/Add-to-home-screen-Prompt.jpg)
-![Homescreen Icon](https://www.atyantik.com/wp-content/uploads/2017/10/Add-to-home-screen-Icon.jpg)
-![Splash screen](https://www.atyantik.com/wp-content/uploads/2017/10/Splash-screen.jpg)
-![Native App experience](https://www.atyantik.com/wp-content/uploads/2017/10/Standalone-native-like-app.jpg)  
+![PWA States](https://www.atyantik.com/wp-content/uploads/2017/10/PWA-States.png)  
 
 #### Current Repo in Action
 To view how the current repository is running please visit [https://demo.reactpwa.com](https://demo.reactpwa.com)
