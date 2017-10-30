@@ -71,6 +71,7 @@ export default class Html extends React.Component {
           </div>
           <div id="temp" />
           {
+            !this.props.isBot &&
             _.map(scripts, path => {
               const pathHash = generateStringHash(path, "JS");
               return <script type="text/javascript" key={pathHash} id={pathHash} src={path} defer />;

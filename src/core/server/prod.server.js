@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import hsts from "hsts";
 import cookieParser from "cookie-parser";
+import isBot from "isbot";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
 import serveFavicon from "serve-favicon";
@@ -292,6 +293,7 @@ app.get("*", pageCache(_.cloneDeep(Routes)), (req, res) => {
   let routerComponent = null;
   const requestHost = `${(req.headers["x-forwarded-protocol"] || req.headers["protocol"] || req.protocol)}://${(req.headers["x-host"] || req.headers["host"] || "")}`;
   const currentUrl = `${requestHost}${req.path}`;
+  const bot = isBot(_.get(req, "headers.user-agent", ""));
   
   try {
     // Also preload data required when asked
@@ -344,6 +346,7 @@ app.get("*", pageCache(_.cloneDeep(Routes)), (req, res) => {
           seo={seoDetails}
           baseUrl={requestHost}
           url={currentUrl}
+          isBot={bot}
         >
           {routerComponent}
         </Html>
@@ -364,6 +367,7 @@ app.get("*", pageCache(_.cloneDeep(Routes)), (req, res) => {
           scripts={currentRouteJs}
           baseUrl={requestHost}
           url={currentUrl}
+          isBot={bot}
         >
           {routerComponent}
         </Html>
@@ -379,6 +383,7 @@ app.get("*", pageCache(_.cloneDeep(Routes)), (req, res) => {
         scripts={currentRouteJs}
         baseUrl={requestHost}
         url={currentUrl}
+        isBot={bot}
       >
         {routerComponent}
       </Html>
