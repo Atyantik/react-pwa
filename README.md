@@ -1,7 +1,8 @@
 [![Backers on Open Collective](https://opencollective.com/react-pwa/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/react-pwa/sponsors/badge.svg)](#sponsors) [![Dependencies Status](https://david-dm.org/Atyantik/react-pwa.svg)](https://david-dm.org/Atyantik/react-pwa)
 [![devDependencies Status](https://david-dm.org/Atyantik/react-pwa/dev-status.svg)](https://david-dm.org/Atyantik/react-pwa?type=dev)
 [![Build Status](https://travis-ci.org/Atyantik/react-pwa.svg?branch=master)](https://travis-ci.org/Atyantik/react-pwa)
-
+[![Known Vulnerabilities](https://snyk.io/test/github/atyantik/react-pwa/badge.svg)](https://snyk.io/test/github/atyantik/react-pwa)
+[![Greenkeeper badge](https://badges.greenkeeper.io/Atyantik/react-pwa.svg)](https://greenkeeper.io/)
 
 # React PWA
 A highly scalable, Progressive Web Application foundation with the best Developer Experience.
