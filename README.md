@@ -12,15 +12,11 @@ A highly scalable, Progressive Web Application foundation with the best Develope
 ###### Add to home screen and make your application behave like a Native APP
 ![Homescreen Prompt](https://www.atyantik.com/wp-content/uploads/2017/10/Add-to-home-screen-Prompt.jpg)
 ![Homescreen Icon](https://www.atyantik.com/wp-content/uploads/2017/10/Add-to-home-screen-Icon.jpg)
-![Homescreen Icon](https://www.atyantik.com/wp-content/uploads/2017/10/Add-to-home-screen-Icon.jpg)
-![Homescreen Icon](https://www.atyantik.com/wp-content/uploads/2017/10/Add-to-home-screen-Icon.jpg)
-![Homescreen Icon](https://www.atyantik.com/wp-content/uploads/2017/10/Add-to-home-screen-Icon.jpg)
-Don't go with image, [Check for yourself at GTMetrix](https://gtmetrix.com/reports/react-pwa.now.sh/XLLjOm78)  
+![Splash screen](https://www.atyantik.com/wp-content/uploads/2017/10/Splash-screen.jpg)
+![Native App experience](https://www.atyantik.com/wp-content/uploads/2017/10/Standalone-native-like-app.jpg)  
 
-###### Pingdom
-![Pingdom Performance](https://www.atyantik.com/wp-content/uploads/2017/10/pingdom.png)
-Don't go with images, [Check for yourself at Pingdom](https://tools.pingdom.com/#!/YB2qd/https://react-pwa.now.sh)
-
+#### Current Repo in Action
+To view how the current repository is running please visit [https://demo.reactpwa.com](https://demo.reactpwa.com)
 #### Features
 ##### Code splitting
 The very difficulty faced when developing enterprise application is code splitting. We don't need everything in single JS file. Why not create individual JS files for respective module/page!
@@ -100,7 +96,7 @@ Enable HSTS for secure sites. Options to define maxAge and preload of HSTS. All 
 Now you are all set, Get your hands dirty with this awesome boilerplate.  
 
 ### Documentation
-*Still in progress... But why don't you checkout our [project's wiki](https://github.com/Atyantik/react-pwa/wiki)*  
+*Still in progress... But why don't you checkout our [Documentation](https://www.reactpwa.com/docs)*  
 
 ### Testing
 *We have not written any test cases yet. Yet mocha is all set to test the application we need contributors for the purpose*  
