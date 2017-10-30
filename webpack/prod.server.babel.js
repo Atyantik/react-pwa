@@ -2,7 +2,7 @@ import path from "path";
 import webpack from "webpack";
 import UglifyJSPlugin from "uglifyjs-webpack-plugin";
 import WebpackDeleteAfterEmit from "webpack-delete-after-emit";
-import RemoveAfterEmit from "./remove-after-emit";
+import MoveAfterEmit from "./move-after-emit";
 
 
 /**
@@ -44,7 +44,9 @@ export default [{
   //These options determine how the different types of modules within
   // a project will be treated.
   module: {
-    rules: rules({imageOutputPath: "build/images/"}),
+    rules: rules({
+      imageOutputPath: "build/images/",
+    }),
   },
   resolve: {
     modules: [
@@ -120,9 +122,11 @@ export default [{
       ]
     }),
     // Remove build directory generated extra while compiling server
-    new RemoveAfterEmit([
-      "build"
-    ])
+    // Remove build directory generated extra while compiling service-worker.js
+    new MoveAfterEmit([{
+      from: "build",
+      to: "public"
+    }])
   ],
 },
 {
@@ -146,7 +150,9 @@ export default [{
   // These options determine how the different types of modules within
   // a project will be treated.
   module: {
-    rules: rules({}),
+    rules: rules({
+      imageOutputPath: "build/images/",
+    }),
   },
   resolve: {
     modules: [
@@ -213,9 +219,11 @@ export default [{
         "service-worker.min.css"
       ]
     }),
+    
     // Remove build directory generated extra while compiling service-worker.js
-    new RemoveAfterEmit([
-      "build"
-    ])
+    new MoveAfterEmit([{
+      from: "build",
+      to: "public"
+    }])
   ],
 }];

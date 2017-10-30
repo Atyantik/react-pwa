@@ -7,17 +7,14 @@
 # React PWA
 A highly scalable, Progressive Web Application foundation with the best Developer Experience.
 
-[Watch it in action: Checkout the demo](https://react-pwa.now.sh/)
+[https://www.reactpwa.com is build with this awesome framework. Why don't you check it out.](https://www.reactpwa.com/)
 
-##### Results
-We haven't implemented CDN yet, thus a bit of variation in performance.
-###### Chrome Lighthouse
-![Lighthouse Performance](https://www.atyantik.com/wp-content/uploads/2017/10/Lighthouse-Performance-Report-React-PWA.png)
-Don't go with image, [Check for yourself in your browser](https://developers.google.com/web/tools/lighthouse/)
-*We ommited the performance as it was just **82** (pretty good huh??). Cause of server latency. Server is located somewhere in USA and we are in India*  
-
-###### GTMetrix
-![GTMetrix Performance](https://www.atyantik.com/wp-content/uploads/2017/10/GTMetrix.png)
+###### Add to home screen and make your application behave like a Native APP
+![Homescreen Prompt](https://www.atyantik.com/wp-content/uploads/2017/10/Add-to-home-screen-Prompt.jpg)
+![Homescreen Icon](https://www.atyantik.com/wp-content/uploads/2017/10/Add-to-home-screen-Icon.jpg)
+![Homescreen Icon](https://www.atyantik.com/wp-content/uploads/2017/10/Add-to-home-screen-Icon.jpg)
+![Homescreen Icon](https://www.atyantik.com/wp-content/uploads/2017/10/Add-to-home-screen-Icon.jpg)
+![Homescreen Icon](https://www.atyantik.com/wp-content/uploads/2017/10/Add-to-home-screen-Icon.jpg)
 Don't go with image, [Check for yourself at GTMetrix](https://gtmetrix.com/reports/react-pwa.now.sh/XLLjOm78)  
 
 ###### Pingdom

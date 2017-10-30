@@ -3,4 +3,3 @@ dist
 src/config/assets.js
 .idea
 .sass-cache
-.now-package.json
