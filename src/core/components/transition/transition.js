@@ -19,10 +19,6 @@ export default class Transition extends Component {
   static defaultProps = {
     sectionName: ANIMATE_PAGE
   };
-  shouldComponentUpdate(nextProps) {
-    return nextProps.animateSection === this.props.sectionName &&
-      this.props.screenAnimation !== nextProps.screenAnimation;
-  }
   
   render() {
     const { style, className, onEnterClassName, onExitClassName } = this.props;
