@@ -10,8 +10,9 @@ A highly scalable, Progressive Web Application foundation with the best Develope
 [https://www.reactpwa.com is build with this awesome framework. Why don't you check it out.](https://www.reactpwa.com/)
 
 ###### Add to home screen and make your application behave like a Native APP
-![PWA States Gif](https://media.giphy.com/media/xT9Igz9xhXychk8LyE/giphy.gif)
-![PWA States](https://www.atyantik.com/wp-content/uploads/2017/10/PWA-States.png)  
+If you are not able to view the gif below, just click "PWA States Gif" or the broken image:  
+
+[![PWA States Gif](https://media.giphy.com/media/xT9Igz9xhXychk8LyE/giphy.gif)](https://www.atyantik.com/wp-content/uploads/2017/10/PWA-States.png)
 
 #### Current Repo in Action
 To view how the current repository is running please visit [https://demo.reactpwa.com](https://demo.reactpwa.com)
