@@ -32,7 +32,7 @@ export default class CoreRoot extends Component {
       "gtm.start": new Date().getTime(),
       event: "gtm.js"
     });
-    loadScript("https://www.googletagmanager.com/gtm.js?id=GTM-MN267L6").catch();
+    loadScript("https://www.googletagmanager.com/gtm.js?id=GTM-TW9PBND").catch();
   }
   
   componentDidMount() {
