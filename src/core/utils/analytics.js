@@ -55,6 +55,7 @@ const getSegment = () => {
  * @returns {Promise.<void>}
  */
 export const trackPageView = async (location = "", title = "") => {
+  await new Promise(resolve => setTimeout(resolve, 50));
   let loc = location;
   if (!loc) {
     loc = _.get(window, "location.pathname", "") + _.get(window, "location.search", "");

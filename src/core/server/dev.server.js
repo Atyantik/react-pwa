@@ -199,6 +199,8 @@ app.get("*", (req, res) => {
   
   // Get list of assets from request
   const {cssAssets, jsAssets} = req;
+  const requestHost = `${(req.headers["x-forwarded-protocol"] || req.headers["protocol"] || req.protocol)}://${(req.headers["x-host"] || req.headers["host"] || "")}`;
+  const currentUrl = `${requestHost}${req.path}`;
   
   /**
    * Get common/client (non-module) CSS generated
@@ -220,6 +222,8 @@ app.get("*", (req, res) => {
     <Html
       stylesheets={currentRouteCss}
       scripts={currentRouteJs}
+      url={currentUrl}
+      baseUrl={requestHost}
     />
   ));
   return res.send(`<!DOCTYPE html>${html}`);
