@@ -45,7 +45,7 @@
     "imagemin-loader": "^1.0.7",
     "imagemin-mozjpeg": "^6.0.0",
     "imagemin-optipng": "^5.2.1",
-    "imagemin-svgo": "^5.2.2",
+    "imagemin-svgo": "^6.0.0",
     "img-loader": "^2.0.0",
     "isbot": "^2.1.0",
     "lodash": "^4.17.4",
