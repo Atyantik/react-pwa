@@ -10,6 +10,8 @@ before_deploy:
 - eval "$(ssh-agent -s)"
 - chmod 600 /tmp/deploy_rsa
 - ssh-add /tmp/deploy_rsa
+  on:
+    branch: master
 deploy:
   provider: script
   skip_cleanup: true
