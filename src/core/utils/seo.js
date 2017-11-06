@@ -1,6 +1,7 @@
 import _ from "lodash";
 import config from "../../config/config";
 import { isBrowser } from "./utils";
+import pwaIcon192 from "../../resources/images/pwa/icon-192x192.png";
 
 /**
  * Seo Schema. This can be used while using it in routes
@@ -119,7 +120,13 @@ const metaKeys = [
   "property",
   "charSet"
 ];
-
+const getFullUrl = (url, baseUrl = "") => {
+  let fullImageUrl = url;
+  if (!_.startsWith(fullImageUrl, "http")) {
+    fullImageUrl = `${baseUrl}${!_.startsWith(fullImageUrl, "/")?"/":""}${fullImageUrl}`;
+  }
+  return fullImageUrl;
+};
 /**
  * Return array of meta tags required for the route
  * Pass seo data to the function and get array of meta data
@@ -139,9 +146,6 @@ export const generateMeta = (data = {}, options = { baseUrl: "", url: "" }) => {
   
   // Get 200 words out of description
   const desc200words = trimTillLastSentence(seoData.description, 200);
-  
-  // check if default image is provided
-  const hasImage = !!seoData.image.length;
   
   // Base url after removing the end slash
   const baseUrl = options.baseUrl.replace(/\/$/, "");
@@ -243,19 +247,29 @@ export const generateMeta = (data = {}, options = { baseUrl: "", url: "" }) => {
   /**
    * Manage Primary Image
    */
-  if (hasImage) {
-    let fullImageUrl = seoData.image;
-    if (!_.startsWith(fullImageUrl, "http")) {
-      fullImageUrl = `${baseUrl}${!_.startsWith(seoData.image,"/")?"/":""}${fullImageUrl}`;
-    }
-    generatedSchema.push({
-      itemProp: "image",
-      content: fullImageUrl
+  let images = seoData.image.length ? seoData.image: pwaIcon192;
+  if (!_.isArray(images)) {
+    images = [images];
+  }
+  
+  const image = _.first(images);
+  const fullImageUrl = getFullUrl(image, baseUrl);
+  generatedSchema.push({
+    itemProp: "image",
+    content: fullImageUrl
+  });
+  generatedSchema.push({
+    name: "twitter:image:src",
+    content: fullImageUrl
+  });
+  if (image.length > 1) {
+    _.each(images, img => {
+      generatedSchema.push({
+        property: "og:image",
+        content: getFullUrl(img, baseUrl)
+      });
     });
-    generatedSchema.push({
-      name: "twitter:image:src",
-      content: fullImageUrl
-    });
+  } else {
     generatedSchema.push({
       property: "og:image",
       content: fullImageUrl
@@ -265,7 +279,7 @@ export const generateMeta = (data = {}, options = { baseUrl: "", url: "" }) => {
   // Add type of twitter card
   generatedSchema.push({
     name: "twitter:card",
-    content: (hasImage ? "summary_large_image" : "summary")
+    content: "summary_large_image"
   });
   
   /**
