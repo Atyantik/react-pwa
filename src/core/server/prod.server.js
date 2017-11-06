@@ -44,7 +44,7 @@ import Routes from "../../routes";
 import {extractFilesFromAssets} from "../utils/utils";
 import {publicDirName} from "../../../directories";
 import config from "../../config";
-import pwaIcon192 from "../../resources/images/pwa/icon-192x192.png";
+import pwaIcon512 from "../../resources/images/pwa/icon-512x512.png";
 /**
  * Set current dir for better computation
  * @type {String}
@@ -315,7 +315,7 @@ app.get("*", pageCache(_.cloneDeep(Routes)), (req, res) => {
       });
       const hasSeoImage = !!(seoDetails.image && seoDetails.image.length);
       if (!hasSeoImage) {
-        seoDetails.image = pwaIcon192;
+        seoDetails.image = pwaIcon512;
       }
       
       const links = generateLinks(seoDetails, {baseUrl: requestHost, url: currentUrl});
