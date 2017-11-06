@@ -45,17 +45,16 @@ export default class Html extends React.Component {
     return (
       <html lang="en">
         <head>
-          <title>{this.getTitle()}</title>
-          {/** The url /manifest.json is a url handled via the server.js **/}
-          {
-            !__development &&
-          (<link rel="manifest" href={"/manifest.json"} />)
-          }
-        
           {
             _.map(this.getMeta(), (meta, i) => {
               return <meta key={i} {...meta} />;
             })
+          }
+          <title>{this.getTitle()}</title>
+          {/** The url /manifest.json is a url handled via the server.js **/}
+          {
+            !__development &&
+            (<link rel="manifest" href={"/manifest.json"} />)
           }
           {/** Loading Styles **/}
           {
