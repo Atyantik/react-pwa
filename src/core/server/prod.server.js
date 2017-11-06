@@ -369,7 +369,6 @@ app.get("*", pageCache(_.cloneDeep(Routes)), (req, res) => {
       return res.status(statusCode).send(`<!DOCTYPE html>${html}`);
       
     }).catch((err) => {
-      console.log(err);
       routerComponent = getErrorComponent(err, store, storage, api);
       html = ReactDOMServer.renderToString((
         <Html
