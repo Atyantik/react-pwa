@@ -19,6 +19,7 @@ import {
 } from "./renderer";
 
 import { generateMeta } from "./seo";
+import { generateLinks } from "./links";
 import {
   screenLoading,
   screenLoaded,
@@ -116,7 +117,8 @@ const updateHtmlMeta = routes => {
   
   // Remove all meta tags
   const head = document.head;
-  _.forEach(head.getElementsByTagName("meta"), tag => {
+  let metaTags = Array.prototype.slice.call(head.getElementsByTagName("meta"));
+  metaTags.forEach(tag => {
     if (tag && tag.parentNode && tag.parentNode.removeChild) {
       tag.parentNode.removeChild(tag);
     }
@@ -138,6 +140,50 @@ const updateHtmlMeta = routes => {
   });
   document.title = title;
   head.getElementsByTagName("title")[0].innerHTML = title;
+};
+
+
+const getAttribute = (ele, attr) => {
+  let result = (ele.getAttribute && ele.getAttribute(attr)) || null;
+  if( !result ) {
+    let attrs = ele.attributes;
+    let length = attrs.length;
+    for(let i = 0; i < length; i++)
+      if(attrs[i].nodeName === attr)
+        result = attrs[i].nodeValue;
+  }
+  return result;
+};
+
+const updateHeadLinks = routes => {
+  
+  let seoData = {};
+  _.each(routes, r => {
+    seoData = _.defaults({}, _.get(r, "seo", {}), seoData);
+  });
+  
+  const allLinks = generateLinks(seoData, {baseUrl: window.location.origin, url: window.location.href});
+  
+  // Remove all seo links tags
+  const head = document.head;
+  let headLinks = Array.prototype.slice.call(head.getElementsByTagName("link"));
+  headLinks.forEach(tag => {
+    if (tag && tag.parentNode && tag.parentNode.removeChild) {
+      const type = getAttribute(tag, "data-type");
+      if(type === "seo") {
+        tag.parentNode.removeChild(tag);
+      }
+    }
+  });
+  
+  _.forEach(allLinks, link => {
+    const linkTag = document.createElement("link");
+    _.each(link, (value, key) => {
+      linkTag.setAttribute(key, value);
+    });
+    linkTag.setAttribute("data-type", "seo");
+    head.appendChild(linkTag);
+  });
 };
 
 
@@ -194,6 +240,7 @@ export const renderRoutes = async ({
   try {
     await Promise.all(promises);
     updateHtmlMeta(currentRoutes);
+    updateHeadLinks(currentRoutes);
     renderRoutesByUrl({
       routes: currentRoutes,
       history,

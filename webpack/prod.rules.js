@@ -86,13 +86,6 @@ export default ({ imageOutputPath = "images/" }) => {
                 }
               },
               {
-                use: "imagemin-svgo",
-                options: {
-                  removeTitle: true,
-                  removeDesc: true,
-                }
-              },
-              {
                 use: "imagemin-gifsicle",
                 options: {
                   optimizationLevel: 3

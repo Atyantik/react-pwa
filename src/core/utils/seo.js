@@ -1,7 +1,6 @@
 import _ from "lodash";
 import config from "../../config/config";
 import { isBrowser } from "./utils";
-import pwaIcon192 from "../../resources/images/pwa/icon-192x192.png";
 
 /**
  * Seo Schema. This can be used while using it in routes
@@ -111,7 +110,7 @@ const defaultMeta = [
 ];
 
 /**
- * Standard meta keys
+ * Standard meta keys to differentiate
  * @type {[*]}
  */
 const metaKeys = [
@@ -120,6 +119,13 @@ const metaKeys = [
   "property",
   "charSet"
 ];
+
+/**
+ * Get full url appended with base url if no protocol present in the provided link
+ * @param url
+ * @param baseUrl
+ * @returns {*}
+ */
 const getFullUrl = (url, baseUrl = "") => {
   let fullImageUrl = url;
   if (!_.startsWith(fullImageUrl, "http")) {
@@ -247,40 +253,49 @@ export const generateMeta = (data = {}, options = { baseUrl: "", url: "" }) => {
   /**
    * Manage Primary Image
    */
-  let images = seoData.image.length ? seoData.image: pwaIcon192;
-  if (!_.isArray(images)) {
-    images = [images];
-  }
+  const hasImage = !!seoData.image.length;
   
-  const image = _.first(images);
-  const fullImageUrl = getFullUrl(image, baseUrl);
-  generatedSchema.push({
-    itemProp: "image",
-    content: fullImageUrl
-  });
-  generatedSchema.push({
-    name: "twitter:image:src",
-    content: fullImageUrl
-  });
-  if (image.length > 1) {
-    _.each(images, img => {
+  if (hasImage) {
+    let images = hasImage ? seoData.image: [];
+    if (!_.isArray(images)) {
+      images = [images];
+    }
+  
+    const image = _.first(images);
+    const fullImageUrl = getFullUrl(image, baseUrl);
+    generatedSchema.push({
+      itemProp: "image",
+      content: fullImageUrl
+    });
+    generatedSchema.push({
+      name: "twitter:image:src",
+      content: fullImageUrl
+    });
+    if (image.length > 1) {
+      _.each(images, img => {
+        generatedSchema.push({
+          property: "og:image",
+          content: getFullUrl(img, baseUrl)
+        });
+      });
+    } else {
       generatedSchema.push({
         property: "og:image",
-        content: getFullUrl(img, baseUrl)
+        content: fullImageUrl
       });
+    }
+  
+    // Add type of twitter card
+    generatedSchema.push({
+      name: "twitter:card",
+      content: "summary_large_image"
     });
   } else {
     generatedSchema.push({
-      property: "og:image",
-      content: fullImageUrl
+      name: "twitter:card",
+      content: "summary"
     });
   }
-  
-  // Add type of twitter card
-  generatedSchema.push({
-    name: "twitter:card",
-    content: "summary_large_image"
-  });
   
   /**
    * Manage Type article/product/music/movie etc
@@ -351,7 +366,6 @@ export const generateMeta = (data = {}, options = { baseUrl: "", url: "" }) => {
   
   return generatedSchema;
 };
-
 
 /**
  * Return the meta key detected from the meta provided.

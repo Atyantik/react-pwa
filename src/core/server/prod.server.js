@@ -12,6 +12,7 @@ import fs from "fs";
 import _ from "lodash";
 import compression from "compression";
 import {infiniteCache, pageCache} from "../libs/cache/memory";
+import { generateLinks } from "../utils/links";
 import assets from "../../config/assets";
 
 import {
@@ -43,6 +44,7 @@ import Routes from "../../routes";
 import {extractFilesFromAssets} from "../utils/utils";
 import {publicDirName} from "../../../directories";
 import config from "../../config";
+import pwaIcon192 from "../../resources/images/pwa/icon-192x192.png";
 /**
  * Set current dir for better computation
  * @type {String}
@@ -311,6 +313,12 @@ app.get("*", pageCache(_.cloneDeep(Routes)), (req, res) => {
       _.each(currentRoutes, r => {
         seoDetails = _.defaults({}, _.get(r, "seo", {}), seoDetails);
       });
+      const hasSeoImage = !!(seoDetails.image && seoDetails.image.length);
+      if (!hasSeoImage) {
+        seoDetails.image = pwaIcon192;
+      }
+      
+      const links = generateLinks(seoDetails, {baseUrl: requestHost, url: currentUrl});
       
       if (!currentRoutes.length) {
         routerComponent = renderNotFoundPage({
@@ -347,6 +355,7 @@ app.get("*", pageCache(_.cloneDeep(Routes)), (req, res) => {
           baseUrl={requestHost}
           url={currentUrl}
           isBot={bot}
+          links={links}
         >
           {routerComponent}
         </Html>
@@ -360,6 +369,7 @@ app.get("*", pageCache(_.cloneDeep(Routes)), (req, res) => {
       return res.status(statusCode).send(`<!DOCTYPE html>${html}`);
       
     }).catch((err) => {
+      console.log(err);
       routerComponent = getErrorComponent(err, store, storage, api);
       html = ReactDOMServer.renderToString((
         <Html

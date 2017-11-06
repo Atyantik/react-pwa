@@ -16,6 +16,7 @@ export default class Html extends React.Component {
     isBot: PropTypes.bool,
     baseUrl: PropTypes.string,
     url: PropTypes.string,
+    links: PropTypes.array,
   };
   static defaultProps = {
     stylesheets: [],
@@ -25,6 +26,7 @@ export default class Html extends React.Component {
     isBot: false,
     baseUrl: "",
     url: "",
+    links: []
   };
   
   getMeta() {
@@ -41,7 +43,7 @@ export default class Html extends React.Component {
   }
   
   render() {
-    const {stylesheets, scripts} = this.props;
+    const {stylesheets, scripts, links} = this.props;
     return (
       <html lang="en">
         <head>
@@ -61,6 +63,11 @@ export default class Html extends React.Component {
             _.map(stylesheets, path => {
               const pathHash = generateStringHash(path, "CSS");
               return <link rel="stylesheet" type="text/css" key={pathHash} id={pathHash} href={path} />;
+            })
+          }
+          {
+            _.map(links, (link, i) => {
+              return <link key={i} {...link} data-type="seo"/>;
             })
           }
         </head>
