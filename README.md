@@ -127,7 +127,7 @@ Will start the application in production mode, it's necessary to create docker:p
 
 
 This project exists thanks to all the people who contribute. [[Contribute]](CONTRIBUTING.md).
-<a href="graphs/contributors"><img src="https://opencollective.com/react-pwa/contributors.svg?width=890" /></a>
+<a href="https://github.com/Atyantik/react-pwa/graphs/contributors"><img src="https://opencollective.com/react-pwa/contributors.svg?width=890" /></a>
 
 We are actively looking for contributors for testing and documentation.
 Please contact us: admin [at] atyantik.com or contact [at] atyantik.com  
