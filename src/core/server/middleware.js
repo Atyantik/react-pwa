@@ -1,3 +1,6 @@
+import _ from "lodash";
+import config from "../../config";
+
 const __development = process.env.NODE_ENV === "development";
 
 let app = null;
@@ -14,5 +17,18 @@ if (__development) {
   const prodServer = require("./prod.server");
   app = prodServer.default;
 }
+
+// Add csp headers
+const cspHeaders = _.filter(_.get(config, "seo.meta", []), meta => {
+  return  "content-security-policy" === _.get(meta, "httpEquiv", "").toLowerCase();
+});
+app.use((req, res, next) => {
+  _.each(cspHeaders, cspHead => {
+    cspHead.content && res.header("Content-Security-Policy", cspHead.content);
+  });
+  next();
+});
+
+
 
 export default app;
