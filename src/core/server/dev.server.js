@@ -67,6 +67,7 @@ const commonClientMiddlewareInstance = webpackMiddleware(commonClientCompiler, {
   noInfo: true,
   contentBase: commonClientConfig.devServer.contentBase,
   publicPath: commonClientConfig.output.publicPath,
+  watchOptions: _.get(commonClientConfig, "devServer.watchOptions", {}),
   serverSideRender: true,
 });
 
@@ -137,6 +138,7 @@ if (enableServiceWorker && serviceWorkerConfig !== null) {
     contentBase: commonClientConfig.devServer.contentBase,
     publicPath: serviceWorkerConfig.output.publicPath,
     serverSideRender: true,
+    watchOptions: _.get(serviceWorkerConfig, "devServer.watchOptions", _.get(commonClientConfig, "devServer.watchOptions", {})),
   });
   app.use(serviceWorkerMiddlewareInstance);
   
