@@ -1,7 +1,7 @@
 import React from "react";
-import { connect } from "react-redux";
+import {connect} from "react-redux";
 import classNames from "classnames";
-import Link from "../../../core/components/link";
+import Link from "core/components/link";
 
 const Header = (props) => {
   return (

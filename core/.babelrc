@@ -1,0 +1,28 @@
+{
+  "presets": [
+    "react",
+    "env"
+  ],
+  "plugins": [
+    [
+      "resolver", {
+        "resolveDirs": [
+          "./node_modules"
+        ]
+      }
+    ],
+    [
+      "module-resolver", {
+        "alias": {
+          "core": "./src",
+          "src": "../src",
+        }
+      }
+    ],
+    "lodash",
+    "transform-decorators-legacy",
+    "transform-class-properties",
+    "transform-object-rest-spread",
+    "react-hot-loader/babel"
+  ]
+}
