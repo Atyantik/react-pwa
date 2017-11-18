@@ -1,7 +1,7 @@
 import express from "express";
 import _ from "lodash";
 import http from "http";
-import serverMiddleware from "./core/server/middleware";
+import serverMiddleware from "core/server/middleware";
 import Config from "./config";
 
 const app = express();

@@ -2,13 +2,13 @@ import path from "path";
 
 /**
  * Directory structure for the application
- *  bin
  *  dist
  *    images  --> server images
  *    public --> Public folder that can be pushed to cdn
  *      build --> Compiled files
  *    middleware.js --> Single compiled server file
  *  node_modules
+ *  core --> Core root
  *  src --> Main sources
  *    app
  *      components
@@ -19,11 +19,10 @@ import path from "path";
  *    pages --> All the bundled pages
  *    public --> Public folder adding schema or authentication data etc
  *    resources --> css/images/fonts etc
- *    utils --> Util functions
  *    client.js --> Client entry js
  *    routes.js --> Consolidated routes
- *    middleware.js --> Server instance
- *    start-middleware.js --> Simple start server
+ *    server.js --> Start server
+ *    service-worker.js --> Service worker of your own!
  */
 
 /**
@@ -38,7 +37,7 @@ export const publicDirName = "public";
  * be available after a build is run
  * @type {string}
  */
-const distDirName = "dist";
+export const distDirName = "dist";
 
 /**
  * @description When a build is generated its usually in format
@@ -52,7 +51,7 @@ const distDirName = "dist";
  *    - Server compilation files (server.prod.bundle.js)
  * @type {string}
  */
-const buildDirName = "build";
+export const buildDirName = "build";
 
 /**
  * @description the source of all the files
@@ -75,11 +74,13 @@ export const buildPath = "/" + buildDirName + "/";
  */
 export const buildPublicPath = "/" + publicDirName + buildPath;
 
-
-
 // Directory structure
 // Root dir is the project root
 export const rootDir = path.resolve(__dirname);
+
+export const coreDirName = "core";
+export const coreRootDir = path.resolve(path.join(rootDir, coreDirName));
+export const coreSrcDir = path.resolve(path.join(coreRootDir, "src"));
 
 // Distribution dir is the directory where
 // We will put all the output dir

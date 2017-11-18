@@ -1,47 +1,12 @@
 {
-  "env": {
-    "browser": true,
-    "commonjs": true,
-    "es6": true,
-    "node": true,
-    "mocha": true
-  },
-  "parser": "babel-eslint",
-  "extends": "eslint:recommended",
-  "parserOptions": {
-    "ecmaVersion": 7,
-    "ecmaFeatures": {
-      "classes": true,
-      "experimentalObjectRestSpread": true,
-      "jsx": true
-    },
-    "sourceType": "module"
-  },
+  "extends": "./core/.eslintrc",
   "plugins": [
     "react"
   ],
   "rules": {
-    "indent": [
-      "error",
-      2,
-      {
-        "SwitchCase": 1
-      }
-    ],
-    "linebreak-style": [
-      "error",
-      "unix"
-    ],
     "quotes": [
       "error",
       "double"
-    ],
-    "semi": [
-      "error",
-      "always"
-    ],
-    "react/jsx-uses-react": 2,
-    "react/jsx-uses-vars": 2,
-    "react/react-in-jsx-scope": 2
+    ]
   }
 }

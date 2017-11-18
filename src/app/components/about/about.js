@@ -1,8 +1,8 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import classNames from "classnames";
-import Link from "../../../core/components/link";
-import { renderSubRoutes } from "../../../core/utils/renderer";
-import Transition from "../../../core/components/transition";
+import Link from "core/components/link";
+import {renderSubRoutes} from "core/utils/renderer";
+import Transition from "core/components/transition";
 import * as styles from "./about.scss";
 
 export default class About extends Component {
