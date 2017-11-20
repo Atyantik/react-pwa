@@ -3,8 +3,8 @@
   "version": "0.2.2",
   "description": "A highly scalable, Progressive Web Application foundation with the best Developer Experience (DX).",
   "scripts": {
-    "postinstall": "npm install --prefix ./core",
-    "rpwa": "npm run --prefix ./core",
+    "postinstall": "cd core && npm install && cd ..",
+    "rpwa": "cd core && npm run",
     "setup": "npm run rpwa setup",
     "start": "npm run rpwa start",
     "build": "npm run rpwa build",
