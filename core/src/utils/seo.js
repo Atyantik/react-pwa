@@ -421,7 +421,7 @@ const addUpdateMeta = (source = [], customMetas = []) => {
  * @param str
  * @returns {string}
  */
-const getTextFromHtml = (str = "") => {
+export const getTextFromHtml = (str = "") => {
   return str.replace(/<(?:.|\n)*?>/gm, "").trim();
 };
 

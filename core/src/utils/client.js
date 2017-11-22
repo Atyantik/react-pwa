@@ -63,7 +63,7 @@ export const animateFadeIn = (global) => {
     if (global.isInitialLoad) return resolve();
     const state = global.store.getState();
     const animationState = _.get(state, "screen.animation", SCREEN_STATE_PAGE_ENTER);
-    if (animationState === SCREEN_STATE_PAGE_ENTER) return;
+    if (animationState === SCREEN_STATE_PAGE_ENTER) return resolve();
     global.store.dispatch(screenPageEnter());
     setTimeout(resolve, ANIMATION_TIMEOUT/2);
   });
@@ -74,7 +74,7 @@ export const animateFadeOut = (global) => {
     
     const state = global.store.getState();
     const animationState = _.get(state, "screen.animation", SCREEN_STATE_PAGE_ENTER);
-    if (animationState === SCREEN_STATE_PAGE_EXIT) return;
+    if (animationState === SCREEN_STATE_PAGE_EXIT) return resolve();
     
     global.store.dispatch(screenPageExit());
     setTimeout(resolve, ANIMATION_TIMEOUT/2);
