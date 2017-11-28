@@ -53,4 +53,4 @@ const Header = (props) => {
   );
 };
 
-export default connect(state => { return {url: state.router.pathname}; })(Header);
+export default connect(state => { return {url: state.router.location.pathname}; })(Header);
