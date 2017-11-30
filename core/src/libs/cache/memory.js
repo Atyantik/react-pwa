@@ -12,15 +12,17 @@ const __development = process.env.NODE_ENV === "development";
 export const pageCache = (routes = []) => {
   
   return (req, res, next) => {
-  
+    
     // Disable cache when env development
     if (__development) return next();
-    
+  
+    const fullUrl = `${(req.headers["x-forwarded-protocol"] || req.headers["protocol"] || req.protocol)}://${(req.headers["x-host"] || req.headers["host"] || "")}${(req.originalUrl || req.url)}`;
+  
     const getExactRouteFromPath = require("../../utils/bundler").getExactRouteFromPath;
   
     const bot = isBot(_.get(req, "headers.user-agent", ""));
-    let key = `__express__${req.originalUrl || req.url}`;
-    let headerKey = `__express__headers__${req.originalUrl || req.url}`;
+    let key = `__express__${fullUrl}`;
+    let headerKey = `__express__headers__${fullUrl}`;
     
     if (bot) {
       key = `BOT_${key}`;
@@ -77,10 +79,12 @@ export const infiniteCache = () => {
     // Disable cache while development
     if (__development) return next();
   
+    const fullUrl = `${(req.headers["x-forwarded-protocol"] || req.headers["protocol"] || req.protocol)}://${(req.headers["x-host"] || req.headers["host"] || "")}${(req.originalUrl || req.url)}`;
+    
     const bot = isBot(_.get(req, "headers.user-agent", ""));
   
-    let key = `__express__infinite__${req.originalUrl || req.url}`;
-    let headerKey = `__express__infinite__headers__${req.originalUrl || req.url}`;
+    let key = `__express__infinite__${fullUrl}`;
+    let headerKey = `__express__infinite__headers__${fullUrl}`;
     
     if (bot) {
       key = `BOT_${key}`;

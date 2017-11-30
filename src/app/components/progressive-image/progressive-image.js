@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import SmallImage from "../../../resources/images/mario-large.png?sizes=100w+200w+400w+800w&placeholder&lightweight";
-import Picture from "core/components/picture/picture";
+import Picture from "react-pwa/src/components/picture/picture";
 
 export default class Home extends Component {
   render() {

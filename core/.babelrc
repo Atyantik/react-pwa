@@ -3,19 +3,21 @@
     "react",
     "env"
   ],
+  "ignore": [
+    "**/jsdom/**"
+  ],
   "plugins": [
     [
       "resolver", {
         "resolveDirs": [
-          "./node_modules"
+          "node_modules"
         ]
       }
     ],
     [
       "module-resolver", {
         "alias": {
-          "core": "./src",
-          "src": "../src",
+          "src": "../src"
         }
       }
     ],

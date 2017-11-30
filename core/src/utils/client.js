@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { render, hydrate } from "react-dom";
 import {getRouteFromPath,} from "./bundler";
 
 import storage from "../libs/storage";
@@ -33,6 +34,12 @@ import {
 let screenLoaderTimeout = 0;
 const waitTime = 100;
 
+let DefaultRender = render;
+let HydrateRender = process.env.NODE_ENV === "development" ? render: hydrate;
+if (typeof HydrateRender === "undefined") {
+  HydrateRender = render;
+}
+
 /**
  * Show screen loader and trigger dispatch accordingly
  * @param store
@@ -63,7 +70,7 @@ export const animateFadeIn = (global) => {
     if (global.isInitialLoad) return resolve();
     const state = global.store.getState();
     const animationState = _.get(state, "screen.animation", SCREEN_STATE_PAGE_ENTER);
-    if (animationState === SCREEN_STATE_PAGE_ENTER) return resolve();
+    if (animationState === SCREEN_STATE_PAGE_ENTER) return;
     global.store.dispatch(screenPageEnter());
     setTimeout(resolve, ANIMATION_TIMEOUT/2);
   });
@@ -214,6 +221,7 @@ export const renderRoutes = async ({
   // else react-router is taking care of it.
   if (!currentRoutes.length) {
     renderNotFoundPage({
+      render: options.isInitialLoad? HydrateRender: DefaultRender,
       history,
       renderRoot: renderRoot,
       url: url,
@@ -221,7 +229,7 @@ export const renderRoutes = async ({
       store
     }, () => {
       !options.isInitialLoad && hideScreenLoader(store);
-      scrollToTop(currentRoutes);
+      !options.isInitialLoad && scrollToTop(currentRoutes);
     });
     return Promise.resolve();
   }
@@ -238,9 +246,11 @@ export const renderRoutes = async ({
   
   try {
     await Promise.all(promises);
+  
     updateHtmlMeta(currentRoutes);
     updateHeadLinks(currentRoutes);
     renderRoutesByUrl({
+      render: options.isInitialLoad? HydrateRender: DefaultRender,
       routes: currentRoutes,
       history,
       renderRoot,
@@ -263,6 +273,7 @@ export const renderRoutes = async ({
     
     if (NETWORK_STATE_OFFLINE === error.networkState) {
       renderOfflinePage({
+        render: options.isInitialLoad? HydrateRender: DefaultRender,
         history,
         renderRoot: renderRoot,
         error: error,
@@ -270,10 +281,11 @@ export const renderRoutes = async ({
         store
       }, () => {
         !options.isInitialLoad && hideScreenLoader(store);
-        scrollToTop(currentRoutes);
+        !options.isInitialLoad && scrollToTop(currentRoutes);
       });
     } else {
       renderErrorPage({
+        render: options.isInitialLoad? HydrateRender: DefaultRender,
         history,
         renderRoot: renderRoot,
         error: error,
@@ -281,7 +293,7 @@ export const renderRoutes = async ({
         routes: currentRoutes
       }, () => {
         !options.isInitialLoad && hideScreenLoader(store);
-        scrollToTop(currentRoutes);
+        !options.isInitialLoad && scrollToTop(currentRoutes);
       });
     }
     return Promise.reject(err);

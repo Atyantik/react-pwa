@@ -103,7 +103,7 @@ export default ({ imageOutputPath = "images/" }) => {
                   optimizationLevel: 7
                 }
               }
-      
+
             ]
           }
         }

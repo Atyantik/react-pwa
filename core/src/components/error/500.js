@@ -12,6 +12,9 @@ export default class ErrorPage extends Component {
     if (staticContext) {
       staticContext.status = 500;
     }
+    
+    // eslint-disable-next-line
+    console.log(error);
 
     const showStack = process.env.NODE_ENV !== "production";
 
@@ -20,7 +23,6 @@ export default class ErrorPage extends Component {
         <h1 className="mt-5">500</h1>
         <p className="h3">Server error occurred.</p>
         {
-          true ||
           ( !!error.stack &&
           showStack ) &&
           (

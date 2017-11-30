@@ -1,12 +1,12 @@
 {
   "name": "react-pwa",
-  "version": "0.2.2",
+  "version": "0.2.5",
   "description": "A highly scalable, Progressive Web Application foundation with the best Developer Experience (DX).",
   "engines": {
     "node": ">= 8.4.0"
   },
   "engineStrict": true,
-  "devDependencies": {
+  "dependencies": {
     "assets-webpack-plugin": "^3.5.1",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
@@ -51,6 +51,7 @@
     "img-loader": "^2.0.0",
     "inquirer": "^4.0.0",
     "isbot": "^2.1.0",
+    "jsdom": "^11.5.1",
     "lodash": "^4.17.4",
     "memory-cache": "^0.2.0",
     "mocha": "^4.0.0",
@@ -65,8 +66,8 @@
     "precss": "^2.0.0",
     "prop-types": "^15.5.10",
     "pwa-srcset-loader": "^1.1.2",
-    "react": "^16",
-    "react-dom": "^16",
+    "react": "^16.1.1",
+    "react-dom": "^16.1.1",
     "react-hot-loader": "^3.0.0-beta.7",
     "react-redux": "^5.0.6",
     "react-router": "^4.2.0",
@@ -94,10 +95,12 @@
   },
   "scripts": {
     "setup": "babel-node ./setup.js",
-    "start": "cross-env NODE_ENV=development nodemon --exec babel-node --watch ../src/server.js --watch ./src --watch ./webpack ../src/server.js",
+    "start": "cross-env NODE_ENV=development BABEL_DISABLE_CACHE=1 nodemon --exec babel-node --watch ../src/server.js --watch ./src --watch ./webpack ../src/server.js",
     "lint": "eslint -c ../.eslintrc --ignore-path ../.gitignore ../src",
     "lint:core": "eslint -c ./.eslintrc --ignore-path ../.gitignore ./src ./webpack",
-    "build": "cross-env NODE_ENV=production webpack -p --config ./webpack/prod.client.babel.js && cross-env NODE_ENV=production webpack -p --config ./webpack/prod.server.babel.js",
+    "build:client": "cross-env NODE_ENV=production BABEL_DISABLE_CACHE=1 webpack --config ./webpack/prod.client.babel.js",
+    "build:server": "cross-env NODE_ENV=production BABEL_DISABLE_CACHE=1 webpack --config ./webpack/prod.server.babel.js",
+    "build": "cross-env BABEL_DISABLE_CACHE=1 npm run build:client && cross-env BABEL_DISABLE_CACHE=1 npm run build:server",
     "test": "npm run lint && cross-env NODE_ENV=test mocha --require babel-core/register \"../src/**/*.test.js\""
   },
   "keywords": [

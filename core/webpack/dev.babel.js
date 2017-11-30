@@ -24,7 +24,13 @@ import path from "path";
 import fs from "fs";
 
 import {
-  buildDir, buildPublicPath, coreRootDir, coreSrcDir, distDir, rootDir, srcDir,
+  buildDir,
+  buildPublicPath,
+  coreRootDir,
+  coreSrcDir,
+  distDir,
+  rootDir,
+  srcDir,
   srcPublicDir,
 } from "../../directories";
 
@@ -134,17 +140,16 @@ const commonClientConfig = {
   
   resolve: {
     modules: [
-      "node_modules",
+      path.resolve(path.join(rootDir, "node_modules")),
       path.resolve(path.join(coreRootDir, "node_modules")),
     ],
     alias: {
-      core: coreSrcDir,
-      src: srcDir
-    }
+      "src": srcDir,
+    },
   },
   resolveLoader: {
     modules: [
-      "node_modules",
+      path.resolve(path.join(rootDir, "node_modules")),
       path.resolve(path.join(coreRootDir, "node_modules")),
       path.resolve(path.join(coreSrcDir, "webpack", "loaders"))
     ]
@@ -278,13 +283,12 @@ const serviceWorkerConfig = {
   
   resolve: {
     modules: [
-      "node_modules",
-      path.resolve(path.join(coreRootDir, "node_modules"))
+      path.resolve(path.join(rootDir, "node_modules")),
+      path.resolve(path.join(coreRootDir, "node_modules")),
     ],
     alias: {
-      core: coreSrcDir,
-      src: srcDir
-    }
+      "src": srcDir,
+    },
   },
   
   devtool: "eval-source-map",

@@ -1,6 +1,6 @@
 import React from "react";
 import _ from "lodash";
-import Link from "core/components/link";
+import Link from "react-pwa/src/components/link";
 
 export default class BlogListing extends React.Component {
 

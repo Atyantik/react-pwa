@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {Route} from "react-router-dom";
-import _ from "lodash";
+import { Route } from "react-router-dom";
+import { renderSubRoutes } from "../../utils/renderer";
 
 class RouteWithSubRoutes extends React.Component {
   static propTypes = {
@@ -28,7 +28,8 @@ class RouteWithSubRoutes extends React.Component {
       seo: PropTypes.shape({}),
     }).isRequired,
     api: PropTypes.any,
-    storage: PropTypes.any
+    storage: PropTypes.any,
+    parentPreLoadedData: PropTypes.any,
   };
 
   static defaultProps = {
@@ -39,31 +40,30 @@ class RouteWithSubRoutes extends React.Component {
       preLoadedData: {},
       props: {},
       routes: [],
-    }
+    },
+    parentPreLoadedData: {},
   };
-
-  renderSubRoutes(routes = []) {
-    if (!routes.length) return null;
-    return <div>
-      {_.map(routes, (subRoute, i) => {
-        return <RouteWithSubRoutes
-          key={i}
-          route={subRoute}
-          api={this.props.api}
-          storage={this.props.storage}
-        />;
-      })}
-    </div>;
-  }
+  
   renderAbstract(route) {
     return (
       <route.component
         preLoadedData={route.preLoadedData}
+        parentPreLoadedData={this.props.parentPreLoadedData}
         api={this.props.api}
         storage={this.props.storage}
         {...route.props}
+        routes={route.routes}
       >
-        { this.renderSubRoutes(route.routes) }
+        {
+          renderSubRoutes({
+            props: {
+              api: this.props.api,
+              storage: this.props.storage,
+              preLoadedData: route.preLoadedData,
+              routes: route.routes
+            }
+          })
+        }
       </route.component>
     );
   }
@@ -76,6 +76,7 @@ class RouteWithSubRoutes extends React.Component {
 
         return (
           <route.layout
+            parentPreLoadedData={this.props.parentPreLoadedData}
             preLoadedData={route.preLoadedData}
             api={this.props.api}
             storage={this.props.storage}
@@ -97,6 +98,7 @@ class RouteWithSubRoutes extends React.Component {
       routes={route.routes}
       api={this.props.api}
       storage={this.props.storage}
+      parentPreLoadedData={this.props.parentPreLoadedData}
       {...route.props}
       {...props}
     />;

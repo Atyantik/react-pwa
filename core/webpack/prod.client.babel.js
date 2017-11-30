@@ -88,17 +88,16 @@ export default {
   
   resolve: {
     modules: [
-      "node_modules",
+      path.resolve(path.join(rootDir, "node_modules")),
       path.resolve(path.join(coreRootDir, "node_modules")),
     ],
     alias: {
-      core: coreSrcDir,
-      src: srcDir
-    }
+      "src": srcDir,
+    },
   },
   resolveLoader: {
     modules: [
-      "node_modules",
+      path.resolve(path.join(rootDir, "node_modules")),
       path.resolve(path.join(coreRootDir, "node_modules")),
       path.resolve(path.join(coreSrcDir, "webpack", "loaders"))
     ]
@@ -137,10 +136,10 @@ export default {
       uglifyOptions: {
         compress: {
           warnings: false,
-        },
+        }
       },
       sourceMap: false,
-      parallel: 3,
+      parallel: 6,
     }),
     
     // Create common chunk of data

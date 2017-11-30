@@ -18,7 +18,7 @@ import ExtractTextPlugin from "extract-text-webpack-plugin";
  */
 import autoprefixer from "autoprefixer";
 
-import {buildDirName, distDir, publicDirName, rootDir, srcDir} from "../../directories";
+import {buildDirName, coreRootDir, coreSrcDir, distDir, publicDirName, rootDir, srcDir} from "../../directories";
 
 import rules, {stats} from "./prod.rules";
 
@@ -34,6 +34,7 @@ export default [{
   // be executed.
   entry: [
     "babel-polyfill",
+    path.join(coreSrcDir, "server", "dom-polyfill.js"),
     // Initial entry point
     path.join(srcDir, "server.js"),
   ],
@@ -42,24 +43,23 @@ export default [{
   // a project will be treated.
   module: {
     rules: rules({
-      imageOutputPath: "build/images/",
+      "imageOutputPath": "build/images/"
     }),
   },
   resolve: {
     modules: [
-      "node_modules",
-      path.resolve(path.join(rootDir, "core", "node_modules")),
+      path.resolve(path.join(rootDir, "node_modules")),
+      path.resolve(path.join(coreRootDir, "node_modules")),
     ],
     alias: {
-      core: path.resolve(path.join(rootDir, "core", "src")),
-      src: path.resolve(path.join(rootDir, "src"))
-    }
+      "src": srcDir,
+    },
   },
   resolveLoader: {
     modules: [
-      "node_modules",
-      path.resolve(path.join(rootDir, "core", "node_modules")),
-      path.resolve(path.join(rootDir, "core", "src", "webpack", "loaders"))
+      path.resolve(path.join(rootDir, "node_modules")),
+      path.resolve(path.join(coreRootDir, "node_modules")),
+      path.resolve(path.join(coreSrcDir, "webpack", "loaders"))
     ]
   },
   output: {
@@ -83,17 +83,16 @@ export default [{
   stats,
   
   plugins: [
-    
-    // Uglify the output so that we have the most optimized code
     new UglifyJSPlugin({
       uglifyOptions: {
         compress: {
           warnings: false,
-        },
+        }
       },
       sourceMap: false,
-      parallel: 3,
+      parallel: 6,
     }),
+    
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "production"),
     }),
@@ -159,19 +158,18 @@ export default [{
   },
   resolve: {
     modules: [
-      "node_modules",
-      path.resolve(path.join(rootDir, "core", "node_modules")),
+      path.resolve(path.join(rootDir, "node_modules")),
+      path.resolve(path.join(coreRootDir, "node_modules")),
     ],
     alias: {
-      core: path.resolve(path.join(rootDir, "core", "src")),
-      src: path.resolve(path.join(rootDir, "src"))
-    }
+      "src": srcDir,
+    },
   },
   resolveLoader: {
     modules: [
-      "node_modules",
-      path.resolve(path.join(rootDir, "core", "node_modules")),
-      path.resolve(path.join(rootDir, "core", "src", "webpack", "loaders"))
+      path.resolve(path.join(rootDir, "node_modules")),
+      path.resolve(path.join(coreRootDir, "node_modules")),
+      path.resolve(path.join(coreSrcDir, "webpack", "loaders"))
     ]
   },
   output: {
@@ -196,10 +194,10 @@ export default [{
       uglifyOptions: {
         compress: {
           warnings: false,
-        },
+        }
       },
       sourceMap: false,
-      parallel: 3,
+      parallel: 6,
     }),
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "production"),

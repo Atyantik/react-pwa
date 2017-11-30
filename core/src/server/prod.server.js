@@ -28,9 +28,9 @@ import Api from "../libs/api/api";
 import configureStore from "../store";
 
 import Html from "../components/html";
-import Routes from "src/routes";
+import DefaultRoutes from "src/routes";
 import {extractFilesFromAssets} from "../utils/utils";
-import { publicDirName } from "../../../directories";
+import {publicDirName} from "../../../directories";
 import config from "src/config";
 import pwaIcon from "src/resources/images/pwa/icon-384x384.png";
 
@@ -47,6 +47,35 @@ const filename = _.find(process.argv, arg => {
 if (filename) {
   currentDir = path.dirname(filename);
 }
+
+const routesMap = {
+  "default": DefaultRoutes
+};
+
+export const setRoutes = (routeNamespace = "", routeList = []) => {
+  if (!routeNamespace && routeNamespace.trim()) return;
+  _.set(routesMap, routeNamespace.trim(), routeList);
+};
+
+export const selectRouteNamespace = (res, routeNamespace = "") => {
+  let routeList = [];
+  if (routeNamespace && routeNamespace.trim()) {
+    routeList = _.get(routesMap, routeNamespace.trim(), []);
+  }
+  if (!_.isEmpty(routeList)) {
+    _.set(res, "locals.route-namespace", routeNamespace);
+  } else {
+    _.set(res, "locals.route-namespace", "default");
+  }
+};
+
+const getRoutes = (response) => {
+  let routeNamespace = _.get(response, "locals.route-namespace", "default");
+  routeNamespace = routeNamespace.trim() ? routeNamespace.trim().toLowerCase() : "default";
+  let routeList = _.get(routesMap, routeNamespace, DefaultRoutes);
+  if (!_.isEmpty(routeList)) return routeList;
+  return DefaultRoutes;
+};
 
 // Get everything inside public path
 let allAssets = [];
@@ -216,15 +245,17 @@ app.get("/_globals", infiniteCache(), (req, res) => {
   res.setHeader("Pragma", "no-cache");
   
   return res.send(JSON.stringify({
-    routes: Routes,
+    routes: getRoutes(res),
     allCss,
     allJs
   }));
 });
 
-app.get("*", pageCache(_.cloneDeep(Routes)), (req, res) => {
+app.get("*", (req, res, next) => {
+  return pageCache(_.cloneDeep(getRoutes(res)))(req, res, next);
+}, (req, res) => {
   
-  let routes = _.cloneDeep(Routes);
+  let routes = _.cloneDeep(getRoutes(res));
   
   // Get list of assets from request
   const {assets} = req;

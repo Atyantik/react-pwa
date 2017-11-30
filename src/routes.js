@@ -1,4 +1,4 @@
-import {configureRoutes} from "core/utils/bundler";
+import {configureRoutes} from "react-pwa/src/utils/bundler";
 // routes
 import * as Home from "./pages/home";
 import * as About from "./pages/about";

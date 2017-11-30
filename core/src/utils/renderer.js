@@ -1,6 +1,6 @@
 import React from "react";
 import {Provider} from "react-redux";
-import { hydrate, render } from "react-dom";
+import {render} from "react-dom";
 import {AppContainer as HotAppContainer} from "react-hot-loader";
 import _ from "lodash";
 
@@ -25,7 +25,8 @@ const getComponent = (componentReference) => {
   if (!component) throw new Error(`Cannot find component with reference ${componentReference}`);
   return component;
 };
-const DefaultRender = process.env.NODE_ENV === "development"? render: hydrate;
+
+const DefaultRender = render;
 const RootComponent = getComponent("root");
 const Loader  = getComponent("loader");
 const NotFoundPage = getComponent("error/404");

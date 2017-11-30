@@ -1,8 +1,8 @@
 import React, {Component} from "react";
-import Fold from "core/components/fold";
+import Fold from "react-pwa/src/components/fold";
 import ReactLogo from "src/resources/images/reactjs.svg";
 import SmallImage from "src/resources/images/mario-large.png?sizes=100w+200w+400w+800w&placeholder";
-import Picture from "core/components/picture/picture";
+import Picture from "react-pwa/src/components/picture/picture";
 
 export default class Home extends Component {
   render() {

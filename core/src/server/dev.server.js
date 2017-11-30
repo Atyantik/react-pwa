@@ -19,7 +19,7 @@ import webpackConfig from "../../webpack/dev.babel";
 
 import {extractFilesFromAssets} from "../utils";
 import Html from "../components/html";
-import { publicDirName, srcPublicDir } from "../../../directories";
+import {publicDirName, srcPublicDir} from "../../../directories";
 
 const app = express();
 

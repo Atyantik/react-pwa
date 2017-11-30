@@ -55,7 +55,7 @@ global.onPageChange = onPageChange;
 
 // Collect routes from all the routes
 // loaded over time
-global.collectedRoutes = global.collectedRoutes || [];
+global.collectedRoutes = global.collectedRoutes || (!_.isEmpty(customClient.routes) ? customClient.routes : []);
 
 // Create enhanced history with
 global.history = global.history || createHistory();
@@ -113,7 +113,7 @@ export const renderRoutesWrapper = ({ url = global.previousUrl }) => {
     history: global.history,
     renderRoot: global.renderRoot,
     collectedRoutes: global.collectedRoutes,
-    global: {
+    options: {
       isInitialLoad: global.isInitialLoad
     }
   }).then(() => {

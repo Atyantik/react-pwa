@@ -1,13 +1,14 @@
 {
   "name": "ReactPWA",
-  "version": "0.2.2",
+  "version": "0.2.5",
   "description": "A highly scalable, Progressive Web Application foundation with the best Developer Experience (DX).",
   "scripts": {
-    "postinstall": "cd core && npm install && cd ..",
     "rpwa": "cd core && npm run",
     "setup": "npm run rpwa setup",
     "start": "npm run rpwa start",
     "build": "npm run rpwa build",
+    "build:client": "npm run rpwa build:client",
+    "build:server": "npm run rpwa build:server",
     "lint": "npm run rpwa lint",
     "lint:core": "npm run rpwa lint:core",
     "test": "npm run rpwa test",
@@ -20,13 +21,15 @@
     "docker:prod:start": "docker run -it -p 3003:3003 react-pwa-prod"
   },
   "author": {
-    "name" : "Atyantik Technologies Private Limited",
-    "email" : "admin@atyantik.com",
-    "url" : "https://www.atyantik.com/"
+    "name": "Atyantik Technologies Private Limited",
+    "email": "admin@atyantik.com",
+    "url": "https://www.atyantik.com/"
   },
   "license": "MIT",
   "babel": {
     "extends": "./core/.babelrc"
   },
-  "dependencies": {}
+  "dependencies": {
+    "react-pwa": "file:core"
+  }
 }
