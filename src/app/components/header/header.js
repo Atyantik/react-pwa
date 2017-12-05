@@ -1,7 +1,7 @@
 import React from "react";
-import { connect } from "react-redux";
+import {connect} from "react-redux";
 import classNames from "classnames";
-import { Link } from "react-router-dom";
+import Link from "react-pwa/src/components/link";
 
 const Header = (props) => {
   return (
@@ -53,4 +53,4 @@ const Header = (props) => {
   );
 };
 
-export default connect(state => { return {url: state.router.pathname}; })(Header);
+export default connect(state => { return {url: state.router.location.pathname}; })(Header);

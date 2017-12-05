@@ -1,8 +1,8 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import classNames from "classnames";
-import  { Link } from "react-router-dom";
-import { renderSubRoutes } from "../../../core/utils/renderer";
-import Transition from "../../../core/components/transition";
+import Link from "react-pwa/src/components/link";
+import {renderSubRoutes} from "react-pwa/src/utils/renderer";
+import Transition from "react-pwa/src/components/transition";
 import * as styles from "./about.scss";
 
 export default class About extends Component {
@@ -21,15 +21,15 @@ export default class About extends Component {
           <div className={styles["sidebar-module"]}>
             <h4>Left sidebar</h4>
             <ol className="list-unstyled">
-              <li><Link to="/about/about-us">About Us</Link></li>
-              <li><Link to="/about/we-execute-your-dreams">What do we do?</Link></li>
-              <li><Link to="/about/do-not-hire-us">Looking for a team?</Link></li>
+              <li><Link to="/about/about-us" animateSection="about-section" >About Us</Link></li>
+              <li><Link to="/about/we-execute-your-dreams" animateSection="about-section">What do we do?</Link></li>
+              <li><Link to="/about/do-not-hire-us" animateSection="about-section">Looking for a team?</Link></li>
             </ol>
           </div>
         </div>
         <div className="pl-4 col-sm-6">
           <Transition
-            duration={500}
+            sectionName="about-section"
             className={styles["animator"]}
             onEnterClassName={styles["fade-in"]}
             onExitClassName={styles["fade-out"]}

@@ -1,4 +1,5 @@
-import { trackPageView } from "./core/utils/analytics";
+import {trackPageView} from "react-pwa/src/utils/analytics";
+
 export const reduxInitialState = {};
 export const reduxReducers = null;
 export const onPageChange = function() {
