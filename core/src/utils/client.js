@@ -246,7 +246,7 @@ export const renderRoutes = async ({
   
   try {
     await Promise.all(promises);
-  
+    
     updateHtmlMeta(currentRoutes);
     updateHeadLinks(currentRoutes);
     renderRoutesByUrl({
@@ -270,8 +270,19 @@ export const renderRoutes = async ({
     }
     
     error.statusCode = error.statusCode || 500;
-    
-    if (NETWORK_STATE_OFFLINE === error.networkState) {
+    if (error.statusCode === 404) {
+      renderNotFoundPage({
+        render: options.isInitialLoad? HydrateRender: DefaultRender,
+        history,
+        renderRoot: renderRoot,
+        url: url,
+        routes: [],
+        store
+      }, () => {
+        !options.isInitialLoad && hideScreenLoader(store);
+        !options.isInitialLoad && scrollToTop(currentRoutes);
+      });
+    } else if (NETWORK_STATE_OFFLINE === error.networkState) {
       renderOfflinePage({
         render: options.isInitialLoad? HydrateRender: DefaultRender,
         history,

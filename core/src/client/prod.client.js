@@ -42,9 +42,9 @@ const updateByUrl = (url) => {
     animateFadeOut(global).then(() => {
       // Show screen loader asap
       !global.isInitialLoad && showScreenLoader(global.store);
-    
+      
       const module = getModuleByUrl(url);
-    
+      
       if (!module) {
         // If no module found for the route simple ask to render it as it will display
         // 404 page
@@ -56,11 +56,11 @@ const updateByUrl = (url) => {
           store: global.store
         }, () => {
           !global.isInitialLoad && hideScreenLoader(global.store);
-          scrollToTop();
+          !global.isInitialLoad && scrollToTop();
         });
         return resolve();
       }
-    
+      
       if (isModuleLoaded(url, global.collectedRoutes)) {
         return renderRoutesWrapper({ url }).then(() => {
           animateFadeIn(global);

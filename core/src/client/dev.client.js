@@ -5,7 +5,6 @@ import {getModuleByUrl, setGlobalRoutes} from "../utils/bundler";
 import {renderNotFoundPage} from "../utils/renderer";
 import Routes from "src/routes";
 
-console.log(!_.isEmpty(global.collectedRoutes) ? global.collectedRoutes : Routes);
 global.collectedRoutes = _.cloneDeep(!_.isEmpty(global.collectedRoutes) ? global.collectedRoutes : Routes);
 setGlobalRoutes(global.collectedRoutes);
 

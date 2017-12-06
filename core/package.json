@@ -1,6 +1,6 @@
 {
   "name": "react-pwa",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "A highly scalable, Progressive Web Application foundation with the best Developer Experience (DX).",
   "engines": {
     "node": ">= 8.4.0"

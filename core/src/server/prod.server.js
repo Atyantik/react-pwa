@@ -275,7 +275,18 @@ app.get("*", (req, res, next) => {
   let store = configureStore({
     history,
     // Combine initial state with our default state
-    initialState: _.assignIn({}, _.get(res, "locals.reduxInitialState", {})),
+    initialState: _.assignIn({
+      network: {
+        state: "online"
+      },
+      router: {
+        location: {
+          pathname: req.path,
+          search: req.url.replace(req.path, ""),
+          hash: ""
+        }
+      }
+    }, _.get(res, "locals.reduxInitialState", {})),
     
     // Add reducers if provided in locals
     ...( typeof res.locals["reduxReducers"] !== "undefined" ? {
@@ -381,7 +392,7 @@ app.get("*", (req, res, next) => {
           isBot={bot}
           links={links}
         >
-          {routerComponent}
+        {routerComponent}
         </Html>
       ));
       
@@ -393,7 +404,23 @@ app.get("*", (req, res, next) => {
       return res.status(statusCode).send(`<!DOCTYPE html>${html}`);
       
     }).catch((err) => {
-      routerComponent = getErrorComponent(err, store, storage, api);
+      
+      if (err && err.statusCode && err.statusCode === 404) {
+        routerComponent = renderNotFoundPage({
+          render: false,
+          Router: ServerRouter,
+          url: req.path,
+          Switch: ServerSwitch,
+          Route: ServerRoute,
+          context: context,
+          store,
+          api,
+          storage
+        });
+      } else {
+        routerComponent = getErrorComponent(err, store, storage, api);
+      }
+      
       html = ReactDOMServer.renderToString((
         <Html
           inlineCss={inlineCss}
@@ -402,7 +429,7 @@ app.get("*", (req, res, next) => {
           url={currentUrl}
           isBot={bot}
         >
-          {routerComponent}
+        {routerComponent}
         </Html>
       ));
       return res.status(err.statusCode || 500).send(`<!DOCTYPE html>${html}`);
@@ -418,7 +445,7 @@ app.get("*", (req, res, next) => {
         url={currentUrl}
         isBot={bot}
       >
-        {routerComponent}
+      {routerComponent}
       </Html>
     ));
     return res.status(err.statusCode || 500).send(`<!DOCTYPE html>${html}`);
