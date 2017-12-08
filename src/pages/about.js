@@ -7,7 +7,6 @@ const routes = [
     path: "/about",
     component: About,
     layout: DefaultLayout,
-    
     seo: {
       title: "About Page",
       description: "This is all of the description more than 200 characters",

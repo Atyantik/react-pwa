@@ -67,6 +67,13 @@ global.store = global.store || configureStore({
   initialState: _.assignIn({}, {
     network: {
       state: window.navigator.onLine ? NETWORK_STATE_ONLINE: NETWORK_STATE_OFFLINE,
+    },
+    router: {
+      location: {
+        pathname: window.location.pathname,
+        search: window.location.search,
+        hash: window.location.hash
+      }
     }
   }, reduxInitialState),
   ...(reduxReducers ? { reducers: reduxReducers} : {})

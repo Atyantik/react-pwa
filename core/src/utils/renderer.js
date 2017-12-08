@@ -261,9 +261,11 @@ export const getPreloadDataPromises = (
         
         // Pass route as reference so that we can modify it while loading data
         const staticRoute = JSON.parse(JSON.stringify(r));
+        
         let returnData = r.preLoadData({
           route: staticRoute,
           match: r.match,
+          childRouteMatches: _.map(_.get(r ,"routes", []), "match"),
           storage,
           api,
           store,
