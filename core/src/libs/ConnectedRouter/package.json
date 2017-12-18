@@ -1,6 +1,0 @@
-{
-  "private": true,
-  "name": "ConnectedRouter",
-  "main": "./ConnectedRouter.server.js",
-  "browser": "./ConnectedRouter.client.js"
-}

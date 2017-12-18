@@ -1,5 +1,5 @@
 import React from "react";
-import Link from "react-pwa/src/components/link";
+import Link from "pawjs/src/components/link";
 import * as styles from "./contact.scss";
 
 export default class Contact extends React.Component {

@@ -1,5 +1,5 @@
 {
-  "extends": "./core/.eslintrc",
+  "extends": "./node_modules/pawjs/.eslintrc",
   "plugins": [
     "react"
   ],

@@ -1,7 +1,7 @@
 import React from "react";
 import {connect} from "react-redux";
 import classNames from "classnames";
-import Link from "react-pwa/src/components/link";
+import Link from "pawjs/src/components/link";
 
 const Header = (props) => {
   return (

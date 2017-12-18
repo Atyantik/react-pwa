@@ -1,10 +1,10 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
-import {SCREEN_STATE_LOADING} from "react-pwa/src/components/screen/action";
+import {SCREEN_STATE_LOADING} from "pawjs/src/components/screen/action";
 import * as styles from "./loader.scss";
 import Header from "../header";
 import Footer from "../footer";
-import Transition from "react-pwa/src/components/transition";
+import Transition from "pawjs/src/components/transition";
 
 @connect( state => {
   return {

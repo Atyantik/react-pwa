@@ -1,4 +1,4 @@
-import "react-pwa/src/service-worker";
+import "pawjs/src/service-worker";
 
 /**
  * Write custom service worker code here

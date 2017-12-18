@@ -1,4 +1,4 @@
-import {trackPageView} from "react-pwa/src/utils/analytics";
+import {trackPageView} from "pawjs/src/utils/analytics";
 
 export const reduxInitialState = {};
 export const reduxReducers = null;

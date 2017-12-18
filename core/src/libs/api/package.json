@@ -1,6 +1,0 @@
-{
-  "private": true,
-  "name": "Api",
-  "main": "./api.js",
-  "browser": "./api.client.js"
-}

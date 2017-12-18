@@ -1,7 +1,7 @@
 import express from "express";
 import _ from "lodash";
 import http from "http";
-import serverMiddleware from "react-pwa/src/server/middleware";
+import serverMiddleware from "pawjs/src/server/middleware";
 import Config from "./config";
 
 const app = express();
