@@ -30,7 +30,7 @@ if the above command give you ACCESS errors try it with SUDO!
 ```language-bash
 sudo npm i -g node-gyp
 ```
-As node-gyp is dependent on "phython" you might face Python PATH errors, please visit the original repo for more installation instructions and solve problems  
+As node-gyp is dependent on "python" you might face Python PATH errors, please visit the original repo for more installation instructions and solve problems  
 [NODE GYP - https://github.com/nodejs/node-gyp](https://github.com/nodejs/node-gyp)
 
 ### Quick start
