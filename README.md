@@ -42,6 +42,9 @@ As node-gyp is dependent on "phython" you might face Python PATH errors, please 
 - To build the application you should run: `npm run build`
 - To build and run PWA demo use the command: `npm run build && node dist/server.js`  
 
+## PawJS
+Proudly supported by **PawJS**   
+*[https://github.com/Atyantik/pawjs](https://github.com/Atyantik/pawjs)*
 
 #### Features
 ##### PWA  - Progressive Web Applications
