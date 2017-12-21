@@ -11,7 +11,7 @@ import {decrementCounter, incrementCounter} from "./action";
 
 @connect((state) => {
   return {
-    counterValue: _.get(state.counter, "Count", 0)
+    counterValue: _.get(state.counter, "count", 0)
   };
 })
 export default class Counter extends Component {

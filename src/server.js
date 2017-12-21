@@ -10,6 +10,11 @@ const app = express();
  * --- Your custom code START ---
  */
 app.use((req, res, next) => {
+  res.locals.reduxInitialState = {
+    counter: {
+      count: 5
+    }
+  };
   res.locals.reduxReducers = appReducers;
   next();
 });
