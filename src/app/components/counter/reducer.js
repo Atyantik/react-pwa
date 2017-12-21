@@ -7,7 +7,7 @@
 import _ from "lodash";
 
 const initialState = {
-  Count: 0,
+  count: 0,
 };
 
 export const INCREMENT_COUNT = "INCREMENT_COUNT";
@@ -17,11 +17,11 @@ export const counter = (state = initialState, action) => {
   switch (action.type) {
     case INCREMENT_COUNT:
       return _.assignIn({}, state, {
-        Count: ++initialState.Count,
+        count: ++initialState.count,
       });
     case DECREMENT_COUNT:
       return _.assignIn({}, state, {
-        Count: --initialState.Count,
+        count: --initialState.count,
       });
     default:
       return state;
