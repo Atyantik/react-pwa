@@ -8,9 +8,9 @@
 
 
 # React PWA
-A highly scalable, Progressive Web Application foundation with the best Developer Experience.
+A highly scalable, Progressive Web Application foundation,boilerplate, with the best Developer Experience.
 
-[https://www.reactpwa.com is built with this awesome framework. Why don't you check it out.](https://www.reactpwa.com/)
+[https://www.reactpwa.com is built with this awesome boilerplate. Why don't you check it out.](https://www.reactpwa.com/)
 
 ###### Add to home screen and make your application behave like a Native APP
 If you are not able to view the gif below, just click "PWA States Gif" or the broken image:  
@@ -19,6 +19,29 @@ If you are not able to view the gif below, just click "PWA States Gif" or the br
 
 #### Current Repo in Action
 To view how the current repository is running please visit [https://demo.reactpwa.com](https://demo.reactpwa.com)
+
+### Prerequisite
+#### Node GYP
+Well are using image compression while building the application. Its requires extra efforts to compress images and convert them to WebP. Well NodeJS cannot directly do it and thus requires build tools for the same.
+```language-bash
+npm i -g node-gyp
+```
+if the above command give you ACCESS errors try it with SUDO! 
+```language-bash
+sudo npm i -g node-gyp
+```
+As node-gyp is dependent on "phython" you might face Python PATH errors, please visit the original repo for more installation instructions and solve problems  
+[NODE GYP - https://github.com/nodejs/node-gyp](https://github.com/nodejs/node-gyp)
+
+### Quick start
+
+- Clone this repo using: `git clone --depth=1 https://github.com/Atyantik/react-pwa.git`
+- Move to the appropriate directory: `cd react-pwa`.
+- Use yarn to install dependencies: `npm install`
+- run `npm start` to see the example app at: http://localhost:3003.
+- To build the application you should run: `npm run build`
+- To build and run PWA demo use the command: `npm run build && node dist/server.js`  
+
 
 #### Features
 ##### PWA  - Progressive Web Applications
@@ -82,15 +105,6 @@ SVG, JPEG, GIF & PNG
 ##### HSTS Supported
 Enable HSTS for secure sites. Options to define maxAge and preload of HSTS. All with very simple configuration.  
 [Read More](https://www.reactpwa.com/features/hsts)  
-
-### Quick start
-
-- Clone this repo using: `git clone --depth=1 https://github.com/Atyantik/react-pwa.git`
-- Move to the appropriate directory: `cd react-pwa`.
-- Use yarn to install dependencies: `npm install`
-- run `npm start` to see the example app at: http://localhost:3003.
-- To build the application you should run: `npm run build`
-- To build and run PWA demo use the command: `npm run build && node dist/server.js`  
 
 Now you are all set, Get your hands dirty with this awesome boilerplate.  
 
