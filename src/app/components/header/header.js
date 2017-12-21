@@ -48,6 +48,14 @@ const Header = (props) => {
             Progressive Image Rendering
           </Link>
         </li>
+        <li className="nav-item">
+          <Link
+            className={classNames("nav-link", {active: props.url === "/counter"})}
+            to="/counter"
+          >
+            Redux Counter
+          </Link>
+        </li>
       </ul>
     </div>
   );
