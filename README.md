@@ -33,6 +33,13 @@ sudo npm i -g node-gyp
 As node-gyp is dependent on "python" you might face Python PATH errors, please visit the original repo for more installation instructions and solve problems  
 [NODE GYP - https://github.com/nodejs/node-gyp](https://github.com/nodejs/node-gyp)
 
+#### Windows
+Installing on Windows requires the `windows-build-tools`. Open a new terminal as an Administrator and run the following commands:
+
+`npm install --global --production windows-build-tools`
+
+`npm config set msvs_version 2015 --global`
+
 ### Quick start
 
 - Clone this repo using: `git clone --depth=1 https://github.com/Atyantik/react-pwa.git`
