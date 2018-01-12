@@ -4,11 +4,23 @@ import http from "http";
 import serverMiddleware from "pawjs/src/server/middleware";
 import serverHooks from "pawjs/src/server/hooks";
 import Config from "./config";
+import * as appReducers from "./app/reducers";
 
 const app = express();
 /**
  * --- Your custom code START ---
  */
+app.use((req, res, next) => {
+  res.locals.reduxInitialState = {
+    counter: {
+      count: 5
+    }
+  };
+  res.locals.reduxReducers = appReducers;
+  next();
+});
+
+
 /**
  * --- Your custom code END ---
  */

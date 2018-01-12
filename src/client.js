@@ -1,7 +1,13 @@
 import {trackPageView} from "pawjs/src/utils/analytics";
 
-export const reduxInitialState = {};
-export const reduxReducers = null;
+import * as appReducers from "./app/reducers";
+
+export const reduxInitialState = {
+  counter: {
+    count: 5
+  }
+};
+export const reduxReducers = appReducers;
 export const onPageChange = function() {
   trackPageView().catch();
 };
