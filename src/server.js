@@ -1,4 +1,5 @@
 import express from "express";
+import React from "react";
 import _ from "lodash";
 import http from "http";
 import serverMiddleware from "pawjs/src/server/middleware";
@@ -28,12 +29,26 @@ app.use((req, res, next) => {
 app.use(serverHooks);
 
 app.use((req, res, next) => {
-  res.locals.wook.add_filter("manifest.send", (...args) => {
-    return args[1];
-  });
-  
-  res.locals.wook.add_filter("response.send", (response) => {
-    return response;
+  res.locals.wook.add_filter("paw_head", head => {
+    head.push(
+      <script
+        type="application/ld+json"
+        key="atyantik-org"
+        dangerouslySetInnerHTML={{__html: `{
+          "@context": "http://schema.org",
+          "@type": "Organization",
+          "name": "Atyantik Technologies",
+          "description": "We are ultimate technology maniacs",
+          "url": "https://www.atyantik.com/",
+          "telephone": "+91 265 2530860",
+          "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "India"
+          }
+        }`}}
+      />
+    );
+    return head;
   });
   next();
 });

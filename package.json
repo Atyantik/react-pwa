@@ -1,6 +1,6 @@
 {
   "name": "ReactPWA",
-  "version": "0.2.5",
+  "version": "0.2.7",
   "description": "A highly scalable, Progressive Web Application foundation with the best Developer Experience (DX).",
   "scripts": {
     "start": "pawjs start",
@@ -26,6 +26,6 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "pawjs": "^0.4.5"
+    "pawjs": "^0.4.6"
   }
 }
