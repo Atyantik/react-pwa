@@ -22,7 +22,7 @@ To view how the current repository is running please visit [https://demo.reactpw
 
 ### Prerequisite
 #### Node GYP
-Well are using image compression while building the application. Its requires extra efforts to compress images and convert them to WebP. Well NodeJS cannot directly do it and thus requires build tools for the same.
+We are using image compression while building the application. Its requires extra efforts to compress images and convert them to WebP. Well NodeJS cannot directly do it and thus requires build tools for the same.
 ```language-bash
 npm i -g node-gyp
 ```
