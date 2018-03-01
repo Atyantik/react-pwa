@@ -18,6 +18,10 @@ app.use((req, res, next) => {
     }
   };
   res.locals.reduxReducers = appReducers;
+  
+  // res.locals.reduxEnhancers = [enhancer1, enhancer2];
+  // res.locals.reduxMiddlewares = [middleware1, middleware2];
+  
   next();
 });
 

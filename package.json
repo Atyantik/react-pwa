@@ -26,6 +26,6 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "pawjs": "^0.4.6"
+    "pawjs": "^0.4.7"
   }
 }
