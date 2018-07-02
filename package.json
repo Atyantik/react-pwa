@@ -3,29 +3,23 @@
   "version": "1.0.0",
   "description": "A highly scalable, Progressive Web Application foundation with the best Developer Experience (DX).",
   "scripts": {
-    "start": "pawjs start",
-    "build": "pawjs build",
-    "lint": "pawjs lint",
-    "test": "pawjs test",
-    "docker:dev:image": "NODE_ENV=development pawjs docker build -t react-pwa .",
-    "docker:dev:start": "docker run -it -v \"$PWD/src\":\"/app/src\" -p 3003:3003 react-pwa",
-    "docker:dev:lint": "docker run -it -v \"$PWD/src\":\"/app/src\" -p 3003:3003 react-pwa npm run lint",
-    "docker:dev:test": "docker run -it -v \"$PWD/src\":\"/app/src\" -p 3003:3003 react-pwa npm run test",
-    "docker:prod:build": "docker run -it -v \"$PWD/src\":\"/app/src\" -v \"$PWD/dist\":\"/app/dist\" react-pwa npm run build",
-    "docker:prod:image": "npm run docker:dev:image && npm run docker:prod:build && NODE_ENV=production pawjs docker build -t react-pwa-prod .",
-    "docker:prod:start": "docker run -it -p 3003:3003 react-pwa-prod"
+    "start": "pawjs start:dev",
+    "build": "pawjs build:prod"
   },
   "author": {
-    "name": "Atyantik Technologies Private Limited",
-    "email": "admin@atyantik.com",
-    "url": "https://www.atyantik.com/"
+    "name": "Yash Thakur",
+    "email": "thakur.yash514@gmail.com",
+    "url": "http://yashthakur.in/"
   },
+  "contributors": [
+    {
+      "name": "Atyantik Technologies Private Limited",
+      "email": "admin@atyantik.com",
+      "url": "https://www.atyantik.com/"
+    }
+  ],
   "license": "MIT",
-  "babel": {
-    "extends": "pawjs/src/babel/.babelrc"
-  },
-  "dependencies": {},
   "devDependencies": {
-    "pawjs": "^1.0.0"
+    "@pawjs/pawjs": "^2.0.0"
   }
 }

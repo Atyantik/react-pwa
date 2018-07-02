@@ -1,6 +1,0 @@
-{
-  "name": "ProgressiveImage",
-  "version": "0.0.1",
-  "private": true,
-  "main": "./progressive-image.js"
-}

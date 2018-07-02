@@ -10,44 +10,24 @@
 # React PWA
 A highly scalable, Progressive Web Application foundation,boilerplate, with the best Developer Experience.
 
-[https://www.reactpwa.com is built with this awesome boilerplate. Why don't you check it out.](https://www.reactpwa.com/)
+#### Demo: [https://demo.reactpwa.com](https://demo.reactpwa.com)
 
-###### Add to home screen and make your application behave like a Native APP
-If you are not able to view the gif below, just click "PWA States Gif" or the broken image:  
-
-[![PWA States Gif](https://media.giphy.com/media/xT9Igz9xhXychk8LyE/giphy.gif)](https://www.atyantik.com/wp-content/uploads/2017/10/PWA-States.png)
-
-#### Current Repo in Action
-To view how the current repository is running please visit [https://demo.reactpwa.com](https://demo.reactpwa.com)
-
-### Prerequisite
-#### Node GYP
-We are using image compression while building the application. Its requires extra efforts to compress images and convert them to WebP. Well NodeJS cannot directly do it and thus requires build tools for the same.
-```language-bash
-npm i -g node-gyp
+### Quick Start
+Clone the repository:
+```bash
+git clone https://github.com/Atyantik/react-pwa.git && cd react-pwa 
 ```
-if the above command give you ACCESS errors try it with SUDO! 
-```language-bash
-sudo npm i -g node-gyp
+
+
+To start the project run following command in your terminal:
+```bash
+npm start
 ```
-As node-gyp is dependent on "python" you might face Python PATH errors, please visit the original repo for more installation instructions and solve problems  
-[NODE GYP - https://github.com/nodejs/node-gyp](https://github.com/nodejs/node-gyp)
 
-#### Windows
-Installing on Windows requires the `windows-build-tools`. Open a new terminal as an Administrator and run the following commands:
-
-`npm install --global --production windows-build-tools`
-
-`npm config set msvs_version 2015 --global`
-
-### Quick start
-
-- Clone this repo using: `git clone --depth=1 https://github.com/Atyantik/react-pwa.git`
-- Move to the appropriate directory: `cd react-pwa`.
-- Use yarn to install dependencies: `npm install`
-- run `npm start` to see the example app at: http://localhost:3003.
-- To build the application you should run: `npm run build`
-- To build and run PWA demo use the command: `npm run build && node dist/server.js`  
+To build the project run the following command in your terminal:
+```bash
+npm run build
+```
 
 ## PawJS
 Proudly supported by **PawJS**   
@@ -57,93 +37,46 @@ Proudly supported by **PawJS**
 ##### PWA  - Progressive Web Applications
 Using ReactPWA you can create Progressive web application with simple knowledge of React.JS. As we all know, Progressive Apps are not supported everywhere, but we have added support for Safari & Chrome so your application can work as 
 standalone applications when added to homescreen or saved as desktop app.  
-[Read More](https://www.reactpwa.com/features/pwa-progressive-web-application)
+[Read More](https://www.reactpwa.com/docs/en/feature-pwa.html)
 
 ##### Code splitting
 The very difficulty faced when developing enterprise application is code splitting. We don't need everything in a single JS file. Why not create individual JS files for each respective module/page!
 We make it really easy here to just create a page that returns an array of routes. Code is split and loaded automatically when the respective route is called.  
-[Read More](https://www.reactpwa.com/features/code-splitting)  
-
-##### Hot Reloading
-Development is much easier with hot reloading. Make changes and the code is auto/hot-reloaded in the browser.
-And we did not miss "sass". Preserve application state when you update underlying code.  
-[Read More](https://www.reactpwa.com/features/hot-reloading)
-  
+[Read More](https://www.reactpwa.com/docs/en/feature-code-splitting.html)  
 
 ##### ES6/7 Compatible
 Using babel, we support next generation JavaScript syntax including Object/Array destructuring, arrow functions, JSX syntax and more...  
-[Read More](https://www.reactpwa.com/features/next-gen-js-es6-es7)  
+[Read More](https://www.reactpwa.com/docs/en/feature-next-gen-js.html)  
 
 ##### Universal Routing with React-Router
 We are using the most accepted React router for routing the application. Add your favorite /about, /contact, /dashboard pages.  
-[Read More](https://www.reactpwa.com/features/isomorphic-universal-routing)  
+[Read More](https://www.reactpwa.com/docs/en/feature-isomorphic-universal-routing.html)  
 
 
 ##### Offline support
 Yes your application is offline available. Run without internet. Pretty cool huh?? Well all thanks to service workers.  
-[Read More](https://www.reactpwa.com/features/access-offline)  
+[Read More](https://www.reactpwa.com/docs/en/feature-access-offline.html)  
 
 ##### SSR - Server side rendering
 The best way to get your application SEO-ed is enable Server side rendering i.e. Universal applications.  
-[Read More](https://www.reactpwa.com/features/seo-search-engine-optimization/ssr-server-side-rendering)  
+[Read More](https://www.reactpwa.com/docs/en/feature-ssr.html)  
   
 
 ##### SEO
 Our customized routes enable creating meta tags to create Twitter, Google+, Linkedin, Facebook cards. We know how important SEO is to an application.  
-[Read More](https://www.reactpwa.com/features/seo-search-engine-optimization)  
-
-##### Content Folding
-Show only relevant data when loading via server. Fold your content to save bytes.  
-[Read More](https://www.reactpwa.com/features/seo-search-engine-optimization/content-folding)  
-
-
-##### Page Caching
-Well now you can cache a page in SSR. Pretty simple. Just add cache option to route.  
-`{ cache: { enable: true, duration: 10000}}`
-This helps you cache pages when rendered via server. Why increase server load when page is static and cacheable!  
-[Read More](https://www.reactpwa.com/features/caching)  
-
-##### WebP Support 
-Make your application super fast with WebP support. Read more about it at:
-[https://developers.google.com/speed/webp/](https://developers.google.com/speed/webp/)  
-
-##### Image optimizations
-Optimize your images when you create a build. This is a slow build process, but is totally worth it when your site loads fast. We are using imagemin plugins to optimize 
-SVG, JPEG, GIF & PNG  
-[Read More](https://www.reactpwa.com/features/image-optimization)  
+[Read More](https://www.reactpwa.com/docs/en/feature-seo.html)  
 
 ##### HSTS Supported
 Enable HSTS for secure sites. Options to define maxAge and preload of HSTS. All with very simple configuration.  
-[Read More](https://www.reactpwa.com/features/hsts)  
+[Read More](https://www.reactpwa.com/docs/en/feature-hsts.html)  
 
 Now you are all set, Get your hands dirty with this awesome boilerplate.  
 
 ### Documentation
-*Still in progress... But why don't you check out our [Documentation](https://www.reactpwa.com/docs)*  
+*Still in progress... But why don't you check out our [Documentation](https://www.reactpwa.com/docs/en/initial-setup.html)*  
 
 ### Testing
 *We have not written any test cases yet. Mocha is set up for testing, and we welcome any contribution to help us out.*  
-
-### Docker support
-Now easily manage docker-build, given Docker is properly configured and the terminal that is running node has access to docker command.
-
-##### Working with docker:
-
-`npm run docker:dev:image` 
-Will create a development image named "react-pwa" which will be used during application development and running.
-If anything new is added to package.json `npm run docker:dev:image` must be rebuilt to get the latest nodejs packages.
-
-`npm run docker:dev:start`  
-Will start the application in docker mode.  
- 
-`npm run docker:prod:build`  
-Will start the build the application for production.  
- 
-`npm run docker:prod:image`  
-Will create a docker image that can be deployed easily to any docker-hub and can create production containers.  
-
-`npm run docker:prod:start`  
-Will start the application in production mode, it's necessary to create docker:prod:image prior to docker:prod:start.  
 
 
 ### Need contributors.
@@ -183,5 +116,5 @@ Eventerprise is the first company to implement react-pwa, The whole idea of PWA 
 Thanks to Browser stack we are able to test the PWA nature of application on various mobiles and write automated test cases.  
 [![Browser Stack](https://www.atyantik.com/wp-content/uploads/2017/10/Browser-Stack-Logo.png)](https://www.browserstack.com)
 
-### License
-This project is licensed under the MIT license, Copyright (c) 2017 Atyantik Technologies Private Limited. For more information see LICENSE.md.  
+#### License
+This project is licensed under the MIT license, Copyright (c) 2017 [Atyantik Technologies Private Limited](https://www.atyantik.com/). For more information see [LICENSE.md](https://github.com/atyantik/react-pwa/blob/master/LICENSE.md).
