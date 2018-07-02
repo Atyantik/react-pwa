@@ -7,7 +7,7 @@
 [![Join the chat at https://gitter.im/react-pwa](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/react-pwa/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link)
 
 
-# React PWA
+# React PWA v2
 A highly scalable, Progressive Web Application foundation,boilerplate, with the best Developer Experience.
 
 #### Demo: [https://demo.reactpwa.com](https://demo.reactpwa.com)

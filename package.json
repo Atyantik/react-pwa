@@ -1,21 +1,26 @@
 {
   "name": "ReactPWA",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "A highly scalable, Progressive Web Application foundation with the best Developer Experience (DX).",
   "scripts": {
     "start": "pawjs start:dev",
     "build": "pawjs build:prod"
   },
   "author": {
-    "name": "Yash Thakur",
-    "email": "thakur.yash514@gmail.com",
-    "url": "http://yashthakur.in/"
+    "name": "Atyantik Technologies",
+    "email": "admin@atyantik.com",
+    "url": "https://www.atyantik.com/"
   },
   "contributors": [
     {
-      "name": "Atyantik Technologies Private Limited",
-      "email": "admin@atyantik.com",
+      "name": "Tirth Bodawala",
+      "email": "tirthbodawala@atyantik.com",
       "url": "https://www.atyantik.com/"
+    },
+    {
+      "name": "Yash Thakur",
+      "email": "thakur.yash514@gmail.com",
+      "url": "http://yashthakur.in/"
     }
   ],
   "license": "MIT",
