@@ -72,13 +72,6 @@ Enable HSTS for secure sites. Options to define maxAge and preload of HSTS. All 
 
 Now you are all set, Get your hands dirty with this awesome boilerplate.  
 
-### Documentation
-*Still in progress... But why don't you check out our [Documentation](https://www.reactpwa.com/docs/en/initial-setup.html)*  
-
-### Testing
-*We have not written any test cases yet. Mocha is set up for testing, and we welcome any contribution to help us out.*  
-
-
 ### Need contributors.
 This project exists thanks to all the people who contribute. [[Contribute]](CONTRIBUTING.md).
 <a href="https://github.com/Atyantik/react-pwa/graphs/contributors"><img src="https://opencollective.com/react-pwa/contributors.svg?width=890" /></a>
