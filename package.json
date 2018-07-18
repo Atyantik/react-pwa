@@ -25,6 +25,6 @@
   ],
   "license": "MIT",
   "devDependencies": {
-    "@pawjs/pawjs": "^2.0.1"
+    "@pawjs/pawjs": "^2.0.2"
   }
 }
