@@ -4,5 +4,6 @@
   "host": "0.0.0.0",
   "appRootUrl": "/",
   "serviceWorker": false,
-  "serverSideRender": true
+  "serverSideRender": true,
+  "singlePageApplication": false
 }
