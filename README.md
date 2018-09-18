@@ -101,13 +101,28 @@ Support this project by becoming a sponsor. Your logo will show up here with a l
 <a href="https://opencollective.com/react-pwa/sponsor/9/website" target="_blank"><img src="https://opencollective.com/react-pwa/sponsor/9/avatar.svg"></a>
 
 ### Supporters
-##### Eventerprise.com
-<a href="https://www.eventerprise.com" target="_blank"><img width="80px" src="https://www.reactpwa.com/build/images/app/components/footer/9a05e4e59d20232f55938f0454da55f4.png"></a>  
+##### Atyantik Technologies Private Limited
+Everyone at Atyantik Technologies is contributing their free time for contributing to the project and core discussions.  
+<a href="https://www.atyantik.com" target="_blank"><img width="150px" src="https://www.reactpwa.com/img/supporters/atyantik.svg"></a>
+
+##### DigitalOcean
+DigitalOcean has been supporting the open-source project since the very start and has given a dedicated free server to host the website and host the demos. Their contribution is invaluable to the project.  
+<a href="https://www.digitalocean.com" target="_blank"><img width="120px" src="https://www.reactpwa.com/img/supporters/digitalocean.svg"></a>  
+
+
+##### Eventerprise.com  
 Eventerprise is the first company to implement react-pwa, The whole idea of PWA applications with react was created with unique requirement of Eventerprise. [Do try the application](https://www.eventerprise.com).  
+
+<a href="https://www.eventerprise.com" target="_blank"><img width="180px" src="https://www.reactpwa.com/img/supporters/eventerprise-blue.svg"></a>  
+  
 
 ##### Browser stack
 Thanks to Browser stack we are able to test the PWA nature of application on various mobiles and write automated test cases.  
-[![Browser Stack](https://www.atyantik.com/wp-content/uploads/2017/10/Browser-Stack-Logo.png)](https://www.browserstack.com)
+<a href="https://www.browserstack.com" target="_blank"><img width="180px" src="https://www.reactpwa.com/img/supporters/browserstack-black.png"></a>
+  
+##### Navicat
+We are very thankful to Navicat for offering their support to the project and providing us an open-source license for further project development.   
+<a href="https://www.navicat.com" target="_blank"><img width="180px" src="https://www.reactpwa.com/img/supporters/navicat.png"></a>
 
 #### License
 This project is licensed under the MIT license, Copyright (c) 2017 [Atyantik Technologies Private Limited](https://www.atyantik.com/). For more information see [LICENSE.md](https://github.com/atyantik/react-pwa/blob/master/LICENSE.md).
