@@ -125,4 +125,4 @@ We are very thankful to Navicat for offering their support to the project and pr
 <a href="https://www.navicat.com" target="_blank"><img width="180px" src="https://www.reactpwa.com/img/supporters/navicat.png"></a>
 
 #### License
-This project is licensed under the MIT license, Copyright (c) 2017 [Atyantik Technologies Private Limited](https://www.atyantik.com/). For more information see [LICENSE.md](https://github.com/atyantik/react-pwa/blob/master/LICENSE.md).
+This project is licensed under the MIT license, Copyright (c) 2018 [Atyantik Technologies Private Limited](https://www.atyantik.com/). For more information see [LICENSE.md](https://github.com/atyantik/react-pwa/blob/master/LICENSE.md).
