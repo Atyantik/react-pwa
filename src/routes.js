@@ -1,6 +1,7 @@
 import HomeRoutes from './pages/home';
 
 export default class Routes {
+  // eslint-disable-next-line
   apply(routeHandler) {
     routeHandler.setPwaSchema({
       name: 'ReactPWA',
