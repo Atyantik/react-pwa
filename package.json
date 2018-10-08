@@ -4,7 +4,7 @@
   "description": "A highly scalable, Progressive Web Application foundation with the best Developer Experience (DX).",
   "scripts": {
     "start": "pawjs --env=development start",
-    "build": "pawjs --env=production build"
+    "build": "pawjs --no-cache --config=./prod-pawconfig.json --env=production build"
   },
   "author": {
     "name": "Atyantik Technologies",
@@ -24,7 +24,11 @@
     }
   ],
   "license": "MIT",
-  "devDependencies": {
-    "@pawjs/pawjs": "^2.1.10"
+  "dependencies": {
+    "@pawjs/pawjs": "^2.2.0",
+    "@pawjs/sass": "^2.1.7",
+    "@pawjs/srcset": "^2.0.1",
+    "bulma": "^0.7.1",
+    "react": "^16.5.2"
   }
 }

@@ -1,17 +1,20 @@
-import React from "react";
-export default class Routes {
+import HomeRoutes from './pages/home';
 
+export default class Routes {
   apply(routeHandler) {
+    routeHandler.setPwaSchema({
+      name: 'ReactPWA',
+      short_name: 'ReactPWA',
+    });
+    routeHandler.setDefaultSeoSchema({
+      title: 'ReactPWA',
+    });
 
     const routes = [
-      {
-        path: "/",
-        exact: true,
-        component: () => <h1>Hello, World!</h1>,
-      },
+      ...HomeRoutes,
     ];
 
-    routeHandler.hooks.initRoutes.tapPromise("AppRoutes", async () => {
+    routeHandler.hooks.initRoutes.tapPromise('AppRoutes', async () => {
       routeHandler.addRoutes(routes);
     });
   }

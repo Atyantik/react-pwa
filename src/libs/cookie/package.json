@@ -1,0 +1,5 @@
+{
+  "name": "cookie",
+  "browser": "./client.js",
+  "main": "./server.js"
+}
