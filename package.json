@@ -25,7 +25,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@pawjs/pawjs": "^2.2.0",
+    "@pawjs/pawjs": "^2.2.1",
     "@pawjs/sass": "^2.1.7",
     "@pawjs/srcset": "^2.0.1",
     "bulma": "^0.7.1",
