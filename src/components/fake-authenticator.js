@@ -1,5 +1,6 @@
 import cookie from '../libs/cookie';
 
-const fakeAuth = {
-  isLoggedIn: (cookie.getItem && cookie.getItem && cookie.getItem('secretKey') === 'allowmein'),
+export default {
+  isLoggedIn: () => (cookie.getItem && typeof cookie.getItem === 'function' && cookie.getItem('secretKey') === 'allowmein'),
+  logout: () => (cookie.removeItem && typeof cookie.removeItem === 'function' && cookie.removeItem('secretKey')),
 };

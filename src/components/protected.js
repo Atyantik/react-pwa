@@ -1,6 +1,5 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
-import { Redirect } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 import cookie from '../libs/cookie';
 
 export default class Protected extends React.Component {
@@ -32,14 +31,18 @@ export default class Protected extends React.Component {
   }
 
   render() {
-    if (!this.state.initialized) {
+    const { initialized, allow } = this.state;
+    // eslint-disable-next-line
+    const { children } = this.props;
+    if (!initialized) {
       return null;
     }
-    if (this.state.allow) {
-      return this.props.children;
+    if (allow) {
+      return children;
     }
     return (
       <Route render={({ staticContext }) => {
+        // eslint-disable-next-line
         if (staticContext) staticContext.status = 403;
         return <Redirect to={this.redirectUrl} />;
       }}

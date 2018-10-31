@@ -10,11 +10,12 @@ export default class Header extends PureComponent {
   }
 
   toggleMenuBar(e) {
+    const { open } = this.state;
     if (e && e.preventDefault) {
       e.preventDefault();
     }
     this.setState({
-      open: !this.state.open,
+      open: !open,
     });
   }
 
@@ -23,33 +24,45 @@ export default class Header extends PureComponent {
   }
 
   render() {
+    const { open } = this.state;
     return (
       <div>
         <nav className="navbar" role="navigation" aria-label="main navigation">
           <div className="container">
             <div className="navbar-brand">
               <Link to="/" className=" navbar-item"><strong>ReactPWA</strong></Link>
-              <a
+              <button
+                type="button"
                 onClick={e => this.toggleMenuBar(e)}
-                role="button"
-                className={`navbar-burger ${this.state.open ? 'is-active' : ''}`}
+                className={`navbar-burger ${open ? 'is-active' : ''}`}
                 aria-label="menu"
                 aria-expanded="false"
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  outline: 'none',
+                }}
               >
                 <span aria-hidden="true" />
                 <span aria-hidden="true" />
                 <span aria-hidden="true" />
-              </a>
+              </button>
             </div>
-            <div className={`navbar-menu ${this.state.open ? 'is-active' : ''}`}>
+            <div className={`navbar-menu ${open ? 'is-active' : ''}`}>
               <Link className="navbar-item" to="/home" onClick={() => this.closeMenuBar()}>
                 Home
               </Link>
-              <Link className="navbar-item" to="/global-css" onClick={() => this.closeMenuBar()}>
-                Global CSS
+              <Link className="navbar-item" to="/global-local-css" onClick={() => this.closeMenuBar()}>
+                Global & Local CSS
+              </Link>
+              <Link className="navbar-item" to="/skeleton-loading" onClick={() => this.closeMenuBar()}>
+                Skeleton Loading
+              </Link>
+              <Link className="navbar-item" to="/image-optimization" onClick={() => this.closeMenuBar()}>
+                Image Optimization
               </Link>
               <Link className="navbar-item" to="/login" onClick={() => this.closeMenuBar()}>
-                Login
+                Auth
               </Link>
             </div>
           </div>

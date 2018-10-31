@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Layout from './layout';
+import GuestLayout from './guest-layout';
 
 const Column = (props) => {
   const { title, description, link } = props;
@@ -38,7 +38,7 @@ Column.propTypes = {
 };
 
 export default () => (
-  <Layout>
+  <GuestLayout>
     <section className="hero is-medium is-info is-bold">
       <div className="hero-body">
         <div className="container">
@@ -52,7 +52,7 @@ export default () => (
       </div>
     </section>
     <section className="m-t-lg">
-      <div className="container">
+      <div className="container p-l-md p-r-md">
         <h4 className="title is-4">
           ReactPWA is configurable to the core.
           You can add plugins as you like to extend the features or
@@ -117,5 +117,5 @@ export default () => (
         </div>
       </div>
     </section>
-  </Layout>
+  </GuestLayout>
 );

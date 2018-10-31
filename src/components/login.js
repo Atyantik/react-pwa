@@ -1,7 +1,8 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
-import Layout from './layout';
+import GuestLayout from './guest-layout';
 import cookie from '../libs/cookie';
+import Authenticator from './fake-authenticator';
 
 export default class Login extends React.Component {
   onLoginRedirectUrl = '/dashboard';
@@ -9,15 +10,23 @@ export default class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      loaded: false,
       loggedIn: false,
+      error: '',
+      errorMsg: '',
     };
   }
 
   componentDidMount() {
-    const isLoggedIn = cookie.getItem('secretKey') === 'allowmein';
+    const isLoggedIn = Authenticator.isLoggedIn();
     if (isLoggedIn) {
       this.setState({
+        loaded: true,
         loggedIn: true,
+      });
+    } else {
+      this.setState({
+        loaded: true,
       });
     }
   }
@@ -29,7 +38,7 @@ export default class Login extends React.Component {
     const password = loginData.get('password');
     if (username !== 'demo' || password !== 'demo') {
       this.setState({
-        error: true,
+        error: username !== 'demo' ? 'username' : 'password',
         errorMsg: 'Please use username:password as demo:demo',
       });
     } else {
@@ -41,39 +50,56 @@ export default class Login extends React.Component {
   }
 
   render() {
-    if (this.state.loggedIn) {
+    const {
+      loggedIn,
+      error,
+      errorMsg,
+      loaded,
+    } = this.state;
+    if (!loaded) return null;
+    if (loggedIn) {
       return <Redirect push={false} to={this.onLoginRedirectUrl} />;
     }
     return (
-      <Layout>
-        <div className="columns is-centered">
-          <div className="column is-half">
+      <GuestLayout>
+        <div className="columns is-centered p-t-xl">
+          <div className="column is-one-quarter">
             <div className="box">
               <h1 className="title">Login</h1>
-              <form onSubmit={e => this.handleSubmit(e)} className="">
+              <form onSubmit={e => this.handleSubmit(e)}>
                 <div className="field">
-                  <label className="label">username</label>
-                  <div className="control">
-                    <input name="username" className="input is-danger" type="text" placeholder="Username input" />
-                  </div>
-                  <p className="help is-danger">This email is invalid</p>
+                  <label className="label" htmlFor="username">
+                    username
+                    <div className="control">
+                      <input id="username" name="username" className={`input ${error === 'username' ? 'is-danger' : ''}`} type="text" placeholder="Username input" />
+                    </div>
+                  </label>
                 </div>
                 <div className="field">
-                  <label className="label">Password</label>
-                  <div className="control">
-                    <input name="password" className="input" type="password" placeholder="********" />
-                  </div>
+                  <label className="label" htmlFor="password">
+                    Password
+                    <div className="control">
+                      <input id="password" name="password" className={`input ${error === 'password' ? 'is-danger' : ''}`} type="password" placeholder="********" />
+                    </div>
+                  </label>
                 </div>
                 <div className="field is-grouped">
                   <div className="control">
-                    <button className="button is-link">Login</button>
+                    <button type="submit" className="button is-link">Login</button>
                   </div>
                 </div>
+                {
+                  error !== '' && (
+                    <p className="help is-danger">
+                      {errorMsg}
+                    </p>
+                  )
+                }
               </form>
             </div>
           </div>
         </div>
-      </Layout>
+      </GuestLayout>
     );
   }
 }
