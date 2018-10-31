@@ -1,17 +1,25 @@
-import React from "react";
-export default class Routes {
+import GuestRoutes from './pages/guest';
+import AuthRoutes from './pages/auth';
+import SplashScreen from './pages/splash';
 
+export default class Routes {
+  // eslint-disable-next-line
   apply(routeHandler) {
+    routeHandler.setPwaSchema({
+      name: 'ReactPWA',
+      short_name: 'ReactPWA',
+    });
+    routeHandler.setDefaultSeoSchema({
+      title: 'ReactPWA',
+    });
 
     const routes = [
-      {
-        path: "/",
-        exact: true,
-        component: () => <h1>Hello, World!</h1>,
-      },
+      ...GuestRoutes,
+      ...AuthRoutes,
+      ...SplashScreen,
     ];
 
-    routeHandler.hooks.initRoutes.tapPromise("AppRoutes", async () => {
+    routeHandler.hooks.initRoutes.tapPromise('AppRoutes', async () => {
       routeHandler.addRoutes(routes);
     });
   }

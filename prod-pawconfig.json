@@ -4,7 +4,7 @@
   "host": "0.0.0.0",
   "appRootUrl": "/",
   "asyncCSS": false,
-  "serviceWorker": false,
+  "serviceWorker": true,
   "serverSideRender": true,
   "singlePageApplication": false
 }
