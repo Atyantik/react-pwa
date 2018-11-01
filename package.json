@@ -1,6 +1,6 @@
 {
   "name": "react-pwa",
-  "version": "2.1.4",
+  "version": "2.2.0",
   "description": "A highly scalable, Progressive Web Application foundation with the best Developer Experience (DX).",
   "scripts": {
     "start": "pawjs --env=development start",
