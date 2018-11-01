@@ -7,7 +7,7 @@ export default () => (
         <article className="header tile is-child notification is-text" />
       </div>
     </div>
-    <div className="container">
+    <div className="container p-r-md p-l-md">
       <div className="tile is-ancestor">
         <div className="tile is-vertical is-8">
           <div className="tile">

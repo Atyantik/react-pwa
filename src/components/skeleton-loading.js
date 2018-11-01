@@ -6,7 +6,7 @@ export default (props) => {
   const { loadedData: [blog1, blog2, blog3, blog4] } = props;
   return (
     <GuestLayout>
-      <div className="container p-t-xl">
+      <div className="container p-t-xl  p-r-md p-l-md">
         <h1 className="title">Ajax loaded SSR Compliant blog list from Atyantik Technologies</h1>
         <div className="tile is-ancestor">
           <div className="tile is-vertical is-8">

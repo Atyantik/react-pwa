@@ -4,7 +4,7 @@ import localStyles from './local-styles.css';
 
 export default () => (
   <GuestLayout>
-    <div className="container p-b-md">
+    <div className="container p-b-md p-r-md p-l-md">
       <hr />
       <h1 className="title">Global CSS</h1>
       <div className="green-background p-t-xl p-b-xl p-l-md p-r-xl">

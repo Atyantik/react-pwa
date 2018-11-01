@@ -62,8 +62,8 @@ export default class Login extends React.Component {
     }
     return (
       <GuestLayout>
-        <div className="columns is-centered p-t-xl">
-          <div className="column is-one-quarter">
+        <div className="columns is-centered p-t-xl p-r-md p-l-md">
+          <div className="column is-half">
             <div className="box">
               <h1 className="title">Login</h1>
               <form onSubmit={e => this.handleSubmit(e)}>

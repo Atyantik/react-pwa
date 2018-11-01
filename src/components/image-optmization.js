@@ -8,7 +8,7 @@ import CatDogSrcset from '../resources/img/dog-cat.jpg?sizes=1200w+1000w+800w+60
 export default () => {
   return (
     <GuestLayout>
-      <div className="container p-t-xl">
+      <div className="container p-t-xl  p-r-md p-l-md">
         <h1 className="title">Optimizing user image experience to the best possible level</h1>
         <p>
           The original size of the image below is
