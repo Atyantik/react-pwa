@@ -12,13 +12,18 @@ export default () => (
         . The source code is licensed
         {' '}
         <a href="http://opensource.org/licenses/mit-license.php">MIT</a>
-        . The website content
-        is licensed
+        .
+        <br />
+        Visit the site&quot;s Github Repo
         {' '}
-        <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY NC SA 4.0</a>
+        <a href="https://github.com/Atyantik/react-pwa">https://github.com/Atyantik/react-pwa</a>
         .
       </p>
-      <script src="https://codefund.io/scripts/19b66788-7093-4d4e-b75a-79d3a7b68f3a/embed.js" />
+      <div className="has-text-centered m-t-xl m-b-md">
+        <a href="https://opencollective.com/react-pwa/donate" target="_blank" rel="nofollow noopener noreferrer">
+          <img alt="open-collective" src="https://opencollective.com/react-pwa/contribute/button@2x.png?color=blue" width="300" />
+        </a>
+      </div>
     </div>
   </footer>
 );

@@ -54,4 +54,13 @@ export default [
       image: ImageOptimizationImage,
     },
   },
+  {
+    path: '/contribute',
+    exact: true,
+    component: import('../components/contribute'),
+    seo: {
+      title: 'Contribute | ReactPWA Demo',
+      description: 'Be a part of larger family. Get involved with us and support our project ReactPWA',
+    },
+  },
 ];
