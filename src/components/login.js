@@ -71,7 +71,14 @@ export default class Login extends React.Component {
                   <label className="label" htmlFor="username">
                     username
                     <div className="control">
-                      <input id="username" name="username" className={`input ${error === 'username' ? 'is-danger' : ''}`} type="text" placeholder="Username input" />
+                      <input
+                        defaultValue="demo"
+                        id="username"
+                        name="username"
+                        className={`input ${error === 'username' ? 'is-danger' : ''}`}
+                        type="text"
+                        placeholder="Username input"
+                      />
                     </div>
                   </label>
                 </div>
@@ -79,7 +86,14 @@ export default class Login extends React.Component {
                   <label className="label" htmlFor="password">
                     Password
                     <div className="control">
-                      <input id="password" name="password" className={`input ${error === 'password' ? 'is-danger' : ''}`} type="password" placeholder="********" />
+                      <input
+                        defaultValue="demo"
+                        id="password"
+                        name="password"
+                        className={`input ${error === 'password' ? 'is-danger' : ''}`}
+                        type="password"
+                        placeholder="********"
+                      />
                     </div>
                   </label>
                 </div>
