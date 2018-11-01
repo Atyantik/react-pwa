@@ -18,6 +18,7 @@ export default () => (
         <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY NC SA 4.0</a>
         .
       </p>
+      <script src="https://codefund.io/scripts/19b66788-7093-4d4e-b75a-79d3a7b68f3a/embed.js" />
     </div>
   </footer>
 );
