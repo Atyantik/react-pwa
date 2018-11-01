@@ -12,7 +12,20 @@ export default class Server {
     });
 
     serverHandler.hooks.beforeHtmlRender.tapPromise('AddCodeFundScript', async (Application) => {
-      Application.htmlProps.footer.push(<script key="codefund" href="https://codefund.io/scripts/19b66788-7093-4d4e-b75a-79d3a7b68f3a/embed.js" />);
+      Application.htmlProps.footer.push(<script async key="codefund" src="https://codefund.io/scripts/19b66788-7093-4d4e-b75a-79d3a7b68f3a/embed.js" />);
+    });
+
+    serverHandler.hooks.beforeHtmlRender.tapPromise('AddGoogleTracking', async (Application) => {
+      Application.htmlProps.footer.push(<script async key="googleanalyticslink" src="https://www.googletagmanager.com/gtag/js?id=UA-108804791-2" />);
+      Application.htmlProps.footer.push(<script
+        key="googleanalyticsscript"
+        dangerouslySetInnerHTML={{
+          __html: `window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'UA-108804791-2');`,
+        }}
+      />);
     });
   }
 }

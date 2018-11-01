@@ -22,9 +22,18 @@ export default class Client {
     }
   }
 
+  static googleTrack() {
+    if (typeof window.gtag === 'function') {
+      window.gtag('config', 'UA-108804791-2', {
+        page_path: window.location.pathname,
+      });
+    }
+  }
+
   // eslint-disable-next-line
   apply(clientHandler) {
     clientHandler.hooks.locationChange.tapPromise('ReloadAds', async () => Client.advertise());
+    clientHandler.hooks.locationChange.tapPromise('ReloadAds', async () => Client.googleTrack());
     clientHandler.hooks.renderComplete.tap('ReloadAds', async () => Client.advertise());
   }
 }
