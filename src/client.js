@@ -4,22 +4,34 @@ import './resources/css/util.scss';
 import './resources/css/global.css';
 
 export default class Client {
-  static advertise() {
-    let codeFundDiv = document.getElementById('codefund_ad');
-    if (!codeFundDiv) {
-      codeFundDiv = document.createElement('div');
-      codeFundDiv.id = 'codefund_ad';
-      const footerElement = document.querySelector('footer.footer');
-      if (footerElement) {
-        footerElement.appendChild(codeFundDiv);
-      }
-    }
+  advertiseTimeout = 0;
 
-    // eslint-disable-next-line
-    if (typeof window._codefund !== 'undefined' && window._codefund.serve) {
-      // eslint-disable-next-line
-      window._codefund.serve();
+  clearAdvertiseTimeout() {
+    if (this.advertiseTimeout) {
+      clearTimeout(this.advertiseTimeout);
     }
+    this.advertiseTimeout = 0;
+  }
+
+  advertise() {
+    this.clearAdvertiseTimeout();
+    this.advertiseTimeout = setTimeout(() => {
+      let codeFundDiv = document.getElementById('codefund_ad');
+      if (!codeFundDiv) {
+        codeFundDiv = document.createElement('div');
+        codeFundDiv.id = 'codefund_ad';
+        const footerElement = document.querySelector('footer.footer');
+        if (footerElement) {
+          footerElement.appendChild(codeFundDiv);
+        }
+      }
+
+      // eslint-disable-next-line
+      if (typeof window._codefund !== 'undefined' && window._codefund.serve) {
+        // eslint-disable-next-line
+        window._codefund.serve();
+      }
+    }, 100);
   }
 
   static googleTrack() {
@@ -30,9 +42,8 @@ export default class Client {
     }
   }
 
-  // eslint-disable-next-line
   apply(clientHandler) {
-    clientHandler.hooks.locationChange.tapPromise('ReloadAds', async () => Client.advertise());
+    clientHandler.hooks.locationChange.tapPromise('ReloadAds', async () => this.advertise());
     clientHandler.hooks.locationChange.tapPromise('ReloadAds', async () => Client.googleTrack());
     clientHandler.hooks.renderComplete.tap('ReloadAds', async () => Client.advertise());
   }
