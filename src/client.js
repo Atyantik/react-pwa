@@ -45,6 +45,6 @@ export default class Client {
   apply(clientHandler) {
     clientHandler.hooks.locationChange.tapPromise('ReloadAds', async () => this.advertise());
     clientHandler.hooks.locationChange.tapPromise('ReloadAds', async () => Client.googleTrack());
-    clientHandler.hooks.renderComplete.tap('ReloadAds', async () => Client.advertise());
+    clientHandler.hooks.renderComplete.tap('ReloadAds', async () => this.advertise());
   }
 }
