@@ -3,6 +3,7 @@
   "port": "3003",
   "host": "0.0.0.0",
   "appRootUrl": "/",
+  "cdnUrl": "https://demo-cdn.reactpwa.com",
   "asyncCSS": false,
   "serviceWorker": true,
   "serverSideRender": true,

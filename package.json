@@ -5,6 +5,7 @@
   "scripts": {
     "start": "pawjs --env=development start",
     "build": "pawjs --no-cache --config=./prod-pawconfig.json --env=production build",
+    "build:demo": "pawjs --no-cache --config=./demo-pawconfig.json --env=production build",
     "snyk-protect": "snyk protect",
     "prepare": "npm run snyk-protect"
   },
