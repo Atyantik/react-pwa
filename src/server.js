@@ -5,6 +5,15 @@ export default class Server {
 
   // eslint-disable-next-line
   apply(serverHandler) {
+    serverHandler.hooks.beforeHtmlRender.tapPromise('DSNPreCache', async (Application) => {
+      const { htmlProps: { head } } = Application;
+      head.push(<link key="dns-precache-demo-cdn" rel="preconnect" href="https://demo-cdn.reactpwa.com" />);
+      head.push(<link key="dns-precache-codefund" rel="preconnect" href="https://codefund.io" />);
+      head.push(<link key="dns-precache-google-analytics" rel="preconnect" href="https://www.google-analytics.com" />);
+      head.push(<link key="dns-precache-googletagmanager" rel="preconnect" href="https://www.googletagmanager.com" />);
+      head.push(<link key="dns-precache-cdn-codefund" rel="preconnect" href="https://cdn.codefund.io" />);
+    });
+    
     serverHandler.hooks.beforeHtmlRender.tapPromise('AddFavIcon', async (Application) => {
       const { htmlProps: { head } } = Application;
       head.push(<link key="favicon" rel="shortcut icon" type="image/png" href={ReactPWAIcon} />);
