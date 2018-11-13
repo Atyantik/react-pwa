@@ -12,8 +12,10 @@ export default class Server {
       head.push(<link key="dns-precache-google-analytics" rel="preconnect" href="https://www.google-analytics.com" />);
       head.push(<link key="dns-precache-googletagmanager" rel="preconnect" href="https://www.googletagmanager.com" />);
       head.push(<link key="dns-precache-cdn-codefund" rel="preconnect" href="https://cdn.codefund.io" />);
+      head.push(<meta key="meta-theme-color" name="theme-color" content="#209cee" />);
+      //
     });
-    
+
     serverHandler.hooks.beforeHtmlRender.tapPromise('AddFavIcon', async (Application) => {
       const { htmlProps: { head } } = Application;
       head.push(<link key="favicon" rel="shortcut icon" type="image/png" href={ReactPWAIcon} />);

@@ -4,7 +4,7 @@
   "host": "0.0.0.0",
   "appRootUrl": "/",
   "cdnUrl": "https://res.cloudinary.com/atyantik/raw/upload/",
-  "asyncCSS": false,
+  "asyncCSS": true,
   "serviceWorker": true,
   "serverSideRender": true,
   "singlePageApplication": false
