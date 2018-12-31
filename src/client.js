@@ -19,17 +19,43 @@ export default class Client {
       let codeFundDiv = document.getElementById('codefund_ad');
       if (!codeFundDiv) {
         codeFundDiv = document.createElement('div');
-        codeFundDiv.id = 'codefund_ad';
+        codeFundDiv.id = 'codefund';
         const footerElement = document.querySelector('footer.footer');
         if (footerElement) {
-          footerElement.appendChild(codeFundDiv);
+          const jsCodefund = document.getElementById('js-codefund');
+          if (jsCodefund) {
+            footerElement.appendChild(codeFundDiv);
+            if (jsCodefund.src) {
+              const newJsCodefund = document.createElement('script');
+              setTimeout(() => {
+                newJsCodefund.src = `${jsCodefund.getAttribute('data-src')}?v=${(new Date()).getTime()}`;
+                newJsCodefund.id = jsCodefund.id;
+                newJsCodefund.setAttribute('data-src', jsCodefund.getAttribute('data-src'));
+                jsCodefund.remove();
+                document.body.append(newJsCodefund);
+              }, 100);
+              //
+            } else {
+              jsCodefund.src = jsCodefund.getAttribute('data-src');
+            }
+          }
         }
-      }
-
-      // eslint-disable-next-line
-      if (typeof window._codefund !== 'undefined' && window._codefund.serve) {
-        // eslint-disable-next-line
-        window._codefund.serve();
+      } else {
+        const jsCodefund = document.getElementById('js-codefund');
+        if (jsCodefund) {
+          if (jsCodefund.src) {
+            const newJsCodefund = document.createElement('script');
+            setTimeout(() => {
+              newJsCodefund.src = `${jsCodefund.getAttribute('data-src')}`;
+              newJsCodefund.id = jsCodefund.id;
+              newJsCodefund.setAttribute('data-src', jsCodefund.getAttribute('data-src'));
+              jsCodefund.remove();
+              document.body.append(newJsCodefund);
+            }, 100);
+          } else {
+            jsCodefund.src = jsCodefund.getAttribute('data-src');
+          }
+        }
       }
     }, 100);
   }
@@ -44,7 +70,7 @@ export default class Client {
 
   apply(clientHandler) {
     clientHandler.hooks.locationChange.tapPromise('ReloadAds', async () => this.advertise());
-    clientHandler.hooks.locationChange.tapPromise('ReloadAds', async () => Client.googleTrack());
+    clientHandler.hooks.locationChange.tapPromise('ReloadGoogleTrack', async () => Client.googleTrack());
     clientHandler.hooks.renderComplete.tap('ReloadAds', async () => this.advertise());
   }
 }

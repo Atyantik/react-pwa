@@ -2,16 +2,15 @@ import React from 'react';
 import ReactPWAIcon from './resources/img/react-pwa.png';
 
 export default class Server {
-
   // eslint-disable-next-line
   apply(serverHandler) {
     serverHandler.hooks.beforeHtmlRender.tapPromise('DSNPreCache', async (Application) => {
       const { htmlProps: { head } } = Application;
       head.push(<link key="dns-precache-demo-cdn" rel="preconnect" href="https://demo-cdn.reactpwa.com" />);
-      head.push(<link key="dns-precache-codefund" rel="preconnect" href="https://codefund.io" />);
+      head.push(<link key="dns-precache-codefund" rel="preconnect" href="https://codefund.app" />);
       head.push(<link key="dns-precache-google-analytics" rel="preconnect" href="https://www.google-analytics.com" />);
       head.push(<link key="dns-precache-googletagmanager" rel="preconnect" href="https://www.googletagmanager.com" />);
-      head.push(<link key="dns-precache-cdn-codefund" rel="preconnect" href="https://cdn.codefund.io" />);
+      head.push(<link key="dns-precache-cdn-codefund" rel="preconnect" href="https://cdn2.codefund.app" />);
       head.push(<meta key="meta-theme-color" name="theme-color" content="#209cee" />);
       //
     });
@@ -23,7 +22,7 @@ export default class Server {
     });
 
     serverHandler.hooks.beforeHtmlRender.tapPromise('AddCodeFundScript', async (Application) => {
-      Application.htmlProps.footer.push(<script async key="codefund" src="https://codefund.io/scripts/19b66788-7093-4d4e-b75a-79d3a7b68f3a/embed.js" />);
+      Application.htmlProps.footer.push(<script id="js-codefund" async key="codefund" data-src="https://codefund.app/properties/136/funder.js" />);
     });
 
     serverHandler.hooks.beforeHtmlRender.tapPromise('AddGoogleTracking', async (Application) => {

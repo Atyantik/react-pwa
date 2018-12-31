@@ -29,16 +29,16 @@
   "license": "MIT",
   "dependencies": {
     "@pawjs/image-optimizer": "^2.1.5",
-    "@pawjs/pawjs": "^2.2.4",
+    "@pawjs/pawjs": "^2.2.11",
     "@pawjs/sass": "^2.1.7",
     "@pawjs/srcset": "^2.0.1",
     "bulma": "^0.7.2",
-    "cloudinary": "^1.11.0",
+    "cloudinary": "^1.13.2",
     "prop-types": "^15.6.2",
-    "react": "^16.6.0",
-    "react-router-config": "^4.4.0-beta.1",
+    "react": "^16.7.0",
+    "react-router-config": "^4.4.0-beta.6",
     "react-router-dom": "^4.3.1",
-    "snyk": "^1.105.0",
+    "snyk": "^1.119.0",
     "universal-fetch": "^1.0.0"
   },
   "snyk": true
