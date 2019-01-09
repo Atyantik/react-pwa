@@ -1,9 +1,8 @@
-
 {
   "port": "3003",
   "host": "0.0.0.0",
   "appRootUrl": "/",
-  "asyncCSS": false,
+  "asyncCSS": true,
   "serviceWorker": false,
   "serverSideRender": true,
   "singlePageApplication": false

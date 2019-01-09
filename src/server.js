@@ -29,6 +29,7 @@ export default class Server {
       Application.htmlProps.footer.push(<script async key="googleanalyticslink" src="https://www.googletagmanager.com/gtag/js?id=UA-108804791-2" />);
       Application.htmlProps.footer.push(<script
         key="googleanalyticsscript"
+        // eslint-disable-next-line
         dangerouslySetInnerHTML={{
           __html: `window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}

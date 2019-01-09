@@ -1,3 +1,10 @@
 {
-  "extends": "./node_modules/@pawjs/pawjs/.eslintrc"
+  "extends": "./node_modules/@pawjs/pawjs/.eslintrc",
+  "settings": {
+    "import/resolver": {
+      "webpack": {
+        "config": "./node_modules/@pawjs/pawjs/src/webpack/inc/webpack-resolver-config.js"
+      }
+    }
+  }
 }

@@ -55,6 +55,9 @@ export default class Header extends PureComponent {
               <Link className="navbar-item" to="/global-local-css" onClick={() => this.closeMenuBar()}>
                 Global & Local CSS
               </Link>
+              <Link className="navbar-item" to="/typescript-counter" onClick={() => this.closeMenuBar()}>
+                TypeScript Counter
+              </Link>
               <Link className="navbar-item" to="/skeleton-loading" onClick={() => this.closeMenuBar()}>
                 Skeleton Loading
               </Link>

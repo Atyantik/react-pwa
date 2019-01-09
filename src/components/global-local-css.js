@@ -27,7 +27,8 @@ export default () => (
         &nbsp;&nbsp;
         Any CSS not served from `resources` folder does change the className to hash like
         {' '}
-        <code>{localStyles.gray}</code>.
+        <code>{localStyles.gray}</code>
+        .
         {' '}
         This one may include any library css such as `date-picker` or
         {' '}
