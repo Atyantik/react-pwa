@@ -6,7 +6,7 @@
   "cdnUrl": "https://res.cloudinary.com/atyantik/raw/upload/",
   "polyfill": "cdn",
   "react": "cdn",
-  "asyncCSS": true,
+  "asyncCSS": false,
   "serviceWorker": true,
   "serverSideRender": true,
   "singlePageApplication": false
