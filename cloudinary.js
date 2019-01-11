@@ -38,8 +38,10 @@ cdnFiles.forEach((file) => {
     resource_type: 'raw',
   }, (error, res) => {
     if (error) {
+      // eslint-disable-next-line
       console.log(error);
     } else {
+      // eslint-disable-next-line
       console.log(res);
     }
   });

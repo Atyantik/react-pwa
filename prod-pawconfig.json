@@ -1,10 +1,11 @@
-
 {
-  "port": "3003",
-  "host": "0.0.0.0",
   "appRootUrl": "/",
-  "asyncCSS": false,
-  "serviceWorker": true,
+  "asyncCSS": true,
+  "host": "0.0.0.0",
+  "polyfill": "cdn",
+  "port": "3003",
+  "react": "cdn",
   "serverSideRender": true,
+  "serviceWorker": true,
   "singlePageApplication": false
 }
