@@ -4,6 +4,8 @@
   "host": "0.0.0.0",
   "appRootUrl": "/",
   "cdnUrl": "https://res.cloudinary.com/atyantik/raw/upload/",
+  "polyfill": "cdn",
+  "react": "cdn",
   "asyncCSS": true,
   "serviceWorker": true,
   "serverSideRender": true,
