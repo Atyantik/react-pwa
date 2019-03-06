@@ -44,7 +44,7 @@
     "bulma": "^0.7.2",
     "cloudinary": "^1.13.2",
     "eslint-import-resolver-webpack": "^0.11.0",
-    "fork-ts-checker-webpack-plugin": "^0.5.2",
+    "fork-ts-checker-webpack-plugin": "^1.0.0",
     "prop-types": "^15.6.2",
     "react-router-config": "^4.4.0-beta.6",
     "react-router-dom": "^4.3.1",
