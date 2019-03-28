@@ -4,7 +4,7 @@ export default [
   {
     path: '/login',
     exact: true,
-    component: import('../components/login'),
+    component: () => import('../components/login'),
     seo: {
       title: 'Auth | ReactPWA Demo',
       description: 'Implementing Auth with ReactPWA is simple. Check out this fake auth example for more details',
@@ -14,7 +14,7 @@ export default [
   {
     path: '/logout',
     exact: true,
-    component: import('../components/logout'),
+    component: () => import('../components/logout'),
     seo: {
       title: 'Logging out...',
     },
@@ -22,7 +22,7 @@ export default [
   {
     path: '/dashboard',
     exact: true,
-    component: import('../components/dashboard'),
+    component: () => import('../components/dashboard'),
     seo: {
       title: 'User dashboard | ReactPWA Demo',
     },

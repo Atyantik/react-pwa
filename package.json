@@ -36,23 +36,22 @@
   "license": "MIT",
   "dependencies": {
     "@pawjs/image-optimizer": "^2.2.0-beta.0",
-    "@pawjs/pawjs": "^2.3.0",
+    "@pawjs/pawjs": "^2.4.0-beta.0",
     "@pawjs/sass": "^2.2.0-beta.0",
     "@pawjs/srcset": "^2.1.0-beta.0",
-    "@types/react": "^16.8.1",
-    "@types/react-dom": "^16.0.11",
-    "bulma": "^0.7.2",
-    "cloudinary": "^1.13.2",
+    "@types/react": "^16.8.10",
+    "@types/react-dom": "^16.8.3",
+    "bulma": "^0.7.4",
+    "cloudinary": "^1.14.0",
     "eslint-import-resolver-webpack": "^0.11.0",
-    "fork-ts-checker-webpack-plugin": "^0.5.2",
-    "prop-types": "^15.6.2",
-    "react-router-config": "^4.4.0-beta.6",
-    "react-router-dom": "^4.3.1",
-    "snyk": "^1.124.1",
+    "firebase": "^5.9.1",
+    "fork-ts-checker-webpack-plugin": "^1.0.1",
+    "prop-types": "^15.7.2",
+    "snyk": "^1.143.1",
     "universal-fetch": "^1.0.0"
   },
   "snyk": true,
   "devDependencies": {
-    "webpack-bundle-analyzer": "^3.0.3"
+    "webpack-bundle-analyzer": "^3.1.0"
   }
 }

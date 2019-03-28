@@ -9,7 +9,7 @@ export default [
   {
     path: '/home',
     exact: true,
-    component: import('../components/home'),
+    component: () => import('../components/home'),
     seo: {
       title: 'Home | ReactPWA Demo',
       description: 'Feature set offered by ReactPWA with pluggable @pawjs plugins. ReactPWA is highly customizable and once can achieve anything as it is extendable',
@@ -19,7 +19,7 @@ export default [
   {
     path: '/global-local-css',
     exact: true,
-    component: import('../components/global-local-css'),
+    component: () => import('../components/global-local-css'),
     seo: {
       title: 'CSS - Globally & Locally | ReactPWA Demo',
       description: 'Sometimes we use global css classes like pad-10 but sometimes we need to write class names within modules that do not conflict with other modules, that is where local css comes into the picture',
@@ -29,7 +29,7 @@ export default [
   {
     path: '/typescript-counter',
     exact: true,
-    component: import('../components/typescript-counter'),
+    component: () => import('../components/typescript-counter'),
     seo: {
       title: 'TypeScript Counter | ReactPWA Demo',
       description: 'TypeScript is awesome and implementing it with React makes it more awesome. Checkout this simple counter example with react and typescript',
@@ -46,7 +46,7 @@ export default [
           .then(res => r(res));
       }, 1000);
     }),
-    component: import('../components/skeleton-loading'),
+    component: () => import('../components/skeleton-loading'),
     skeleton,
     seo: {
       title: 'Skeleton Loading | ReactPWA Demo',
@@ -57,7 +57,7 @@ export default [
   {
     path: '/image-optimization',
     exact: true,
-    component: import('../components/image-optmization'),
+    component: () => import('../components/image-optmization'),
     seo: {
       title: 'Image Optimization | ReactPWA Demo',
       description: 'Serve optimize images automatically with Lazy loading and WebP support with fallback to JPG/PNG of original image.',
@@ -67,7 +67,7 @@ export default [
   {
     path: '/contribute',
     exact: true,
-    component: import('../components/contribute'),
+    component: () => import('../components/contribute'),
     seo: {
       title: 'Contribute | ReactPWA Demo',
       description: 'Be a part of larger family. Get involved with us and support our project ReactPWA',
