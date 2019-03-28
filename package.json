@@ -44,7 +44,6 @@
     "bulma": "^0.7.4",
     "cloudinary": "^1.14.0",
     "eslint-import-resolver-webpack": "^0.11.0",
-    "firebase": "^5.9.1",
     "fork-ts-checker-webpack-plugin": "^1.0.1",
     "prop-types": "^15.7.2",
     "snyk": "^1.143.1",

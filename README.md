@@ -18,6 +18,10 @@ Clone the repository:
 git clone https://github.com/Atyantik/react-pwa.git && cd react-pwa 
 ```
 
+Install the dependencies:
+```bash
+npm install
+```
 
 To start the project run following command in your terminal:
 ```bash
