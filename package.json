@@ -35,7 +35,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@pawjs/image-optimizer": "^2.2.0-beta.0",
+    "@pawjs/image-optimizer": "^2.2.0",
     "@pawjs/pawjs": "^2.4.0-beta.0",
     "@pawjs/sass": "^2.2.0-beta.0",
     "@pawjs/srcset": "^2.1.0-beta.0",
