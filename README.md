@@ -74,7 +74,12 @@ Our customized routes enable creating meta tags to create Twitter, Google+, Link
 Enable HSTS for secure sites. Options to define maxAge and preload of HSTS. All with very simple configuration.  
 [Read More](https://www.reactpwa.com/docs/en/feature-hsts.html)  
 
-Now you are all set, Get your hands dirty with this awesome boilerplate.  
+Now you are all set, Get your hands dirty with this awesome boilerplate.
+
+#### Known bug  
+For installed version of `@pawjs/pawjs@ts` there is a known bug of SEO params not updating 
+ in non-SSR mode i.e. Single Page Application mode. Please revert to version `@pawjs/pawjs@2.3.2` 
+ if required.  
 
 ### Need contributors.
 This project exists thanks to all the people who contribute. [[Contribute]](CONTRIBUTING.md).
