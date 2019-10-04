@@ -7,7 +7,9 @@
     "build": "pawjs --no-cache --config=./prod-pawconfig.json --env=production build",
     "build:demo": "pawjs --no-cache --config=./demo-pawconfig.json --env=production build",
     "lint": "pawjs lint",
-    "test": "pawjs --no-cache test"
+    "test": "pawjs --no-cache test",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "author": {
     "name": "Atyantik Technologies",
@@ -44,7 +46,7 @@
     "eslint-import-resolver-webpack": "^0.11.1",
     "fork-ts-checker-webpack-plugin": "^1.3.5",
     "prop-types": "^15.7.2",
-    "snyk": "^1.173.1",
+    "snyk": "^1.230.5",
     "universal-fetch": "^1.0.0"
   },
   "snyk": true,
