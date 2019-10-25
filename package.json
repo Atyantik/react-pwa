@@ -42,7 +42,7 @@
     "bulma": "^0.7.5",
     "cloudinary": "^1.14.0",
     "eslint-import-resolver-webpack": "^0.11.1",
-    "fork-ts-checker-webpack-plugin": "^1.3.5",
+    "fork-ts-checker-webpack-plugin": "^2.0.0",
     "prop-types": "^15.7.2",
     "snyk": "^1.173.1",
     "universal-fetch": "^1.0.0"
