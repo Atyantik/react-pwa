@@ -23,6 +23,10 @@ export default class Header extends PureComponent {
     this.setState({ open: false });
   }
 
+  showSavedItems(e) {
+    //TODO
+  }
+
   render() {
     const { open } = this.state;
     return (
@@ -30,7 +34,27 @@ export default class Header extends PureComponent {
         <nav className="navbar" role="navigation" aria-label="main navigation">
           <div className="container">
             <div className="navbar-brand">
-              <Link to="/" className=" navbar-item"><strong>ReactPWA</strong></Link>
+            <button
+                type="button"
+                onClick={e => this.showSavedItems(e)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  outline: 'none',
+                }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4a4a4a" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bookmark"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+              </button>
+              <div className='title' style={{
+                    width: '100vh', 
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginBottom: 0,
+                }}
+                >
+                  <Link to="/" className="navbar-item"><strong>RoNA</strong></Link>
+              </div>
               <button
                 type="button"
                 onClick={e => this.toggleMenuBar(e)}
@@ -41,6 +65,7 @@ export default class Header extends PureComponent {
                   background: 'none',
                   border: 'none',
                   outline: 'none',
+                  height: '4rem',
                 }}
               >
                 <span aria-hidden="true" />
@@ -49,34 +74,15 @@ export default class Header extends PureComponent {
               </button>
             </div>
             <div className={`navbar-menu ${open ? 'is-active' : ''}`}>
-              <Link className="navbar-item" to="/home" onClick={() => this.closeMenuBar()}>
-                Home
+              <Link className="navbar-item" to="/home" onClick={() => this.closeMenuBar()} style={{textAlign:'center'}}>
+                'i'm bored at home what do i do'
               </Link>
-              <Link className="navbar-item" to="/global-local-css" onClick={() => this.closeMenuBar()}>
-                Global & Local CSS
+              <Link className="navbar-item" to="/global-local-css" onClick={() => this.closeMenuBar()} style={{textAlign:'center'}}>
+                some humans are nice
               </Link>
-              <Link className="navbar-item" to="/typescript-counter" onClick={() => this.closeMenuBar()}>
-                TypeScript Counter
+              <Link className="navbar-item" to="/typescript-counter" onClick={() => this.closeMenuBar()} style={{textAlign:'center'}}>
+                saved items
               </Link>
-              <Link className="navbar-item" to="/skeleton-loading" onClick={() => this.closeMenuBar()}>
-                Skeleton Loading
-              </Link>
-              <Link className="navbar-item" to="/image-optimization" onClick={() => this.closeMenuBar()}>
-                Image Optimization
-              </Link>
-              <Link className="navbar-item" to="/login" onClick={() => this.closeMenuBar()}>
-                Auth
-              </Link>
-              <Link className="navbar-item" to="/contribute" onClick={() => this.closeMenuBar()}>
-                Contribute
-              </Link>
-              <a
-                className="navbar-item has-text-danger"
-                href="https://www.reactpwa.com"
-                onClick={() => this.closeMenuBar()}
-              >
-                Visit ReactPWA.com
-              </a>
             </div>
           </div>
         </nav>

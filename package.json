@@ -33,6 +33,7 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "@material/top-app-bar": "^5.1.0",
     "@pawjs/image-optimizer": "^2.2.5",
     "@pawjs/pawjs": "^3.0.1",
     "@pawjs/sass": "^2.2.4",
@@ -44,6 +45,7 @@
     "eslint-import-resolver-webpack": "^0.12.1",
     "fork-ts-checker-webpack-plugin": "^4.1.0",
     "prop-types": "^15.7.2",
+    "react-icons": "^3.9.0",
     "snyk": "^1.301.0",
     "universal-fetch": "^1.0.0"
   },

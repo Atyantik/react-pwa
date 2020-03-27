@@ -39,24 +39,10 @@ Column.propTypes = {
 
 export default () => (
   <GuestLayout>
-    <section className="hero is-medium is-info is-bold">
-      <div className="hero-body">
-        <div className="container">
-          <h1 className="title">
-            Features
-          </h1>
-          <h2 className="subtitle">
-            There are no limits for creativity
-          </h2>
-        </div>
-      </div>
-    </section>
     <section className="m-t-lg">
       <div className="container p-l-md p-r-md">
-        <h4 className="title is-4">
-          ReactPWA is configurable to the core.
-          You can add plugins as you like to extend the features or
-          you can use a bare minimum to start from scratch.
+        <h4 className="title is-4" style={{textAlign:'center'}}>
+          stay at home!! here are some stuff you can do:
         </h4>
         <div className="columns">
           <Column
