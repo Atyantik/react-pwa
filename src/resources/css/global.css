@@ -22,3 +22,12 @@
 footer.footer a {
   color: #17386d !important;
 }
+
+body {
+  font-family: 'Montserrat', sans-serif;
+}
+
+.title strong {
+  color: #571515;
+  font-size: xxx-large;
+}

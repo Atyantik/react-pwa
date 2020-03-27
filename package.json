@@ -33,6 +33,7 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "@material-ui/core": "^4.9.7",
     "@material/top-app-bar": "^5.1.0",
     "@pawjs/image-optimizer": "^2.2.5",
     "@pawjs/pawjs": "^3.0.1",
