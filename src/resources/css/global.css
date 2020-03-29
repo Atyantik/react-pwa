@@ -1,0 +1,24 @@
+.green-background {
+  background-color: #0a8012;
+  color: #fff;
+}
+
+@keyframes blink {
+  0% { opacity: 0.7; }
+  40% { opacity: 0.9; }
+  50% { opacity: 1; }
+  60% { opacity: 0.9; }
+  100% { opacity: 0.7; }
+}
+.skeleton-blink {
+  animation: blink 1s infinite;
+}
+.skeleton-blink article {
+  min-height: 200px;
+}
+.skeleton-blink article.header, .skeleton-blink article.footer {
+  min-height: 70px;
+}
+footer.footer a {
+  color: #17386d !important;
+}

@@ -1,10 +1,13 @@
 {
-  "name": "ReactPWA",
-  "version": "2.1.1",
+  "name": "react-pwa",
+  "version": "2.2.9",
   "description": "A highly scalable, Progressive Web Application foundation with the best Developer Experience (DX).",
   "scripts": {
-    "start": "pawjs --env=development start",
-    "build": "pawjs --env=production build"
+    "start": "pawjs --no-cache --env=development start",
+    "build": "pawjs --no-cache --env-config-path=./.prod.env --env=production build",
+    "build:demo": "pawjs --no-cache --env-config-path=./.demo.env --env=production build",
+    "lint": "pawjs lint",
+    "test": "pawjs --no-cache test"
   },
   "author": {
     "name": "Atyantik Technologies",
@@ -21,10 +24,31 @@
       "name": "Yash Thakur",
       "email": "thakur.yash514@gmail.com",
       "url": "http://yashthakur.in/"
+    },
+    {
+      "name": "Ajay Patel",
+      "email": "ajaypatel@atyantik.com",
+      "url": "https://www.atyantik.com/"
     }
   ],
   "license": "MIT",
+  "dependencies": {
+    "@pawjs/image-optimizer": "^2.2.5",
+    "@pawjs/pawjs": "^3.0.1",
+    "@pawjs/sass": "^2.2.4",
+    "@pawjs/srcset": "^2.1.4",
+    "@types/react": "^16.9.25",
+    "@types/react-dom": "^16.9.5",
+    "bulma": "^0.8.1",
+    "cloudinary": "^1.20.0",
+    "eslint-import-resolver-webpack": "^0.12.1",
+    "fork-ts-checker-webpack-plugin": "^4.1.0",
+    "prop-types": "^15.7.2",
+    "snyk": "^1.301.0",
+    "universal-fetch": "^1.0.0"
+  },
+  "snyk": true,
   "devDependencies": {
-    "@pawjs/pawjs": "^2.1.0"
+    "webpack-bundle-analyzer": "^3.6.1"
   }
 }
