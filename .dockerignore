@@ -62,7 +62,4 @@ typings/
 .idea
 npm-debug.log
 
-# Do not add src while creating a docker file as we are going to mount it
-src
-
 .sass-cache
