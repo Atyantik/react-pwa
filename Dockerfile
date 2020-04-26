@@ -7,7 +7,7 @@ ENV BUILD_ENV=demo
 WORKDIR /app/
 
 RUN apk update && \
-  apk add \
+  apk  --no-cache add --update \
   build-base \
   libtool \
   autoconf \
@@ -16,6 +16,10 @@ RUN apk update && \
   openssh \
   python \
   zlib-dev \
+  jpeg-dev \
+  libpng-dev \
+  tiff-dev \
+  giflib-dev \
   nasm
 
 COPY . /app/
@@ -37,6 +41,10 @@ RUN apk del \
   openssh \
   python \
   zlib-dev \
+  jpeg-dev \
+  libpng-dev \
+  tiff-dev \
+  giflib-dev \
   nasm && \
   rm -rf /var/cache/apk/*
 
