@@ -1,0 +1,30 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.14.1
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  SNYK-JS-LODASH-567746:
+    - '@pawjs/pawjs > babel-jest > babel-preset-jest > babel-plugin-jest-hoist > @babel/types > lodash':
+        patched: '2020-05-19T19:18:22.262Z'
+    - '@pawjs/pawjs > jest > @jest/core > jest-config > babel-jest > babel-preset-jest > babel-plugin-jest-hoist > @babel/types > lodash':
+        patched: '2020-05-19T19:18:22.262Z'
+    - '@pawjs/pawjs > jest > jest-cli > jest-config > babel-jest > babel-preset-jest > babel-plugin-jest-hoist > @babel/types > lodash':
+        patched: '2020-05-19T19:18:22.262Z'
+    - '@pawjs/pawjs > jest > jest-cli > @jest/core > jest-config > babel-jest > babel-preset-jest > babel-plugin-jest-hoist > @babel/types > lodash':
+        patched: '2020-05-19T19:18:22.262Z'
+    - '@pawjs/pawjs > jest > @jest/core > jest-runner > jest-config > babel-jest > babel-preset-jest > babel-plugin-jest-hoist > @babel/types > lodash':
+        patched: '2020-05-19T19:18:22.262Z'
+    - '@pawjs/pawjs > jest > @jest/core > jest-runtime > jest-config > babel-jest > babel-preset-jest > babel-plugin-jest-hoist > @babel/types > lodash':
+        patched: '2020-05-19T19:18:22.262Z'
+    - '@pawjs/pawjs > jest > jest-cli > @jest/core > jest-runner > jest-config > babel-jest > babel-preset-jest > babel-plugin-jest-hoist > @babel/types > lodash':
+        patched: '2020-05-19T19:18:22.262Z'
+    - '@pawjs/pawjs > jest > @jest/core > jest-runner > jest-runtime > jest-config > babel-jest > babel-preset-jest > babel-plugin-jest-hoist > @babel/types > lodash':
+        patched: '2020-05-19T19:18:22.262Z'
+    - '@pawjs/pawjs > jest > jest-cli > @jest/core > jest-runtime > jest-config > babel-jest > babel-preset-jest > babel-plugin-jest-hoist > @babel/types > lodash':
+        patched: '2020-05-19T19:18:22.262Z'
+    - '@pawjs/pawjs > jest > @jest/core > jest-runner > jest-jasmine2 > jest-runtime > jest-config > babel-jest > babel-preset-jest > babel-plugin-jest-hoist > @babel/types > lodash':
+        patched: '2020-05-19T19:18:22.262Z'
+    - '@pawjs/pawjs > jest > jest-cli > @jest/core > jest-runner > jest-runtime > jest-config > babel-jest > babel-preset-jest > babel-plugin-jest-hoist > @babel/types > lodash':
+        patched: '2020-05-19T19:18:22.262Z'
+    - '@pawjs/pawjs > jest > jest-cli > @jest/core > jest-runner > jest-jasmine2 > jest-runtime > jest-config > babel-jest > babel-preset-jest > babel-plugin-jest-hoist > @babel/types > lodash':
+        patched: '2020-05-19T19:18:22.262Z'
