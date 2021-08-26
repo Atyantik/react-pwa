@@ -1,0 +1,31 @@
+.stackedbar-graph {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  justify-content: center;
+  li {
+    flex: 1 1 auto;
+    margin: .5em;
+  }
+  .color-box {
+    display: inline-block;
+    height: 1em;
+    width: 1em;
+    vertical-align: middle;
+  }
+  span:not(.color-box) {
+    padding-left: .5rem;
+  }
+}
+.d3-tooltip{
+  background-color: rgba($white,.8);
+  padding: .3rem .6rem;
+  text-align: center;
+  font-weight: bold;
+  line-height: 1.2;
+  border: 1px solid $gray-lighter;
+  border-radius: 3px;
+}

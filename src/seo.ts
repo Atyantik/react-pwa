@@ -11,7 +11,7 @@ export default {
   facebook: {
     admins: [],
   },
-  type: 'article', // article/product/music/video
+  type: 'product', // article/product/music/video
   type_details: {
     section: '', // Lifestyle/sports/news
     published_time: '',

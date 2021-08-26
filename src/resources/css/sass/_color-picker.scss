@@ -1,0 +1,25 @@
+.color-picker {
+  border: 2px solid rgba(0,0,0,0.4);
+  padding: 2px;
+  border-radius: 1px;
+  display: inline-block;
+  cursor: pointer;
+  .color-box {
+    width: 20px;
+    height: 20px;
+    border-radius: 0;
+    border: 1px solid #ffffff;
+  }
+}
+.sketch-picker {
+  position: absolute;
+  z-index: 2;
+}
+.picker-cover{
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+}

@@ -1,0 +1,384 @@
+//
+// Basic Bootstrap table
+//
+.table {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: $spacer;
+    position: relative;
+    th,
+    td {
+        vertical-align: top;
+        /*border-top: $table-border-width solid $table-border-color;*/
+    }
+    th {
+        padding: $table-head-padding;
+        white-space: nowrap;
+        &.title {
+            min-width: 9rem;
+        }
+    }
+    td {
+        padding: $table-cell-padding;
+    }
+    thead {
+        &:after {
+            content: " ";
+            width: 100%;
+            height: 1px;
+            position: absolute;
+            @include box-shadow(0px 1px 1px 0px rgba(204, 204, 204, 0.8));
+            margin-top: -1px;
+        }
+    }
+    thead th {
+        font-size: $font-size-base + 0.125rem;
+        vertical-align: bottom;
+    }
+    tbody + tbody {
+        border-top: (2 * $table-border-width) solid $table-border-color;
+    }
+    .table {
+        background-color: $body-bg;
+    }
+    .actions {
+        max-height: 1px;
+        overflow: hidden;
+        @include transition(all ease-in-out 0.2s);
+        min-width: 12rem;
+        ul {
+            //visibility: hidden;
+            @include list-unstyled;
+            li {
+                float: left;
+                padding: 0 0.25rem;
+                font-size: $font-size-base - 0.125rem;
+                position: relative;
+                vertical-align: top;
+                &:before {
+                    position: absolute;
+                    left: 0;
+                    top: 50%;
+                    content: " ";
+                    height: 8px;
+                    width: 1px;
+                    margin-top: -4px;
+                    background-color: $gray;
+                }
+                &:first-child {
+                    padding: 0 0.25rem 0 0;
+                    &:before {
+                        content: "";
+                        display: none;
+                    }
+                }
+            }
+        }
+    }
+    tr {
+        @include hover-focus {
+            .actions {
+                max-height: 20px;
+            }
+        }
+        &:first-child {
+            .actions {
+                max-height: 20px;
+            }
+        }
+    }
+}
+
+table {
+    max-width: 100%;
+    width: 100%;
+}
+
+// Bordered version
+//
+// Add borders all around the table and between all the columns.
+.table-bordered {
+    border: $table-border-width solid $table-border-color;
+    th,
+    td {
+        border: $table-border-width solid $table-border-color;
+    }
+    thead {
+        th,
+        td {
+            border-bottom-width: (2 * $table-border-width);
+        }
+    }
+}
+
+// Zebra-striping
+//
+// Default zebra-stripe styles (alternating gray and transparent backgrounds)
+.table-striped {
+    tbody tr:nth-of-type(odd) {
+        background-color: $table-bg-accent;
+    }
+    thead {
+        border: 1px solid rgb(229, 229, 229);
+        background-color: rgb(255, 255, 255);
+        @include box-shadow(0px 2px 3px 1px rgba(204, 204, 204, 0.4));
+    }
+    .checkbox-group {
+        max-width: 3.9rem;
+        text-align: center;
+        .checkbox-item {
+            margin-right: 0;
+        }
+    }
+    .checkbox-group input[type="checkbox"] + label {
+        &:after {
+            font-size: 1.5rem;
+        }
+    }
+    .imported {
+        p {
+            max-width: 62.5px;
+            text-align: center;
+            display: inline-block;
+            width: 100%;
+        }
+        .fa {
+            font-size: 1.5rem;
+        }
+    }
+    .name {
+        max-width: 10.5em;
+        min-width: 10.5em;
+    }
+}
+
+// Hover effect
+//
+// Placed here since it has to come after the potential zebra striping
+.table-hover {
+    tbody tr {
+        @include hover {
+            background-color: $table-bg-hover;
+        }
+    }
+}
+
+// Table backgrounds
+//
+// Exact selectors below required to override `.table-striped` and prevent
+// inheritance to nested tables.
+// Generate the contextual variants
+@include table-row-variant(active, $table-bg-active);
+@include table-row-variant(success, $state-success-bg);
+@include table-row-variant(info, $state-info-bg);
+@include table-row-variant(warning, $state-warning-bg);
+@include table-row-variant(danger, $state-danger-bg);
+// Responsive tables
+//
+// Wrap your tables in `.table-responsive` and we'll make them mobile friendly
+// by enabling horizontal scrolling. Only applies <768px. Everything above that
+// will display normally.
+.table-responsive {
+    display: block;
+    width: 100%;
+    min-height: .01%; // Workaround for IE9 bug (see https://github.com/twbs/bootstrap/issues/14837)
+    overflow-x: auto;
+    // TODO: find out if we need this still.
+    //
+    // border: $table-border-width solid $table-border-color;
+    // -ms-overflow-style: -ms-autohiding-scrollbar; // See https://github.com/twbs/bootstrap/pull/10057
+}
+
+.thead-inverse {
+    th {
+        color: #fff;
+        background-color: $gray-dark;
+    }
+}
+
+.thead-default {
+    th {
+        color: $gray;
+        background-color: $gray-lighter;
+    }
+}
+
+.table-inverse {
+    color: $gray-lighter;
+    background-color: $gray-dark;
+    &.table-bordered {
+        border: 0;
+    }
+    th,
+    td,
+    thead th {
+        border-color: $gray;
+    }
+}
+
+.table-reflow {
+    thead {
+        float: left;
+    }
+    tbody {
+        display: block;
+        white-space: nowrap;
+    }
+    th,
+    td {
+        border-top: $table-border-width solid $table-border-color;
+        border-left: $table-border-width solid $table-border-color;
+        &:last-child {
+            border-right: $table-border-width solid $table-border-color;
+        }
+    }
+    thead,
+    tbody,
+    tfoot {
+        &:last-child {
+            tr:last-child th,
+            tr:last-child td {
+                border-bottom: $table-border-width solid $table-border-color;
+            }
+        }
+    }
+    // scss-lint:disable ImportantRule
+    tr {
+        float: left;
+        th,
+        td {
+            display: block !important;
+            border: $table-border-width solid $table-border-color;
+        }
+    }
+    // scss-lint:enable ImportantRule
+}
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    _overflow: auto;
+    margin: 0 0 1em;
+}
+
+th.sortable {
+    cursor: pointer;
+    position: relative;
+    padding-left: 1.25rem;
+    z-index: 2;
+    &:before {
+        position: absolute;
+        font-family: "FontAwesome";
+        opacity: 0.2;
+        font-size: $font-size-base - 0.125rem;
+        content: "\f0d8";
+        left: 0.3125rem;
+        top: calc(50% - #{$font-size-base - 0.125rem});
+        z-index: 1;
+    }
+    &:after {
+        position: absolute;
+        font-family: "FontAwesome";
+        font-size: $font-size-base - 0.125rem;
+        content: "\f0d7";
+        opacity: 0.2;
+        left: 0.3125rem;
+        top: calc(50% - 0.375rem);
+        z-index: 1;
+    }
+    &.asc {
+        &:after {
+            opacity: 0.8;
+        }
+    }
+    &.desc {
+        &:before {
+            opacity: 0.8;
+        }
+    }
+}
+
+.table-pagination {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 1rem;
+    span[class*="text-"] {
+        line-height: 1.2;
+    }
+    .page-holder {
+        display: inline-block;
+        float: right;
+    }
+    ul {
+        @include list-unstyled;
+        display: inline-block;
+        border: 1px solid rgba($gray, 0.2);
+        border-width: 0px 0px 1px 1px;
+        margin-bottom: 0px;
+        li {
+            float: left;
+            text-align: center;
+            border: 1px solid rgba($gray, 0.2);
+            border-width: 1px 1px 0 0;
+            a,.link{
+                display: inline-block;
+                min-width: 2rem;
+                padding: 5px;
+                color: $gray;
+                &:hover {
+                    background-color: rgba($brand-sky-blue, 0.6);
+                }
+            }
+            &:first-child {
+                border-top-left-radius: $border-radius;
+                border-bottom-left-radius: $border-radius;
+            }
+            &:last-child {
+                border-top-right-radius: $border-radius;
+                border-bottom-right-radius: $border-radius;
+            }
+            &.curr-page {
+                a,.link {
+                    border-color: $brand-primary;
+                    background-color: $brand-primary;
+                    color: $white;
+                }
+            }
+            &.disabled {
+                a,.link {
+                    background-color: rgba($gray, 0.2);
+                    color: rgba($gray, 0.4);
+                    cursor: not-allowed;
+                }
+            }
+        }
+    }
+    //&.text-center {
+    //    .page-holder {
+    //        float: none;
+    //    }
+    //}
+}
+
+@media (max-width: 680px) {
+    .table-pagination {
+        span[class*="text-"] {
+            width: 100%;
+            display: inline-block;
+            text-align: center;
+        }
+        .page-holder {
+            display: inline-block;
+            float: none;
+            width: 100%;
+            text-align: center;
+        }
+    }
+}
+.import {
+    .checkbox-group input[type="checkbox"] + label {
+        &:after {
+            font-size: 1.5rem;
+        }
+    }
+}

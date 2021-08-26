@@ -1,0 +1,54 @@
+// new add tag css
+.add-tag-box {
+  @include form-control;
+  padding: 1rem 2rem;
+  .add-tag-btn {
+    font-size: .8rem;
+    margin-top: 0;
+    padding: .4rem .5rem .4rem 1rem;
+    position: relative;
+    margin: .2rem .8rem;
+    &:before {
+      border-bottom: .9375rem solid transparent;
+      border-radius: .1875rem;
+      border-right: .9375rem solid $brand-primary;
+      border-top: .9375rem solid transparent;
+      content: '';
+      height: 0;
+      left: 0;
+      margin-left: -.9375rem;
+      margin-top: -.0625rem;
+      position: absolute;
+      top: 0;
+    }
+    &:after {
+      background: $body-bg;
+      content: " ";
+      width: .5rem;
+      height: .5rem;
+      position: absolute;
+      border-radius: 50%;
+      left: 0;
+      margin-left: -.125rem;
+      top: 50%;
+      margin-top: -.25rem;
+      @include box-shadow(inset 2px 4px 4px rgba(0, 0, 0, .25));
+    }
+    .icon {
+      padding-left: .3rem;
+    }
+    @include hover-focus-active {
+      background-color: $brand-primary;
+    }
+    &:focus {
+      outline: 0;
+    }
+  }
+}
+
+@media(max-width: 460px) {
+  .add-tag-btn {
+    display: inline-block;
+    width: auto;
+  }
+}

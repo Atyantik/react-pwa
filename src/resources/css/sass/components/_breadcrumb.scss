@@ -1,0 +1,108 @@
+.breadcrumb {
+    position: relative;
+    ul {
+        list-style: none;
+        overflow: hidden;
+        padding: 0;
+        margin: 0;
+        li {
+            float: left;
+            a {
+                padding: 0.625rem 0 0.625rem 3.75rem;
+                background: #d7f3f7;
+                position: relative;
+                display: block;
+                float: left;
+                color: $black;
+                &:after {
+                    content: " ";
+                    display: block;
+                    width: 0;
+                    height: 0;
+                    border-top: 2.1875rem solid transparent;
+                    border-bottom: 2.1875rem solid transparent;
+                    border-left: 2.1875rem solid #d7f3f7;
+                    position: absolute;
+                    top: 50%;
+                    margin-top: -2.1875rem;
+                    left: 100%;
+                    z-index: 2;
+                }
+                &:before {
+                    content: " ";
+                    display: block;
+                    width: 0;
+                    height: 0;
+                    border-top: 2.1875rem solid transparent;
+                    border-bottom: 2.1875rem solid transparent;
+                    border-left: 2.1875rem solid #fcfcfc;
+                    position: absolute;
+                    top: 50%;
+                    margin-top: -2.1875rem;
+                    margin-left: 0.625rem;
+                    left: 100%;
+                    z-index: 1;
+                }
+            }
+            &:first-child {
+                a {
+                    padding-left: 0.7rem;
+                }
+            }
+            &:last-child {
+                a {
+                    background: rgba($brand-sky-blue, 0.8);
+                    color: $gray-light;
+                    pointer-events: none;
+                    cursor: default;
+                    &:after {
+                        border-left: 2.1875rem solid rgba($brand-sky-blue, 0.8);
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media(max-width:700px) {
+    .breadcrumb {
+        ul {
+            overflow: inherit;
+            display: inline-block;
+            li {
+                float: none;
+                display: inline-block;
+                padding: 0.7rem;
+                a {
+                    background: #fcfcfc;
+                    display: inline-block;
+                    padding: 0 !important;
+                    float: none;
+                    color: $brand-primary;
+                    &:after {
+                        content: "\f054";
+                        font-family: "FontAwesome";
+                        position: absolute;
+                        top: calc(50% - 0.7rem);
+                        margin-top: 0;
+                        border: none;
+                        width: auto;
+                        height: auto;
+                        padding-left: 0.35rem;
+                    }
+                    &:before {
+                        display: none;
+                    }
+                }
+                &:last-child {
+                    a {
+                        background: #fcfcfc;
+                        &:after {
+                            display: none;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

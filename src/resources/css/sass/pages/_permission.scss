@@ -1,0 +1,11 @@
+.permission-page {
+  .table {
+    th.title {
+      min-width: 10rem;
+    }
+    .checkbox-group input[type="checkbox"] + label {
+      font-size: .875rem;
+      padding-left: 1.65rem;
+    }
+  }
+}

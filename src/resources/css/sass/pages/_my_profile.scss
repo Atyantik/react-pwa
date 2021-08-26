@@ -1,0 +1,110 @@
+.my-profile {
+    width: 100%;
+    .profile-detail {
+        .profile-pic {
+            max-width: 100%;
+            height: 13.5em;
+            width: 13.5em;
+            @include border-radius(50%);
+            object-fit: contain;
+        }
+        .name {
+            font-size: $font-size-h1;
+            line-height: 0.6666;
+            letter-spacing: 0;
+            font-weight: 600;
+        }
+        .user {
+            font-size: 1.5rem;
+            line-height: 1;
+            letter-spacing: 0;
+            margin: 0;
+        }
+    }
+    .upload-image {
+        display: inline-block;
+        width:13.5em;
+        height: 13.5em;
+        position: relative;
+        cursor: pointer;
+        input[type="file"] {
+           display: block;
+           position: absolute;
+           top: 0;
+           left: 0;
+           width: 100%;
+           height: 100%;
+           cursor: pointer;
+           outline: 0;
+           opacity: 0;
+       }
+        &:before {
+            content: '';
+            background-color: rgba(255,255,255,.9);
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 13.5em;
+            width: 13.5em;
+            -webkit-border-radius: 50%;
+            -moz-border-radius: 50%;
+            border-radius: 50%;
+            opacity: 0;
+            visibility: hidden;
+            transition: .3s all linear;
+        }
+        .edit-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            font-weight: bold;
+            opacity: 0;
+            visibility: hidden;
+            transition: .3s all linear;
+        }
+        &:hover {
+            &:before {
+                opacity: 1;
+                visibility: visible;
+            }
+            .edit-text {
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+    }
+}
+
+.save-btn {
+    &.content {
+        padding-top: 0;
+    }
+    .btn {
+        margin-top: 0;
+    }
+}
+
+@media (min-width:720px) {
+    .my-profile {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: row-reverse;
+        section {
+            width: 45%;
+            margin-right: 0%;
+            &:last-child {
+                width: 55%;
+            }
+        }
+        .password-change {
+            border-right: 1px solid $hr-border-color;
+            padding-right: 1.25rem;
+            .content {
+                padding-top: 0;
+            }
+        }
+    }
+}

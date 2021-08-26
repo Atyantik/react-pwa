@@ -1,0 +1,131 @@
+@media (min-width:720px) {
+    .col-2 {
+        >section {
+            margin-right: 5%;
+            width: 47.5%;
+            float: left;
+            vertical-align: top;
+            &:nth-child(2n) {
+                margin-right: 0px;
+            }
+        }
+    }
+    .col-4 {
+        >section {
+            margin-right: 5%;
+            width: 47.5%;
+            float: left;
+            vertical-align: top;
+            &:nth-child(2n) {
+                margin-right: 0;
+            }
+        }
+    }
+}
+
+@media (min-width:890px) {
+    .col-3 {
+        >section {
+            margin-right: 5%;
+            width: 30%;
+            float: left;
+            vertical-align: top;
+            &:nth-child(3n+3) {
+                margin-right: 0px;
+            }
+        }
+    }
+    .col-4 {
+        >section {
+            margin-right: 4%;
+            width: 22%;
+            float: left;
+            vertical-align: top;
+            &:nth-child(2n) {
+                margin-right: 4%;
+            }
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+    }
+}
+
+.col-2 {
+    table {
+        td {
+            width: 50%;
+            padding: 0 1%;
+            vertical-align: top;
+        }
+    }
+}
+
+.col-3 {
+    table {
+        td {
+            width: 33.33%;
+            padding: 0 2.5%;
+            vertical-align: top;
+        }
+    }
+}
+
+.col-4 {
+    table {
+        td {
+            width: 25%;
+            padding: 0 1%;
+            vertical-align: top;
+        }
+    }
+}
+
+.col-5 {
+    table {
+        td {
+            width: 20%;
+            padding: 0 1%;
+            vertical-align: top;
+        }
+    }
+}
+
+@media(max-width: 890px) {
+    .col-4,
+    .col-5 {
+        table {
+            td {
+                width: 50%;
+                display: inline-block;
+            }
+        }
+    }
+    .col-3 {
+        table {
+            td {
+                width: 100% !important;
+                display: inline-block;
+            }
+        }
+    }
+}
+
+@media(max-width: 600px) {
+    .col-4,
+    .col-5,
+    .col-2 {
+        table {
+            td {
+                width: 100%;
+                display: inline-block;
+            }
+        }
+    }
+}
+.table-striped{
+    td{
+        display: table-cell !important;
+    }
+}
+

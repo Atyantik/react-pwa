@@ -1,0 +1,29 @@
+.tab-panel {
+    >ul {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+        display: inline-block;
+        width: 100%;
+        position: relative;
+        border-bottom: 1px solid $gray-lightest;
+        li {
+            float: left;
+            margin-bottom: -1px;
+            button {
+                display: block;
+                padding: 10px 15px;
+                border: 1px solid transparent;
+            }
+            &.active {
+                button {
+                    border: 1px solid $gray-lightest;
+                    border-bottom-color: $white;
+                }
+            }
+        }
+    }
+    .tab-content {
+        padding: 0 1.875rem;
+    }
+}

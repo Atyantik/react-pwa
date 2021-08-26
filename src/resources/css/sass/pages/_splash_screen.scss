@@ -1,0 +1,65 @@
+.splash-logo {
+    max-width: 9rem;
+}
+.fixed-height {
+    max-width: 500px;
+    height: 200px;
+    object-fit: contain;
+}
+.splash-tagline {
+    font-size: 1.125rem;
+    letter-spacing: 0.04em;
+}
+
+.splash-blocks {
+    ul{
+        @include list-unstyled;
+        text-align: center;
+    }
+    li {
+        display: inline-block;
+        width: 8.4375rem;
+        margin: 0 0.5rem 1.25rem;
+        &.box-lg {
+            width: 11.25rem;
+            vertical-align: top;
+            .box {
+                height: 11.25rem;
+                width: 11.25rem;
+                img {
+                    max-width: 8.125rem;
+                }
+            }
+        }
+    }
+    a.box {
+        padding: 1.5625rem;
+        height: 8.4375rem;
+        width: 8.4375rem;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        &.green {
+            background-color: $brand-success;
+        }
+        &.orange {
+            background-color: $brand-danger;
+        }
+    }
+    .img-fluid {
+        max-width: 5.3125rem;
+        max-height: 100%;
+    }
+    .icon{
+        font-size: 4rem;
+        color: $white;
+    }
+}
+
+.heading {
+    @include box-shadow(0px 2px 4.75px 0.25px rgba(203, 201, 201, 0.4));
+    padding: 0.5rem;
+    h4 {
+        margin: 0;
+    }
+}

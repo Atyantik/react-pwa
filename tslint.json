@@ -1,5 +1,23 @@
 {
   "extends": [
     "./node_modules/@pawjs/pawjs/tslint.json"
-  ]
+  ],
+  "rules": {
+    "function-name": [false],
+    "variable-name": [false],
+    "no-submodule-imports": [
+      true,
+      "@pawjs",
+      "lodash",
+      "react-dom",
+      "@babel",
+      "@resources",
+      "@components",
+      "@utils",
+      "@hooks",
+      "@pages",
+      "@routes",
+      "@formatjs"
+    ]
+  }
 }

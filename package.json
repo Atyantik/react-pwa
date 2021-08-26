@@ -1,12 +1,13 @@
 {
-  "name": "react-pwa",
-  "version": "2.2.13",
-  "description": "A highly scalable, Progressive Web Application foundation with the best Developer Experience (DX).",
+  "name": "pos",
+  "version": "1.0.0",
+  "description": "POS System - WaveRFID",
   "scripts": {
-    "start": "pawjs --no-cache --env=development start",
-    "build": "pawjs --no-cache --env-config-path=./.prod.env --env=production build",
-    "build:demo": "pawjs --no-cache --env-config-path=./.demo.env --env=production build",
-    "lint": "pawjs lint",
+    "start": "./node_modules/.bin/pawjs --no-cache --env=development start",
+    "build": "pawjs --no-cache --env-config-path=./.env --env=development build",
+    "build:development": "pawjs --no-cache --env-config-path=./.development.env --env=production build",
+    "build:staging": "pawjs --no-cache --env-config-path=./.staging.env --env=production build",
+    "build:production": "pawjs --no-cache --env-config-path=./.prod.env --env=production build",
     "test": "pawjs --no-cache test"
   },
   "author": {
@@ -21,17 +22,11 @@
       "url": "https://www.atyantik.com/"
     },
     {
-      "name": "Yash Thakur",
-      "email": "thakur.yash514@gmail.com",
-      "url": "http://yashthakur.in/"
-    },
-    {
-      "name": "Ajay Patel",
-      "email": "ajaypatel@atyantik.com",
+      "name": "Vishal Gheravada",
+      "email": "vishalgheravada@atyantik.com",
       "url": "https://www.atyantik.com/"
     }
   ],
-  "license": "MIT",
   "dependencies": {
     "@pawjs/image-optimizer": "^2.2.6",
     "@pawjs/pawjs": "^3.0.2-beta.28",
@@ -39,14 +34,23 @@
     "@pawjs/srcset": "^2.1.6",
     "@types/react": "^17.0.1",
     "@types/react-dom": "^17.0.0",
-    "bulma": "^0.9.2",
-    "cloudinary": "^1.24.0",
     "eslint-import-resolver-webpack": "^0.13.0",
     "fork-ts-checker-webpack-plugin": "^6.1.0",
     "prop-types": "^15.7.2",
-    "universal-fetch": "^1.0.0"
+    "cross-fetch": "^3.0.4",
+    "dayjs": "^1.9.5",
+    "yup": "^0.29.3"
   },
   "devDependencies": {
     "webpack-bundle-analyzer": "^4.4.0"
-  }
+  },
+  "license": "ISC",
+  "browserslist": [
+    "defaults",
+    "> 5%",
+    "IE >= 11",
+    "iOS >= 7",
+    "maintained node versions",
+    "not dead"
+  ]
 }

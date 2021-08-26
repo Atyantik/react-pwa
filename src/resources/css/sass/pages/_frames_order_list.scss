@@ -1,0 +1,120 @@
+textarea {
+    width: 100%;
+    resize: none;
+    max-height: 7.8125rem;
+    overflow: auto;
+    height: 7.8125rem;
+}
+
+.accordian {
+    // rf-row format
+    .form-table-rf {
+        color: $black;
+        textarea {
+            max-height: 5em;
+            height: 5em;
+            min-width: 15em !important;
+        }
+        label {
+            min-width: 6.25em;
+        }
+        .table-cell,
+        td {
+            padding: 0 0.5em;
+            padding-bottom: 1em;
+            vertical-align: top;
+            position: relative;
+            .dash {
+                position: absolute;
+                right: calc(0% - 0.15rem);
+                top: calc(50% - 1.5rem);
+            }
+            .name {
+                max-width: 10.5em;
+                min-width: 10.5em;
+            }
+            img {
+                min-width: 5.625em;
+            }
+            i {
+                font-size: 1.5rem;
+                line-height: 1;
+            }
+            .form-control {
+                min-width: 6em;
+            }
+        }
+        .remove-btn {
+            display: inline-block;
+            min-width: 1.5625em;
+            text-align: center;
+        }
+    }
+    .form-table-label {
+        tr {
+            &:last-child {
+                label {
+                    font-weight: normal;
+                }
+            }
+        }
+        label {
+            font-weight: bold;
+        }
+        .type {
+            margin-top: -0.5em;
+            min-width: 6.875em;
+        }
+        .type,
+        .for {
+            margin-bottom: 0;
+        }
+        .for {
+            font-style: italic;
+            span {
+                font-weight: 600;
+            }
+        }
+        .receive-date {
+            .Zebra_DatePicker_Icon_Wrapper {
+                width: 100% !important;
+                margin: 0;
+            }
+        }
+    }
+    .order-received {
+        background: #fcfcee;
+        padding: 1em;
+        color: $black;
+        display: inline-block;
+        width: 100%;
+        .order-received-detail {
+            display: inline-block;
+        }
+        .detail {
+            p {
+                padding: 0 0.3em;
+                // display: inline-block;
+                &:first-child {
+                    padding-left: 0;
+                }
+            }
+        }
+        .print {
+            text-align: center;
+            color: $black;
+            min-width: 4.0625em;
+            padding-top: 2.5%;
+            i {
+                display: block;
+                font-size: 2.25em;
+            }
+        }
+        label {
+            font-weight: bold !important;
+        }
+        .click-here {
+            display: block;
+        }
+    }
+}

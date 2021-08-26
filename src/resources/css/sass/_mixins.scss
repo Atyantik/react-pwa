@@ -1,0 +1,72 @@
+// Toggles
+//
+// Used in conjunction with global variables to enable certain theme features.
+@mixin box-shadow($shadow...) {
+    @if $enable-shadows {
+        box-shadow: $shadow;
+    }
+}
+
+@mixin transition($transition...) {
+    @if $enable-transitions {
+        transition: $transition;
+    }
+}
+
+// Utilities
+@import "mixins/hover";
+@import "mixins/image";
+@import "mixins/tag";
+@import "mixins/reset-filter";
+@import "mixins/resize";
+@import "mixins/screen-reader";
+@import "mixins/size";
+@import "mixins/tab-focus";
+@import "mixins/reset-text";
+@import "mixins/text-emphasis";
+@import "mixins/text-hide";
+@import "mixins/text-truncate";
+// // Components
+@import "mixins/buttons";
+@import "mixins/pagination";
+@import "mixins/lists";
+@import "mixins/list-group";
+@import "mixins/forms";
+@import "mixins/table-row";
+// // Skins
+@import "mixins/background-variant";
+@import "mixins/border-radius";
+@import "mixins/gradients";
+// // Layout
+@import "mixins/clearfix";
+@import "mixins/pulls";
+// External
+@import "mixins/filter-gradient";
+@mixin transform($transforms) {
+    -moz-transform: $transforms;
+    -o-transform: $transforms;
+    -ms-transform: $transforms;
+    -webkit-transform: $transforms;
+    transform: $transforms;
+}
+
+@mixin scrollbars($size, $foreground-color, $background-color: mix($foreground-color, white, 30%)) {
+    // For Google Chrome
+    ::-webkit-scrollbar {
+        width: $size;
+        height: $size;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: $foreground-color;
+        border-radius: 5px;
+    }
+    ::-webkit-scrollbar-track {
+        background: $background-color;
+        border-radius: 5px;
+    }
+    // For Internet Explorer
+    body {
+        scrollbar-face-color: $foreground-color;
+        scrollbar-track-color: $background-color;
+    }
+}

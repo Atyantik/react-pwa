@@ -1,0 +1,44 @@
+.count-inventory {
+	.inventory-detail {
+		.detail {
+			&:first-child {
+				max-width: 45rem;
+				padding: 0;
+			}
+			p {
+				@include h4;
+				font-size: 1.25rem;
+				font-weight: bold;
+				padding: 0 0.3rem;
+			}
+		}
+	}
+	.selectbox-w {
+		width: 27%;
+		min-width: 14.0625rem;
+	}
+	.print-btn {
+		label{
+			width: 100%;
+		}
+		.btn {
+			margin: 0;
+		}
+	}
+	.form-table-label {
+		label {
+			font-weight: bold !important;
+		}
+	}
+}
+
+@media(max-width:460px) {
+	.count-inventory {
+		.print-btn {
+			float: none !important;
+		}
+		.selectbox-w{
+			width: 100%;
+		}
+	}
+}

@@ -1,0 +1,90 @@
+.wave-gallery-container {
+	display: inline-block;
+	width: 100%;
+	overflow: hidden;
+	.wave-gallery {
+		display: inline-block;
+		width: 100%;
+		min-height: 6.25rem;
+		border: 1px dotted rgba($gray, 0.2);
+		border-radius: $border-radius;
+		ul {
+			@include list-unstyled;
+			//display: inline-block;
+			padding: 0.625rem;
+			margin: 0 auto;
+			display: inline-flex;
+		 	flex-flow: row wrap;
+		 	align-items: center;
+		 	justify-content: center;
+			li {
+				position: relative;
+				float: left;
+				width: 12.5rem;
+				margin: 0.625rem;
+				overflow: hidden;
+				text-align: center;
+				vertical-align: top;
+				height: 100px;
+				img {
+					max-width: 100%;
+					height: 100%;
+					object-fit: contain;
+				}
+				.actions {
+					opacity: 0;
+					background-color: rgba($white, 0.95);
+					position: absolute;
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+					align-items: center;
+					top: 0;
+					left: 0;
+					width: 100%;
+					height: 100%;
+					@include transition(opacity 0.2s ease-in-out);
+					.input-group {
+						margin-bottom: 0px;
+					}
+					.checkbox-group {
+						text-align: center;
+						.checkbox-item {
+							float: none;
+							margin-right: 0;
+						}
+					}
+				}
+				&:hover,&:focus {
+					.actions {
+						opacity: 1;
+					}
+				}
+			}
+		}
+	}
+	.wave-upload-box {
+		display: inline-block;
+		width: 100%;
+		text-align: center;
+		padding: 2.25rem;
+		cursor: pointer;
+		background-color: rgba($gray, 0.05);
+		@include transition(all 0.2	s ease-in-out);
+		i {
+			font-size: 2.25rem;
+			@include transition(all 0.2s ease-in-out);
+		}
+		&.hovered {
+			background-color: rgba($gray, 0.1);
+			i {
+				transform: scale(1.2);
+			}
+		} 
+	}
+}
+.img-blur {
+	filter: blur(5px);
+	-webkit-filter: blur(5px);
+	-ms-filter: blur(5px);
+}

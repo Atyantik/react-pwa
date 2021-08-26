@@ -1,0 +1,130 @@
+.p-right {
+    padding-left: 1.2rem;
+}
+
+.view-section {
+    padding: 2rem;
+    img {
+        max-width: 100%;
+    }
+    .frame-left-section {
+        float: left;
+        padding: 0px;
+        width: 60%;
+        .logo-title {
+             font-weight: 300;
+            &:after {
+                content: '';
+                border-bottom: 3px solid $brand-sky-blue;
+                width: 40%;
+                display: block;
+                margin: .5rem;
+            }
+        }
+        .sub-title{
+            font-weight: 300; 
+        }
+        .la-font {
+            font-size: 3.5rem;
+        }
+        .frame-images {
+            cursor: pointer;
+            padding: 2rem 5rem;
+        }
+    }
+    .frame-right-section {
+        float: left;
+        padding-left: 1.5rem;
+        width: 40%;
+        .amount {
+            font-weight: 300;
+            &:after {
+                content: '';
+                border-bottom: 3px solid $brand-sky-blue;
+                width: 60%;
+                display: block;
+                margin: .5rem;
+            }
+        }
+        .color-text {
+            font-size: 1.2rem;
+             font-weight: 300;
+        }
+        .radio-text {
+            font-size: 1.5rem;
+        }
+        .details-section {
+            border-bottom: 3px solid $brand-sky-blue;
+            margin: .9375rem;
+            display: flex;
+            flex-wrap: wrap;
+            .frame-details {
+                flex: 1 1 33.33%;
+                .parts-image {
+                    height: 5rem;
+                }
+                .details-number {
+                    font-size: 1.2rem;
+                }
+            }
+        }
+        .frame-information {
+            p {
+                font-weight: 300;
+                font-size: 1.2rem;
+                padding-left: 1.2rem;
+            }
+        }
+        .frame-title {
+            padding: .3125rem;
+        }
+        .radio-text{
+            &:after{
+                font-size: 1rem;
+            }
+        }
+    }
+}
+
+@media (max-width: 992px) {
+    .view-section {
+        .frame-left-section {
+            width: 100%;
+            .logo-title {
+                &:after {
+                    content: '';
+                    width: 100%;
+                    display: block;
+                }
+            }
+        }
+        .frame-right-section {
+            width: 100%;
+            .amount {
+                &:after {
+                    content: '';
+                    width: 100%;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 624px) {
+    .view-section {
+        .frame-right-section {
+            padding-left: 0;
+            width: 100%;
+            .details-section {
+                .frame-details {
+                    margin-top: 0px;
+                    width: 100%;
+                    &:last-child {
+                        width: 100%;
+                    }
+                }
+            }
+        }
+    }
+}
+

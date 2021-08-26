@@ -1,0 +1,387 @@
+.input-group {
+    label {
+        min-height: 1.125rem;
+    }
+}
+
+.wrap-text {
+    max-width: 6.25em;
+    word-wrap: break-word;
+}
+
+.scan-frames {
+    width: 100%;
+    display: inline-block;
+    text-align: center;
+    .btn {
+        padding: 1.5rem 8%;
+    }
+}
+
+.manage-inventory {
+    width: 100%;
+    display: inline-block;
+    .col-2 {
+        table {
+            td {
+                padding: 1rem 1rem 1.5rem 1rem;
+                min-width: 20em;
+                &:first-child {
+                    min-width: 0;
+                }
+                &:last-child {
+                    text-align: right;
+                }
+                .form-control {
+                    background-color: transparent;
+                }
+            }
+        }
+        .left {
+            p {
+                white-space: nowrap;
+            }
+            p,
+            h5 {
+                margin: 0;
+            }
+            .detail {
+                p {
+                    font-size: $font-size-h6;
+                    letter-spacing: 0;
+                }
+            }
+            .table-wrapper,
+            .small-input {
+                margin-bottom: 0;
+            }
+            .table-wrapper {
+                &.info-table {
+                    max-height: 15.625em;
+                }
+                tr {
+                    border-bottom: 10px solid $white;
+                    td {
+                        padding: 1rem 0.5rem;
+                    }
+                }
+            }
+        }
+    }
+}
+.history-log{
+    .table-wrapper {
+        &.info-table {
+            max-height: 15.625em;
+        }
+        tr {
+            border-bottom: 10px solid $white;
+            td {
+                padding: 1rem 0.5rem;
+            }
+        }
+    }
+    p {
+        //white-space: nowrap;
+    }
+    p,
+    h5 {
+        margin: 0;
+    }
+    .detail {
+        p {
+            font-size: $font-size-h6;
+            letter-spacing: 0;
+        }
+    }
+}
+@media(max-width:840px) {
+    .manage-inventory {
+        .col-2 {
+            .left {
+                .detail {
+                    p {
+                        display: inline-block !important;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media(min-width:720px) {
+    .manage-inventory {
+        .col-2 {
+            .left {
+                .input-group {
+                    min-width: 34.375em;
+                }
+                .left-group {
+                    width: 35%;
+                    display: inline-block;
+                    float: left;
+                    min-width: 9.375em;
+                }
+                .right-group {
+                    width: 60%;
+                    display: inline-block;
+                    float: right;
+                    text-align: right;
+                    min-width: 21.25em;
+                    .btn {
+                        margin-top: 0;
+                    }
+                }
+            }
+        }
+    }
+}
+
+//custom file upload button
+.file-upload {
+    .custom-file-input {
+        position: relative;
+        overflow: hidden;
+        //min-width: 13.5em;
+        //.btn {
+        //    padding: 0.4em 1.3em;
+        //    float: right;
+        //    margin-top: 0;
+        //}
+        input[type="file"] {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 100%;
+            cursor: pointer;
+            color: $brand-primary;
+            outline: 0;
+            opacity: 0;
+        }
+        .upload-box {
+            text-align: center;
+            border: 1px dotted;
+            border-radius: 2px;
+            padding:10% 10px;
+
+        }
+    }
+}
+
+@media(max-width:460px) {
+    .file-upload {
+        float: none !important;
+        .custom-file-input {
+            width: 100%;
+            margin-top: 2.5em;
+        }
+    }
+}
+
+//transfer send-receive
+.transfer {
+    max-height: 375px;
+    overflow-y: auto;
+}
+
+//inline input-group
+@media(min-width:650px) {
+    .inline-input-group {
+        .input-group {
+            label {
+                width: auto;
+                display: inline-block;
+                min-width: 6.75em;
+            }
+            select {
+                width: 80%;
+                display: inline-block;
+            }
+        }
+    }
+}
+
+//count page
+.date-width {
+    min-width: 6.25rem;
+}
+.doc-icon {
+    float: left;
+    font-size: 2rem;
+    padding-right: .45rem;
+}
+.doc-info {
+    float: left;
+    .file-name {
+        margin-bottom: 0;
+    }
+}
+.tag-text {
+    margin-right: .5rem;
+    color: white;
+    background-color: $brand-warning;
+    padding: .3rem .4rem;
+    font-size: 0.7rem;
+    border-radius: .2rem;
+    font-weight: bold;
+    word-break: break-all;
+    display: inline-block;
+    margin-bottom: .3rem;
+    &:last-child{
+        margin-bottom: 0;
+    }
+}
+.eye-icon {
+    padding: .625rem .75rem;
+}
+.featured-frame{
+    display: inline-block;
+    padding: 0 2px;
+    font-size: 0.7rem;
+    border-radius: 0;
+}
+.header-location {
+    display: inline-block;
+    padding: 0 2px;
+    cursor: default;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+.return-checkbox {
+    .img-resize {
+        max-width: 9em;
+    }
+    .checkbox-group {
+        display: inline-block;
+        width: auto;
+    }
+    .checkbox-item {
+        display: inline-block !important;
+    }
+    .img-fluid {
+        display: inline-block !important;
+        max-width: 6em;
+    }
+    .checkbox-group input[type="checkbox"] + label {
+        display: inline;
+    }
+    p {
+        max-width: 95px;
+    }
+
+}
+
+.break-word{
+    word-break: break-all !important;
+}
+
+.break-word-only{
+    word-break: break-word !important;
+}
+.conflict-img-list {
+    .img-div {
+        max-width: 100px;
+        padding: .5rem;
+        vertical-align: top;
+    }
+}
+.remove-file {
+    font-size: 1.3rem !important;
+    text-align: right;
+    top: 10px;
+    right: 3px;
+}
+
+.download-icon{
+    font-size: 1.5rem !important;
+    display: inline-block !important;
+    padding-right: .5rem
+}
+.close-icon{
+    font-size: 1.2rem !important;
+    position: absolute;
+    top: 0;
+    right: 0;
+    opacity: 0;
+    visibility: hidden;
+}
+.icon-div{
+    padding-top:.5rem;
+}
+.weight-normal{
+    font-weight: normal !important;
+}
+.text-black{
+    color: #000 !important;
+}
+.hover-div{
+    &:hover{
+        .close-icon{
+            opacity: 1;
+            visibility: visible;
+        }
+    }
+}
+
+
+.icon-position{
+    min-width: 4em !important;
+    position: absolute;
+    right: 0;
+    top: 0;
+    label{
+        font-weight: bold !important;
+        color: $black !important;
+    }
+}
+.accordian {
+    .form-table-rf{
+        td{
+            img{
+                min-width: 0 !important;
+            }
+        }
+    }
+}
+.frame-update__input input{
+    width: 100% !important;
+}
+.w-87 {
+    width: 87% !important;
+}
+.received-order-overflow {
+    height: 500px;
+    overflow-y: auto;
+}
+
+.rich-editor {
+    border: 1px solid #aaa;
+    border-radius: 2px;
+    padding: 16px;
+}
+.editorClassName {
+    background-color:#f9fAfb;
+}
+div.DraftEditor-root {
+    border: 1px solid #C0C0C0;
+    border-radius: 2px;
+    height: 300px;
+    width: auto;
+    padding: 0 15px;
+    overflow-y: auto;
+}
+
+div.DraftEditor-editorContainer,
+div.public-DraftEditor-content {
+    height: 100%;
+}
+
+.error-text-with-anchor > a {
+    color: white;
+    font-weight: bold;
+    text-decoration: underline;
+}

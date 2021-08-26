@@ -1,0 +1,151 @@
+.notification-see-all {
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        display: inline-block;
+        width: 100%;
+        li {
+            padding: 1rem;
+            color: $black;
+            background: $body-bg;
+            margin-bottom: 1rem;
+            &.successful-notification {
+                background: rgba($brand-success, 0.3);
+            }
+            h5 {
+                margin-bottom: 0.1rem;
+            }
+            p {
+                margin-bottom: 0.3rem;
+            }
+            .time {
+                color: $gray;
+            }
+        }
+    }
+}
+
+.notification-menu {
+    position: absolute;
+    right: 0;
+    background: $white;
+    width: 27rem;
+    line-height: 2;
+    @include box-shadow(0px 2px 5.82px 0.18px rgba(165, 165, 165, 0.15));
+    margin-right: -1.15rem;
+    @include transition(all .2s ease-in-out);
+    visibility: hidden;
+    opacity: 0;
+    &:before {
+        content: "";
+        border-left: 1.875rem solid transparent;
+        border-right: 1.875rem solid transparent;
+        border-bottom: 1.5625rem solid $white;
+        position: absolute;
+        right: 0;
+        margin-top: -0.75rem;
+    }
+    .notification-see-all {
+        text-align: left;
+        max-height: 29.0625rem;
+        overflow: auto;
+        li {
+            margin-bottom: 0.1rem;
+            padding: 0.5rem 1rem;
+        }
+    }
+    h4 {
+        text-align: left;
+        margin-bottom: 0;
+        padding: 0.5rem 1rem;
+        font-size: 1.125rem;
+        color: $black;
+    }
+    .time {
+        font-size: 0.8125rem;
+    }
+    .see-all {
+        text-align: center;
+        font-weight: bold;
+    }
+    &.open {
+        visibility: visible;
+        opacity: 1;
+    }
+}
+
+.notification-icon {
+    display: inline-block;
+    text-align: center;
+    position: relative;
+    margin-right: 1.5rem;
+    cursor: pointer;
+    .unread-notification {
+        width: 1.2rem;
+        height: 1.2rem;
+        border-radius: 50%;
+        background: $brand-danger;
+        font-size: 0.7rem;
+        color: $white;
+        display: inline-block;
+        position: absolute;
+        right: 0;
+        top: 0;
+        line-height: 1.7;
+        margin-top: 0.75rem;
+        margin-right: -0.475rem;
+    }
+    .fa {
+        color: $brand-primary;
+        font-size: 1.5rem !important;
+        vertical-align: middle;
+    }
+    &.hidden {
+        .unread-notification {
+            display: none;
+        }
+        .fa {
+            color: #00c9e2;
+        }
+    }
+}
+
+@media(max-width:650px) {
+    .notification-menu {
+        right: 50%;
+        width: 20rem;
+        @include transform(translate(50%, 0));
+        margin-right: 10px;
+        &:before {
+            right: auto;
+            margin-top: -0.625rem;
+            left: 50%;
+            @include transform(translate(-50%, 0));
+            margin-left: 0.625rem;
+        }
+    }
+}
+
+.notify-text {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: $brand-primary;
+    text-align: center;
+}
+
+.notification-notes {
+    background: rgba($brand-success, 0.3);
+    padding: 1rem;
+    border-radius: 4px;
+    border: 1px solid rgba($brand-success, 0.3);
+    &.bg-primary {
+        border: 1px solid rgba($brand-primary, 0.3);
+    }
+    &.bg-info {
+        border: 1px solid rgba($brand-info, 0.3);
+    }
+    &.bg-danger {
+        border: 1px solid rgba($brand-danger, 0.3);
+    }
+}

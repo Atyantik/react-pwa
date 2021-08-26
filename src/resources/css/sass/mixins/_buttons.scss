@@ -1,0 +1,161 @@
+// Button variants
+//
+// Easily pump out default styles, as well as :hover, :focus, :active,
+// and disabled options for all buttons
+
+@mixin button-variant($color, $background, $border) {
+  $active-background: darken($background, 3%);
+  $active-border: darken($border, 3%);
+
+  $hover-background: rgba($background, 0.9);
+  $hover-border: rgba($border, 0.9);
+
+  color: $color;
+  background-color: $background;
+  border-color: $border;
+  @include box-shadow($btn-box-shadow);
+
+  @include hover {
+    color: $color;
+    background-color: $hover-background;
+        border-color: $hover-border;
+  }
+
+  &:focus,
+  &.focus {
+    color: $color;
+    background-color: $active-background;
+        border-color: $active-border;
+  }
+
+  &:active,
+  &.active,
+  .open > &.dropdown-toggle {
+    color: $color;
+    background-color: $active-background;
+        border-color: $active-border;
+    // Remove the gradient for the pressed/active state
+    background-image: none;
+    @include box-shadow($btn-active-box-shadow);
+
+    &:hover,
+    &:focus,
+    &.focus {
+      color: $color;
+      background-color: darken($background, 3%);
+          border-color: darken($border, 3%);
+    }
+  }
+
+  &.disabled,
+  &:disabled {
+    &:focus,
+    &.focus {
+      background-color: $background;
+          border-color: $border;
+    }
+    @include hover {
+      background-color: $background;
+          border-color: $border;
+    }
+  }
+  &.btn-icon {
+    position: relative;
+    padding-left: 2.81250rem + 2rem;
+    text-align: left;
+    &:before {
+      content: " ";
+      position: absolute;
+      width: 2.81250rem;
+      height: calc(100%);
+      left: 0;
+      top: 0;
+      display: inline-block;
+      background-color: $active-background;
+      border-top-left-radius: $btn-border-radius;
+      border-bottom-left-radius: $btn-border-radius;
+
+    }
+    i,
+    img {
+      text-align:center;
+      font-size: calc( #{$font-size-base} - 2px);
+      position: absolute;
+      left: 0;
+      top: 0;
+      display: inline-block;
+      line-height: $btn-line-height;
+      padding-top: calc( #{$btn-padding-y} + 2px);
+      width: 2.81250rem;
+      height: 100%;
+      border-top-left-radius: $btn-border-radius;
+      border-bottom-left-radius: $btn-border-radius;
+      @include transition(all .2s ease-in-out);
+    }
+    img {
+      height: 75%;
+    }
+    @include hover-focus {
+      color: $color;
+      background-color: $active-background;
+      border-color: $active-border;
+      i, img {
+        margin-left: 5px;
+      }
+    }
+  }
+}
+
+@mixin button-outline-variant($background, $color) {
+  color: $color;
+  background-image: none;
+  background-color: transparent;
+  border-color: $color;
+
+  @include hover {
+    color: rgba($background, 0.9);
+    background-color: rgba($color, 0.9);
+        border-color: rgba($color, 0.9);
+  }
+
+  &:focus,
+  &.focus {
+    color: darken($background, 3%);
+    background-color: darken($color, 3%);
+        border-color: darken($color, 3%);
+  }
+
+  &:active,
+  &.active,
+  .open > &.dropdown-toggle {
+    color: darken($background, 3%);
+    background-color: darken($color, 3%);
+        border-color: darken($color, 3%);
+
+    &:hover,
+    &:focus,
+    &.focus {
+      color: darken($background, 3%);
+      background-color: darken($color, 3%);
+          border-color: darken($color, 3%);
+    }
+  }
+
+  &.disabled,
+  &:disabled {
+    &:focus,
+    &.focus {
+      border-color: lighten($color, 20%);
+    }
+    @include hover {
+      border-color: lighten($color, 20%);
+    }
+  }
+}
+
+// Button sizes
+@mixin button-size($padding-y, $padding-x, $font-size, $border-radius) {
+  padding: $padding-y $padding-x;
+  font-size: $font-size;
+  @include border-radius($border-radius);
+}

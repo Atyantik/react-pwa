@@ -1,0 +1,36 @@
+body{
+  background: #fff;
+}
+.error-page {
+    // max-width: 800px;
+    // margin: 0 auto;
+	.error-img {
+        height: 100%;
+        overflow: hidden;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        width: 100%;
+        position: relative;
+        display: inline-block;
+        padding-bottom: 30%;
+    }
+	.error-desc {
+        font-size: 1.5rem;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 1rem;
+    }
+	.dashboard-link {
+        &:before {
+            content: "\f060";
+            font-family: FontAwesome;
+            font-size: 1.5rem;
+            margin-right: 1rem;
+        }
+    }
+	.dashboard-text {
+        font-size: 1.5rem;
+    }
+
+}

@@ -1,0 +1,114 @@
+.reports-add-edit {
+    .file-upload {
+        text-align: center;
+        h4 {
+            color: $gray-lighter;
+            margin-bottom: 0;
+            padding: 0 0.5rem;
+        }
+        .upload-box {
+            border: 1px dashed;
+            border-radius: 50%;
+            width: 12.5rem;
+            height: 12.5rem;
+            display: inline-flex;
+            display: -webkit-inline-flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+            position: relative;
+            cursor: pointer;
+        }
+        .select-icon {
+            position: absolute;
+            background: lighten($gray-lightest, 30%);
+            border-radius: 50%;
+            width: 12.5rem;
+            height: 12.5rem;
+            border: 1px solid lighten($gray-lightest, 30%);
+            right: 0;
+            bottom: 0;
+            left: 50%;
+            top: 50%;
+            @include transform(translate(-50%, -50%));
+            img,
+            .fa {
+                max-width: 75%;
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                @include transform(translate(-50%, -50%));
+                font-size: 4rem;
+            }
+        }
+        .custom-file-input {
+            display: inline-block;
+        }
+    }
+    .col-3 {
+        div {
+            margin-bottom: 0.5rem;
+        }
+    }
+    .radio-group input[type="radio"] + label {
+        padding-left: 1.5rem;
+    }
+    .radio-group input[type="radio"] + label:after {
+        font-size: 1.5rem;
+        color: $brand-primary;
+    }
+}
+
+@media(min-width:1000px) {
+    .reports-add-edit {
+        .col-3 {
+            >div {
+                width: 40%;
+                float: left;
+                padding: 0 0.5rem;
+                &:last-child {
+                    width: 20%;
+                    padding-right: 0;
+                }
+                &:first-child {
+                    padding-left: 0;
+                }
+            }
+        }
+    }
+}
+
+@media(min-width: 768px) {
+    .reports-add-edit {
+        .file-upload {
+            width: 12.5rem;
+            float: left;
+        }
+        section {
+            &:last-child {
+                width: calc(100% - 13.75rem);
+                float: left;
+                margin-left: 1.25rem;
+            }
+        }
+    }
+}
+
+.modal {
+    h4 {
+        text-align: left;
+    }
+    .file-upload {
+        display: block;
+        width: 100%;
+        height: auto;
+        float: none;
+        .upload-box {
+            display: block;
+            width: 100%;
+            height: auto;
+            padding: 10% 10px;
+            position: static;
+        }
+    }
+}

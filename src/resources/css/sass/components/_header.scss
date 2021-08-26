@@ -1,0 +1,125 @@
+$header-height: 3.4375rem;
+$sub-header-height: 2.8125rem;
+$logo-height: 2.5rem;
+
+.header.header-top {
+	height: $header-height;
+	background: rgba(255,255,255,0.22);
+	background: -moz-linear-gradient(left, rgba(255,255,255,0.22) 0%, rgba(246,246,246,0.22) 0%, rgba(128,222,234,0.73) 65%, rgba(128,222,234,1) 100%);
+	background: -webkit-gradient(left top, right top, color-stop(0%, rgba(255,255,255,0.22)), color-stop(0%, rgba(246,246,246,0.22)), color-stop(65%, rgba(128,222,234,0.73)), color-stop(100%, rgba(128,222,234,1)));
+	background: -webkit-linear-gradient(left, rgba(255,255,255,0.22) 0%, rgba(246,246,246,0.22) 0%, rgba(128,222,234,0.73) 65%, rgba(128,222,234,1) 100%);
+	background: -o-linear-gradient(left, rgba(255,255,255,0.22) 0%, rgba(246,246,246,0.22) 0%, rgba(128,222,234,0.73) 65%, rgba(128,222,234,1) 100%);
+	background: -ms-linear-gradient(left, rgba(255,255,255,0.22) 0%, rgba(246,246,246,0.22) 0%, rgba(128,222,234,0.73) 65%, rgba(128,222,234,1) 100%);
+	background: linear-gradient(to right, rgba(255,255,255,0.22) 0%, rgba(246,246,246,0.22) 0%, rgba(128,222,234,0.73) 65%, rgba(128,222,234,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#80deea', GradientType=1 );
+    zoom:1;
+    position: relative;
+    z-index: 11;
+    &.cloud{
+        &:after{
+            content:'';
+            position:absolute;
+            background-image: url('../images/cloud.png');
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            width: 100%;
+            height: 2.25em;
+            bottom:0;
+            z-index: -1;
+            opacity: 0.5;
+        }  
+    } 
+   .container {
+    	height: 100%;
+    	line-height: $header-height;
+    }
+
+    .logo-container {
+    	h5 {
+    		margin-bottom: 0px;
+    		margin-left: 0.625rem;
+    		display: inline-block;
+            a {
+                color: $gray;
+            }
+    	}
+    }
+    .logo {
+    	width: $logo-height;
+    	height: $logo-height;
+    }
+    .user-container {
+        position: relative;
+        display: inline-block;
+    	a {
+    		color: $gray;
+            display: inline-block;
+            position: relative;
+    	}
+    	.profile-pic {
+            width: $logo-height;
+            height:$logo-height; 
+    		border-radius: 50%;
+    		margin-right: 0.62500rem;
+            max-width: 100%;
+            max-height: 100%;
+    	}
+    	i {
+    		font-size: 0.62500rem;
+    	}
+        .profile-menu{
+            display: none;
+            &.open {
+                display: block;
+            }
+            position: absolute;
+            right:calc(0% - 1rem);
+            width:9rem;
+            text-align: center;
+            z-index: 11;
+            >ul.drop-down{
+                display: inline-block;
+                background-color: $white;
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                text-align: left;
+                width: 100%;
+                border:1px solid #eeeeee;
+                @include border-radius(3px);
+                @include box-shadow(inset 0px 1px 1px 1px rgba(238, 238, 238, 0.4));
+                >li{
+                    white-space: nowrap;
+                    display: block;
+                    >a {
+                        display: block;
+                        font-weight: bold;
+                        line-height: 1.69;
+                        padding: 0.5rem 0.8rem;
+                        @include transition(all ease-in-out 0.3s);
+                        @include hover-focus-active {
+                            background: rgba(128, 222, 234, 0.8);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+.sub-header {
+    //height: $sub-header-height;    
+    background-color: darken($white, 1%);
+    @include box-shadow (1.5px 1.866px 1.99px 1.01px rgba(203, 201, 201, 0.4));
+    .container {
+        height: 100%;
+        //line-height: $sub-header-height;
+    }
+    h5 {
+        line-height: $sub-header-height;
+        margin-bottom: 0;   
+        color: $black;
+        letter-spacing: none;
+    }
+}

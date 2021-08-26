@@ -1,0 +1,695 @@
+
+//colors
+$color_cornflower_approx: $brand-primary;
+$color_quill_gray_approx: $gray;
+//@extend-elements
+//original selectors
+//.cssload-dots:before, .cssload-dots:after
+%extend_1 {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    position: absolute;
+}
+
+.cssload-wrap {
+    text-align: center;
+    padding: 20px;
+    p {
+        color: $brand-info; 
+    }
+}
+
+.cssload-container {
+    display: inline-block;
+    min-height: 42px;
+    min-width: 125px;
+}
+
+.cssload-dots {
+    display: inline-block;
+    position: relative;
+    z-index: 1;
+    &:before {
+        @extend %extend_1;
+    }
+    &:after {
+        @extend %extend_1;
+    }
+    &:nth-child(1) {
+        &:before {
+            //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+            transform: translateY(-200%);
+            -o-transform: translateY(-200%);
+            -ms-transform: translateY(-200%);
+            -webkit-transform: translateY(-200%);
+            -moz-transform: translateY(-200%);
+            animation: cssload-animBefore 1.3s linear infinite;
+            -o-animation: cssload-animBefore 1.3s linear infinite;
+            -ms-animation: cssload-animBefore 1.3s linear infinite;
+            -webkit-animation: cssload-animBefore 1.3s linear infinite;
+            -moz-animation: cssload-animBefore 1.3s linear infinite;
+            animation-delay: -1.17s;
+            -o-animation-delay: -1.17s;
+            -ms-animation-delay: -1.17s;
+            -webkit-animation-delay: -1.17s;
+            -moz-animation-delay: -1.17s;
+            background-color: $color_cornflower_approx;
+        }
+        &:after {
+            //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+            transform: translateY(200%);
+            -o-transform: translateY(200%);
+            -ms-transform: translateY(200%);
+            -webkit-transform: translateY(200%);
+            -moz-transform: translateY(200%);
+            animation: cssload-animAfter 1.3s linear infinite;
+            -o-animation: cssload-animAfter 1.3s linear infinite;
+            -ms-animation: cssload-animAfter 1.3s linear infinite;
+            -webkit-animation: cssload-animAfter 1.3s linear infinite;
+            -moz-animation: cssload-animAfter 1.3s linear infinite;
+            animation-delay: -1.17s;
+            -o-animation-delay: -1.17s;
+            -ms-animation-delay: -1.17s;
+            -webkit-animation-delay: -1.17s;
+            -moz-animation-delay: -1.17s;
+            background-color: $color_quill_gray_approx;
+        }
+    }
+    &:nth-child(2) {
+        &:before {
+            //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+            transform: translateY(-200%);
+            -o-transform: translateY(-200%);
+            -ms-transform: translateY(-200%);
+            -webkit-transform: translateY(-200%);
+            -moz-transform: translateY(-200%);
+            animation: cssload-animBefore 1.3s linear infinite;
+            -o-animation: cssload-animBefore 1.3s linear infinite;
+            -ms-animation: cssload-animBefore 1.3s linear infinite;
+            -webkit-animation: cssload-animBefore 1.3s linear infinite;
+            -moz-animation: cssload-animBefore 1.3s linear infinite;
+            animation-delay: -2.34s;
+            -o-animation-delay: -2.34s;
+            -ms-animation-delay: -2.34s;
+            -webkit-animation-delay: -2.34s;
+            -moz-animation-delay: -2.34s;
+            background-color: $color_cornflower_approx;
+        }
+        &:after {
+            //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+            transform: translateY(200%);
+            -o-transform: translateY(200%);
+            -ms-transform: translateY(200%);
+            -webkit-transform: translateY(200%);
+            -moz-transform: translateY(200%);
+            animation: cssload-animAfter 1.3s linear infinite;
+            -o-animation: cssload-animAfter 1.3s linear infinite;
+            -ms-animation: cssload-animAfter 1.3s linear infinite;
+            -webkit-animation: cssload-animAfter 1.3s linear infinite;
+            -moz-animation: cssload-animAfter 1.3s linear infinite;
+            animation-delay: -2.34s;
+            -o-animation-delay: -2.34s;
+            -ms-animation-delay: -2.34s;
+            -webkit-animation-delay: -2.34s;
+            -moz-animation-delay: -2.34s;
+            background-color: $color_quill_gray_approx;
+        }
+    }
+    &:nth-child(3) {
+        &:before {
+            //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+            transform: translateY(-200%);
+            -o-transform: translateY(-200%);
+            -ms-transform: translateY(-200%);
+            -webkit-transform: translateY(-200%);
+            -moz-transform: translateY(-200%);
+            animation: cssload-animBefore 1.3s linear infinite;
+            -o-animation: cssload-animBefore 1.3s linear infinite;
+            -ms-animation: cssload-animBefore 1.3s linear infinite;
+            -webkit-animation: cssload-animBefore 1.3s linear infinite;
+            -moz-animation: cssload-animBefore 1.3s linear infinite;
+            animation-delay: -3.51s;
+            -o-animation-delay: -3.51s;
+            -ms-animation-delay: -3.51s;
+            -webkit-animation-delay: -3.51s;
+            -moz-animation-delay: -3.51s;
+            background-color: $color_cornflower_approx;
+        }
+        &:after {
+            //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+            transform: translateY(200%);
+            -o-transform: translateY(200%);
+            -ms-transform: translateY(200%);
+            -webkit-transform: translateY(200%);
+            -moz-transform: translateY(200%);
+            animation: cssload-animAfter 1.3s linear infinite;
+            -o-animation: cssload-animAfter 1.3s linear infinite;
+            -ms-animation: cssload-animAfter 1.3s linear infinite;
+            -webkit-animation: cssload-animAfter 1.3s linear infinite;
+            -moz-animation: cssload-animAfter 1.3s linear infinite;
+            animation-delay: -3.51s;
+            -o-animation-delay: -3.51s;
+            -ms-animation-delay: -3.51s;
+            -webkit-animation-delay: -3.51s;
+            -moz-animation-delay: -3.51s;
+            background-color: $color_quill_gray_approx;
+        }
+    }
+    &:nth-child(4) {
+        &:before {
+            //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+            transform: translateY(-200%);
+            -o-transform: translateY(-200%);
+            -ms-transform: translateY(-200%);
+            -webkit-transform: translateY(-200%);
+            -moz-transform: translateY(-200%);
+            animation: cssload-animBefore 1.3s linear infinite;
+            -o-animation: cssload-animBefore 1.3s linear infinite;
+            -ms-animation: cssload-animBefore 1.3s linear infinite;
+            -webkit-animation: cssload-animBefore 1.3s linear infinite;
+            -moz-animation: cssload-animBefore 1.3s linear infinite;
+            animation-delay: -4.68s;
+            -o-animation-delay: -4.68s;
+            -ms-animation-delay: -4.68s;
+            -webkit-animation-delay: -4.68s;
+            -moz-animation-delay: -4.68s;
+            background-color: $color_cornflower_approx;
+        }
+        &:after {
+            //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+            transform: translateY(200%);
+            -o-transform: translateY(200%);
+            -ms-transform: translateY(200%);
+            -webkit-transform: translateY(200%);
+            -moz-transform: translateY(200%);
+            animation: cssload-animAfter 1.3s linear infinite;
+            -o-animation: cssload-animAfter 1.3s linear infinite;
+            -ms-animation: cssload-animAfter 1.3s linear infinite;
+            -webkit-animation: cssload-animAfter 1.3s linear infinite;
+            -moz-animation: cssload-animAfter 1.3s linear infinite;
+            animation-delay: -4.68s;
+            -o-animation-delay: -4.68s;
+            -ms-animation-delay: -4.68s;
+            -webkit-animation-delay: -4.68s;
+            -moz-animation-delay: -4.68s;
+            background-color: $color_quill_gray_approx;
+        }
+    }
+    &:nth-child(5) {
+        &:before {
+            //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+            transform: translateY(-200%);
+            -o-transform: translateY(-200%);
+            -ms-transform: translateY(-200%);
+            -webkit-transform: translateY(-200%);
+            -moz-transform: translateY(-200%);
+            animation: cssload-animBefore 1.3s linear infinite;
+            -o-animation: cssload-animBefore 1.3s linear infinite;
+            -ms-animation: cssload-animBefore 1.3s linear infinite;
+            -webkit-animation: cssload-animBefore 1.3s linear infinite;
+            -moz-animation: cssload-animBefore 1.3s linear infinite;
+            animation-delay: -5.85s;
+            -o-animation-delay: -5.85s;
+            -ms-animation-delay: -5.85s;
+            -webkit-animation-delay: -5.85s;
+            -moz-animation-delay: -5.85s;
+            background-color: $color_cornflower_approx;
+        }
+        &:after {
+            //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+            transform: translateY(200%);
+            -o-transform: translateY(200%);
+            -ms-transform: translateY(200%);
+            -webkit-transform: translateY(200%);
+            -moz-transform: translateY(200%);
+            animation: cssload-animAfter 1.3s linear infinite;
+            -o-animation: cssload-animAfter 1.3s linear infinite;
+            -ms-animation: cssload-animAfter 1.3s linear infinite;
+            -webkit-animation: cssload-animAfter 1.3s linear infinite;
+            -moz-animation: cssload-animAfter 1.3s linear infinite;
+            animation-delay: -5.85s;
+            -o-animation-delay: -5.85s;
+            -ms-animation-delay: -5.85s;
+            -webkit-animation-delay: -5.85s;
+            -moz-animation-delay: -5.85s;
+            background-color: $color_quill_gray_approx;
+        }
+    }
+    &:nth-child(6) {
+        &:before {
+            //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+            transform: translateY(-200%);
+            -o-transform: translateY(-200%);
+            -ms-transform: translateY(-200%);
+            -webkit-transform: translateY(-200%);
+            -moz-transform: translateY(-200%);
+            animation: cssload-animBefore 1.3s linear infinite;
+            -o-animation: cssload-animBefore 1.3s linear infinite;
+            -ms-animation: cssload-animBefore 1.3s linear infinite;
+            -webkit-animation: cssload-animBefore 1.3s linear infinite;
+            -moz-animation: cssload-animBefore 1.3s linear infinite;
+            animation-delay: -7.02s;
+            -o-animation-delay: -7.02s;
+            -ms-animation-delay: -7.02s;
+            -webkit-animation-delay: -7.02s;
+            -moz-animation-delay: -7.02s;
+            background-color: $color_cornflower_approx;
+        }
+        &:after {
+            //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+            transform: translateY(200%);
+            -o-transform: translateY(200%);
+            -ms-transform: translateY(200%);
+            -webkit-transform: translateY(200%);
+            -moz-transform: translateY(200%);
+            animation: cssload-animAfter 1.3s linear infinite;
+            -o-animation: cssload-animAfter 1.3s linear infinite;
+            -ms-animation: cssload-animAfter 1.3s linear infinite;
+            -webkit-animation: cssload-animAfter 1.3s linear infinite;
+            -moz-animation: cssload-animAfter 1.3s linear infinite;
+            animation-delay: -7.02s;
+            -o-animation-delay: -7.02s;
+            -ms-animation-delay: -7.02s;
+            -webkit-animation-delay: -7.02s;
+            -moz-animation-delay: -7.02s;
+            background-color: $color_quill_gray_approx;
+        }
+    }
+    &:nth-child(7) {
+        &:before {
+            //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+            transform: translateY(-200%);
+            -o-transform: translateY(-200%);
+            -ms-transform: translateY(-200%);
+            -webkit-transform: translateY(-200%);
+            -moz-transform: translateY(-200%);
+            animation: cssload-animBefore 1.3s linear infinite;
+            -o-animation: cssload-animBefore 1.3s linear infinite;
+            -ms-animation: cssload-animBefore 1.3s linear infinite;
+            -webkit-animation: cssload-animBefore 1.3s linear infinite;
+            -moz-animation: cssload-animBefore 1.3s linear infinite;
+            animation-delay: -8.19s;
+            -o-animation-delay: -8.19s;
+            -ms-animation-delay: -8.19s;
+            -webkit-animation-delay: -8.19s;
+            -moz-animation-delay: -8.19s;
+            background-color: $color_cornflower_approx;
+        }
+        &:after {
+            //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+            transform: translateY(200%);
+            -o-transform: translateY(200%);
+            -ms-transform: translateY(200%);
+            -webkit-transform: translateY(200%);
+            -moz-transform: translateY(200%);
+            animation: cssload-animAfter 1.3s linear infinite;
+            -o-animation: cssload-animAfter 1.3s linear infinite;
+            -ms-animation: cssload-animAfter 1.3s linear infinite;
+            -webkit-animation: cssload-animAfter 1.3s linear infinite;
+            -moz-animation: cssload-animAfter 1.3s linear infinite;
+            animation-delay: -8.19s;
+            -o-animation-delay: -8.19s;
+            -ms-animation-delay: -8.19s;
+            -webkit-animation-delay: -8.19s;
+            -moz-animation-delay: -8.19s;
+            background-color: $color_quill_gray_approx;
+        }
+    }
+    &:nth-child(8) {
+        &:before {
+            //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+            transform: translateY(-200%);
+            -o-transform: translateY(-200%);
+            -ms-transform: translateY(-200%);
+            -webkit-transform: translateY(-200%);
+            -moz-transform: translateY(-200%);
+            animation: cssload-animBefore 1.3s linear infinite;
+            -o-animation: cssload-animBefore 1.3s linear infinite;
+            -ms-animation: cssload-animBefore 1.3s linear infinite;
+            -webkit-animation: cssload-animBefore 1.3s linear infinite;
+            -moz-animation: cssload-animBefore 1.3s linear infinite;
+            animation-delay: -9.36s;
+            -o-animation-delay: -9.36s;
+            -ms-animation-delay: -9.36s;
+            -webkit-animation-delay: -9.36s;
+            -moz-animation-delay: -9.36s;
+            background-color: $color_cornflower_approx;
+        }
+        &:after {
+            //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+            transform: translateY(200%);
+            -o-transform: translateY(200%);
+            -ms-transform: translateY(200%);
+            -webkit-transform: translateY(200%);
+            -moz-transform: translateY(200%);
+            animation: cssload-animAfter 1.3s linear infinite;
+            -o-animation: cssload-animAfter 1.3s linear infinite;
+            -ms-animation: cssload-animAfter 1.3s linear infinite;
+            -webkit-animation: cssload-animAfter 1.3s linear infinite;
+            -moz-animation: cssload-animAfter 1.3s linear infinite;
+            animation-delay: -9.36s;
+            -o-animation-delay: -9.36s;
+            -ms-animation-delay: -9.36s;
+            -webkit-animation-delay: -9.36s;
+            -moz-animation-delay: -9.36s;
+            background-color: $color_quill_gray_approx;
+        }
+    }
+    &:nth-child(9) {
+        &:before {
+            //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+            transform: translateY(-200%);
+            -o-transform: translateY(-200%);
+            -ms-transform: translateY(-200%);
+            -webkit-transform: translateY(-200%);
+            -moz-transform: translateY(-200%);
+            animation: cssload-animBefore 1.3s linear infinite;
+            -o-animation: cssload-animBefore 1.3s linear infinite;
+            -ms-animation: cssload-animBefore 1.3s linear infinite;
+            -webkit-animation: cssload-animBefore 1.3s linear infinite;
+            -moz-animation: cssload-animBefore 1.3s linear infinite;
+            animation-delay: -10.53s;
+            -o-animation-delay: -10.53s;
+            -ms-animation-delay: -10.53s;
+            -webkit-animation-delay: -10.53s;
+            -moz-animation-delay: -10.53s;
+            background-color: $color_cornflower_approx;
+        }
+        &:after {
+            //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+            transform: translateY(200%);
+            -o-transform: translateY(200%);
+            -ms-transform: translateY(200%);
+            -webkit-transform: translateY(200%);
+            -moz-transform: translateY(200%);
+            animation: cssload-animAfter 1.3s linear infinite;
+            -o-animation: cssload-animAfter 1.3s linear infinite;
+            -ms-animation: cssload-animAfter 1.3s linear infinite;
+            -webkit-animation: cssload-animAfter 1.3s linear infinite;
+            -moz-animation: cssload-animAfter 1.3s linear infinite;
+            animation-delay: -10.53s;
+            -o-animation-delay: -10.53s;
+            -ms-animation-delay: -10.53s;
+            -webkit-animation-delay: -10.53s;
+            -moz-animation-delay: -10.53s;
+            background-color: $color_quill_gray_approx;
+        }
+    }
+    &:nth-child(10) {
+        &:before {
+            //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+            transform: translateY(-200%);
+            -o-transform: translateY(-200%);
+            -ms-transform: translateY(-200%);
+            -webkit-transform: translateY(-200%);
+            -moz-transform: translateY(-200%);
+            animation: cssload-animBefore 1.3s linear infinite;
+            -o-animation: cssload-animBefore 1.3s linear infinite;
+            -ms-animation: cssload-animBefore 1.3s linear infinite;
+            -webkit-animation: cssload-animBefore 1.3s linear infinite;
+            -moz-animation: cssload-animBefore 1.3s linear infinite;
+            animation-delay: -11.7s;
+            -o-animation-delay: -11.7s;
+            -ms-animation-delay: -11.7s;
+            -webkit-animation-delay: -11.7s;
+            -moz-animation-delay: -11.7s;
+            background-color: $color_cornflower_approx;
+        }
+        &:after {
+            //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+            transform: translateY(200%);
+            -o-transform: translateY(200%);
+            -ms-transform: translateY(200%);
+            -webkit-transform: translateY(200%);
+            -moz-transform: translateY(200%);
+            animation: cssload-animAfter 1.3s linear infinite;
+            -o-animation: cssload-animAfter 1.3s linear infinite;
+            -ms-animation: cssload-animAfter 1.3s linear infinite;
+            -webkit-animation: cssload-animAfter 1.3s linear infinite;
+            -moz-animation: cssload-animAfter 1.3s linear infinite;
+            animation-delay: -11.7s;
+            -o-animation-delay: -11.7s;
+            -ms-animation-delay: -11.7s;
+            -webkit-animation-delay: -11.7s;
+            -moz-animation-delay: -11.7s;
+            background-color: $color_quill_gray_approx;
+        }
+    }
+    &:not(:last-child) {
+        margin-right: 12px;
+    }
+}
+
+@keyframes cssload-animBefore {
+    0% {
+        //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+        transform: scale(1) translateY(-200%);
+        z-index: 1;
+    }
+    25% {
+        //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+        transform: scale(1.3) translateY(0);
+        z-index: 1;
+    }
+    50% {
+        //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+        transform: scale(1) translateY(200%);
+        z-index: -1;
+    }
+    75% {
+        //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+        transform: scale(0.7) translateY(0);
+        z-index: -1;
+    }
+    100% {
+        //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+        transform: scale(1) translateY(-200%);
+        z-index: -1;
+    }
+}
+
+@-o-keyframes cssload-animBefore {
+    0% {
+        -o-transform: scale(1) translateY(-200%);
+        z-index: 1;
+    }
+    25% {
+        -o-transform: scale(1.3) translateY(0);
+        z-index: 1;
+    }
+    50% {
+        -o-transform: scale(1) translateY(200%);
+        z-index: -1;
+    }
+    75% {
+        -o-transform: scale(0.7) translateY(0);
+        z-index: -1;
+    }
+    100% {
+        -o-transform: scale(1) translateY(-200%);
+        z-index: -1;
+    }
+}
+
+@-ms-keyframes cssload-animBefore {
+    0% {
+        -ms-transform: scale(1) translateY(-200%);
+        z-index: 1;
+    }
+    25% {
+        -ms-transform: scale(1.3) translateY(0);
+        z-index: 1;
+    }
+    50% {
+        -ms-transform: scale(1) translateY(200%);
+        z-index: -1;
+    }
+    75% {
+        -ms-transform: scale(0.7) translateY(0);
+        z-index: -1;
+    }
+    100% {
+        -ms-transform: scale(1) translateY(-200%);
+        z-index: -1;
+    }
+}
+
+@-webkit-keyframes cssload-animBefore {
+    0% {
+        -webkit-transform: scale(1) translateY(-200%);
+        z-index: 1;
+    }
+    25% {
+        -webkit-transform: scale(1.3) translateY(0);
+        z-index: 1;
+    }
+    50% {
+        -webkit-transform: scale(1) translateY(200%);
+        z-index: -1;
+    }
+    75% {
+        -webkit-transform: scale(0.7) translateY(0);
+        z-index: -1;
+    }
+    100% {
+        -webkit-transform: scale(1) translateY(-200%);
+        z-index: -1;
+    }
+}
+
+@-moz-keyframes cssload-animBefore {
+    0% {
+        -moz-transform: scale(1) translateY(-200%);
+        z-index: 1;
+    }
+    25% {
+        -moz-transform: scale(1.3) translateY(0);
+        z-index: 1;
+    }
+    50% {
+        -moz-transform: scale(1) translateY(200%);
+        z-index: -1;
+    }
+    75% {
+        -moz-transform: scale(0.7) translateY(0);
+        z-index: -1;
+    }
+    100% {
+        -moz-transform: scale(1) translateY(-200%);
+        z-index: -1;
+    }
+}
+
+@keyframes cssload-animAfter {
+    0% {
+        //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+        transform: scale(1) translateY(200%);
+        z-index: -1;
+    }
+    25% {
+        //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+        transform: scale(0.7) translateY(0);
+        z-index: -1;
+    }
+    50% {
+        //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+        transform: scale(1) translateY(-200%);
+        z-index: 1;
+    }
+    75% {
+        //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+        transform: scale(1.3) translateY(0);
+        z-index: 1;
+    }
+    100% {
+        //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+        transform: scale(1) translateY(200%);
+        z-index: 1;
+    }
+}
+
+@-o-keyframes cssload-animAfter {
+    0% {
+        -o-transform: scale(1) translateY(200%);
+        z-index: -1;
+    }
+    25% {
+        -o-transform: scale(0.7) translateY(0);
+        z-index: -1;
+    }
+    50% {
+        -o-transform: scale(1) translateY(-200%);
+        z-index: 1;
+    }
+    75% {
+        -o-transform: scale(1.3) translateY(0);
+        z-index: 1;
+    }
+    100% {
+        -o-transform: scale(1) translateY(200%);
+        z-index: 1;
+    }
+}
+
+@-ms-keyframes cssload-animAfter {
+    0% {
+        -ms-transform: scale(1) translateY(200%);
+        z-index: -1;
+    }
+    25% {
+        -ms-transform: scale(0.7) translateY(0);
+        z-index: -1;
+    }
+    50% {
+        -ms-transform: scale(1) translateY(-200%);
+        z-index: 1;
+    }
+    75% {
+        -ms-transform: scale(1.3) translateY(0);
+        z-index: 1;
+    }
+    100% {
+        -ms-transform: scale(1) translateY(200%);
+        z-index: 1;
+    }
+}
+
+@-webkit-keyframes cssload-animAfter {
+    0% {
+        -webkit-transform: scale(1) translateY(200%);
+        z-index: -1;
+    }
+    25% {
+        -webkit-transform: scale(0.7) translateY(0);
+        z-index: -1;
+    }
+    50% {
+        -webkit-transform: scale(1) translateY(-200%);
+        z-index: 1;
+    }
+    75% {
+        -webkit-transform: scale(1.3) translateY(0);
+        z-index: 1;
+    }
+    100% {
+        -webkit-transform: scale(1) translateY(200%);
+        z-index: 1;
+    }
+}
+
+@-moz-keyframes cssload-animAfter {
+    0% {
+        -moz-transform: scale(1) translateY(200%);
+        z-index: -1;
+    }
+    25% {
+        -moz-transform: scale(0.7) translateY(0);
+        z-index: -1;
+    }
+    50% {
+        -moz-transform: scale(1) translateY(-200%);
+        z-index: 1;
+    }
+    75% {
+        -moz-transform: scale(1.3) translateY(0);
+        z-index: 1;
+    }
+    100% {
+        -moz-transform: scale(1) translateY(200%);
+        z-index: 1;
+    }
+}
+.catalog-lodder{
+    padding-top: 0;
+    p{
+        margin-bottom: 0;
+    }
+}
+@media (max-width: 700px) {
+    .catalog-lodder{
+        padding-top: 1rem;
+    }
+}

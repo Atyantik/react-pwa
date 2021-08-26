@@ -1,0 +1,79 @@
+.import-files {
+    .selected-file {
+        h5 {
+            border-bottom: 1px solid $gray-lighter;
+            padding-bottom: 5px;
+        }
+    }
+    .listing {
+        padding: 0 0.9375rem;
+        max-height: 11.25rem;
+        overflow-y: auto;
+        &.max-item-3 {
+            max-height: 6.75rem;
+        }
+        .file-name,
+        .remove-btn {
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .remove-btn {
+            font-size: 1.5rem;
+            width: 2rem;
+        }
+        .file-name {
+            margin: 0;
+            width: calc(100% - 4rem);
+            word-wrap: break-word;
+        }
+    }
+    .upload-box {
+        h2 {
+            color: $gray-light;
+            font-weight: 500;
+        }
+        p {
+            font-size: 1.5rem;
+            color: $gray-light;
+        }
+    }
+    .btn-upload {
+        .btn {
+            margin: 0;
+        }
+    }
+    .download-btn {
+        background: $brand-danger;
+        color: $white;
+        padding: 0.5rem 0.8rem;
+        border-radius: 3px;
+    }
+}
+
+@media(min-width:980px) {
+    .import-files {
+        .download-csv {
+            .input-group {
+                width: 50%;
+                float: left;
+            }
+            .download-csv-btn {
+                float: right;
+                margin-top: 2.5rem;
+                width: 50%;
+                text-align: right;
+            }
+        }
+    }
+}
+
+@media(max-width:768px) {
+    .import-files {
+        .col-2 {
+            >section {
+                width: 100%;
+                margin-top: 1.5rem;
+            }
+        }
+    }
+}

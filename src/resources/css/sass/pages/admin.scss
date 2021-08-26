@@ -1,0 +1,84 @@
+.action--ADD-GROUP{
+  display: none !important;
+}
+.action--ADD-RULE{
+  color: #fff !important;
+  font-weight: bold !important;
+  background-color: #ff6600 !important;
+  border-color: #ff6600 !important;
+  border-radius: 0 !important;
+}
+.group-or-rule {
+  border-radius: 0 !important;
+}
+.group {
+  background: #99e5ee !important;
+}
+button.ant-btn-primary {
+  background-color: #FF7519 !important;
+  border-color: #FF7519 !important;
+}
+.ant-select-selection,.ant-select-selection__choice,.ant-input-number{
+  min-width: 140px !important;
+  border-radius: 0 !important;
+  min-height: 25px!important;
+}
+//button.ant-btn-primary:hover {
+//  background-color: #FF0;
+//
+//}
+.mw33 {
+  max-width: 33%;
+}
+.mr28 {
+  margin-right: 35px;
+}
+.ml10{
+  margin-left: 10px;
+}
+.text-underline {
+  text-decoration: underline;
+}
+.element-control{
+  min-width: 100px !important;
+}
+.parentDiv{
+  max-width: 721px;
+  margin: 0 auto;
+}
+@media (max-width: 1300px) {
+  .media-class{
+    max-width: 42% !important;
+    margin: 0 1rem;
+  }
+  .check-box-m{
+    margin-left: 1rem;
+    margin-top: 1rem;
+  }
+  .element-control{
+    min-width: 250px !important;
+  }
+
+}
+@media (max-width: 576px) {
+  .media-class{
+    max-width: 100% !important;
+
+  }
+}
+
+
+@media (min-width: 1301px) {
+  .media-class{
+    max-width: 45% !important;
+    margin: 0 1rem;
+  }
+  .check-box-m{
+    margin-left: 1rem;
+    margin-top: 1rem;
+  }
+  .element-control{
+    min-width: 300px !important;
+  }
+
+}

@@ -1,0 +1,144 @@
+//
+// Display utilities
+//
+.d-block {
+    display: block !important;
+}
+
+.d-inline-block {
+    display: inline-block !important;
+}
+
+.d-inline {
+    display: inline !important;
+}
+
+.d-none {
+    display: none !important;
+}
+
+.w100 {
+    width: 100% !important;
+}
+
+.w50 {
+    width: 50% !important;
+}
+
+.wauto {
+    width: auto !important;
+}
+
+.table-row {
+    display: table-row;
+}
+
+.table-cell {
+    display: table-cell;
+    vertical-align: top;
+}
+
+.table-caption {
+    display: table-caption;
+}
+
+.max-h {
+    max-height: 100vh;
+    overflow-y: auto;
+}
+
+.pos-a {
+    position: absolute !important;
+}
+
+.pos-r {
+    position: relative !important;
+}
+
+.pos-f {
+    position: fixed !important;
+}
+
+.border-0 {
+    border: 0 !important;
+}
+
+.disable-events {
+    .bootstrap-tagsinput {
+        pointer-events: none;
+        background-color: $body-bg;
+        .twitter-typeahead {
+            display: none !important;
+        }
+    }
+}
+
+.link {
+    background: transparent;
+    border: none;
+    padding: 0;
+    &:focus {
+        outline: none;
+    }
+}
+
+.btn-div {
+    .btn {
+        margin-right: 1.5%;
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+}
+
+.mw-250 {
+    min-width: 250px !important;
+}
+
+.mw-100 {
+    min-width: 6.5625rem !important;
+}
+.mw-90{
+    min-width: 90px;
+}
+
+@media(min-width:768px) {
+    .fix-width-dropdown {
+        .w25 {
+            width: 25% !important;
+        }
+    }
+    .w25 {
+        width: 25% !important;
+    }
+}
+
+.fs-20 {
+    font-size: 1.25rem !important;
+}
+
+.fs-16 {
+    font-size: 1rem !important;
+}
+
+.bg-light-gray {
+    background: #f5f5f5 !important;
+}
+
+@include scrollbars(.5em, $gray-lightest);
+.file-icon {
+    .fa {
+        font-size: 3rem;
+    }
+}
+.required{
+    position: relative;
+    &:after{
+        content: "*";
+        color: $brand-danger;
+        font-size: 1.25rem;
+        top: 0px;
+        position: absolute;
+        padding-left: 5px;
+    }
+}

@@ -1,0 +1,39 @@
+/*!
+ * Created with modification of Bootstrap v4.0.0-alpha.2
+ */
+// Importing Libraries
+@import "libs/fontawesome/font-awesome.scss";
+
+// Core variables and mixins
+@import "sass/variables";
+@import "sass/mixins";
+
+// Reset and dependencies
+@import "sass/normalize";
+@import "sass/print";
+
+// Core CSS
+@import "sass/reboot";
+@import "sass/type";
+@import "sass/images";
+@import "sass/code";
+@import "sass/tables";
+@import "sass/forms";
+@import "sass/buttons";
+
+// Utility classes
+@import "sass/utilities";
+
+// Plugins
+@import "sass/datepicker";
+@import "sass/tagsinput";
+@import "sass/react-select";
+
+// Components
+@import "sass/components";
+
+// Layout
+@import "sass/layout";
+
+// Pages
+@import "sass/pages";

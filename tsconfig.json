@@ -1,16 +1,26 @@
 {
   "compilerOptions": {
-    "declaration": true,
+    "baseUrl": "src",
+    "allowJs": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
+    "isolatedModules": true,
     "jsx": "react",
     "lib": ["dom", "esnext", "dom.iterable", "scripthost", "es2015.promise"],
-    "module": "amd",
+    "module": "esnext",
     "moduleResolution": "node",
-    "skipLibCheck": true,
+    "noEmit": true,
+    "noImplicitAny": false,
     "strict": true,
     "target": "esnext",
-    "outDir": "dist"
+    "paths": {
+      "@components/*": ["components/*"],
+      "@utils/*": ["utils/*"],
+      "@resources/*": ["resources/*"],
+      "@hooks/*": ["hooks/*"],
+      "@routes/*": ["routes/*"],
+      "@pages/*": ["pages/*"]
+    }
   },
   "include": [
     "**/*.ts",
@@ -20,6 +30,6 @@
     "dist",
     "node_modules",
     "**/dist/**/*",
-    "src/__tests__/**",
+    "src/__tests__/**"
   ]
 }

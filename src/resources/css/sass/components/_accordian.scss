@@ -1,0 +1,86 @@
+.accordian {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    padding: 0 1.5rem;
+    .accordian{
+        padding: 0;
+    }
+    label.header {
+        width: 100%;
+
+        &.blue {
+            background-color: rgba($brand-sky-blue, 0.8);
+            color: $black;
+        }
+        &.gray {
+            background-color: rgba($gray, 0.8);
+            color: $white;
+        }
+        padding: 0.75rem 1.0625rem;
+        margin-bottom: 0;
+        position: relative;
+        cursor: pointer;
+        p {
+            margin-bottom: 0;
+            display: inline-block;
+        }
+
+        &:after {
+            content: "\f078";
+            font-family: "FontAwesome";
+            position: absolute;
+            right: 1.0625rem;
+            top: calc(50% - 0.7rem);
+        }
+    }
+
+    .content {
+        padding: 1.25rem;
+    }
+    &.open {
+        label.header {
+            &:after {
+                content: "\f077";
+            }
+        }
+        .accordian {
+            label.header {
+                &:after {
+                    content: "\f078";
+                }
+            }
+            &.open {
+                label.header {
+                    &:after {
+                        content: "\f077";
+                    }
+                }
+            }
+        }
+    }
+}
+.detail {
+  padding-right: 1.5em;
+  p {
+      border-right: 1px solid #151516;
+      padding: 0 0.5em;
+      line-height: 1.1;
+      font-weight: normal;
+      display: inline-block;
+      &:last-child {
+          border-right: none;
+      }
+  }
+}
+@media(max-width:770px) {
+    .detail {
+    padding-right: 0;
+    width: 100%;
+    p {
+        border-right: none !important;
+        display: block !important;
+        padding: 0 !important;
+    }
+    }
+}
