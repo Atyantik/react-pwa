@@ -1,9 +1,8 @@
-import fetch from 'universal-fetch';
+import fetch from 'cross-fetch';
 import skeleton from '../components/skeleton';
 import FeaturesImage from '../resources/img/seo/features.png';
 import CSSGlobalLocalImage from '../resources/img/seo/css-global-local.png';
 import SkeletonImage from '../resources/img/seo/skeleton-loading.png';
-import ImageOptimizationImage from '../resources/img/seo/image-optimization.png';
 
 export default [
   {
@@ -52,16 +51,6 @@ export default [
       title: 'Skeleton Loading | ReactPWA Demo',
       description: 'Tired of adding ugly loaders? Do not let your users get confused, give them the best user experience of what is getting loaded. Use Skeleton Loading',
       image: SkeletonImage,
-    },
-  },
-  {
-    path: '/image-optimization',
-    exact: true,
-    component: () => import('../components/image-optmization'),
-    seo: {
-      title: 'Image Optimization | ReactPWA Demo',
-      description: 'Serve optimize images automatically with Lazy loading and WebP support with fallback to JPG/PNG of original image.',
-      image: ImageOptimizationImage,
     },
   },
   {

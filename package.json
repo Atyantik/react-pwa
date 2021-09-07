@@ -21,11 +21,6 @@
       "url": "https://www.atyantik.com/"
     },
     {
-      "name": "Yash Thakur",
-      "email": "thakur.yash514@gmail.com",
-      "url": "http://yashthakur.in/"
-    },
-    {
       "name": "Ajay Patel",
       "email": "ajaypatel@atyantik.com",
       "url": "https://www.atyantik.com/"
@@ -33,20 +28,9 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@pawjs/image-optimizer": "^2.2.6",
-    "@pawjs/pawjs": "^3.0.2-beta.28",
-    "@pawjs/sass": "^2.2.5",
-    "@pawjs/srcset": "^2.1.6",
-    "@types/react": "^17.0.1",
-    "@types/react-dom": "^17.0.0",
-    "bulma": "^0.9.2",
+    "@pawjs/pawjs": "^3.1.7",
+    "bulma": "^0.9.3",
     "cloudinary": "^1.24.0",
-    "eslint-import-resolver-webpack": "^0.13.0",
-    "fork-ts-checker-webpack-plugin": "^6.1.0",
-    "prop-types": "^15.7.2",
-    "universal-fetch": "^1.0.0"
-  },
-  "devDependencies": {
-    "webpack-bundle-analyzer": "^4.4.0"
+    "cross-fetch": "^3.1.4"
   }
 }

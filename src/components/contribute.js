@@ -1,4 +1,3 @@
-import React from 'react';
 import GuestLayout from './guest-layout';
 
 export default () => (
