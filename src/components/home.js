@@ -70,12 +70,6 @@ export default () => (
             Thus creating small chunks and only loading the required chunk (code splitting)."
             link="https://medium.com/webpack/webpack-4-released-today-6cdb994702d4"
           />
-          <Column
-            title="Image Optimization"
-            description="@pawjs/image-optimizer specially for image optimizations.
-            Improving the compression of image with image-webpack-loader"
-            link="https://www.reactpwa.com/docs/en/plugin-image-optimization.html"
-          />
         </div>
         <div className="columns">
           <Column
