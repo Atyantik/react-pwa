@@ -1,0 +1,11 @@
+{
+  "extends": ["./node_modules/@pawjs/pawjs/.eslintrc.json"],
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "settings": {
+    "react": {
+      "version": "17.0.1"
+    }
+  }
+}

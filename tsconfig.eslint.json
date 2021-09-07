@@ -1,0 +1,15 @@
+{
+  // extend your base config so you don't have to redefine your compilerOptions
+  "extends": "./tsconfig.json",
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "test/**/*.ts",
+    "test/**/*.tsx",
+    "typings/**/*.ts",
+
+    // We are not targeting mixed code base but still, keeping it as a backup
+    "src/**/*.js",
+    "src/**/*.jsx"
+  ]
+}
