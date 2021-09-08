@@ -1,8 +1,12 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import GuestLayout from './guest-layout';
 
-const Column = (props) => {
+interface ICoulmnData {
+  title: string;
+  description: string;
+  link: string;
+}
+
+const Column: React.FC<ICoulmnData> = (props) => {
   const { title, description, link } = props;
   return (
     <div className="column">
@@ -31,13 +35,8 @@ const Column = (props) => {
     </div>
   );
 };
-Column.propTypes = {
-  title: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
-  link: PropTypes.string.isRequired,
-};
 
-export default () => (
+const Home: React.FC = () => (
   <GuestLayout>
     <section className="hero is-medium is-info is-bold">
       <div className="hero-body">
@@ -60,15 +59,15 @@ export default () => (
         </h4>
         <div className="columns">
           <Column
-            title="Babel 7"
+            title="Babel"
             description="Already packed with the latest babel to achieve great performance and lower bundle size."
-            link="https://babeljs.io/blog/2018/08/27/7.0.0"
+            link="https://babeljs.io/docs/en/babel-preset-env"
           />
           <Column
-            title="Webpack 4"
+            title="Webpack"
             description="Optimized chunk splitting and is 98% more faster!
             Thus creating small chunks and only loading the required chunk (code splitting)."
-            link="https://medium.com/webpack/webpack-4-released-today-6cdb994702d4"
+            link="https://webpack.js.org/guides/code-splitting/"
           />
         </div>
         <div className="columns">
@@ -113,3 +112,5 @@ export default () => (
     </section>
   </GuestLayout>
 );
+
+export default Home;

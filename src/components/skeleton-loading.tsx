@@ -1,9 +1,21 @@
 import React from 'react';
 import GuestLayout from './guest-layout';
 
-const stripTags = (s, elip = true, l = 60) => `${s.replace(/(<([^>]+)>)/ig, '').replace(/[^a-zA-Z0-9\s]/g, ' ').substr(0, l)} ${elip ? '...' : ''}`;
-export default (props) => {
-  // eslint-disable-next-line
+const stripTags = (s: string, elip = true, l = 60) => `${s.replace(/(<([^>]+)>)/ig, '').replace(/[^a-zA-Z0-9\s]/g, ' ').substr(0, l)} ${elip ? '...' : ''}`;
+
+type BlogData = {
+  title: {
+    rendered: string;
+  }
+  excerpt: {
+    rendered: string;
+  }
+};
+interface ISkeletonData {
+  loadedData: BlogData [];
+}
+
+const SkeletonLoading: React.FC<ISkeletonData> = (props) => {
   const { loadedData: [blog1, blog2, blog3, blog4] } = props;
   return (
     <GuestLayout>
@@ -26,9 +38,6 @@ export default (props) => {
                 <article className="tile is-child notification is-info">
                   <p className="title">{stripTags(blog3.title.rendered, false)}</p>
                   <p className="subtitle">{stripTags(blog3.excerpt.rendered)}</p>
-                  <figure className="image is-4by3">
-                    <img alt="placeholder" src={blog3.jetpack_featured_media_url} />
-                  </figure>
                 </article>
               </div>
             </div>
@@ -52,3 +61,5 @@ export default (props) => {
     </GuestLayout>
   );
 };
+
+export default SkeletonLoading;

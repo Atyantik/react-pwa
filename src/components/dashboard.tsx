@@ -1,7 +1,7 @@
 import Protected from './protected';
 import UserLayout from './user-layout';
 
-export default () => (
+const UserDashboard: React.FC = () => (
   <Protected>
     <UserLayout>
       <div className="columns is-multiline">
@@ -113,3 +113,5 @@ export default () => (
     </UserLayout>
   </Protected>
 );
+
+export default UserDashboard;

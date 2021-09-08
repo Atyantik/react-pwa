@@ -1,6 +1,7 @@
+import { Route } from '@pawjs/pawjs/src/@types/route';
 import LoginImage from '../resources/img/seo/login.png';
 
-export default [
+const AuthRoutes: Route[] = [
   {
     path: '/login',
     exact: true,
@@ -28,3 +29,5 @@ export default [
     },
   },
 ];
+
+export default AuthRoutes;

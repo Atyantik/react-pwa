@@ -1,10 +1,11 @@
 import fetch from 'cross-fetch';
+import { Route } from '@pawjs/pawjs/src/@types/route';
 import skeleton from '../components/skeleton';
 import FeaturesImage from '../resources/img/seo/features.png';
 import CSSGlobalLocalImage from '../resources/img/seo/css-global-local.png';
 import SkeletonImage from '../resources/img/seo/skeleton-loading.png';
 
-export default [
+const GuestRoutes: Route[] = [
   {
     path: '/home',
     exact: true,
@@ -63,3 +64,5 @@ export default [
     },
   },
 ];
+
+export default GuestRoutes;

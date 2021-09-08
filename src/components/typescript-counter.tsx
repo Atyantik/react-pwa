@@ -1,10 +1,8 @@
-import * as React from 'react';
+import { useState } from 'react';
 import GuestLayout from './guest-layout';
 
-const { useState } = React;
-
 export default function () {
-  const [counter, setCounter] = useState(0);
+  const [counter, setCounter] = useState<number>(0);
   const incrementCounter = (): void => {
     setCounter(counter + 1);
   };

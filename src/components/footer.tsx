@@ -1,6 +1,4 @@
-import React from 'react';
-
-export default () => (
+const Footer: React.FC = () => (
   <footer className="footer">
     <div className="content has-text-centered">
       <p>
@@ -27,3 +25,5 @@ export default () => (
     </div>
   </footer>
 );
+
+export default Footer;

@@ -1,8 +1,7 @@
-import React from 'react';
 import GuestLayout from './guest-layout';
 import localStyles from './local-styles.css';
 
-export default () => (
+const GlobalLocalCSS: React.FC = () => (
   <GuestLayout>
     <div className="container p-b-md p-r-md p-l-md">
       <hr />
@@ -37,3 +36,5 @@ export default () => (
     </div>
   </GuestLayout>
 );
+
+export default GlobalLocalCSS;
