@@ -28,9 +28,10 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@pawjs/pawjs": "^3.1.7",
+    "@pawjs/pawjs": "^3.1.12",
     "bulma": "^0.9.3",
-    "cloudinary": "^1.24.0",
-    "cross-fetch": "^3.1.4"
+    "cloudinary": "^1.27.1",
+    "cross-fetch": "^3.1.4",
+    "webpack": "^4.46.0"
   }
 }
