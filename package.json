@@ -3,9 +3,9 @@
   "version": "2.2.13",
   "description": "A highly scalable, Progressive Web Application foundation with the best Developer Experience (DX).",
   "scripts": {
-    "start": "pawjs --no-cache --env=development start",
-    "build": "pawjs --no-cache --env-config-path=./.prod.env --env=production build",
-    "build:demo": "pawjs --no-cache --env-config-path=./.demo.env --env=production build",
+    "start": "pawjs --env=development start",
+    "build": "ENV_CONFIG_PATH=./.prod.env pawjs --env=production build",
+    "build:demo": "ENV_CONFIG_PATH=./.demo.env pawjs --env=production build",
     "lint": "pawjs lint",
     "test": "pawjs --no-cache test"
   },
@@ -28,10 +28,9 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@pawjs/pawjs": "^3.1.12",
+    "@pawjs/pawjs": "^4.0.0-alpha.0",
     "bulma": "^0.9.3",
     "cloudinary": "^1.27.1",
-    "cross-fetch": "^3.1.4",
-    "webpack": "^4.46.0"
+    "cross-fetch": "^3.1.4"
   }
 }

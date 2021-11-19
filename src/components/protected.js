@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { Redirect } from '@pawjs/pawjs';
 import cookie from '../libs/cookie';
 
 export default class Protected extends React.Component {
@@ -41,12 +41,7 @@ export default class Protected extends React.Component {
       return children;
     }
     return (
-      <Route render={({ staticContext }) => {
-        // eslint-disable-next-line
-        if (staticContext) staticContext.status = 403;
-        return <Redirect to={this.redirectUrl} />;
-      }}
-      />
+      <Redirect to={this.redirectUrl} />
     );
   }
 }

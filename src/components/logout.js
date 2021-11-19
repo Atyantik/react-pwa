@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect } from '@pawjs/pawjs';
 import Authenticator from './fake-authenticator';
 
 export default class Logout extends React.Component {
