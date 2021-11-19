@@ -1,6 +1,4 @@
-import React from 'react';
-
-export default () => (
+const Skeleton = () => (
   <div className="skeleton-blink">
     <div className="tile is-ancestor">
       <div className="tile is-parent is-vertical is-12">
@@ -35,3 +33,5 @@ export default () => (
     </div>
   </div>
 );
+
+export default Skeleton;

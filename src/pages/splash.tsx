@@ -1,6 +1,7 @@
+import { Route } from '@pawjs/pawjs/src/@types/route';
 import SplashImage from '../resources/img/seo/home-splash-screen.png';
 
-export default [
+const SplashRoutes: Route[] = [
   {
     path: '/',
     exact: true,
@@ -12,3 +13,5 @@ export default [
     },
   },
 ];
+
+export default SplashRoutes;
