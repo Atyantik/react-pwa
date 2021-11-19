@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect } from '@pawjs/pawjs';
 import { logout } from './fake-authenticator';
 
 const Logout: React.FC = () => {
