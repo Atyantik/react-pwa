@@ -11,7 +11,7 @@ const Login: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = (e: React.SyntheticEvent) => {
-    e?.preventDefault?.();
+    e.preventDefault?.();
     const loginData = new FormData(e.target as HTMLFormElement);
     const username = loginData.get('username');
     const password = loginData.get('password');
