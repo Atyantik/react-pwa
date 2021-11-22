@@ -3,6 +3,10 @@ import ReactPWAIcon from './resources/img/react-pwa.png';
 
 export default class Server {
   apply(serverHandler: ServerHandler) {
+    serverHandler.setCache({
+      max: 104857600,
+      maxAge: 86400000,
+    });
     serverHandler
       .hooks
       .beforeHtmlRender
