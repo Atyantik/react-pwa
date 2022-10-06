@@ -46,7 +46,8 @@ npm run build
 
 ### Need contributors.
 
-This project exists thanks to all the people who contribute. [[Contribute]](CONTRIBUTING.md).
+This project exists thanks to all the people who contribute. [[Contribute]](CONTRIBUTING.md). 
+
 <a href="https://github.com/Atyantik/react-pwa/graphs/contributors"><img src="https://opencollective.com/react-pwa/contributors.svg?width=890" /></a>
 
 We are actively looking for contributors for testing and documentation.
