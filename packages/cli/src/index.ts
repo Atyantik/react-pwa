@@ -1,9 +1,9 @@
-import { isAbsolute, resolve, extname } from 'node:path';
-import { existsSync, readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { Command, Option } from 'commander';
-import { parse } from 'dotenv';
-import { expand } from 'dotenv-expand';
 import chokidar from 'chokidar';
+import {
+  getEnvFilePath, getEnvVars, getReactpwaConfig, getReactpwaConfigFilePath,
+} from './util.js';
 
 const program = new Command();
 
@@ -18,83 +18,6 @@ modeOption.choices(['development', 'production']);
 program.option('-ecf, --env-config-file <path>', 'relative path to .env file', '.env');
 program.option('-rcf, --reactpwa-config-file <path>', 'relative path reactpwa.config.js');
 program.addOption(modeOption);
-
-const getEnvFilePath = (): false | string => {
-  const { envConfigFile } = program.opts();
-  if (!envConfigFile) {
-    return false;
-  }
-  let absolutePath = envConfigFile;
-  if (!isAbsolute(envConfigFile)) {
-    absolutePath = resolve(process.cwd(), envConfigFile);
-  }
-  if (existsSync(absolutePath)) {
-    return absolutePath;
-  }
-  return false;
-};
-
-const getEnvVars = (): Record<string, any> => {
-  const { envConfigFile } = program.opts();
-  const envFilePath = getEnvFilePath();
-  if (!envFilePath) {
-    // eslint-disable-next-line no-console
-    console.warn(`WARNING: Unable to resolve path ${envConfigFile}`);
-    return {};
-  }
-  try {
-    const envData = readFileSync(envFilePath, { encoding: 'utf-8' });
-    return expand(parse(envData));
-  } catch (ex) {
-    // eslint-disable-next-line no-console
-    console.error(ex);
-  }
-  return {};
-};
-
-const getReactpwaConfigFilePath = (): string | false => {
-  const { reactpwaConfigFile } = program.opts();
-  let absolutePath = reactpwaConfigFile;
-  if (!reactpwaConfigFile) {
-    // check if root file reactpwa.config.json exists
-    const defaultConfigPath = resolve(process.cwd(), 'reactpwa.config.json');
-    const hasDefaultReactpwaConfig = existsSync(defaultConfigPath);
-    if (!hasDefaultReactpwaConfig) {
-      return false;
-    }
-    absolutePath = defaultConfigPath;
-  }
-  if (!isAbsolute(absolutePath)) {
-    absolutePath = resolve(process.cwd(), reactpwaConfigFile);
-  }
-  if (existsSync(absolutePath)) {
-    if (extname(absolutePath) !== '.json') {
-      // eslint-disable-next-line no-console
-      console.error('ERROR: Reactpwa config file should be a valid json file like reactpwa.config.json');
-      process.exit(1);
-    }
-    return absolutePath;
-  }
-  return false;
-};
-
-const getReactpwaConfig = (): Record<string, any> => {
-  const absolutePath = getReactpwaConfigFilePath();
-  if (!absolutePath) {
-    // eslint-disable-next-line no-console
-    console.warn(`WARNING: Unable to resolve path ${absolutePath}`);
-    return {};
-  }
-  try {
-    const reactpwaConfigData = readFileSync(absolutePath, { encoding: 'utf-8' });
-    return JSON.parse(reactpwaConfigData);
-  } catch (ex) {
-    // eslint-disable-next-line no-console
-    console.error(ex);
-    // return nothing
-  }
-  return {};
-};
 
 program.command('dev')
   .description('Start the current project in development mode')
@@ -111,8 +34,8 @@ program.command('dev')
     const startServer = async () => {
       server = await reactpwaCore.run({
         projectRoot,
-        envVars: getEnvVars(),
-        config: getReactpwaConfig(),
+        envVars: getEnvVars(program)(),
+        config: getReactpwaConfig(program)(),
         mode: mode ?? 'development',
       });
       restartingServer = false;
@@ -129,8 +52,8 @@ program.command('dev')
     await startServer();
 
     const watchPaths = [
-      getReactpwaConfigFilePath(),
-      getEnvFilePath(),
+      getReactpwaConfigFilePath(program)(),
+      getEnvFilePath(program)(),
       `${resolve(projectRoot, 'src', 'public')}`,
     ].filter((n) => (typeof n === 'string')) as string[];
     const watcher = chokidar.watch(watchPaths, { ignoreInitial: true });
@@ -155,8 +78,8 @@ program.command('build')
     const reactpwaCore = await import ('@reactpwa/core/build');
     reactpwaCore.run({
       projectRoot,
-      envVars: getEnvVars(),
-      config: getReactpwaConfig(),
+      envVars: getEnvVars(program)(),
+      config: getReactpwaConfig(program)(),
       mode: mode ?? 'production',
     });
   });

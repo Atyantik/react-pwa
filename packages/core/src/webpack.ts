@@ -12,7 +12,7 @@ import WorkboxPlugin from 'workbox-webpack-plugin';
 import BabelLazyRoutes from './babel/lazy-routes.js';
 import { notBoolean } from './utils/not-boolean.js';
 import { projectExistsSync } from './utils/resolver.js';
-import { InjectSW } from './webpack-plugins/inject-sw.js';
+import { InjectSW } from './webpack/plugins/inject-sw.js';
 
 const currentFileUrl = new URL(import.meta.url);
 const libSrc = path.resolve(currentFileUrl.pathname, '..');
