@@ -1,6 +1,0 @@
-{
-  "extends": "@pawjs/pawjs/tsconfig.json",
-  "include": [
-    "src"
-  ]
-}

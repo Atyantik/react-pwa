@@ -1,0 +1,339 @@
+import React, {
+  createContext,
+  ReactNode,
+  ReactElement,
+  useRef,
+  Suspense,
+  useContext,
+  useEffect,
+  useId,
+  FC,
+} from 'react';
+import { createRoot } from 'react-dom/client';
+import { delay } from '../utils/delay.js';
+import {
+  addKeyToElement,
+  HeadElement,
+  convertToReactElement,
+  unique,
+  sortHeadElements,
+  fastHashStr,
+} from '../utils/head.js';
+import { DataContext } from './data.js';
+import { ReactPWAContext } from './reactpwa.js';
+import { IWebManifest } from '../typedefs/webmanifest.js';
+
+const initialContextValue = {
+  addChildren: (() => {}) as ((children: HeadElement, id: string) => void),
+  removeChildren: (() => {}) as ((id: string) => void),
+  elements: { current: [] } as React.MutableRefObject<React.ReactElement[]>,
+};
+
+export const HeadContext = createContext<typeof initialContextValue>(initialContextValue);
+
+const LazyHead: React.FC = () => {
+  const { awaitDataCompletion } = useContext(DataContext);
+  awaitDataCompletion('@reactpwa/core.head');
+
+  const { elements } = useContext(HeadContext);
+  return <>{elements.current}</>;
+};
+
+const getAppleIcon = (
+  webmanifest: IWebManifest,
+) => (webmanifest?.icons ?? []).find(
+  (i: { sizes?: string, src: string }) => (
+    i?.sizes?.indexOf('192') !== -1 || i?.sizes?.indexOf('180') !== -1
+  ) && (
+    i?.src?.indexOf?.('.svg') === -1
+  ),
+);
+
+const defaultHead = convertToReactElement(
+  <>
+    <meta httpEquiv="X-UA-Compatible" content="IE=Edge" />
+    <meta key="charSet" charSet="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </>,
+);
+
+export const HeadProvider: FC<{
+  children: ReactNode,
+  styles?: string[],
+}> = ({ children, styles }) => {
+  const { getValue } = useContext(ReactPWAContext);
+  // Get web manifest data
+  const webmanifest = getValue<IWebManifest>('Webmanifest', {});
+  const appleIcon = getAppleIcon(webmanifest);
+  const { name, description } = webmanifest || {};
+  const headElementsMap = useRef<
+  {
+    id: string;
+    elements: ReactElement[];
+  }[]
+  >([
+    {
+      id: '__default',
+      elements: defaultHead,
+    },
+  ]);
+  if (name || description) {
+    headElementsMap.current.push({
+      id: '__manifest',
+      elements: convertToReactElement(
+        <>
+          {!!webmanifest.name && (<title>{webmanifest.name}</title>)}
+          {!!webmanifest.description && (<meta name="description" content={webmanifest.description} />)}
+        </>,
+      ),
+    });
+  }
+  const elements = useRef<ReactElement[]>([]);
+  const headRootRef = useRef<ReturnType<typeof createRoot> | null>(null);
+  const headShadowDivRef = useRef<HTMLDivElement | null>(null);
+  const renderedHeadNodesRef = useRef<Node[]>([]);
+  const initialLoadRef = useRef(true);
+  const nextHeadUpdate = useRef<Function | null>(null);
+  const isHeadUpdating = useRef(false);
+  const isMutating = useRef(false);
+
+  const executeNextUpdate = () => {
+    if (isHeadUpdating.current || isMutating.current) {
+      return;
+    }
+    if (nextHeadUpdate.current) {
+      nextHeadUpdate.current();
+      nextHeadUpdate.current = null;
+    }
+  };
+
+  /**
+   * When the head component is mounted, which means,
+   * the SSR is complete and now the components that are being changed are used
+   * to change the state of head
+   */
+  const updateHead = async () => {
+    if (!initialLoadRef.current && headShadowDivRef.current && headRootRef.current) {
+      isHeadUpdating.current = true;
+      let allElements: ReactElement[] = [];
+      // Because for loop is faster
+      for (let i = 0; i < headElementsMap.current.length; i += 1) {
+        allElements = allElements.concat(headElementsMap.current[i].elements);
+      }
+
+      const headElements = allElements
+        .reverse()
+        .filter(unique())
+        .reverse()
+        .map(addKeyToElement())
+        .sort(sortHeadElements);
+
+      // Render ReactPWA head
+      headRootRef.current.render(headElements);
+      // Wait for 10 miliseconds to let dom update the elements
+      await delay(10);
+
+      const newRenderedHeadNodes = [];
+      for (let i = renderedHeadNodesRef.current.length - 1; i >= 0; i -= 1) {
+        const node = renderedHeadNodesRef.current[i];
+        const newArrIndex = Array.from(headShadowDivRef.current.childNodes).findIndex(
+          (cn) => {
+            // @ts-ignore
+            if (!cn.outerHTML || !node.outerHTML) {
+              return false;
+            }
+            // @ts-ignore
+            return fastHashStr(cn.outerHTML) === fastHashStr(node.outerHTML);
+          },
+        );
+
+        if (newArrIndex === -1) {
+          node.parentNode?.removeChild?.(node);
+        } else {
+          newRenderedHeadNodes.push(node);
+        }
+      }
+      renderedHeadNodesRef.current = newRenderedHeadNodes;
+
+      for (let i = headShadowDivRef.current.childNodes.length - 1; i >= 0; i -= 1) {
+        const node = headShadowDivRef.current.childNodes[i];
+        const oldArrIndex = renderedHeadNodesRef.current.findIndex((n) => {
+          try {
+            return n.isEqualNode(node);
+          } catch (ex) {
+            // eslint-disable-next-line no-console
+            console.log(ex);
+          }
+          return false;
+        });
+        if (oldArrIndex === -1) {
+          const clonedNode = node.cloneNode(true);
+          document.head.prepend(clonedNode);
+          renderedHeadNodesRef.current.push(clonedNode);
+        }
+      }
+
+      isHeadUpdating.current = false;
+      executeNextUpdate();
+    } else {
+      executeNextUpdate();
+    }
+  };
+
+  const queueUpdateHead = () => {
+    if (isHeadUpdating.current || isMutating.current) {
+      nextHeadUpdate.current = () => {
+        updateHead();
+      };
+    } else {
+      updateHead();
+    }
+  };
+
+  /**
+   * Create head root on navigation
+   */
+  useEffect(() => {
+    const initLoaded = () => {
+      if (!headRootRef.current) {
+        headShadowDivRef.current = document.createElement('div');
+        headRootRef.current = createRoot(headShadowDivRef.current);
+        // Fill in the head elements
+        let doRecord = false;
+        const commentNodes = [];
+        const { childNodes } = document.head;
+        // Record nodes between the SSR Comment
+        for (let i = 0; i < childNodes.length; i += 1) {
+          const childNode = childNodes[i];
+          if (childNode.nodeName === '#comment' && childNode.textContent === '$') {
+            commentNodes.push(childNode);
+            doRecord = true;
+          }
+          if (childNode.nodeName === '#comment' && childNode.textContent === '/$') {
+            commentNodes.push(childNode);
+            doRecord = false;
+          }
+          if (doRecord) {
+            renderedHeadNodesRef.current.push(childNode);
+          }
+        }
+        /** Remove comment Nodes from head sent via server side render */
+        for (let i = 0; i < commentNodes.length; i += 1) {
+          commentNodes[i].remove();
+        }
+      }
+      initialLoadRef.current = false;
+      queueUpdateHead();
+    };
+    if (document.readyState !== 'complete') {
+      window.addEventListener('DOMContentLoaded', initLoaded, {
+        passive: true,
+      });
+    } else {
+      initLoaded();
+    }
+    return () => {
+      window.removeEventListener('DOMContentLoaded', initLoaded);
+    };
+  }, []);
+
+  const addChildren = (headChildren: HeadElement, id: string) => {
+    const existingId = headElementsMap.current.find((a) => a.id === id);
+    if (!existingId) {
+      headElementsMap.current.push({
+        id,
+        elements: convertToReactElement(headChildren),
+      });
+    } else {
+      existingId.elements = convertToReactElement(headChildren);
+    }
+    let allElements: ReactElement[] = [];
+    headElementsMap.current.forEach((e) => {
+      allElements = allElements.concat(e.elements);
+    });
+
+    try {
+      elements.current = allElements
+        .reverse()
+        .filter(unique())
+        .reverse()
+        .map(addKeyToElement())
+        .sort(sortHeadElements);
+      // Update on client side
+      queueUpdateHead();
+    } catch (ex) {
+      // eslint-disable-next-line no-console
+      console.log(ex);
+    }
+  };
+
+  const removeChildren = (id: string) => {
+    // console.log('am in remove children');
+    const existingIdIndex = headElementsMap.current.findIndex((a) => a.id === id);
+    if (existingIdIndex !== -1) {
+      headElementsMap.current.splice(existingIdIndex, 1);
+    }
+    let allElements: ReactElement[] = [];
+    headElementsMap.current.forEach((e) => {
+      allElements = allElements.concat(e.elements);
+    });
+    try {
+      elements.current = allElements
+        .reverse()
+        .filter(unique())
+        .reverse()
+        .map(addKeyToElement())
+        .sort(sortHeadElements);
+
+      // console.log('removing elements.current', elements.current);
+      // Update on client side
+      queueUpdateHead();
+    } catch (ex) {
+      // eslint-disable-next-line no-console
+      console.log(ex);
+    }
+  };
+
+  const renderHead = typeof window === 'undefined';
+  return (
+    <HeadContext.Provider
+      value={{
+        addChildren,
+        removeChildren,
+        elements,
+      }}
+    >
+      {renderHead && (
+        <head>
+          <Suspense>
+            <LazyHead />
+          </Suspense>
+          <meta name="theme-color" content={`${webmanifest?.theme_color ?? '#FFFFFF'}`}/>
+          <link rel="manifest" href="/manifest.webmanifest" />
+          {!!appleIcon && (
+            <link rel="apple-touch-icon" href={appleIcon.src}></link>
+          )}
+          {(styles ?? []).map((style) => (
+            <link rel="stylesheet" key={style} type="text/css" href={style} />
+          ))}
+        </head>
+      )}
+      {children}
+    </HeadContext.Provider>
+  );
+};
+
+export const Head = React.memo<{ children: HeadElement }>(({ children }) => {
+  const { addChildren, removeChildren } = useContext(HeadContext);
+  const id = useId();
+  useEffect(() => {
+    addChildren(children, id);
+    return () => {
+      removeChildren(id);
+    };
+  }, [children]);
+  if (typeof window === 'undefined') {
+    addChildren(children, id);
+  }
+  return null;
+});

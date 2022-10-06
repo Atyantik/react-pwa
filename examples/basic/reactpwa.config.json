@@ -1,0 +1,7 @@
+{
+  "react": {
+    "strictMode": false
+  },
+  "hotReload": true,
+  "serviceWorker": "minimal"
+}
