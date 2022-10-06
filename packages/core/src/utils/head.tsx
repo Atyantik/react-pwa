@@ -3,9 +3,10 @@ import {
   ReactElement,
   Fragment,
   Children,
-  ReactFragment,
   DetailedReactHTMLElement,
 } from 'react';
+import { IWebManifest } from '../typedefs/webmanifest.js';
+import { HeadElement } from '../typedefs/head.js';
 
 // eslint-disable-next-line no-bitwise
 export const fastHashStr = (str: string) => str.split('').reduce((s, c) => (Math.imul(31, s) + c.charCodeAt(0)) | 0, 0);
@@ -104,14 +105,6 @@ export function unique() {
     return isUnique;
   };
 }
-
-/**
- * Acceptable types of Head Elements
- * <Head>
- *  // .. Acceptable Element Types, we are accepting Fragment till level 1
- * </Head>
- */
-export type HeadElement = ReactElement | ReactElement[] | ReactFragment;
 
 /**
  * Get Elements presented by user in the <Head></Head>
@@ -240,3 +233,20 @@ export const sortHeadElements = (
   a: React.ReactElement,
   b: React.ReactElement,
 ) => getPriority(a) - getPriority(b);
+
+export const defaultHead = convertToReactElement(
+  <>
+    <meta httpEquiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </>,
+);
+
+export const getAppleIcon = (
+  webmanifest: IWebManifest,
+) => (webmanifest?.icons ?? []).find(
+  (i: { sizes?: string, src: string }) => (
+    i?.sizes?.indexOf('192') !== -1 || i?.sizes?.indexOf('180') !== -1
+  ) && (
+    i?.src?.indexOf?.('.svg') === -1
+  ),
+);

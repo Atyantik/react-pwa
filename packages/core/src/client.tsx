@@ -21,7 +21,7 @@ if (rootElement) {
       import('./components/strict.js'),
       import('./components/app.js'),
       import('./components/data.js'),
-      import('./components/head.js'),
+      import('./components/head/provider.js'),
     ]);
     let routes = Routes;
     if (!Routes) {

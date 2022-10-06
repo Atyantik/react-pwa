@@ -1,61 +1,22 @@
-import React, {
-  createContext,
-  ReactNode,
-  ReactElement,
-  useRef,
-  Suspense,
-  useContext,
-  useEffect,
-  useId,
-  FC,
+import {
+  FC, ReactElement, ReactNode, Suspense, useContext, useEffect, useRef,
 } from 'react';
 import { createRoot } from 'react-dom/client';
-import { delay } from '../utils/delay.js';
+import { delay } from '../../utils/delay.js';
 import {
   addKeyToElement,
-  HeadElement,
   convertToReactElement,
+  defaultHead,
+  fastHashStr,
   unique,
   sortHeadElements,
-  fastHashStr,
-} from '../utils/head.js';
-import { DataContext } from './data.js';
-import { ReactPWAContext } from './reactpwa.js';
-import { IWebManifest } from '../typedefs/webmanifest.js';
-
-const initialContextValue = {
-  addChildren: (() => {}) as ((children: HeadElement, id: string) => void),
-  removeChildren: (() => {}) as ((id: string) => void),
-  elements: { current: [] } as React.MutableRefObject<React.ReactElement[]>,
-};
-
-export const HeadContext = createContext<typeof initialContextValue>(initialContextValue);
-
-const LazyHead: React.FC = () => {
-  const { awaitDataCompletion } = useContext(DataContext);
-  awaitDataCompletion('@reactpwa/core.head');
-
-  const { elements } = useContext(HeadContext);
-  return <>{elements.current}</>;
-};
-
-const getAppleIcon = (
-  webmanifest: IWebManifest,
-) => (webmanifest?.icons ?? []).find(
-  (i: { sizes?: string, src: string }) => (
-    i?.sizes?.indexOf('192') !== -1 || i?.sizes?.indexOf('180') !== -1
-  ) && (
-    i?.src?.indexOf?.('.svg') === -1
-  ),
-);
-
-const defaultHead = convertToReactElement(
-  <>
-    <meta httpEquiv="X-UA-Compatible" content="IE=Edge" />
-    <meta key="charSet" charSet="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-  </>,
-);
+  getAppleIcon,
+} from '../../utils/head.js';
+import { IWebManifest } from '../../typedefs/webmanifest.js';
+import { ReactPWAContext } from '../reactpwa.js';
+import { HeadElement } from '../../typedefs/head.js';
+import { HeadContext } from './context.js';
+import { LazyHead } from './lazy.js';
 
 export const HeadProvider: FC<{
   children: ReactNode,
@@ -66,17 +27,13 @@ export const HeadProvider: FC<{
   const webmanifest = getValue<IWebManifest>('Webmanifest', {});
   const appleIcon = getAppleIcon(webmanifest);
   const { name, description } = webmanifest || {};
-  const headElementsMap = useRef<
-  {
+  const headElementsMap = useRef<{
     id: string;
     elements: ReactElement[];
-  }[]
-  >([
-    {
-      id: '__default',
-      elements: defaultHead,
-    },
-  ]);
+  }[]>([{
+    id: '__default',
+    elements: defaultHead,
+  }]);
   if (name || description) {
     headElementsMap.current.push({
       id: '__manifest',
@@ -322,18 +279,3 @@ export const HeadProvider: FC<{
     </HeadContext.Provider>
   );
 };
-
-export const Head = React.memo<{ children: HeadElement }>(({ children }) => {
-  const { addChildren, removeChildren } = useContext(HeadContext);
-  const id = useId();
-  useEffect(() => {
-    addChildren(children, id);
-    return () => {
-      removeChildren(id);
-    };
-  }, [children]);
-  if (typeof window === 'undefined') {
-    addChildren(children, id);
-  }
-  return null;
-});

@@ -18,7 +18,7 @@ import {
 } from './utils/asset-extract.js';
 import { App } from './components/app.js';
 import { DataProvider } from './components/data.js';
-import { HeadProvider } from './components/head.js';
+import { HeadProvider } from './components/head/provider.js';
 import { ReactStrictMode } from './components/strict.js';
 import { getUrl } from './utils/fastify.js';
 import { ReactPWAContext } from './components/reactpwa.js';

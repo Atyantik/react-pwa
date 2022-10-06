@@ -24,7 +24,7 @@ export {
 } from 'react-router-dom';
 export { useCookies } from 'react-cookie';
 export * from 'react-error-boundary';
-export { Head } from './components/head.js';
+export { Head } from './components/head/index.js';
 export { HttpStatus } from './components/http-status.js';
 export { Redirect } from './components/redirect.js';
 
