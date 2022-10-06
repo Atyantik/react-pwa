@@ -3,13 +3,7 @@ import webpack from 'webpack';
 import { writeFileSync } from 'node:fs';
 import { extractChunksMap } from '../utils/asset-extract.js';
 import { WebpackHandler } from '../webpack.js';
-
-export type RunOptions = {
-  projectRoot: string,
-  mode: 'production' | 'development',
-  envVars: Record<string, any>,
-  config: Record<string, any>,
-};
+import { RunOptions } from '../typedefs/server.js';
 
 const webpackStatsDisplayOptions: webpack.StatsOptions = {
   colors: true,

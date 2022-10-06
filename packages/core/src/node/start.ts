@@ -10,15 +10,9 @@ import fastifyCookie from '@fastify/cookie';
 import { WebpackHandler } from '../webpack.js';
 import { requireFromString } from '../utils/require-from-string.js';
 import { extractChunksMap } from '../utils/asset-extract.js';
+import { RunOptions } from '../typedefs/server.js';
 
 let fastifyServer: ReturnType<typeof Fastify>;
-
-export type RunOptions = {
-  projectRoot: string,
-  mode: 'production' | 'development',
-  envVars: Record<string, any>,
-  config: Record<string, any>,
-};
 
 const startServer = async () => {
   const port = +(process?.env?.PORT ?? '0') || 3000;
