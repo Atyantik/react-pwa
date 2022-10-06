@@ -1,6 +1,8 @@
+import { parse } from 'bowser';
 import { FastifyRequest } from 'fastify';
+import isbot from 'isbot';
 import { LazyRouteMatch } from './asset-extract.js';
-import { getBaseUrl } from './fastify.js';
+import { getBaseUrl, getUrl } from './fastify.js';
 import { getInternalVar } from './request-internals.js';
 
 export const getHttpStatusCode = (
@@ -31,4 +33,32 @@ export const getRedirectUrl = (request: FastifyRequest) => {
     urlString = '/';
   }
   return urlString;
+};
+
+export const getIsBot = () => {
+  isbot.exclude(['chrome-lighthouse']);
+  return isbot;
+};
+
+export const getRequestArgs = (request: FastifyRequest) => {
+  const userAgent = request.headers['user-agent'] ?? '';
+  const isBot = isbot(userAgent);
+  return {
+    getLocation: async () => getUrl(request),
+    browserDetect: async () => {
+      try {
+        return parse(userAgent);
+      } catch {
+        // Cannot parse useragent
+      }
+      return {
+        browser: { name: '', version: '' },
+        os: { name: '', version: '', versionName: '' },
+        platform: { type: '' },
+        engine: { name: '', version: '' },
+      };
+    },
+    userAgent,
+    isbot: async () => isBot,
+  };
 };

@@ -11,6 +11,7 @@ import {
   unique,
   sortHeadElements,
   getAppleIcon,
+  sanitizeElements,
 } from '../../utils/head.js';
 import { IWebManifest } from '../../typedefs/webmanifest.js';
 import { ReactPWAContext } from '../reactpwa.js';
@@ -78,12 +79,7 @@ export const HeadProvider: FC<{
         allElements = allElements.concat(headElementsMap.current[i].elements);
       }
 
-      const headElements = allElements
-        .reverse()
-        .filter(unique())
-        .reverse()
-        .map(addKeyToElement())
-        .sort(sortHeadElements);
+      const headElements = sanitizeElements(allElements);
 
       // Render ReactPWA head
       headRootRef.current.render(headElements);
@@ -162,13 +158,9 @@ export const HeadProvider: FC<{
         // Record nodes between the SSR Comment
         for (let i = 0; i < childNodes.length; i += 1) {
           const childNode = childNodes[i];
-          if (childNode.nodeName === '#comment' && childNode.textContent === '$') {
+          if (childNode.nodeName === '#comment') {
             commentNodes.push(childNode);
-            doRecord = true;
-          }
-          if (childNode.nodeName === '#comment' && childNode.textContent === '/$') {
-            commentNodes.push(childNode);
-            doRecord = false;
+            doRecord = childNode.textContent === '$';
           }
           if (doRecord) {
             renderedHeadNodesRef.current.push(childNode);
@@ -210,12 +202,7 @@ export const HeadProvider: FC<{
     });
 
     try {
-      elements.current = allElements
-        .reverse()
-        .filter(unique())
-        .reverse()
-        .map(addKeyToElement())
-        .sort(sortHeadElements);
+      elements.current = sanitizeElements(allElements);
       // Update on client side
       queueUpdateHead();
     } catch (ex) {

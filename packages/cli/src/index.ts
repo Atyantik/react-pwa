@@ -2,10 +2,13 @@ import { resolve } from 'node:path';
 import { Command, Option } from 'commander';
 import chokidar from 'chokidar';
 import {
-  getEnvFilePath, getEnvVars, getReactpwaConfig, getReactpwaConfigFilePath,
+  getEnvFilePath,
+  getReactpwaConfigFilePath,
+  getRunOptions,
 } from './util.js';
 
 const program = new Command();
+const projectRoot = process.cwd();
 
 program
   .name('reactpwa')
@@ -22,8 +25,6 @@ program.addOption(modeOption);
 program.command('dev')
   .description('Start the current project in development mode')
   .action(async () => {
-    const { mode } = program.opts();
-    const projectRoot = process.cwd();
     // Something to do here now.
     const reactpwaCore = await import ('@reactpwa/core/start');
     let server: Awaited<ReturnType<typeof reactpwaCore.run>>;
@@ -32,12 +33,7 @@ program.command('dev')
       server.close(cb);
     };
     const startServer = async () => {
-      server = await reactpwaCore.run({
-        projectRoot,
-        envVars: getEnvVars(program)(),
-        config: getReactpwaConfig(program)(),
-        mode: mode ?? 'development',
-      });
+      server = await reactpwaCore.run(getRunOptions(program, 'development'));
       restartingServer = false;
     };
     const restartServer = async () => {
@@ -72,16 +68,11 @@ program.command('dev')
 program.command('build')
   .description('Build the current project')
   .action(async () => {
-    const { mode } = program.opts();
-    const projectRoot = process.cwd();
     // Something to do here now.
     const reactpwaCore = await import ('@reactpwa/core/build');
-    reactpwaCore.run({
-      projectRoot,
-      envVars: getEnvVars(program)(),
-      config: getReactpwaConfig(program)(),
-      mode: mode ?? 'production',
-    });
+    reactpwaCore.run(
+      getRunOptions(program, 'production'),
+    );
   });
 
 program.parse();

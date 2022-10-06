@@ -98,6 +98,13 @@ const addById = (
   }
 };
 
+const prependForwardSlash = (file: string) => {
+  if (file.startsWith('http')) {
+    return file;
+  }
+  return file.startsWith('/') ? file : `/${file}`;
+};
+
 export const extractFiles = (
   matchedRoutes: LazyRouteMatch[],
   chunksMap: ChunksMap,
@@ -164,12 +171,9 @@ export const extractFiles = (
     }
   });
   positionedFiles.sort((a, b) => a.position - b.position);
-  return [...new Set(positionedFiles.map((p) => p.files).flat())].map((file) => {
-    if (file.startsWith('http')) {
-      return file;
-    }
-    return file.startsWith('/') ? file : `/${file}`;
-  });
+  return [
+    ...new Set(positionedFiles.map((p) => p.files).flat()),
+  ].map(prependForwardSlash);
 };
 
 export const extractStyles = (matchedRoutes: LazyRouteMatch[], chunksMap: ChunksMap) => extractFiles(matchedRoutes, chunksMap, '.css');
@@ -180,9 +184,4 @@ export const extractMainScript = (
   chunksMap: ChunksMap,
 ) => (chunksMap?.assetsByChunkName?.main ?? [])
   .filter((file) => hasExtension(file, '.js'))
-  .map((file) => {
-    if (file.startsWith('http')) {
-      return file;
-    }
-    return file.startsWith('/') ? file : `/${file}`;
-  });
+  .map(prependForwardSlash);

@@ -250,3 +250,10 @@ export const getAppleIcon = (
     i?.src?.indexOf?.('.svg') === -1
   ),
 );
+
+export const sanitizeElements = (elements: ReactElement[]) => elements
+  .reverse()
+  .filter(unique())
+  .reverse()
+  .map(addKeyToElement())
+  .sort(sortHeadElements);

@@ -16,7 +16,3 @@ export type RoutesArgs = {
   userAgent: string;
   isbot: Promise<() => Boolean>;
 };
-
-export type Routes = RouteObject[] | (
-  (args: RoutesArgs) => Promise<RouteObject[]>
-) | ((args: RoutesArgs) => RouteObject[]);

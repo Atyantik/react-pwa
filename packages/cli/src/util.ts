@@ -99,3 +99,14 @@ export const getReactpwaConfig = (program: Command) => (): Record<string, any> =
   }
   return {};
 };
+
+export const getRunOptions = (program: Command, defaultMode = 'development') => {
+  const { mode } = program.opts();
+  const projectRoot = process.cwd();
+  return {
+    projectRoot,
+    envVars: getEnvVars(program)(),
+    config: getReactpwaConfig(program)(),
+    mode: mode ?? defaultMode,
+  };
+};

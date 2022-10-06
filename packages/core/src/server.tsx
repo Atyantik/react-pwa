@@ -8,8 +8,6 @@ import appWebmanifest from '@currentProject/webmanifest';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { matchRoutes } from 'react-router-dom';
 import { CookiesProvider } from 'react-cookie';
-import { parse } from 'bowser';
-import isbot from 'isbot';
 import {
   ChunksMap,
   extractMainScript,
@@ -20,15 +18,14 @@ import { App } from './components/app.js';
 import { DataProvider } from './components/data.js';
 import { HeadProvider } from './components/head/provider.js';
 import { ReactStrictMode } from './components/strict.js';
-import { getUrl } from './utils/fastify.js';
 import { ReactPWAContext } from './components/reactpwa.js';
 import { getInternalVar, setInternalVar } from './utils/request-internals.js';
 import { statusCodeWithLocations } from './utils/redirect.js';
-import { getHttpStatusCode, getRedirectUrl } from './utils/server.js';
+import {
+  getHttpStatusCode, getIsBot, getRedirectUrl, getRequestArgs,
+} from './utils/server.js';
 import { WebManifest } from './index.js';
 import { IWebManifest } from './typedefs/webmanifest.js';
-
-isbot.exclude(['chrome-lighthouse']);
 
 const initWebmanifest = async (request: FastifyRequest) => {
   const computedWebmanifest = getInternalVar(request, 'Webmanifest', null);
@@ -36,26 +33,9 @@ const initWebmanifest = async (request: FastifyRequest) => {
     return;
   }
   if (typeof appWebmanifest === 'function') {
-    const userAgent = request.headers['user-agent'] ?? '';
-    const isBot = isbot(userAgent);
-    const webmanifest: WebManifest = await appWebmanifest({
-      getLocation: async () => getUrl(request),
-      browserDetect: async () => {
-        try {
-          return parse(userAgent);
-        } catch {
-          // Cannot parse useragent
-        }
-        return {
-          browser: { name: '', version: '' },
-          os: { name: '', version: '', versionName: '' },
-          platform: { type: '' },
-          engine: { name: '', version: '' },
-        };
-      },
-      userAgent,
-      isbot: async () => isBot,
-    });
+    const webmanifest: WebManifest = await appWebmanifest(
+      getRequestArgs(request),
+    );
     setInternalVar(request, 'Webmanifest', webmanifest);
     return;
   }
@@ -77,27 +57,10 @@ export const handler = async (
 ) => {
   let routes = appRoutes;
   const userAgent = request.headers['user-agent'] ?? '';
+  const isBot = getIsBot()(userAgent);
   await initWebmanifest(request);
-  const isBot = isbot(userAgent);
   if (typeof appRoutes === 'function') {
-    routes = await appRoutes({
-      getLocation: async () => getUrl(request),
-      browserDetect: async () => {
-        try {
-          return parse(userAgent);
-        } catch {
-          // Cannot parse useragent
-        }
-        return {
-          browser: { name: '', version: '' },
-          os: { name: '', version: '', versionName: '' },
-          platform: { type: '' },
-          engine: { name: '', version: '' },
-        };
-      },
-      userAgent,
-      isbot: async () => isBot,
-    });
+    routes = await appRoutes(getRequestArgs(request));
   }
   const matchedRoutes = matchRoutes(routes, request.url) as LazyRouteMatch[];
   const styles = extractStyles(matchedRoutes, chunksMap);
