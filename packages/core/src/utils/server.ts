@@ -8,7 +8,7 @@ export const getHttpStatusCode = (
   matchedRoutes?: LazyRouteMatch[],
 ) => {
   let code = 200;
-  if (!matchedRoutes || matchedRoutes?.[0]?.route?.path === '*') {
+  if (!matchedRoutes || matchedRoutes[0]?.route?.path === '*') {
     code = 404;
   }
   const hasError = getInternalVar(request, 'hasExecutionError', false);

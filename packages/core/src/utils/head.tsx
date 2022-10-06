@@ -135,7 +135,7 @@ export function convertToReactElement(list: HeadElement): ReactElement[] {
         // @ts-ignore
         node.type === Fragment
         // @ts-ignore
-        && node?.props?.children
+        && node.props?.children
       ) {
         // @ts-ignore
         const childElements = convertToReactElement(Children.toArray(node.props.children));
@@ -144,7 +144,7 @@ export function convertToReactElement(list: HeadElement): ReactElement[] {
         // @ts-ignore
         node.type === 'title'
         // @ts-ignore
-        && Array.isArray(node?.props?.children)
+        && Array.isArray(node.props?.children)
       ) {
         const titleNode = node as DetailedReactHTMLElement<any, any>;
         headNodes.push(
@@ -158,14 +158,14 @@ export function convertToReactElement(list: HeadElement): ReactElement[] {
 
       if (
         // @ts-ignore
-        node?.type === 'link'
+        node.type === 'link'
         // @ts-ignore
-        && node?.props?.rel === 'stylesheet'
+        && node.props?.rel === 'stylesheet'
       ) {
         // @ts-ignore
-        const hrefText = node?.props?.href
+        const hrefText = node.props?.href
           // @ts-ignore
-          ? `${node?.props?.href} detected in your <Head> tag. `
+          ? `${node.props?.href} detected in your <Head> tag. `
           : '';
         // eslint-disable-next-line no-console
         console.warn(
@@ -231,7 +231,7 @@ const getPriority = (element: React.ReactElement) => {
     return priorities.title;
   }
   if (element.type === 'meta' && typeof element.props?.name === 'string') {
-    return priorities?.[element.props.name.toLowerCase()] ?? priorities.default;
+    return priorities[element.props.name.toLowerCase()] ?? priorities.default;
   }
   return priorities.default;
 };

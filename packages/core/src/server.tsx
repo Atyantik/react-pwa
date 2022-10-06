@@ -221,7 +221,7 @@ export const handler = async (
       },
       onError(err: unknown) {
         setInternalVar(request, 'hasExecutionError', true);
-        if (err instanceof Error && err?.message?.indexOf?.('closed early') === -1) {
+        if (err instanceof Error && err.message.indexOf('closed early') === -1) {
           // eslint-disable-next-line no-console
           console.error('Rendering error', err);
         } else if (err?.toString?.().indexOf('closed early') === -1) {

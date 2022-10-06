@@ -2,7 +2,7 @@
 import syntaxDynamicImport from '@babel/plugin-syntax-dynamic-import';
 
 export default (api: any) => {
-  const { types: t, parse: p } = api;
+  const { types: t } = api;
   return {
     inherits: syntaxDynamicImport.default,
     visitor: {
@@ -19,9 +19,9 @@ export default (api: any) => {
               }
               // const source = path.parentPath.node.arguments[0].value;
               if (
-                path?.parent?.type !== 'ArrowFunctionExpression' &&
-                path?.parentPath?.parent?.type !== 'ObjectProperty' &&
-                path?.parentPath?.parent?.key?.name === 'component'
+                path.parent?.type !== 'ArrowFunctionExpression' &&
+                path.parentPath?.parent?.type !== 'ObjectProperty' &&
+                path.parentPath?.parent?.key?.name === 'component'
               ) {
                 return;
               }

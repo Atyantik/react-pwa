@@ -22,8 +22,12 @@ export const getAppUrl = (url: string = '') => {
   if (typeof window !== 'undefined') {
     windowUrl = window.location.href;
   }
+
+  if (!(url || windowUrl)) {
+    return APP_URL;
+  }
   const u = `${url || windowUrl || ''}/`;
-  if (!u || u.indexOf('http') === -1) {
+  if (u.indexOf('http') === -1) {
     return APP_URL;
   }
   let appUrl;
