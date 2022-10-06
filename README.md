@@ -2,7 +2,7 @@
 
 
 <p align="center" style="text-align:center">
-  <a href="https://www.reactpwa.com" target="_blank"><img width="150px" src="https://github.com/Atyantik/react-pwa/blob/master/assets/reactpwa.svg?raw=true"></a>
+  <a href="https://www.reactpwa.com" target="_blank"><img width="150px" src="https://github.com/Atyantik/react-pwa/blob/next/assets/reactpwa.svg?raw=true"></a>
 </p>
 <h1 align="center" style="text-align:center">ReactPWA - The simplest way to create PWAs with React</h1>
 
@@ -68,7 +68,7 @@ Support this project by becoming a sponsor. Your logo will show up here with a l
 ##### Atyantik Technologies Private Limited
 
 Everyone at Atyantik Technologies is contributing their free time for contributing to the project and core discussions.  
-<a href="https://www.atyantik.com" target="_blank"><img width="150px" src="https://www.reactpwa.com/img/supporters/atyantik.svg"></a>
+<a href="https://www.atyantik.com" target="_blank"><img width="150px" src="https://github.com/Atyantik/react-pwa/blob/next/assets/atyantik.svg?raw=true"></a>
 
 ##### DigitalOcean
 
@@ -76,13 +76,12 @@ DigitalOcean has been supporting the open-source project since the very start an
 <a href="https://www.digitalocean.com" target="_blank"><img width="120px" src="https://www.reactpwa.com/img/supporters/digitalocean.svg"></a>
 
 ##### Browser stack
-
-Thanks to Browser stack we are able to test the PWA nature of application on various mobiles and write automated test cases.  
+Thanks to the Browser stack we can test the PWA nature of applications on various mobiles and write automated test cases.  
 <a href="https://www.browserstack.com" target="_blank"><img width="180px" src="https://www.reactpwa.com/img/supporters/browserstack-black.png"></a>
 
 ##### Navicat
 
-We are very thankful to Navicat for offering their support to the project and providing us an open-source license for further project development.  
+We are very thankful to Navicat for offering their support to the project and providing us with an open-source license for further project development.  
 <a href="https://www.navicat.com" target="_blank"><img width="180px" src="https://www.reactpwa.com/img/supporters/navicat.png"></a>
 
 
