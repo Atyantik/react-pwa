@@ -4,12 +4,9 @@ import {
 import { createRoot } from 'react-dom/client';
 import { delay } from '../../utils/delay.js';
 import {
-  addKeyToElement,
   convertToReactElement,
   defaultHead,
   fastHashStr,
-  unique,
-  sortHeadElements,
   getAppleIcon,
   sanitizeElements,
 } from '../../utils/head.js';
@@ -222,12 +219,7 @@ export const HeadProvider: FC<{
       allElements = allElements.concat(e.elements);
     });
     try {
-      elements.current = allElements
-        .reverse()
-        .filter(unique())
-        .reverse()
-        .map(addKeyToElement())
-        .sort(sortHeadElements);
+      elements.current = sanitizeElements(allElements);
 
       // console.log('removing elements.current', elements.current);
       // Update on client side
