@@ -25,9 +25,6 @@
     "prettier": "^2.7.1",
     "tsup": "^6.2.3"
   },
-  "peerDependencies": {
-    "@reactpwa/core": "^1.0.0"
-  },
   "dependencies": {
     "chokidar": "^3.5.3",
     "commander": "^9.4.1",
