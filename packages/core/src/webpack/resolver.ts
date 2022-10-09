@@ -14,8 +14,6 @@ export const getResolveExtensions = (): string[] => [
   '.json',
 ];
 
-export const getResolveAlias = (): Exclude<Configuration['resolve'], undefined>['alias'] => undefined;
-
 export const getResolveLoader = (): Configuration['resolveLoader'] => {
   const libraryNodeModules = resolve(libSrc, 'node_modules');
   const libraryHasNodeModules = libraryNodeModules ? fs.existsSync(libraryNodeModules) : false;
@@ -44,7 +42,6 @@ export const getResolve = (
       || resolve(libSrc, 'defaults', 'webmanifest')
     ),
     '@currentProject': resolve(options.projectRoot, 'src'),
-    ...((getResolveAlias() ?? {}) || {}),
   },
   extensions: getResolveExtensions(),
 });
