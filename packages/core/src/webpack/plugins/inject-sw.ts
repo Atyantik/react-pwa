@@ -1,7 +1,11 @@
 import { Compiler } from 'webpack';
 import path from 'node:path';
 import fs from 'node:fs';
-import { extractChunksMap, extractMainScript, extractStyles } from '../../utils/asset-extract.js';
+import {
+  extractChunksMap,
+  extractMainScript,
+  extractStyles,
+} from '../../utils/asset-extract.js';
 
 export class InjectSW {
   static defaultOptions = {

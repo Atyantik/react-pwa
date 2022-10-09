@@ -127,7 +127,9 @@ export const extractFiles = (
   if (filesFromMain.length) {
     positionedFiles.push({
       position: -999,
-      files: (chunksMap.assetsByChunkName?.main ?? []).filter((file) => hasExtension(file, ext)),
+      files: (chunksMap.assetsByChunkName?.main ?? []).filter(
+        (file) => hasExtension(file, ext),
+      ),
     });
   }
 

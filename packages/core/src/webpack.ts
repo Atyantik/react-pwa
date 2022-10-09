@@ -8,11 +8,10 @@ import Sass from 'sass';
 import webpack from 'webpack';
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
-import WorkboxPlugin from 'workbox-webpack-plugin';
 import BabelLazyRoutes from './babel/lazy-routes.js';
 import { notBoolean } from './utils/not-boolean.js';
 import { projectExistsSync } from './utils/resolver.js';
-import { InjectSW } from './webpack/plugins/inject-sw.js';
+import { getServiceWorker } from './webpack/service-worker.js';
 
 const currentFileUrl = new URL(import.meta.url);
 const libSrc = path.resolve(currentFileUrl.pathname, '..');
@@ -249,30 +248,24 @@ export class WebpackHandler {
     return this.isDevelopment ? '[name]__[local]--[hash:base64:5]' : '[contenthash:base64:5]';
   }
 
-  getCssLoaderOptions(options = { withinSrc: true }) {
-    if (options.withinSrc) {
-      return {
-        sourceMap: this.isDevelopment,
-        modules: {
-          localIdentName: this.getLocalIdentName(),
-          mode: (resourcePath: string) => {
-            if (/pure\.(css|s[ac]ss)$/i.test(resourcePath)) {
-              return 'pure';
-            }
-            if (/global\.(css|s[ac]ss)$/i.test(resourcePath)) {
-              return 'global';
-            }
-            return 'local';
-          },
-          localIdentContext: path.resolve(this.options.projectRoot, 'src'),
-        },
-        importLoaders: 2,
-      };
-    }
+  getCssLoaderOptions() {
     return {
+      sourceMap: this.isDevelopment,
       modules: {
-        localIdentName: '[local]',
+        localIdentName: this.getLocalIdentName(),
         localIdentContext: path.resolve(this.options.projectRoot, 'src'),
+        mode: (resourcePath: string) => {
+          if (/pure\.(css|s[ac]ss)$/i.test(resourcePath)) {
+            return 'pure';
+          }
+          if (
+            /global\.(css|s[ac]ss)$/i.test(resourcePath)
+            || /(node_modules|src\/resources)/i.test(resourcePath)
+          ) {
+            return 'global';
+          }
+          return 'local';
+        },
       },
       importLoaders: 2,
     };
@@ -297,57 +290,30 @@ export class WebpackHandler {
     };
   }
 
-  getCssRules(): webpack.RuleSetRule[] {
-    return [
-      {
-        test: /\.(css|s[ac]ss)$/i,
-        exclude: [path.join(this.options.projectRoot, 'src', 'resources'), /node_modules/],
-        use: [
-          this.shouldHotReload && { loader: 'style-loader' },
-          this.shouldHotReload || {
-            loader: MiniCssExtractPlugin.loader,
-            options: { emit: this.isTargetWeb },
-          },
-          {
-            loader: 'css-loader',
-            options: this.getCssLoaderOptions(),
-          },
-          {
-            loader: 'postcss-loader',
-            options: this.getPostcssLoaderOptions(),
-          },
-          // Compiles Sass to CSS
-          {
-            loader: 'sass-loader',
-            options: this.getSassLoaderOptions(),
-          },
-        ].filter(notBoolean),
-      },
-      {
-        test: /\.(css|s[ac]ss)$/i,
-        include: [path.join(this.options.projectRoot, 'src', 'resources'), /node_modules/],
-        use: [
-          this.shouldHotReload && { loader: 'style-loader' },
-          this.shouldHotReload || {
-            loader: MiniCssExtractPlugin.loader,
-            options: { emit: this.isTargetWeb },
-          },
-          {
-            loader: 'css-loader',
-            options: this.getCssLoaderOptions({ withinSrc: false }),
-          },
-          {
-            loader: 'postcss-loader',
-            options: this.getPostcssLoaderOptions(),
-          },
-          // Compiles Sass to CSS
-          {
-            loader: 'sass-loader',
-            options: this.getSassLoaderOptions(),
-          },
-        ].filter(notBoolean),
-      },
-    ];
+  getCssRule(): webpack.RuleSetRule {
+    return {
+      test: /\.(css|s[ac]ss)$/i,
+      use: [
+        this.shouldHotReload && { loader: 'style-loader' },
+        this.shouldHotReload || {
+          loader: MiniCssExtractPlugin.loader,
+          options: { emit: this.isTargetWeb },
+        },
+        {
+          loader: 'css-loader',
+          options: this.getCssLoaderOptions(),
+        },
+        {
+          loader: 'postcss-loader',
+          options: this.getPostcssLoaderOptions(),
+        },
+        // Compiles Sass to CSS
+        {
+          loader: 'sass-loader',
+          options: this.getSassLoaderOptions(),
+        },
+      ].filter(notBoolean),
+    };
   }
 
   getEntry(): webpack.Configuration['entry'] {
@@ -666,40 +632,21 @@ export class WebpackHandler {
   }
 
   getServiceWorkerPlugin() {
-    if (!this.isTargetWeb || this.configOptions.serviceWorker === false) {
+    /**
+     * Only emit service worker for target web and if the
+     * user has not specified serviceWorker as false in the
+     * config options
+     */
+    if (
+      !this.isTargetWeb
+      || this.configOptions.serviceWorker === false
+    ) {
       return false;
     }
-    // Check if custom sw already exists
-    const projectSW = projectExistsSync(
-      path.join(this.options.projectRoot, 'src', 'sw.js'),
+    return getServiceWorker(
+      this.options.projectRoot,
+      this.configOptions.serviceWorker,
     );
-    if (projectSW) {
-      const projectSWContent = fs.readFileSync(projectSW, { encoding: 'utf-8' });
-      // If no manifest is needed, then simply inject the project sw.js
-      if (projectSWContent.indexOf('self.__WB_MANIFEST') === -1) {
-        return new InjectSW({
-          srcFile: projectSW,
-        });
-      }
-      // If __WB_MANIFEST exists then inject it via the InjectManifest Plugin
-      return new WorkboxPlugin.InjectManifest({
-        swSrc: projectSW,
-        swDest: 'sw.js',
-      });
-    }
-    // If the minimal option is selected, simply inject the minimum
-    // service worker for PWA
-    if (this.configOptions.serviceWorker === 'minimal') {
-      return new InjectSW();
-    }
-
-    // If default option is selected then inject the offline supported
-    // service worker
-    return new WorkboxPlugin.GenerateSW({
-      clientsClaim: true,
-      skipWaiting: true,
-      swDest: 'sw.js',
-    });
   }
 
   getPlugins(): webpack.Configuration['plugins'] {
@@ -766,7 +713,7 @@ export class WebpackHandler {
           this.getImagesRule(),
           this.getRawResourceRule(),
           this.getJsRule(),
-          ...this.getCssRules(),
+          this.getCssRule(),
         ],
       },
       resolve: this.getResolve(),
