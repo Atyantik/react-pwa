@@ -1,6 +1,5 @@
 {
   "name": "reactpwa",
-  "private": true,
   "version": "1.0.0",
   "description": "ReactPWA",
   "scripts": {

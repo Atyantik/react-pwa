@@ -33,5 +33,6 @@
     "commander": "^9.4.1",
     "dotenv": "^16.0.3",
     "dotenv-expand": "^9.0.0"
-  }
+  },
+  "gitHead": "45460d21664a7683266c65154fdc063a9274bee4"
 }
