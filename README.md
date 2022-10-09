@@ -16,7 +16,7 @@ To install and get started with ReactPWA execute the following commands:
 
 ##### 1. Clone the repo to your local PC and go to the installation
 ```bash
-git clone https://github.com/Atyantik/react-pwa-boilerplace.git my-pwa && cd my-pwa
+git clone https://github.com/Atyantik/react-pwa-boilerplate.git my-pwa && cd my-pwa
 ```
   
 ##### 2. Install the dependencies

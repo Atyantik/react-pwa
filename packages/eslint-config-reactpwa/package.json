@@ -1,6 +1,6 @@
 {
   "name": "eslint-config-reactpwa",
-  "version": "1.0.0",
+  "version": "1.0.3-alpha.0",
   "description": "Linting of ReactPWA Apps",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -32,5 +32,6 @@
     "@typescript-eslint/eslint-plugin": "^5.39.0",
     "eslint": "^8.24.0",
     "prettier": "^2.7.1"
-  }
+  },
+  "gitHead": "1b9ab957cac25218179b12f2ddc727fabb06f000"
 }

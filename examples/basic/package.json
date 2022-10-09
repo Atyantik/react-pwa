@@ -1,6 +1,6 @@
 {
   "name": "@reactpwa/examples-basic",
-  "version": "1.0.0",
+  "version": "1.0.3-alpha.0",
   "description": "Core of ReactPWA",
   "type": "module",
   "scripts": {
@@ -12,7 +12,7 @@
   "author": "Tirth Bodawala <tirthbodawala@atyantik.com>",
   "license": "ISC",
   "dependencies": {
-    "@reactpwa/core": "^1.0.0",
+    "@reactpwa/core": "^1.0.3-alpha.0",
     "bulma": "^0.9.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
@@ -20,5 +20,6 @@
   "devDependencies": {
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6"
-  }
+  },
+  "gitHead": "1b9ab957cac25218179b12f2ddc727fabb06f000"
 }
