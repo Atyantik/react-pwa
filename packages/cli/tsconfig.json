@@ -1,0 +1,10 @@
+{
+  "extends": "eslint-config-reactpwa/tsconfig.json",
+  "compilerOptions": {
+    "moduleResolution": "Node16",
+    "baseUrl": "./",
+    "rootDir": "./src/",
+    "outDir": "./lib/esm/"
+  },
+  "include": ["./src/**/*"]
+}

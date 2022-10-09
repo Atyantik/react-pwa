@@ -1,0 +1,11 @@
+{
+  "extends": "eslint-config-reactpwa/tsconfig.json",
+  "compilerOptions": {
+    "target": "es2017",
+    "moduleResolution": "Node",
+    "baseUrl": "./",
+    "rootDir": "./src/",
+    "outDir": "./lib/esm/"
+  },
+  "include": ["./src/**/*"],
+}

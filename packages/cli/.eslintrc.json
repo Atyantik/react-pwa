@@ -1,0 +1,8 @@
+{
+  "$schema": "http://json.schemastore.org/eslintrc",
+  "extends": "reactpwa",
+  "root": true,
+  "parserOptions": {
+    "project": "./tsconfig.eslint.json"
+  }
+}

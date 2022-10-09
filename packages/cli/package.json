@@ -1,0 +1,37 @@
+{
+  "name": "@reactpwa/cli",
+  "version": "1.0.0",
+  "description": "Command line interface for ReactPWA",
+  "type": "module",
+  "scripts": {
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "lint": "prettier --write . && eslint",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "typings": "./lib",
+  "main": "./reactpwa.js",
+  "bin": {
+    "reactpwa": "./reactpwa.js"
+  },
+  "keywords": [],
+  "author": "Tirth Bodawala <tirthbodawala@atyantik.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "@reactpwa/core": "^1.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.39.0",
+    "eslint": "^8.24.0",
+    "eslint-config-reactpwa": "^1.0.0",
+    "prettier": "^2.7.1",
+    "tsup": "^6.2.3"
+  },
+  "peerDependencies": {
+    "@reactpwa/core": "^1.0.0"
+  },
+  "dependencies": {
+    "chokidar": "^3.5.3",
+    "commander": "^9.4.1",
+    "dotenv": "^16.0.3",
+    "dotenv-expand": "^9.0.0"
+  }
+}

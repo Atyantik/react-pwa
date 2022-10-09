@@ -1,0 +1,13 @@
+{
+  "eslint.workingDirectories": [
+    "packages/core",
+    "packages/cli",
+    "packages/eslint-config-reactpwa",
+    "examples/basic",
+    "examples/jotai",
+  ],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
+}

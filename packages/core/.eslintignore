@@ -1,0 +1,10 @@
+coverage
+dist
+lib
+src/babel/lazy-routes.ts
+reactpwa.js
+node_modules
+src/__tests__
+jest-transformer.js
+jest.config.js
+src/defaults/sw.js
