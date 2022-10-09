@@ -44,7 +44,7 @@ export const getResolve = (
       || resolve(libSrc, 'defaults', 'webmanifest')
     ),
     '@currentProject': resolve(options.projectRoot, 'src'),
-    ...(getResolveAlias() ?? {}),
+    ...((getResolveAlias() ?? {}) || {}),
   },
   extensions: getResolveExtensions(),
 });
