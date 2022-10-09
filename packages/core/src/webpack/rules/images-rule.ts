@@ -1,7 +1,7 @@
-import { extensionRegex } from 'src/webpack';
 import { RuleSetRule } from 'webpack';
-import { getGeneratorOptions } from '../generator-options';
-import { imageAssetsExtensions } from '../image-assets-extensions';
+import { getGeneratorOptions } from '../generator-options.js';
+import { imageAssetsExtensions } from '../image-assets-extensions.js';
+import { extensionRegex } from '../utils.js';
 
 export const getImagesRule = (
   options: {

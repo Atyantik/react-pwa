@@ -1,8 +1,8 @@
 import { Configuration } from 'webpack';
 import { resolve } from 'node:path';
 import fs from 'node:fs';
-import { projectExistsSync } from 'src/utils/resolver';
-import { libSrc } from '../root';
+import { projectExistsSync } from '../utils/resolver.js';
+import { libSrc } from '../root.js';
 
 export const getResolveExtensions = (): string[] => [
   '.js',

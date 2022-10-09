@@ -1,9 +1,9 @@
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import { RuleSetRule } from 'webpack';
-import { notBoolean } from '../utils/not-boolean';
-import { getCssLoaderOptions } from './loader-options/css-loader-options';
-import { getPostcssLoaderOptions } from './loader-options/post-css-loader-options';
-import { getSassLoaderOptions } from './loader-options/sass-loader-options';
+import { notBoolean } from '../../utils/not-boolean.js';
+import { getCssLoaderOptions } from '../loader-options/css-loader-options.js';
+import { getPostcssLoaderOptions } from '../loader-options/post-css-loader-options.js';
+import { getSassLoaderOptions } from '../loader-options/sass-loader-options.js';
 
 export const getCssRule = (
   options: {

@@ -1,6 +1,6 @@
 import { resolve } from 'node:path';
 import webpackNodeExternals from 'webpack-node-externals';
-import { libSrc } from '../root';
+import { libSrc } from '../root.js';
 
 export const getNodeExternals = (
   options: {

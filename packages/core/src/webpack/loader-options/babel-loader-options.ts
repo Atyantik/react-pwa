@@ -1,4 +1,4 @@
-import { notBoolean } from 'src/utils/not-boolean';
+import { notBoolean } from '../../utils/not-boolean.js';
 import BabelLazyRoutes from '../../babel/lazy-routes.js';
 
 const getPresetEnvOptions = (options: { isTargetServer: boolean }) => {

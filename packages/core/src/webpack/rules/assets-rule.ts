@@ -1,6 +1,6 @@
-import { extensionRegex } from '../../webpack.js';
-import { getGeneratorOptions } from '../generator-options';
-import { staticAssetsExtensions } from '../static-assets-extensions';
+import { getGeneratorOptions } from '../generator-options.js';
+import { staticAssetsExtensions } from '../static-assets-extensions.js';
+import { extensionRegex } from '../utils.js';
 
 export const getAssetsRule = (
   options: {

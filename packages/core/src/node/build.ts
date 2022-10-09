@@ -29,12 +29,11 @@ export const run = (options: RunOptions) => {
     mode: options.mode,
     target: 'node',
     projectRoot: options.projectRoot,
-    buildWithHttpServer: false,
+    buildWithHttpServer: true,
     envVars: options.envVars ?? {},
     config: options.config ?? {},
     copyPublicFolder: true,
   });
-  nodeWebpackHandler.setBuildWithHttpServer(true);
 
   const WebConfig: webpack.Configuration = webWebpackHandler.getConfig();
   const ServerConfig: webpack.Configuration = nodeWebpackHandler.getConfig();
