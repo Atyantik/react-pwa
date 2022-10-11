@@ -85,7 +85,7 @@ export const HeadProvider: FC<{
 
       const newRenderedHeadNodes = [];
       for (let i = renderedHeadNodesRef.current.length - 1; i >= 0; i -= 1) {
-        const node = renderedHeadNodesRef.current[i];
+        let node = renderedHeadNodesRef.current[i];
         const newArrIndex = Array.from(headShadowDivRef.current.childNodes).findIndex(
           (cn) => {
             // @ts-ignore
@@ -98,7 +98,15 @@ export const HeadProvider: FC<{
         );
 
         if (newArrIndex === -1) {
-          node.parentNode?.removeChild?.(node);
+          try {
+            node.parentNode?.removeChild?.(node);
+          } catch {
+            // With hot reload the node tends to to remove the child itself, thus
+            // the node no longer belongs to the parent. thus forcefully
+            // ask GC to garbage collect it.
+            // @ts-ignore
+            node = null;
+          }
         } else {
           newRenderedHeadNodes.push(node);
         }
