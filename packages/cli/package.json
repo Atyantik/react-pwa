@@ -19,8 +19,8 @@
   "license": "ISC",
   "devDependencies": {
     "@reactpwa/core": "^1.0.4-alpha.0",
-    "@typescript-eslint/eslint-plugin": "^5.39.0",
-    "eslint": "^8.24.0",
+    "@typescript-eslint/eslint-plugin": "^5.40.0",
+    "eslint": "^8.25.0",
     "eslint-config-reactpwa": "^1.0.3-alpha.0",
     "prettier": "^2.7.1",
     "tsup": "^6.2.3"
