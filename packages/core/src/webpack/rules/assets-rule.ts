@@ -10,12 +10,9 @@ export const getAssetsRule = (
 ) => ({
   test: extensionRegex(staticAssetsExtensions),
   type: 'asset/resource',
-  generator: {
-    // We will use content hash for long term caching of asset
-    filename: getGeneratorOptions({
-      prefix: 'assets',
-      withBuild: options.withBuild,
-      useBuildtimeGeneratorOptions: options.useBuildtimeGeneratorOptions,
-    }),
-  },
+  generator: getGeneratorOptions({
+    prefix: 'assets',
+    withBuild: options.withBuild,
+    useBuildtimeGeneratorOptions: options.useBuildtimeGeneratorOptions,
+  }),
 });
