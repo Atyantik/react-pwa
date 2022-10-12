@@ -1,4 +1,4 @@
-import Cookies, { CookieChangeOptions } from 'universal-cookie';
+import Cookies from 'universal-cookie';
 import { renderToPipeableStream } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom/server.js';
 // @ts-ignore
@@ -26,6 +26,7 @@ import {
 } from './utils/server.js';
 import { WebManifest } from './index.js';
 import { IWebManifest } from './typedefs/webmanifest.js';
+import { cookieChangeHandler } from './utils/cookie.js';
 
 const initWebmanifest = async (request: FastifyRequest) => {
   const computedWebmanifest = getInternalVar(request, 'Webmanifest', null);
@@ -57,8 +58,12 @@ export const handler = async (
 ) => {
   let routes = appRoutes;
   const userAgent = request.headers['user-agent'] ?? '';
+  // get isbot instance
   const isBot = getIsBot()(userAgent);
+
+  // Init web manifest for the request
   await initWebmanifest(request);
+
   if (typeof appRoutes === 'function') {
     routes = await appRoutes(getRequestArgs(request));
   }
@@ -68,35 +73,7 @@ export const handler = async (
 
   // Initialize Cookies
   let universalCookies: Cookies | null = new Cookies(request.cookies);
-  const onCookieChange = (change: CookieChangeOptions) => {
-    if (reply.sent) return;
-    if (change.value === undefined) {
-      reply.clearCookie(change.name, change.options);
-    } else {
-      const cookieOpt = { ...change.options };
-      if (cookieOpt.maxAge && change.options && change.options.maxAge) {
-        // the standard for maxAge is seconds but npm cookie uses milliseconds
-        cookieOpt.maxAge = change.options.maxAge * 1000;
-      }
-
-      try {
-        reply.setCookie(change.name, change.value, cookieOpt);
-        const setCookieHeader = reply.getHeader('set-cookie');
-        if (reply.raw.headersSent) {
-          // eslint-disable-next-line no-console
-          console.warn(
-            '\nWARNING : NO_EFFECT :: Cannot set cookie on SSR render as headers are already sent.\nCookie details:',
-            change,
-          );
-        } else if (setCookieHeader) {
-          reply.raw.setHeader('set-cookie', setCookieHeader);
-        }
-      } catch (ex) {
-        // eslint-disable-next-line no-console
-        console.log(ex);
-      }
-    }
-  };
+  const onCookieChange = cookieChangeHandler(reply);
   universalCookies.addChangeListener(onCookieChange);
   const clearCookieListener = () => {
     if (universalCookies) {
@@ -104,6 +81,7 @@ export const handler = async (
       universalCookies = null;
     }
   };
+
   // release universal cookies
   reply.then(clearCookieListener, clearCookieListener);
 
@@ -131,7 +109,8 @@ export const handler = async (
           <StaticRouter location={request.url}>
             <DataProvider>
               <HeadProvider
-               styles={styles}
+                styles={styles}
+                preStyles={getRequestValue('headPreStyles', <></>)}
               >
                 <app-content>
                   <App routes={routes} />

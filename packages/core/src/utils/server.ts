@@ -1,16 +1,24 @@
+import { ReactElement } from 'react';
 import { parse } from 'bowser';
 import { FastifyRequest } from 'fastify';
 import isbot from 'isbot';
+import { RoutesArgs } from '../index.js';
 import { LazyRouteMatch } from './asset-extract.js';
 import { getBaseUrl, getUrl } from './fastify.js';
-import { getInternalVar } from './request-internals.js';
+import { getInternalVar, setInternalVar } from './request-internals.js';
 
+/**
+ * get Http Status code for a request
+ * @param request Fastify Request
+ * @param matchedRoutes array of routes
+ * @returns code number
+ */
 export const getHttpStatusCode = (
   request: FastifyRequest,
   matchedRoutes?: LazyRouteMatch[],
 ) => {
   let code = 200;
-  if (!matchedRoutes || matchedRoutes[0]?.route?.path === '*') {
+  if (!matchedRoutes) {
     code = 404;
   }
   const hasError = getInternalVar(request, 'hasExecutionError', false);
@@ -20,6 +28,11 @@ export const getHttpStatusCode = (
   return getInternalVar(request, 'httpStatusCode', code);
 };
 
+/**
+ * Get redirect url
+ * @param request FastifyRequest
+ * @returns string
+ */
 export const getRedirectUrl = (request: FastifyRequest) => {
   const location = getInternalVar(request, 'httpLocationHeader', '/');
   const baseUrl = getBaseUrl(request);
@@ -35,16 +48,57 @@ export const getRedirectUrl = (request: FastifyRequest) => {
   return urlString;
 };
 
+/**
+ * Get instance of isBot
+ * @returns isbot
+ */
 export const getIsBot = () => {
   isbot.exclude(['chrome-lighthouse']);
   return isbot;
 };
 
-export const getRequestArgs = (request: FastifyRequest) => {
+const scopedCache = new WeakMap();
+
+const setScopedVar = (request: FastifyRequest, key: string, value: any) => {
+  const scopedVals = scopedCache.get(request) ?? {};
+  scopedCache.set(request, {
+    ...scopedVals,
+    [key]: value,
+  });
+};
+
+const hasScopedVar = (
+  request: FastifyRequest,
+  key: string,
+) => !!(scopedCache.get(request)?.[key] ?? false);
+
+const getScopedVar = <T = any>(
+  request: FastifyRequest,
+  key: string,
+  defaultValue?: T,
+) => scopedCache.get(request)?.[key] ?? defaultValue ?? null;
+
+/**
+ * Get request args for
+ * @param request FastifyRequest
+ */
+export const getRequestArgs = (request: FastifyRequest): RoutesArgs => {
   const userAgent = request.headers['user-agent'] ?? '';
   const isBot = isbot(userAgent);
+  const getScoped = async (
+    key: string,
+    cb: (() => any) | (() => Promise<any>),
+  ) => {
+    if (hasScopedVar(request, key)) {
+      return getScopedVar(request, key);
+    }
+    const computedScopeCB = await cb();
+    setScopedVar(request, key, computedScopeCB);
+    return computedScopeCB;
+  };
+
   return {
-    getLocation: async () => getUrl(request),
+    getLocation: () => getUrl(request),
     browserDetect: async () => {
       try {
         return parse(userAgent);
@@ -60,5 +114,9 @@ export const getRequestArgs = (request: FastifyRequest) => {
     },
     userAgent,
     isbot: async () => isBot,
+    getScoped,
+    addToHeadPreStyles: (components: ReactElement | ReactElement[]) => {
+      setInternalVar(request, 'headPreStyles', components);
+    },
   };
 };

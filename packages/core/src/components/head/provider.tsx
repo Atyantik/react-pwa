@@ -19,7 +19,8 @@ import { LazyHead } from './lazy.js';
 export const HeadProvider: FC<{
   children: ReactNode,
   styles?: string[],
-}> = ({ children, styles }) => {
+  preStyles?: ReactElement | ReactElement[]
+}> = ({ children, styles, preStyles }) => {
   const { getValue } = useContext(ReactPWAContext);
   // Get web manifest data
   const webmanifest = getValue<IWebManifest>('Webmanifest', {});
@@ -252,6 +253,7 @@ export const HeadProvider: FC<{
           <Suspense>
             <LazyHead />
           </Suspense>
+          {convertToReactElement(<>{preStyles}</>)}
           <meta name="theme-color" content={`${webmanifest?.theme_color ?? '#FFFFFF'}`}/>
           <link rel="manifest" href="/manifest.webmanifest" />
           {!!appleIcon && (

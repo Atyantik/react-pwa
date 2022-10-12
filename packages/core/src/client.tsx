@@ -1,5 +1,6 @@
 const rootElement = document.getElementsByTagName('app-content')?.[0];
 const ssrEnabled = true;
+
 if (rootElement) {
   (async () => {
     const [
@@ -11,6 +12,7 @@ if (rootElement) {
       { App },
       { DataProvider },
       { HeadProvider },
+      { requestArgs },
     ] = await Promise.all([
       import('react-dom/client'),
       import('react-cookie'),
@@ -22,36 +24,14 @@ if (rootElement) {
       import('./components/app.js'),
       import('./components/data.js'),
       import('./components/head/provider.js'),
+      import('./utils/client.js'),
     ]);
     let routes = Routes;
     if (!Routes) {
       routes = [];
     }
     if (typeof Routes === 'function') {
-      const { userAgent } = window.navigator;
-      routes = await Routes({
-        getLocation: async () => new URL(window.location.href),
-        browserDetect: async () => {
-          const { parse } = await import('bowser');
-          try {
-            return parse(userAgent);
-          } catch {
-            // Cannot parse useragent
-          }
-          return {
-            browser: { name: '', version: '' },
-            os: { name: '', version: '', versionName: '' },
-            platform: { type: '' },
-            engine: { name: '', version: '' },
-          };
-        },
-        userAgent,
-        isbot: async () => {
-          const { default: isBot } = await import('isbot');
-          isBot.exclude(['chrome-lighthouse']);
-          return isBot(userAgent);
-        },
-      });
+      routes = await Routes(requestArgs);
     }
     const children = (
       <ReactStrictMode>

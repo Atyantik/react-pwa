@@ -1,5 +1,6 @@
+import { parse } from 'bowser';
+import { ReactElement } from 'react';
 import { RouteObject as RRRouteObject } from 'react-router-dom';
-import { RoutesArgs } from './typedefs/routes.js';
 import { IWebManifest } from './typedefs/webmanifest.js';
 
 export { useData } from './hooks/useData.js';
@@ -28,6 +29,17 @@ export * from 'react-error-boundary';
 export { Head } from './components/head/index.js';
 export { HttpStatus } from './components/http-status.js';
 export { Redirect } from './components/redirect.js';
+
+export type RoutesArgs = {
+  getLocation: () => URL;
+  browserDetect: () => Promise<ReturnType<typeof parse>>;
+  userAgent: string;
+  isbot: () => Promise<Boolean>;
+  getScoped: <T = any>(
+    key: string, callback: (() => any) | (() => Promise<any>)
+  ) => Promise<T>;
+  addToHeadPreStyles: (components: ReactElement | ReactElement[]) => void
+};
 
 export type Routes = RouteObject[] | (
   (args: RoutesArgs) => Promise<RouteObject[]>
