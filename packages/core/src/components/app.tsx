@@ -2,13 +2,12 @@ import { useMemo } from 'react';
 import { useRoutes, RouteObject as RRRouteObject } from 'react-router-dom';
 import { lazy } from './route.js';
 import { ErrorFallback } from './error.js';
-import { ErrorBoundary } from '../index.js';
-import { RouteObject } from '../typedefs/routes.js';
+import { ErrorBoundary, RouteObject } from '../index.js';
 
 const lazifyRoutes = (routes: RouteObject[]): RRRouteObject[] => routes.map((route) => {
   // Remove webpack and module from route
   const {
-    webpack, module, element, children, index, ...otherProps
+    webpack, module, element, children, index, props, ...otherProps
   } = route;
   const Element = lazy(route);
   // we are ignoring index route as of now, as we are not supporting

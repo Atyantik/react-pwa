@@ -1,4 +1,5 @@
-import { RouteObject, RoutesArgs } from './typedefs/routes.js';
+import { RouteObject as RRRouteObject } from 'react-router-dom';
+import { RoutesArgs } from './typedefs/routes.js';
 import { IWebManifest } from './typedefs/webmanifest.js';
 
 export { useData } from './hooks/useData.js';
@@ -31,6 +32,16 @@ export { Redirect } from './components/redirect.js';
 export type Routes = RouteObject[] | (
   (args: RoutesArgs) => Promise<RouteObject[]>
 ) | ((args: RoutesArgs) => RouteObject[]);
+
+export interface RouteObject extends Omit<Omit<RRRouteObject, 'element'>, 'children'> {
+  element: () => Promise<{ default: React.ComponentType<any> }>;
+  children?: RouteObject[];
+  webpack?: string | number;
+  module?: string;
+  skeleton?: React.ComponentType<any>;
+  error?: React.ComponentType<any>;
+  props?: Record<string, any>,
+}
 
 export type WebManifest = IWebManifest | (
   (args: RoutesArgs) => Promise<IWebManifest>
