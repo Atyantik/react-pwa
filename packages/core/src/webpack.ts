@@ -245,6 +245,7 @@ export class WebpackHandler {
       },
       resolve: getResolve({
         projectRoot: this.options.projectRoot,
+        alias: this.configOptions.alias,
       }),
       resolveLoader: getResolveLoader(),
       devtool: this.getDevtool(),

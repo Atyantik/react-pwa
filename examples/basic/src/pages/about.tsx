@@ -1,7 +1,7 @@
 import { FC, lazy, Suspense } from 'react';
-import { Skeleton } from '../components/skeleton';
+import { Skeleton } from '@components/skeleton';
 
-const LazyParent = lazy(() => import('../components/parent'));
+const LazyParent = lazy(() => import('@components/parent'));
 
 const HomePage: FC = () => (
     <div>

@@ -3,5 +3,9 @@
     "strictMode": false
   },
   "hotReload": true,
-  "serviceWorker": "minimal"
+  "serviceWorker": "minimal",
+  "alias": {
+    "@components": "./src/components",
+    "@pages": "./src/pages"
+  }
 }

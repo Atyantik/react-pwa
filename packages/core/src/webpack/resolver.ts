@@ -34,14 +34,34 @@ export const getResolveLoader = (): Configuration['resolveLoader'] => {
 export const getResolve = (
   options: {
     projectRoot: string,
+    alias?: Record<string, string>,
   },
-): Configuration['resolve'] => ({
-  alias: {
-    '@currentProject/webmanifest': (
-      projectExistsSync(resolve(options.projectRoot, 'src', 'webmanifest'))
-      || resolve(libSrc, 'defaults', 'webmanifest')
-    ),
-    '@currentProject': resolve(options.projectRoot, 'src'),
-  },
-  extensions: getResolveExtensions(),
-});
+): Configuration['resolve'] => {
+  const resolveConfig: Configuration['resolve'] = {
+    alias: {
+      '@currentProject/webmanifest': (
+        projectExistsSync(resolve(options.projectRoot, 'src', 'webmanifest'))
+        || resolve(libSrc, 'defaults', 'webmanifest')
+      ),
+      '@currentProject': resolve(options.projectRoot, 'src'),
+    },
+    extensions: getResolveExtensions(),
+  };
+
+  const aliasKeys = Object.keys(options.alias ?? {});
+  if (options.alias && aliasKeys.length) {
+    //
+    for (let i = 0; i < aliasKeys.length; i += 1) {
+      const key: string = aliasKeys[i];
+      const path = resolve(options.projectRoot, options.alias[key]);
+      if (!resolveConfig.alias) {
+        resolveConfig.alias = {};
+      }
+      if (path) {
+        // @ts-ignore
+        resolveConfig.alias[key] = path;
+      }
+    }
+  }
+  return resolveConfig;
+};

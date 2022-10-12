@@ -6,7 +6,7 @@ import { ParentData } from '../../services/data';
 import { Skeleton } from '../skeleton';
 import styles from './styles.scss';
 
-const LazyChild = lazy(() => import('../child'));
+const LazyChild = lazy(() => import('@components/child'));
 
 export const ParentComponent: FC = () => {
   const {
