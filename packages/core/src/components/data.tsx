@@ -33,19 +33,7 @@ const getSyncData = (id: string) => {
       const dataScript = document.querySelector(`[data-sync-id="${id}"]`);
       if (dataScript && dataScript.innerHTML) {
         // eslint-disable-next-line no-eval
-        const d = eval(`(${dataScript.innerHTML})`);
-        const removeScript = async () => {
-          dataScript.remove();
-        };
-        // remove after hydration is done
-        if (document.readyState !== 'complete') {
-          window.addEventListener('DOMContentLoaded', removeScript, {
-            passive: true,
-          });
-        } else {
-          removeScript();
-        }
-        return d;
+        return eval(`(${dataScript.innerHTML})`);
       }
     }
   } catch {

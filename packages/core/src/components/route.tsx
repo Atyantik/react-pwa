@@ -8,6 +8,7 @@ export function lazy(props: {
   element: () => Promise<{ default: ComponentType<any> }>;
   skeleton?: ComponentType<any>;
   error?: ComponentType<any>;
+  props?: Record<string, any>,
 }) {
   const LazyComponent = reactLazy(props.element);
   const ErrorFallback = props.error || DefaultErrorFallback;
@@ -19,7 +20,7 @@ export function lazy(props: {
       return (
         <ErrorBoundary FallbackComponent={ErrorFallback}>
           <Suspense fallback={<FallbackComponent />}>
-            <LazyComponent />
+            <LazyComponent {...(props?.props ?? {})} />
           </Suspense>
         </ErrorBoundary>
       );

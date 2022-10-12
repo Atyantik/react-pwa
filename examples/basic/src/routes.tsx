@@ -10,6 +10,9 @@ const routes: Routes = [
         path: '/',
         element: () => import('./pages/home'),
         skeleton: PageLoader,
+        props: {
+          name: 'John',
+        },
       },
       {
         path: '/about',

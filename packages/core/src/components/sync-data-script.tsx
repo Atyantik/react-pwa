@@ -1,9 +1,13 @@
 import serialize from 'serialize-javascript';
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 export const SyncDataScript: FC<{ id: string; data: any }> = ({ id, data }) => {
   const disableSyncScript = typeof document !== 'undefined' && document.readyState === 'complete';
-  if (disableSyncScript) {
+  const [disableRenderScript, setDisableRenderScript] = useState(disableSyncScript);
+  useEffect(() => {
+    setDisableRenderScript(true);
+  }, []);
+  if (disableRenderScript) {
     return null;
   }
   return (
