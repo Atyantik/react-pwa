@@ -4,8 +4,10 @@ import { StaticRouter } from 'react-router-dom/server.js';
 // @ts-ignore
 import appRoutes from '@currentProject/routes';
 // @ts-ignore
+import appServer from '@currentProject/server';
+// @ts-ignore
 import appWebmanifest from '@currentProject/webmanifest';
-import { FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyReply, FastifyRequest, HTTPMethods } from 'fastify';
 import { matchRoutes } from 'react-router-dom';
 import { CookiesProvider } from 'react-cookie';
 import {
@@ -84,6 +86,17 @@ export const handler = async (
 
   // release universal cookies
   reply.then(clearCookieListener, clearCookieListener);
+
+  if (appServer?.hasRoute?.({
+    url: request.url,
+    method: request.method as HTTPMethods,
+  })) {
+    await appServer?.ready?.();
+    appServer?.routing?.(request.raw, reply.raw);
+    return;
+  }
+
+  // Initiate the router to get manage the data
 
   const setRequestValue = (key: string, val: any) => {
     setInternalVar(request, key, val);

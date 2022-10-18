@@ -3,7 +3,8 @@
     "packages/core",
     "packages/cli",
     "packages/eslint-config-reactpwa",
-    "examples/*",
+    "examples/basic",
+    "examples/recoil",
   ],
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.codeActionsOnSave": {

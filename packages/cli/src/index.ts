@@ -1,4 +1,4 @@
-import { resolve } from 'node:path';
+import { resolve, join } from 'node:path';
 import { Command, Option } from 'commander';
 import chokidar from 'chokidar';
 import {
@@ -51,12 +51,14 @@ program.command('dev')
       getReactpwaConfigFilePath(program)(),
       getEnvFilePath(program)(),
       `${resolve(projectRoot, 'src', 'public')}`,
+      `${resolve(projectRoot, 'src', 'server')}`,
+      `${join(projectRoot, 'src', 'server')}.*`,
     ].filter((n) => (typeof n === 'string')) as string[];
     const watcher = chokidar.watch(watchPaths, { ignoreInitial: true });
     watcher.on('all', (_event, path) => {
       if (path.indexOf('/public/') !== -1) {
         // eslint-disable-next-line no-console
-        console.info('Changes observed in public folder. Restarting Server.');
+        console.info('Changes observed in public folder. Restarting Server...');
       } else {
         // eslint-disable-next-line no-console
         console.info('Changes observed in configurations (env/config). Restarting Server.');

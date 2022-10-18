@@ -43,6 +43,10 @@ export const getResolve = (
         projectExistsSync(resolve(options.projectRoot, 'src', 'webmanifest'))
         || resolve(libSrc, 'defaults', 'webmanifest')
       ),
+      '@currentProject/server': (
+        projectExistsSync(resolve(options.projectRoot, 'src', 'server'))
+        || resolve(libSrc, 'defaults', 'server')
+      ),
       '@currentProject': resolve(options.projectRoot, 'src'),
     },
     extensions: getResolveExtensions(),
