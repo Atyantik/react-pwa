@@ -1,0 +1,14 @@
+{
+  "extends": "eslint-config-reactpwa/tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "rootDir": "./src/",
+    "esModuleInterop": true,
+    "paths": {
+      "@components/*": ["./src/components/*"],
+      "@pages/*": ["./src/pages/*"],
+    }
+  },
+  "exclude": ["node_modules"],
+  "include": ["./src/**/*"]
+}

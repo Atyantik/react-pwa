@@ -165,10 +165,10 @@ export const handler = async (
         setInternalVar(request, 'hasExecutionError', true);
         if (err instanceof Error && err.message.indexOf('closed early') === -1) {
           // eslint-disable-next-line no-console
-          console.error('Rendering error', err);
+          console.error('An error occurred: ', err);
         } else if (err?.toString?.().indexOf('closed early') === -1) {
           // eslint-disable-next-line no-console
-          console.error('Rendering error', err);
+          console.error('An error occurred: ', err);
         }
       },
     },

@@ -19,11 +19,11 @@
   "license": "ISC",
   "devDependencies": {
     "@reactpwa/core": "^1.0.10-alpha.0",
-    "@typescript-eslint/eslint-plugin": "^5.40.0",
+    "@typescript-eslint/eslint-plugin": "^5.40.1",
     "eslint": "^8.25.0",
     "eslint-config-reactpwa": "^1.0.8-alpha.0",
     "prettier": "^2.7.1",
-    "tsup": "^6.2.3"
+    "tsup": "^6.3.0"
   },
   "dependencies": {
     "chokidar": "^3.5.3",

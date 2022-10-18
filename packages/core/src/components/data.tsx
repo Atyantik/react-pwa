@@ -14,11 +14,11 @@ type DataPromise = {
 };
 
 const initialContextValue = {
-  createDataPromise: (() => {}) as <T extends () => Promise<any>>(
+  createDataPromise: (() => ({ read: () => {} })) as <T extends () => Promise<any>>(
     id: string,
     cb: T,
-  ) => Awaited<ReturnType<T>>,
-  awaitDataCompletion: (() => null) as (id: string) => null,
+  ) => ({ read: () => Awaited<ReturnType<T>> }),
+  awaitDataCompletion: (() => ({ read: () => {} })) as (id: string) => ({ read: () => void }),
 };
 
 /**
@@ -82,7 +82,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   function createDataPromise<T extends () => Promise<any>>(id: string, cb: T) {
     const previousPromise = pendingPromisesRef.current.find((dc) => dc.id === id);
     if (previousPromise) {
-      return previousPromise.promise.read() as Awaited<ReturnType<T>>;
+      return previousPromise.promise as { read: () => Awaited<ReturnType<T>> };
     }
 
     const syncData: Awaited<ReturnType<T>> | undefined = getSyncData(id);
@@ -111,13 +111,13 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       id,
       promise: wrapped,
     });
-    return wrapped.read() as Awaited<ReturnType<T>>;
+    return wrapped as { read: () => Awaited<ReturnType<T>> };
   }
 
   function awaitDataCompletion(id: string) {
     const previousPromise = observerPromisesRef.current.find((dc) => dc.id === id);
     if (previousPromise) {
-      return previousPromise.promise.read() as Awaited<null>;
+      return previousPromise.promise as { read: () => Awaited<null> };
     }
 
     /**
@@ -156,7 +156,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       id,
       promise: wrapped,
     });
-    return wrapped.read() as Awaited<null>;
+    return wrapped as { read: () => Awaited<null> };
   }
 
   return (

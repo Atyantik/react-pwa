@@ -112,7 +112,7 @@ export class WebpackHandler {
   }
 
   getDevtool(): webpack.Configuration['devtool'] {
-    return this.isDevelopment ? 'eval-source-map' : false;
+    return this.isDevelopment ? 'eval' : false;
   }
 
   getContext(): webpack.Configuration['context'] {

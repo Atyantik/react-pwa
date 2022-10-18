@@ -1,0 +1,9 @@
+{
+  "root": true,
+  "extends": [
+    "reactpwa"
+  ],
+  "parserOptions": {
+    "project": "./tsconfig.eslint.json"
+  }
+}

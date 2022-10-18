@@ -1,0 +1,11 @@
+{
+  "react": {
+    "strictMode": false
+  },
+  "hotReload": true,
+  "serviceWorker": "minimal",
+  "alias": {
+    "@components": "./src/components",
+    "@pages": "./src/pages"
+  }
+}

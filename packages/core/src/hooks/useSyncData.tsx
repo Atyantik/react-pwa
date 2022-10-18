@@ -9,7 +9,8 @@ export function useSyncData<T extends (
 ): { data: Awaited<ReturnType<T>>; syncScript: React.ReactElement } {
   const { createDataPromise } = useContext(DataContext);
   return useMemo(() => {
-    const data = createDataPromise(id, promiseCallback);
+    const promise = createDataPromise(id, promiseCallback);
+    const data = promise.read();
     return {
       data,
       syncScript: <SyncDataScript id={id} data={data} />,
