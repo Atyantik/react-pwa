@@ -3,6 +3,7 @@
   "version": "1.0.12-alpha.0",
   "description": "Integrating Recoil with ReactPWA",
   "type": "module",
+  "private": true,
   "scripts": {
     "dev": "reactpwa dev",
     "build": "reactpwa build",
