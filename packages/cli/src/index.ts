@@ -56,12 +56,16 @@ program.command('dev')
     ].filter((n) => (typeof n === 'string')) as string[];
     const watcher = chokidar.watch(watchPaths, { ignoreInitial: true });
     watcher.on('all', (_event, path) => {
+      if (path.indexOf('/server/') !== -1) {
+        // eslint-disable-next-line no-console
+        console.info('Changes observed in server or server folder. Restarting Server...');
+      }
       if (path.indexOf('/public/') !== -1) {
         // eslint-disable-next-line no-console
         console.info('Changes observed in public folder. Restarting Server...');
       } else {
         // eslint-disable-next-line no-console
-        console.info('Changes observed in configurations (env/config). Restarting Server.');
+        console.info('Changes observed in configurations (env/config). Restarting Server...');
       }
       restartServer();
     });
