@@ -4,6 +4,7 @@ import { writeFileSync } from 'node:fs';
 import { extractChunksMap } from '../utils/asset-extract.js';
 import { WebpackHandler } from '../webpack.js';
 import { RunOptions } from '../typedefs/server.js';
+import { projectExistsSync } from '../utils/resolver.js';
 
 const webpackStatsDisplayOptions: webpack.StatsOptions = {
   colors: true,
@@ -15,8 +16,24 @@ const webpackStatsDisplayOptions: webpack.StatsOptions = {
   modules: false,
 };
 
-export const run = (options: RunOptions) => {
-  const webWebpackHandler = new WebpackHandler({
+export const run = async (options: RunOptions) => {
+  const projectWebpack = projectExistsSync(path.join(options.projectRoot, 'webpack'), ['.js', '.cjs', '.mjs']);
+  let WHandler: typeof WebpackHandler = WebpackHandler;
+  if (projectWebpack) {
+    const projectWebpackHandler = await import(projectWebpack);
+    if (!projectWebpackHandler.default) {
+      // eslint-disable-next-line no-console
+      console.error('webpack.js should default export a class extending WebpackHandler.');
+    } else if (!(projectWebpackHandler.default.prototype instanceof WebpackHandler)) {
+      // eslint-disable-next-line no-console
+      console.error('webpack.js should extends WebpackHandler from "@reactpwa/core/webpack"');
+    } else {
+      // No issues at all, create an instance of project handler instead
+      WHandler = projectWebpackHandler.default;
+    }
+  }
+
+  const webWebpackHandler = new WHandler({
     mode: options.mode,
     target: 'web',
     projectRoot: options.projectRoot,
@@ -25,7 +42,7 @@ export const run = (options: RunOptions) => {
     config: options.config ?? {},
   });
 
-  const nodeWebpackHandler = new WebpackHandler({
+  const nodeWebpackHandler = new WHandler({
     mode: options.mode,
     target: 'node',
     projectRoot: options.projectRoot,

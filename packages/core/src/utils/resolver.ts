@@ -10,10 +10,10 @@ const javascriptExtensions = [
   '.json',
 ];
 
-export const projectExistsSync = ((filePath: string) => {
+export const projectExistsSync = ((filePath: string, extension = javascriptExtensions) => {
   if (existsSync(filePath)) return filePath;
   let resolvedFilePath = '';
-  javascriptExtensions.forEach((jsExt) => {
+  extension.forEach((jsExt) => {
     if (resolvedFilePath) {
       return;
     }

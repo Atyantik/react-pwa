@@ -49,6 +49,14 @@ const config = {
     "unicorn/no-array-for-each": "off",
     "unicorn/prevent-abbreviations": "off",
   },
+  "overrides": [
+    {
+      "files": ["webpack.js"],
+      "rules": {
+        "import/no-unresolved": 0
+      }
+    }
+  ],
   "settings": {
     "import/core-modules": [
       "react",

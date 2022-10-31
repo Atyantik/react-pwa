@@ -229,6 +229,13 @@ export class WebpackHandler {
     ];
   }
 
+  getExternals(): webpack.Configuration['externals'] {
+    if (this.isTargetServer) {
+      return [getNodeExternals({ projectRoot: this.options.projectRoot })];
+    }
+    return undefined;
+  }
+
   getConfig(): webpack.Configuration {
     return {
       mode: this.options.mode,
@@ -237,9 +244,7 @@ export class WebpackHandler {
       experiments: getExperiments({ outputModule: this.isTargetWeb }),
       output: this.getOutput(),
       externalsPresets: this.isTargetServer ? { node: true } : undefined,
-      externals: this.isTargetServer
-        ? [getNodeExternals({ projectRoot: this.options.projectRoot })]
-        : undefined,
+      externals: this.getExternals(),
       module: {
         rules: this.getRules(),
       },

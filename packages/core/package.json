@@ -18,27 +18,28 @@
     "reactpwa.js"
   ],
   "exports": {
-    ".": {
+    "./core": {
       "types": "./lib/index.d.ts",
       "import": "./lib/index.js",
       "require": "./lib/index.cjs"
     },
-    "./start": {
+    "./core/start": {
       "types": "./lib/node/start.d.ts",
       "import": "./lib/node/start.js",
       "require": "./lib/node/start.cjs"
     },
-    "./build": {
+    "./core/build": {
       "types": "./lib/node/build.d.ts",
       "import": "./lib/node/build.js",
       "require": "./lib/node/build.cjs"
     },
-    "./webpack": {
+    "./core/webpack": {
       "types": "./lib/webpack.d.ts",
       "import": "./lib/webpack.js",
       "require": "./lib/webpack.cjs"
     },
-    "./assets/*": "./assets/*"
+    "./assets/*": "./assets/*",
+    "./package.json": "./package.json"
   },
   "keywords": [
     "react",
@@ -56,19 +57,19 @@
     "@babel/preset-typescript": "^7.18.6",
     "@fastify/compress": "^6.1.1",
     "@fastify/cookie": "^8.3.0",
-    "@fastify/express": "^2.0.2",
+    "@fastify/express": "^2.1.0",
     "@fastify/static": "^6.5.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.8",
-    "autoprefixer": "^10.4.12",
-    "babel-loader": "^8.2.5",
+    "autoprefixer": "^10.4.13",
+    "babel-loader": "^9.0.0",
     "babel-plugin-lodash": "^3.3.4",
     "bowser": "^2.11.0",
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.7.1",
-    "fastify": "^4.9.1",
+    "fastify": "^4.9.2",
     "http-errors": "^2.0.0",
     "is-object": "^1.0.2",
-    "isbot": "^3.6.1",
+    "isbot": "^3.6.2",
     "mini-css-extract-plugin": "^2.6.1",
     "postcss-loader": "^7.0.1",
     "react-cookie": "^4.1.1",
@@ -91,14 +92,13 @@
     "react-dom": ">=18.2.0"
   },
   "devDependencies": {
-    "@types/http-errors": "^1.8.2",
+    "@types/http-errors": "^2.0.0",
     "@types/is-object": "^1.0.2",
     "@types/require-from-string": "^1.2.1",
     "@types/serialize-javascript": "^5.0.2",
     "@types/webpack-hot-middleware": "^2.25.6",
     "@types/webpack-node-externals": "^2.5.3",
-    "@typescript-eslint/eslint-plugin": "^5.40.1",
-    "eslint": "^8.25.0",
+    "eslint": "^8.26.0",
     "eslint-config-reactpwa": "^1.0.11-alpha.0",
     "prettier": "^2.7.1",
     "react": "^18.2.0",
