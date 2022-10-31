@@ -1,5 +1,5 @@
 import { ReactElement } from 'react';
-import { parse } from 'bowser';
+import bowser from 'bowser';
 import { FastifyRequest } from 'fastify';
 import isbot from 'isbot';
 import { RoutesArgs } from '../index.js';
@@ -101,7 +101,7 @@ export const getRequestArgs = (request: FastifyRequest): RoutesArgs => {
     getLocation: () => getUrl(request),
     browserDetect: async () => {
       try {
-        return parse(userAgent);
+        return bowser.parse(userAgent);
       } catch {
         // Cannot parse useragent
       }
