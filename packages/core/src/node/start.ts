@@ -11,7 +11,6 @@ import { WebpackHandler } from '../webpack.js';
 import { requireFromString } from '../utils/require-from-string.js';
 import { extractChunksMap } from '../utils/asset-extract.js';
 import { RunOptions } from '../typedefs/server.js';
-import { projectExistsSync } from '../utils/resolver.js';
 
 let fastifyServer: ReturnType<typeof Fastify>;
 
@@ -25,7 +24,7 @@ const startServer = async () => {
 };
 
 export const run = async (options: RunOptions) => {
-  const projectWebpack = projectExistsSync(path.join(options.projectRoot, 'webpack'));
+  const projectWebpack = path.resolve(options.projectRoot, 'webpack.js');
   let WHandler: typeof WebpackHandler = WebpackHandler;
   if (projectWebpack) {
     const projectWebpackHandler = await import(projectWebpack);

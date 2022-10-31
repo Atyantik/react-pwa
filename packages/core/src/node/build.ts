@@ -4,7 +4,6 @@ import { writeFileSync } from 'node:fs';
 import { extractChunksMap } from '../utils/asset-extract.js';
 import { WebpackHandler } from '../webpack.js';
 import { RunOptions } from '../typedefs/server.js';
-import { projectExistsSync } from '../utils/resolver.js';
 
 const webpackStatsDisplayOptions: webpack.StatsOptions = {
   colors: true,
@@ -17,7 +16,7 @@ const webpackStatsDisplayOptions: webpack.StatsOptions = {
 };
 
 export const run = async (options: RunOptions) => {
-  const projectWebpack = projectExistsSync(path.join(options.projectRoot, 'webpack'), ['.js', '.cjs', '.mjs']);
+  const projectWebpack = path.resolve(options.projectRoot, 'webpack.js');
   let WHandler: typeof WebpackHandler = WebpackHandler;
   if (projectWebpack) {
     const projectWebpackHandler = await import(projectWebpack);
