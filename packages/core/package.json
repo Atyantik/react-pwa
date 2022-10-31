@@ -18,22 +18,22 @@
     "reactpwa.js"
   ],
   "exports": {
-    "./core": {
+    ".": {
       "types": "./lib/index.d.ts",
       "import": "./lib/index.js",
       "require": "./lib/index.cjs"
     },
-    "./core/start": {
+    "./start": {
       "types": "./lib/node/start.d.ts",
       "import": "./lib/node/start.js",
       "require": "./lib/node/start.cjs"
     },
-    "./core/build": {
+    "./build": {
       "types": "./lib/node/build.d.ts",
       "import": "./lib/node/build.js",
       "require": "./lib/node/build.cjs"
     },
-    "./core/webpack": {
+    "./webpack": {
       "types": "./lib/webpack.d.ts",
       "import": "./lib/webpack.js",
       "require": "./lib/webpack.cjs"
