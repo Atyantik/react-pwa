@@ -1,4 +1,5 @@
 import path from 'node:path';
+import { pathToFileURL } from 'url';
 import Fastify from 'fastify';
 import fastifyStatic from '@fastify/static';
 import HttpErrors from 'http-errors';
@@ -27,7 +28,7 @@ export const run = async (options: RunOptions) => {
   const projectWebpack = path.resolve(options.projectRoot, 'webpack.js');
   let WHandler: typeof WebpackHandler = WebpackHandler;
   if (projectWebpack) {
-    const projectWebpackHandler = await import(projectWebpack);
+    const projectWebpackHandler = await import(pathToFileURL(projectWebpack).toString());
     if (!projectWebpackHandler.default) {
       // eslint-disable-next-line no-console
       console.error('webpack.js should default export a class extending WebpackHandler.');

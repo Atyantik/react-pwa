@@ -17,7 +17,7 @@ export const getCssLoaderOptions = (options: {
       }
       if (
         /global\.(css|s[ac]ss)$/i.test(resourcePath)
-          || /(node_modules|src\/resources)/i.test(resourcePath)
+          || /(node_modules|src\/resources|src\\resources)/i.test(resourcePath)
       ) {
         return 'global';
       }

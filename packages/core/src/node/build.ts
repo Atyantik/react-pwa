@@ -1,4 +1,5 @@
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import webpack from 'webpack';
 import { writeFileSync } from 'node:fs';
 import { extractChunksMap } from '../utils/asset-extract.js';
@@ -19,7 +20,7 @@ export const run = async (options: RunOptions) => {
   const projectWebpack = path.resolve(options.projectRoot, 'webpack.js');
   let WHandler: typeof WebpackHandler = WebpackHandler;
   if (projectWebpack) {
-    const projectWebpackHandler = await import(projectWebpack);
+    const projectWebpackHandler = await import(pathToFileURL(projectWebpack).toString());
     if (!projectWebpackHandler.default) {
       // eslint-disable-next-line no-console
       console.error('webpack.js should default export a class extending WebpackHandler.');
