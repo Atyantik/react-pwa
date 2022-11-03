@@ -22,7 +22,7 @@
     "eslint": "^8.25.0",
     "eslint-config-reactpwa": "^1.0.18-alpha.0",
     "prettier": "^2.7.1",
-    "tsup": "^6.3.0"
+    "tsup": "^6.4.0"
   },
   "dependencies": {
     "chokidar": "^3.5.3",
