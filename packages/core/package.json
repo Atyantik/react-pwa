@@ -1,6 +1,6 @@
 {
   "name": "@reactpwa/core",
-  "version": "1.0.21-alpha.0",
+  "version": "1.0.22-alpha.0",
   "description": "Core of ReactPWA",
   "type": "module",
   "scripts": {
