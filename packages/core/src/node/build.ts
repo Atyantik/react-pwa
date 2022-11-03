@@ -102,6 +102,7 @@ export const run = async (options: RunOptions) => {
         );
         const buildAssetsPath = path.resolve(
           ServerConfig.output.path,
+          'build',
           'assets',
         );
         if (existsSync(serverAssetsPath)) {
