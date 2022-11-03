@@ -100,6 +100,7 @@ export const run = async (options: RunOptions) => {
           ServerConfig.output.path,
           'assets',
         );
+        // Copy to build/assets
         const buildAssetsPath = path.resolve(
           ServerConfig.output.path,
           'build',
