@@ -93,7 +93,9 @@ const addById = (
 
     // Check children
     (idChunk.children ?? []).forEach((childId) => {
-      addById(childId, chunksMap, positionedFiles, ext);
+      if (childId !== webpackId) {
+        addById(childId, chunksMap, positionedFiles, ext);
+      }
     });
   }
 };
