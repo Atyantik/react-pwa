@@ -61,7 +61,7 @@
     "@fastify/static": "^6.5.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.8",
     "autoprefixer": "^10.4.13",
-    "babel-loader": "^9.0.1",
+    "babel-loader": "^9.1.0",
     "babel-plugin-lodash": "^3.3.4",
     "bowser": "^2.11.0",
     "copy-webpack-plugin": "^11.0.0",
