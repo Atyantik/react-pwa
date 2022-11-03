@@ -1,5 +1,6 @@
 import path from 'node:path';
 import { existsSync, writeFileSync } from 'node:fs';
+import fse from 'fs-extra';
 import { pathToFileURL } from 'node:url';
 import webpack from 'webpack';
 import { extractChunksMap } from '../utils/asset-extract.js';
@@ -76,7 +77,40 @@ export const run = async (options: RunOptions) => {
       }
       // eslint-disable-next-line no-console
       console.log(serverStats?.toString(webpackStatsDisplayOptions));
+      // Move images and assets folder to build
       if (ServerConfig.output?.path) {
+        const serverImagesPath = path.resolve(
+          ServerConfig.output.path,
+          'images',
+        );
+        const buildImagesPath = path.resolve(
+          ServerConfig.output.path,
+          'build',
+          'images',
+        );
+        if (existsSync(serverImagesPath)) {
+          fse.copySync(serverImagesPath, buildImagesPath, {
+            overwrite: false,
+            recursive: true,
+          });
+          fse.removeSync(serverImagesPath);
+        }
+
+        const serverAssetsPath = path.resolve(
+          ServerConfig.output.path,
+          'assets',
+        );
+        const buildAssetsPath = path.resolve(
+          ServerConfig.output.path,
+          'assets',
+        );
+        if (existsSync(serverAssetsPath)) {
+          fse.copySync(serverAssetsPath, buildAssetsPath, {
+            overwrite: false,
+            recursive: true,
+          });
+          fse.removeSync(serverAssetsPath);
+        }
         const chunksMapFilePath = path.join(
           ServerConfig.output.path,
           'chunks-map.json',

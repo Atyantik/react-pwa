@@ -83,7 +83,12 @@ const addById = (
   chunksMap: ChunksMap,
   positionedFiles: PositionedFiles[],
   ext: string,
+  extractedAssets: Set<string | number>,
 ) => {
+  if (extractedAssets.has(webpackId)) {
+    return;
+  }
+  extractedAssets.add(webpackId);
   const idChunk = chunksMap.chunks.find((chunk) => chunk.id === webpackId);
   if (idChunk) {
     positionedFiles.push({
@@ -94,7 +99,7 @@ const addById = (
     // Check children
     (idChunk.children ?? []).forEach((childId) => {
       if (childId !== webpackId) {
-        addById(childId, chunksMap, positionedFiles, ext);
+        addById(childId, chunksMap, positionedFiles, ext, extractedAssets);
       }
     });
   }
@@ -148,6 +153,8 @@ export const extractFiles = (
     });
   }
 
+  const extractedAssets = new Set<string | number>();
+
   // Once done with main and @currentProject
   // Loop through routes
   matchedRoutes.forEach((matchedRoute) => {
@@ -171,7 +178,7 @@ export const extractFiles = (
       }
 
       // Add chunk with ID and add its children as well.
-      addById(webpackId, chunksMap, positionedFiles, ext);
+      addById(webpackId, chunksMap, positionedFiles, ext, extractedAssets);
     }
   });
   positionedFiles.sort((a, b) => a.position - b.position);

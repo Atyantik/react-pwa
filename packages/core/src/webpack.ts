@@ -111,7 +111,7 @@ export class WebpackHandler {
   }
 
   getDevtool(): webpack.Configuration['devtool'] {
-    return this.isDevelopment ? 'eval' : false;
+    return this.isDevelopment ? 'eval-source-map' : false;
   }
 
   getContext(): webpack.Configuration['context'] {
@@ -205,12 +205,12 @@ export class WebpackHandler {
     return [
       getMjsRule(),
       getAssetsRule({
-        emit: this.isTargetWeb,
+        emit: true,
       }),
       getImagesRule({
-        emit: this.isTargetWeb,
+        emit: true,
       }),
-      getRawResourceRule({ emit: this.isTargetWeb }),
+      getRawResourceRule({ emit: true }),
       getJsRule({
         isTargetServer: this.isTargetServer,
         hotReload: this.shouldHotReload,
