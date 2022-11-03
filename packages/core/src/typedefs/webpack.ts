@@ -8,5 +8,4 @@ export type WebpackHandlerConstructorOptions = {
   envVars: Record<string, any>,
   config: Record<string, any>,
   copyPublicFolder: Boolean,
-  useBuildtimeGeneratorOptions: Boolean,
 };

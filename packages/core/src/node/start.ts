@@ -1,4 +1,5 @@
 import path from 'node:path';
+import { existsSync } from 'node:fs';
 import { pathToFileURL } from 'url';
 import Fastify from 'fastify';
 import fastifyStatic from '@fastify/static';
@@ -27,7 +28,7 @@ const startServer = async () => {
 export const run = async (options: RunOptions) => {
   const projectWebpack = path.resolve(options.projectRoot, 'webpack.js');
   let WHandler: typeof WebpackHandler = WebpackHandler;
-  if (projectWebpack) {
+  if (projectWebpack && existsSync(projectWebpack)) {
     const projectWebpackHandler = await import(pathToFileURL(projectWebpack).toString());
     if (!projectWebpackHandler.default) {
       // eslint-disable-next-line no-console
@@ -56,7 +57,6 @@ export const run = async (options: RunOptions) => {
     projectRoot: options.projectRoot,
     envVars: options.envVars,
     config: options.config,
-    useBuildtimeGeneratorOptions: false,
   });
 
   const nodeWebpackHandler = new WHandler({
@@ -65,7 +65,6 @@ export const run = async (options: RunOptions) => {
     projectRoot: options.projectRoot,
     envVars: options.envVars,
     config: options.config,
-    useBuildtimeGeneratorOptions: false,
   });
 
   const WebConfig: webpack.Configuration = webWebpackHandler.getConfig();

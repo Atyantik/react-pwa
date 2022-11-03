@@ -23,7 +23,7 @@ export const getServerOutput = (
 ): Configuration['output'] => ({
   module: false,
   chunkFormat: 'commonjs',
-  publicPath: '/',
+  // publicPath: '/',
   path: resolve(options.projectRoot, 'dist'),
   filename: 'server.cjs',
   library: {

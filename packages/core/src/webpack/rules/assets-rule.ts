@@ -4,15 +4,13 @@ import { extensionRegex } from '../utils.js';
 
 export const getAssetsRule = (
   options: {
-    withBuild: boolean,
-    useBuildtimeGeneratorOptions: boolean
+    emit: boolean,
   },
 ) => ({
   test: extensionRegex(staticAssetsExtensions),
   type: 'asset/resource',
   generator: getGeneratorOptions({
     prefix: 'assets',
-    withBuild: options.withBuild,
-    useBuildtimeGeneratorOptions: options.useBuildtimeGeneratorOptions,
+    emit: options.emit,
   }),
 });

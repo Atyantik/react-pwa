@@ -1,7 +1,7 @@
 import path from 'node:path';
+import { existsSync, writeFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import webpack from 'webpack';
-import { writeFileSync } from 'node:fs';
 import { extractChunksMap } from '../utils/asset-extract.js';
 import { WebpackHandler } from '../webpack.js';
 import { RunOptions } from '../typedefs/server.js';
@@ -19,7 +19,7 @@ const webpackStatsDisplayOptions: webpack.StatsOptions = {
 export const run = async (options: RunOptions) => {
   const projectWebpack = path.resolve(options.projectRoot, 'webpack.js');
   let WHandler: typeof WebpackHandler = WebpackHandler;
-  if (projectWebpack) {
+  if (projectWebpack && existsSync(projectWebpack)) {
     const projectWebpackHandler = await import(pathToFileURL(projectWebpack).toString());
     if (!projectWebpackHandler.default) {
       // eslint-disable-next-line no-console

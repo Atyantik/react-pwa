@@ -5,8 +5,7 @@ import { extensionRegex } from '../utils.js';
 
 export const getImagesRule = (
   options: {
-    withBuild: boolean,
-    useBuildtimeGeneratorOptions: boolean,
+    emit: boolean,
   },
 ): RuleSetRule => ({
   test: extensionRegex(imageAssetsExtensions),
@@ -19,7 +18,6 @@ export const getImagesRule = (
   },
   generator: getGeneratorOptions({
     prefix: 'images',
-    withBuild: options.withBuild,
-    useBuildtimeGeneratorOptions: options.useBuildtimeGeneratorOptions,
+    emit: options.emit,
   }),
 });

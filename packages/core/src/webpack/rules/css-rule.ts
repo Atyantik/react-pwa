@@ -19,7 +19,7 @@ export const getCssRule = (
     options.hotReload && { loader: 'style-loader' },
     options.hotReload || {
       loader: MiniCssExtractPlugin.loader,
-      options: { emit: options.emit, publicPath: 'auto' },
+      options: { emit: options.emit },
     },
     {
       loader: 'css-loader',

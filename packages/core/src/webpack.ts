@@ -36,14 +36,13 @@ export class WebpackHandler {
   protected options: WebpackHandlerConstructorOptions;
 
   constructor(
-    options: Optional<WebpackHandlerConstructorOptions, 'buildWithHttpServer' | 'envVars' | 'config' | 'copyPublicFolder' | 'useBuildtimeGeneratorOptions'>,
+    options: Optional<WebpackHandlerConstructorOptions, 'buildWithHttpServer' | 'envVars' | 'config' | 'copyPublicFolder'>,
   ) {
     this.options = {
       buildWithHttpServer: false,
       envVars: {},
       config: {},
       copyPublicFolder: false,
-      useBuildtimeGeneratorOptions: true,
       ...options,
     };
 
@@ -206,12 +205,10 @@ export class WebpackHandler {
     return [
       getMjsRule(),
       getAssetsRule({
-        withBuild: this.isTargetServer,
-        useBuildtimeGeneratorOptions: !!this.options.useBuildtimeGeneratorOptions,
+        emit: this.isTargetWeb,
       }),
       getImagesRule({
-        withBuild: this.isTargetServer,
-        useBuildtimeGeneratorOptions: !!this.options.useBuildtimeGeneratorOptions,
+        emit: this.isTargetWeb,
       }),
       getRawResourceRule({ emit: this.isTargetWeb }),
       getJsRule({

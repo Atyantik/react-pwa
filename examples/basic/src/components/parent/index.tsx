@@ -23,7 +23,10 @@ export const ParentComponent: FC = () => {
         />
         <meta name="theme-color" content="#317EFB" />
       </Head>
-      <h1 className={styles.red}>Welcome, { parentDetails.name }</h1>
+      <div>
+        <h1 className={styles.red}>Welcome, { parentDetails.name }</h1>
+        <div className={styles.logo}></div>
+      </div>
       <ErrorBoundary FallbackComponent={() => <>Error</>}>
         <Suspense fallback={<Skeleton />}>
           <LazyChild />
