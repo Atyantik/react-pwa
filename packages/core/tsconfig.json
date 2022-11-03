@@ -1,7 +1,7 @@
 {
   "extends": "eslint-config-reactpwa/tsconfig.json",
   "compilerOptions": {
-    "target": "es2017",
+    "target": "es2022",
     "moduleResolution": "Node",
     "baseUrl": "./",
     "rootDir": "./src/",
