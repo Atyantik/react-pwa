@@ -2,7 +2,6 @@ const config = {
   "parser": "@typescript-eslint/parser",
   "extends": [
     "eslint:recommended",
-    "plugin:jest/recommended",
     "plugin:import/recommended",
     "plugin:import/typescript",
     "prettier",
@@ -11,7 +10,6 @@ const config = {
   ],
   "plugins": [
     "@typescript-eslint",
-    "jest",
     "import",
   ],
   "parserOptions": {
@@ -23,7 +21,6 @@ const config = {
     "browser": true, // Enables browser globals like window and document
     "amd": true, // Enables require() and define() as global variables as per the amd spec.
     "node": true, // Enables Node.js global variables and Node.js scoping.
-    "jest/globals": true,
     "es2021": true
   },
   "rules": {

@@ -19,7 +19,7 @@
   "license": "ISC",
   "devDependencies": {
     "@reactpwa/core": "^1.0.23-alpha.0",
-    "eslint": "^8.25.0",
+    "eslint": "^8.27.0",
     "eslint-config-reactpwa": "^1.0.18-alpha.0",
     "prettier": "^2.7.1",
     "tsup": "^6.4.0"
