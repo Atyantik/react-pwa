@@ -24,7 +24,9 @@ export const wrapPromise = <T extends PromiseCallback>(
         status = 'error';
         result = err;
       },
-    );
+    ).finally(() => {
+      options?.onFinalize?.();
+    });
   }
   return {
     read(): Awaited<ReturnType<T>> {
@@ -32,11 +34,9 @@ export const wrapPromise = <T extends PromiseCallback>(
         // eslint-disable-next-line @typescript-eslint/no-throw-literal
         throw suspend;
       } else if (status === 'error') {
-        options?.onFinalize?.();
         // eslint-disable-next-line @typescript-eslint/no-throw-literal
         throw result;
       }
-      options?.onFinalize?.();
       return result;
     },
   };

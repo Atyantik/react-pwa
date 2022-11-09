@@ -3,6 +3,7 @@ import { ReactElement } from 'react';
 import { RouteObject as RRRouteObject } from 'react-router-dom';
 import { IWebManifest } from './typedefs/webmanifest.js';
 
+export { DataContext } from './components/data.js';
 export { useData } from './hooks/useData.js';
 export { useSyncData } from './hooks/useSyncData.js';
 export { SyncDataScript as SyncData } from './components/sync-data-script.js';

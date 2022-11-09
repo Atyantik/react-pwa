@@ -81,6 +81,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const observerPromisesRef = useRef<DataPromise[]>([]);
   function createDataPromise<T extends () => Promise<any>>(id: string, cb: T) {
     const previousPromise = pendingPromisesRef.current.find((dc) => dc.id === id);
+    console.log(`${id}:: previousPromise: `, previousPromise);
     if (previousPromise) {
       return previousPromise.promise as { read: () => Awaited<ReturnType<T>> };
     }
@@ -98,10 +99,12 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       // On finalize of the promise,
       // i.e. on error or success.
       onFinalize: async () => {
+        console.log('On Finalized...');
         await delay(10);
         const promiseIndex = pendingPromisesRef.current.findIndex((dc) => dc.id === id);
         // Remove promise reference from array on done
         pendingPromisesRef.current.splice(promiseIndex, 1);
+        console.log('Data promise finalized. Check for pending promises');
         eventEmitter.current.emit('DataPromiseFinalise');
       },
       syncData,
@@ -145,9 +148,19 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         // On finalize of the promise,
         // i.e. on error or success.
         onFinalize: () => {
-          const promiseIndex = observerPromisesRef.current.findIndex((dc) => dc.id === id);
-          // Remove promise reference from array on done
-          observerPromisesRef.current.splice(promiseIndex, 1);
+          /**
+           * CAUTION
+           * @todo: Any way to get rid of timeout?
+           * I am stuck in look if we do not give timeout. New promises are created again.
+           * Causing memory leak and infinite looping
+           * Thus making it super difficult to garbage collect observerPromisesRef
+           * .Check if manual garbage collect is even required
+           */
+          setTimeout(() => {
+            const promiseIndex = observerPromisesRef.current.findIndex((dc) => dc.id === id);
+            // Remove promise reference from array on done
+            observerPromisesRef.current.splice(promiseIndex, 1);
+          }, 10);
         },
       },
     );
