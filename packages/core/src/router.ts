@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import FMWRouter from 'find-my-way';
 
+// ...
 type HTTPMethod = FMWRouter.HTTPMethod;
 
 type RouteOptions = FMWRouter.RouteOptions;
