@@ -38,6 +38,11 @@
       "import": "./lib/webpack.js",
       "require": "./lib/webpack.cjs"
     },
+    "./router": {
+      "types": "./lib/router.d.ts",
+      "import": "./lib/router.js",
+      "require": "./lib/router.cjs"
+    },
     "./assets/*": "./assets/*",
     "./package.json": "./package.json"
   },

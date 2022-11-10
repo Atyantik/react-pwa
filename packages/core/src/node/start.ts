@@ -1,7 +1,7 @@
 import path from 'node:path';
 import { existsSync } from 'node:fs';
 import { pathToFileURL } from 'url';
-import Fastify from 'fastify';
+import Fastify, { RouteHandler } from 'fastify';
 import fastifyStatic from '@fastify/static';
 import HttpErrors from 'http-errors';
 import webpack from 'webpack';
@@ -89,7 +89,7 @@ export const run = async (options: RunOptions) => {
     wildcard: false,
   });
 
-  fastifyServer.get('*', (request, reply) => {
+  const requestHandler: RouteHandler = (request, reply) => {
     if (request.url === '/favicon.ico') {
       throw new HttpErrors.NotFound();
     }
@@ -101,8 +101,6 @@ export const run = async (options: RunOptions) => {
     const serverFilePath = path.join(outputPath, 'server.cjs');
 
     const chunksMap = extractChunksMap(webDevMiddleware.context.stats);
-    // fs.writeFileSync('/tmp/a.json', JSON.stringify(webStats, undefined, 2));
-    // fs.writeFileSync('/tmp/b.json', JSON.stringify(chunksMap, undefined, 2));
 
     const serverFile = outputFileSystem.existsSync(serverFilePath);
 
@@ -126,7 +124,10 @@ export const run = async (options: RunOptions) => {
       // eslint-disable-next-line no-console
       console.log(ex);
     }
-  });
+  };
+
+  fastifyServer.get('*', requestHandler);
+  fastifyServer.post('*', requestHandler);
 
   await startServer();
   return fastifyServer;
