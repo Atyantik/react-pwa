@@ -11,4 +11,6 @@ export const imageAssetsExtensions = [
   'svg',
   'tif',
   'tiff',
+  'webp',
+  'avif',
 ];
