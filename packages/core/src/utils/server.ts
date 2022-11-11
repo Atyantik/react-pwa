@@ -116,7 +116,12 @@ export const getRequestArgs = (request: FastifyRequest): RoutesArgs => {
     isbot: async () => isBot,
     getScoped,
     addToHeadPreStyles: (components: ReactElement | ReactElement[]) => {
-      setInternalVar(request, 'headPreStyles', components);
+      const previousComponents = getInternalVar(request, 'headPreStyles', []);
+      setInternalVar(request, 'headPreStyles', [...previousComponents, components]);
+    },
+    addToFooter: (components: ReactElement | ReactElement[]) => {
+      const previousComponents = getInternalVar(request, 'footerScripts', []);
+      setInternalVar(request, 'footerScripts', [...previousComponents, components]);
     },
   };
 };

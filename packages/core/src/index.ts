@@ -40,6 +40,7 @@ export type RoutesArgs = {
     key: string, callback: (() => any) | (() => Promise<any>)
   ) => Promise<T>;
   addToHeadPreStyles: (components: ReactElement | ReactElement[]) => void
+  addToFooter: (components: ReactElement | ReactElement[]) => void
 };
 
 export type Routes = RouteObject[] | (

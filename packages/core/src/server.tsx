@@ -129,6 +129,7 @@ export const handler = async (
                 {scripts.map((script) => (
                   <script async type="module" key={script} src={script} />
                 ))}
+                {getRequestValue('footerScripts', <></>)}
               </HeadProvider>
             </DataProvider>
           </StaticRouter>
