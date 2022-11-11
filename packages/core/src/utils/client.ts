@@ -54,6 +54,9 @@ export const requestArgs: RoutesArgs = {
   },
   getScoped,
   addToHeadPreStyles: () => {
-    // when called on server side do nothing
+    // when called on client side do nothing
+  },
+  addToFooter: () => {
+    // when called on client side do nothing
   },
 };
