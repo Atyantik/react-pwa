@@ -80,16 +80,23 @@ if (rootElement) {
       root.render(children);
     }
 
-    // Register service worker
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').then((registration) => {
-          // eslint-disable-next-line no-console
-          console.log('SW registered: ', registration);
-        }).catch((registrationError) => {
-          // eslint-disable-next-line no-console
-          console.log('SW registration failed: ', registrationError);
+    // @ts-ignore
+    if (EnableServiceWorker) {
+      // Register service worker
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').then((registration) => {
+            // eslint-disable-next-line no-console
+            console.log('SW registered: ', registration);
+          }).catch((registrationError) => {
+            // eslint-disable-next-line no-console
+            console.log('SW registration failed: ', registrationError);
+          });
         });
+      }
+    } else if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        registrations.forEach((registration) => registration.unregister());
       });
     }
   })();

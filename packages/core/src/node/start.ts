@@ -89,37 +89,44 @@ export const run = async (options: RunOptions) => {
     wildcard: false,
   });
 
+  let imported: any = null;
+
+  serverCompiler.hooks.done.tap('InformServerCompiled', (compilation) => {
+    const nodePath = process.env.NODE_PATH || '';
+    const jsonWebpackStats = compilation.toJson();
+    const { outputPath } = jsonWebpackStats;
+    if (outputPath) {
+      const serverFilePath = path.join(outputPath, 'server.cjs');
+      // @ts-ignores
+      const serverContent = serverCompiler?.outputFileSystem?.readFileSync?.(serverFilePath, 'utf-8');
+      imported = requireFromString(serverContent, {
+        appendPaths: nodePath.split(path.delimiter),
+      });
+    }
+  });
+
   const requestHandler: RouteHandler = (request, reply) => {
     if (request.url === '/favicon.ico') {
       throw new HttpErrors.NotFound();
     }
-    // @ts-ignores
-    const { devMiddleware } = reply.raw.locals.webpack;
-    const jsonWebpackStats = devMiddleware.stats.toJson();
-    const { outputPath } = jsonWebpackStats;
-    const { outputFileSystem } = devMiddleware;
-    const serverFilePath = path.join(outputPath, 'server.cjs');
-
     const chunksMap = extractChunksMap(webDevMiddleware.context.stats);
-
-    const serverFile = outputFileSystem.existsSync(serverFilePath);
-
-    if (!serverFile) {
-      throw new Error('Cannot find server.js at server.js');
-    }
-
-    const nodePath = process.env.NODE_PATH || '';
+    const hasImported = !!imported?.handler && !!imported?.webmanifestHandler;
     try {
-      const serverContent = outputFileSystem.readFileSync(serverFilePath, 'utf-8');
-      const imported = requireFromString(serverContent, {
-        appendPaths: nodePath.split(path.delimiter),
-      });
-      if (request.url === '/manifest.webmanifest') {
-        imported.webmanifestHandler(request, reply);
+      if (hasImported) {
+        if (request.url === '/manifest.webmanifest') {
+          imported?.webmanifestHandler?.(request, reply);
+        } else {
+          imported?.handler?.(request, reply, chunksMap);
+        }
       } else {
-        imported.handler(request, reply, chunksMap);
+        reply.code(500);
+        reply.send({
+          error: 'Server not compiled.',
+          code: 500,
+        });
       }
     } catch (ex) {
+      reply.code(500);
       reply.send('Error');
       // eslint-disable-next-line no-console
       console.log(ex);
