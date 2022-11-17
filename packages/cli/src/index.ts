@@ -32,6 +32,7 @@ program.command('dev')
     const stopServer = (cb: () => void = () => {}) => {
       server.close(cb);
     };
+    // ...
     const startServer = async () => {
       server = await reactpwaCore.run(getRunOptions(program, 'development'));
       restartingServer = false;

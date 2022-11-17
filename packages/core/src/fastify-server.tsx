@@ -68,6 +68,7 @@ export const init = async () => {
   fastifyServer.get('*', requestHandler);
   fastifyServer.post('*', requestHandler);
   const port = +(process?.env?.PORT ?? '0') || 3000;
+  // Add host from env
   const host = (process?.env?.HOST ?? '0.0.0.0') || '0.0.0.0';
   await fastifyServer.listen({
     port,
