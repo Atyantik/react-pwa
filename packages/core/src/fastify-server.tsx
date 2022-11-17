@@ -68,11 +68,13 @@ export const init = async () => {
   fastifyServer.get('*', requestHandler);
   fastifyServer.post('*', requestHandler);
   const port = +(process?.env?.PORT ?? '0') || 3000;
+  const host = (process?.env?.HOST ?? '0.0.0.0') || '0.0.0.0';
   await fastifyServer.listen({
     port,
+    host,
   });
   // eslint-disable-next-line no-console
-  console.info(`Server now listening on http://localhost:${port}`);
+  console.info(`Server now listening on http://${host}:${port}`);
 };
 
 if (require.main === module) {
