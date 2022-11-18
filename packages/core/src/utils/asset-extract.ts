@@ -11,7 +11,7 @@ export type LazyRouteMatch = RouteMatch & {
 export type ChunksMap = {
   assetsByChunkName?: Record<string, string[]>;
   chunks: {
-    position: number;
+    // position: number;
     id?: string | number;
     files?: string[];
     parents?: (string | number)[];
@@ -22,7 +22,7 @@ export type ChunksMap = {
 };
 
 type PositionedFiles = {
-  position: number;
+  // position: number;
   files: string[];
 };
 
@@ -30,7 +30,7 @@ export const extractChunksMap = (webpackStats: Stats | MultiStats | undefined): 
   const stats = webpackStats?.toJson?.() ?? {};
 
   // Extract from reasons, id, parents and children
-  const chunks = (stats.chunks ?? []).map((asset, index) => {
+  const chunks = (stats.chunks ?? []).map((asset) => {
     const reasons: string[] = [
       ...new Set(
         (asset?.modules ?? [])
@@ -41,7 +41,7 @@ export const extractChunksMap = (webpackStats: Stats | MultiStats | undefined): 
     ].filter((r) => typeof r === 'string') as string[];
     return {
       id: asset?.id,
-      position: index + 1,
+      // position: index + 1,
       name: asset?.name,
       files: asset?.files,
       parents: asset?.parents,
@@ -92,7 +92,7 @@ const addById = (
   const idChunk = chunksMap.chunks.find((chunk) => chunk.id === webpackId);
   if (idChunk) {
     positionedFiles.push({
-      position: idChunk.position,
+      // position: idChunk.position,
       files: filesFromChunks([idChunk], ext),
     });
 
@@ -122,7 +122,7 @@ export const extractFiles = (
   }
   // First get the main assets via assetByChunksName
   const positionedFiles: {
-    position: number;
+    // position: number;
     files: string[];
   }[] = [];
 
@@ -133,7 +133,7 @@ export const extractFiles = (
 
   if (filesFromMain.length) {
     positionedFiles.push({
-      position: -999,
+      // position: -999,
       files: (chunksMap.assetsByChunkName?.main ?? []).filter(
         (file) => hasExtension(file, ext),
       ),
@@ -148,7 +148,7 @@ export const extractFiles = (
   const filesFromCurrentProjectChunks = filesFromChunks(currentProjectChunks, ext);
   if (filesFromCurrentProjectChunks.length) {
     positionedFiles.push({
-      position: -998,
+      // position: -998,
       files: filesFromChunks(currentProjectChunks, ext),
     });
   }
@@ -165,7 +165,7 @@ export const extractFiles = (
         .filter((chunk) => chunk?.reasonsStr?.indexOf?.(`||${matchedRoute.route.module}||`) !== -1)
         .forEach((chunk) => {
           positionedFiles.push({
-            position: chunk.position,
+            // position: chunk.position,
             files: filesFromChunks([chunk], ext),
           });
         });
@@ -181,7 +181,7 @@ export const extractFiles = (
       addById(webpackId, chunksMap, positionedFiles, ext, extractedAssets);
     }
   });
-  positionedFiles.sort((a, b) => a.position - b.position);
+  // positionedFiles.sort((a, b) => a.position - b.position);
   return [
     ...new Set(positionedFiles.map((p) => p.files).flat()),
   ].map(prependForwardSlash);
