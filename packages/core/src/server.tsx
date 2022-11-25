@@ -87,10 +87,10 @@ export const handler = async (
   // release universal cookies
   reply.then(clearCookieListener, clearCookieListener);
 
-  if (appServer.lookup && appServer.find) {
+  if (appServer?.lookup && appServer?.find) {
     const routeHandler = appServer.find(request.method, request.url);
     if (routeHandler) {
-      appServer.lookup?.(request, reply);
+      appServer.lookup(request, reply);
       return;
     }
   }
