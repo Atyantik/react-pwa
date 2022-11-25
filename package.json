@@ -15,7 +15,7 @@
     "examples/*"
   ],
   "devDependencies": {
-    "concurrently": "^7.5.0",
+    "concurrently": "^7.6.0",
     "lerna": "^6.0.3"
   }
 }
