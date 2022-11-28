@@ -1,7 +1,6 @@
 import {
   Outlet,
   Link,
-  Head,
 } from '@reactpwa/core';
 
 /**
@@ -9,9 +8,6 @@ import {
  */
 const Shell: React.FC = () => (
     <>
-      <Head>
-        <title>Example Site</title>
-      </Head>
       <header>
         <nav>
           <Link to="/">Home</Link>

@@ -7,3 +7,5 @@ import { ReactElement, ReactFragment } from 'react';
  * </Head>
  */
 export type HeadElement = ReactElement | ReactElement[] | ReactFragment;
+
+export type PromiseResolver = () => void;

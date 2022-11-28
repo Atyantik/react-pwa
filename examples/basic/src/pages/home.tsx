@@ -7,10 +7,10 @@ const HomePage: FC<{ name?: string }> = ({ name }) => {
   const homeData = useData('home.data', HomeData);
   return (
     <div>
-      <Head>
+      <Head resolve={true}>
         <title>
           This is home page
-          {name ? `for ${name}` : ''}
+          {name ? ` for ${name}` : ''}
         </title>
       </Head>
       <h1>Home Page</h1>

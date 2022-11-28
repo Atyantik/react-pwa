@@ -257,3 +257,39 @@ export const sanitizeElements = (elements: ReactElement[]) => elements
   .reverse()
   .map(addKeyToElement())
   .sort(sortHeadElements);
+
+const historyWeakMap = new WeakMap();
+export const proxyHistoryPushReplace = (callback: Function) => {
+  if (historyWeakMap.has(window)) {
+    return;
+  }
+  (function proxyHistory(history) {
+    const { pushState, replaceState } = history;
+    historyWeakMap.set(window, { pushState, replaceState });
+
+    const pushOverride: typeof pushState = (...args) => {
+      callback();
+      pushState.apply(history, args);
+    };
+    const replaceOverride: typeof replaceState = (...args) => {
+      callback();
+      pushState.apply(history, args);
+    };
+    // Patch the history for custom monitoring of events
+    // eslint-disable-next-line no-param-reassign
+    history.pushState = pushOverride;
+    // eslint-disable-next-line no-param-reassign
+    history.replaceState = replaceOverride;
+  }(window.history));
+};
+
+export const restoreHistoryPushReplace = () => {
+  (function proxyHistory(history) {
+    const { pushState, replaceState } = historyWeakMap.get(window);
+    // Patch the history for custom monitoring of events
+    // eslint-disable-next-line no-param-reassign
+    history.pushState = pushState;
+    // eslint-disable-next-line no-param-reassign
+    history.replaceState = replaceState;
+  }(window.history));
+};

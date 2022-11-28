@@ -1,3 +1,5 @@
+/* eslint-disable prefer-rest-params */
+/* eslint-disable no-param-reassign */
 import {
   FC, ReactElement, ReactNode, Suspense, useContext, useEffect, useRef,
 } from 'react';
@@ -8,11 +10,13 @@ import {
   defaultHead,
   fastHashStr,
   getAppleIcon,
+  proxyHistoryPushReplace,
+  restoreHistoryPushReplace,
   sanitizeElements,
 } from '../../utils/head.js';
 import { IWebManifest } from '../../typedefs/webmanifest.js';
 import { ReactPWAContext } from '../reactpwa.js';
-import { HeadElement } from '../../typedefs/head.js';
+import { HeadElement, PromiseResolver } from '../../typedefs/head.js';
 import { HeadContext } from './context.js';
 import { LazyHead } from './lazy.js';
 
@@ -22,6 +26,15 @@ export const HeadProvider: FC<{
   preStyles?: ReactElement | ReactElement[]
 }> = ({ children, styles, preStyles }) => {
   const { getValue } = useContext(ReactPWAContext);
+  const dataPromiseResolver = useRef<null | { current: PromiseResolver }>(null);
+  const setDataPromiseResolver = (resolver: { current: PromiseResolver }) => {
+    dataPromiseResolver.current = resolver;
+  };
+  const resolveDataPromiseResolver = () => {
+    if (dataPromiseResolver.current?.current) {
+      dataPromiseResolver.current.current();
+    }
+  };
   // Get web manifest data
   const webmanifest = getValue<IWebManifest>('Webmanifest', {});
   const appleIcon = getAppleIcon(webmanifest);
@@ -177,7 +190,6 @@ export const HeadProvider: FC<{
           commentNodes[i].remove();
         }
       }
-      initialLoadRef.current = false;
       queueUpdateHead();
     };
     if (document.readyState !== 'complete') {
@@ -187,8 +199,18 @@ export const HeadProvider: FC<{
     } else {
       initLoaded();
     }
+    const setInitialLoadRefFalse = () => {
+      initialLoadRef.current = false;
+      window.removeEventListener('popstate', setInitialLoadRefFalse);
+      restoreHistoryPushReplace();
+    };
+
+    proxyHistoryPushReplace(setInitialLoadRefFalse);
+    window.addEventListener('popstate', setInitialLoadRefFalse, { passive: true });
+
     return () => {
       window.removeEventListener('DOMContentLoaded', initLoaded);
+      window.removeEventListener('popstate', setInitialLoadRefFalse);
     };
   }, []);
 
@@ -246,6 +268,8 @@ export const HeadProvider: FC<{
         addChildren,
         removeChildren,
         elements,
+        setDataPromiseResolver,
+        resolveDataPromiseResolver,
       }}
     >
       {renderHead && (

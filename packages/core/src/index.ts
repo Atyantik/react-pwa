@@ -55,6 +55,7 @@ export interface RouteObject extends Omit<Omit<RRRouteObject, 'element'>, 'child
   skeleton?: React.ComponentType<any>;
   error?: React.ComponentType<any>;
   props?: Record<string, any>,
+  resolveHeadManually?: boolean,
 }
 
 export type WebManifest = IWebManifest | (

@@ -50,6 +50,7 @@ export class WebpackHandler {
     this.configOptions = {
       react: {
         StrictMode: true,
+        HeadResolveTimeout: 10000,
         ...(react ?? {}),
       },
       serviceWorker: serviceWorker ?? !this.isDevelopment,
@@ -171,6 +172,7 @@ export class WebpackHandler {
       new webpack.DefinePlugin({
         ...(this.isTargetWeb ? { 'process.env': {} } : {}),
         EnableReactStrictMode: this.configOptions.react.StrictMode && this.isDevelopment,
+        HeadResolveTimeout: this.configOptions.react.HeadResolveTimeout,
         EnableServiceWorker: this.configOptions.serviceWorker !== false,
       }),
       new webpack.EnvironmentPlugin({
