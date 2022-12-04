@@ -9,7 +9,10 @@ import { getServiceWorker } from './webpack/service-worker.js';
 import { getResolve, getResolveLoader } from './webpack/resolver.js';
 import { getMjsRule } from './webpack/rules/mjs-rule.js';
 import { getCssRule } from './webpack/rules/css-rule.js';
-import { getServerOptimization, getWebOptimization } from './webpack/optimization.js';
+import {
+  getServerOptimization,
+  getWebOptimization,
+} from './webpack/optimization.js';
 import { getExperiments } from './webpack/experiments.js';
 import { getJsRule } from './webpack/rules/js-rule.js';
 import { getRawResourceRule } from './webpack/rules/raw-resource-rule.js';
@@ -36,7 +39,10 @@ export class WebpackHandler {
   protected options: WebpackHandlerConstructorOptions;
 
   constructor(
-    options: Optional<WebpackHandlerConstructorOptions, 'buildWithHttpServer' | 'envVars' | 'config' | 'copyPublicFolder'>,
+    options: Optional<
+    WebpackHandlerConstructorOptions,
+    'buildWithHttpServer' | 'envVars' | 'config' | 'copyPublicFolder'
+    >,
   ) {
     this.options = {
       buildWithHttpServer: false,
@@ -140,7 +146,11 @@ export class WebpackHandler {
     if (!this.getOutput()?.path) {
       return false;
     }
-    const pathToPublicFolder = path.resolve(this.options.projectRoot, 'src', 'public');
+    const pathToPublicFolder = path.resolve(
+      this.options.projectRoot,
+      'src',
+      'public',
+    );
     try {
       return fs.statSync(pathToPublicFolder).isDirectory();
     } catch {
@@ -155,10 +165,7 @@ export class WebpackHandler {
      * user has not specified serviceWorker as false in the
      * config options
      */
-    if (
-      !this.isTargetWeb
-      || this.configOptions.serviceWorker === false
-    ) {
+    if (!this.isTargetWeb || this.configOptions.serviceWorker === false) {
       return false;
     }
     return getServiceWorker(
@@ -171,7 +178,8 @@ export class WebpackHandler {
     return [
       new webpack.DefinePlugin({
         ...(this.isTargetWeb ? { 'process.env': {} } : {}),
-        EnableReactStrictMode: this.configOptions.react.StrictMode && this.isDevelopment,
+        EnableReactStrictMode:
+          this.configOptions.react.StrictMode && this.isDevelopment,
         HeadResolveTimeout: this.configOptions.react.HeadResolveTimeout,
         EnableServiceWorker: this.configOptions.serviceWorker !== false,
       }),
@@ -180,7 +188,10 @@ export class WebpackHandler {
       }),
       this.shouldHotReload && new webpack.HotModuleReplacementPlugin(),
       this.shouldHotReload
-        && new ReactRefreshWebpackPlugin({ esModule: true, overlay: { sockProtocol: 'ws' } }),
+        && new ReactRefreshWebpackPlugin({
+          esModule: true,
+          overlay: { sockProtocol: 'ws' },
+        }),
       this.shouldHotReload
         || new MiniCssExtractPlugin({
           filename: 'css/[contenthash].css',
@@ -191,14 +202,15 @@ export class WebpackHandler {
         && new webpack.optimize.LimitChunkCountPlugin({
           maxChunks: 1,
         }),
-      this.canCopyPublicFolder() && new CopyPlugin({
-        patterns: [
-          {
-            from: path.resolve(this.options.projectRoot, 'src', 'public'),
-            to: path.join(this.getOutput()?.path ?? '', 'public'),
-          },
-        ],
-      }),
+      this.canCopyPublicFolder()
+        && new CopyPlugin({
+          patterns: [
+            {
+              from: path.resolve(this.options.projectRoot, 'src', 'public'),
+              to: path.join(this.getOutput()?.path ?? '', 'public'),
+            },
+          ],
+        }),
       this.getServiceWorkerPlugin(),
     ].filter(notBoolean);
   }

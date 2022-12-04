@@ -17,7 +17,7 @@ export class InjectSW {
 
   destFile = 'sw.js';
 
-  srcFileContent = 'self.addEventListener(\'fetch\', () => { return; });';
+  srcFileContent = "self.addEventListener('fetch', () => { return; });";
 
   constructor(options: Partial<typeof InjectSW.defaultOptions> = {}) {
     this.options = { ...InjectSW.defaultOptions, ...options };
@@ -27,7 +27,7 @@ export class InjectSW {
         this.srcFileContent = fs.readFileSync(srcFile, { encoding: 'utf-8' });
       }
     } catch {
-      this.srcFileContent = 'self.addEventListener(\'fetch\', () => { return; });';
+      this.srcFileContent = "self.addEventListener('fetch', () => { return; });";
     }
   }
 
@@ -65,7 +65,9 @@ export class InjectSW {
             const filesToCache = chunksMap.chunks.map((c) => c.files).flat(2);
             const styles = extractStyles([], chunksMap);
             const scripts = extractMainScript(chunksMap);
-            this.srcFileContent = `const __FILES=${JSON.stringify(filesToCache)};
+            this.srcFileContent = `const __FILES=${JSON.stringify(
+              filesToCache,
+            )};
             const __STYLES=${JSON.stringify(styles)};
             const __SCRIPTS=${JSON.stringify(scripts)};
             ${this.srcFileContent}`;

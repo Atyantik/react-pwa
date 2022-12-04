@@ -1,10 +1,6 @@
 {
   // extend your base config so you don't have to redefine your compilerOptions
   "extends": "./tsconfig.json",
-  "include": [
-    "**/**/*.*"
-  ],
-  "exclude": [
-    "node_modules",
-  ],
+  "include": ["**/**/*.*"],
+  "exclude": ["node_modules"]
 }

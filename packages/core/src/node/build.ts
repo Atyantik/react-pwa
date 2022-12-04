@@ -21,13 +21,21 @@ export const run = async (options: RunOptions) => {
   const projectWebpack = path.resolve(options.projectRoot, 'webpack.js');
   let WHandler: typeof WebpackHandler = WebpackHandler;
   if (projectWebpack && existsSync(projectWebpack)) {
-    const projectWebpackHandler = await import(pathToFileURL(projectWebpack).toString());
+    const projectWebpackHandler = await import(
+      pathToFileURL(projectWebpack).toString()
+    );
     if (!projectWebpackHandler.default) {
       // eslint-disable-next-line no-console
-      console.error('webpack.js should default export a class extending WebpackHandler.');
-    } else if (!(projectWebpackHandler.default.prototype instanceof WebpackHandler)) {
+      console.error(
+        'webpack.js should default export a class extending WebpackHandler.',
+      );
+    } else if (
+      !(projectWebpackHandler.default.prototype instanceof WebpackHandler)
+    ) {
       // eslint-disable-next-line no-console
-      console.error('webpack.js should extends WebpackHandler from "@reactpwa/core/webpack"');
+      console.error(
+        'webpack.js should extends WebpackHandler from "@reactpwa/core/webpack"',
+      );
     } else {
       // No issues at all, create an instance of project handler instead
       WHandler = projectWebpackHandler.default;
@@ -117,13 +125,9 @@ export const run = async (options: RunOptions) => {
           ServerConfig.output.path,
           'chunks-map.json',
         );
-        writeFileSync(
-          chunksMapFilePath,
-          JSON.stringify(webChunksMap),
-          {
-            encoding: 'utf-8',
-          },
-        );
+        writeFileSync(chunksMapFilePath, JSON.stringify(webChunksMap), {
+          encoding: 'utf-8',
+        });
       }
     });
   });

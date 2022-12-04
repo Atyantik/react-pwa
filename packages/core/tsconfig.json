@@ -7,5 +7,5 @@
     "rootDir": "./src/",
     "outDir": "./lib/esm/"
   },
-  "include": ["./src/**/*"],
+  "include": ["./src/**/*"]
 }

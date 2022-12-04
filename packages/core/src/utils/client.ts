@@ -12,10 +12,10 @@ const setScopedVar = (key: string, value: any) => {
 
 const hasScopedVar = (key: string) => !!(scopedCache.get(window)?.[key] ?? false);
 
-const getScopedVar = <T extends any>(
-  key: string,
-  defaultValue?: T,
-) => scopedCache.get(window)?.[key] ?? defaultValue ?? null;
+const getScopedVar = <T extends any>(key: string, defaultValue?: T) => {
+  const scopedValue = scopedCache.get(window)?.[key];
+  return scopedValue ?? defaultValue ?? null;
+};
 
 const getScoped = async (
   key: string,

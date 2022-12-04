@@ -1,7 +1,13 @@
 /* eslint-disable prefer-rest-params */
 /* eslint-disable no-param-reassign */
 import {
-  FC, ReactElement, ReactNode, Suspense, useContext, useEffect, useRef,
+  FC,
+  ReactElement,
+  ReactNode,
+  Suspense,
+  useContext,
+  useEffect,
+  useRef,
 } from 'react';
 import { createRoot } from 'react-dom/client';
 import { delay } from '../../utils/delay.js';
@@ -21,9 +27,9 @@ import { HeadContext } from './context.js';
 import { LazyHead } from './lazy.js';
 
 export const HeadProvider: FC<{
-  children: ReactNode,
-  styles?: string[],
-  preStyles?: ReactElement | ReactElement[]
+  children: ReactNode;
+  styles?: string[];
+  preStyles?: ReactElement | ReactElement[];
 }> = ({ children, styles, preStyles }) => {
   const { getValue } = useContext(ReactPWAContext);
   const dataPromiseResolver = useRef<null | { current: PromiseResolver }>(null);
@@ -39,20 +45,26 @@ export const HeadProvider: FC<{
   const webmanifest = getValue<IWebManifest>('Webmanifest', {});
   const appleIcon = getAppleIcon(webmanifest);
   const { name, description } = webmanifest || {};
-  const headElementsMap = useRef<{
+  const headElementsMap = useRef<
+  {
     id: string;
     elements: ReactElement[];
-  }[]>([{
-    id: '__default',
-    elements: defaultHead,
-  }]);
+  }[]
+  >([
+    {
+      id: '__default',
+      elements: defaultHead,
+    },
+  ]);
   if (name || description) {
     headElementsMap.current.push({
       id: '__manifest',
       elements: convertToReactElement(
         <>
-          {!!webmanifest.name && (<title>{webmanifest.name}</title>)}
-          {!!webmanifest.description && (<meta name="description" content={webmanifest.description} />)}
+          {!!webmanifest.name && <title>{webmanifest.name}</title>}
+          {!!webmanifest.description && (
+            <meta name="description" content={webmanifest.description} />
+          )}
         </>,
       ),
     });
@@ -82,7 +94,11 @@ export const HeadProvider: FC<{
    * to change the state of head
    */
   const updateHead = async () => {
-    if (!initialLoadRef.current && headShadowDivRef.current && headRootRef.current) {
+    if (
+      !initialLoadRef.current
+      && headShadowDivRef.current
+      && headRootRef.current
+    ) {
       isHeadUpdating.current = true;
       let allElements: ReactElement[] = [];
       // Because for loop is faster
@@ -100,16 +116,16 @@ export const HeadProvider: FC<{
       const newRenderedHeadNodes = [];
       for (let i = renderedHeadNodesRef.current.length - 1; i >= 0; i -= 1) {
         let node = renderedHeadNodesRef.current[i];
-        const newArrIndex = Array.from(headShadowDivRef.current.childNodes).findIndex(
-          (cn) => {
-            // @ts-ignore
-            if (!cn.outerHTML || !node.outerHTML) {
-              return false;
-            }
-            // @ts-ignore
-            return fastHashStr(cn.outerHTML) === fastHashStr(node.outerHTML);
-          },
-        );
+        const newArrIndex = Array.from(
+          headShadowDivRef.current.childNodes,
+        ).findIndex((cn) => {
+          // @ts-ignore
+          if (!cn.outerHTML || !node.outerHTML) {
+            return false;
+          }
+          // @ts-ignore
+          return fastHashStr(cn.outerHTML) === fastHashStr(node.outerHTML);
+        });
 
         if (newArrIndex === -1) {
           try {
@@ -127,7 +143,11 @@ export const HeadProvider: FC<{
       }
       renderedHeadNodesRef.current = newRenderedHeadNodes;
 
-      for (let i = headShadowDivRef.current.childNodes.length - 1; i >= 0; i -= 1) {
+      for (
+        let i = headShadowDivRef.current.childNodes.length - 1;
+        i >= 0;
+        i -= 1
+      ) {
         const node = headShadowDivRef.current.childNodes[i];
         const oldArrIndex = renderedHeadNodesRef.current.findIndex((n) => {
           try {
@@ -206,7 +226,9 @@ export const HeadProvider: FC<{
     };
 
     proxyHistoryPushReplace(setInitialLoadRefFalse);
-    window.addEventListener('popstate', setInitialLoadRefFalse, { passive: true });
+    window.addEventListener('popstate', setInitialLoadRefFalse, {
+      passive: true,
+    });
 
     return () => {
       window.removeEventListener('DOMContentLoaded', initLoaded);
@@ -241,7 +263,9 @@ export const HeadProvider: FC<{
 
   const removeChildren = (id: string) => {
     // console.log('am in remove children');
-    const existingIdIndex = headElementsMap.current.findIndex((a) => a.id === id);
+    const existingIdIndex = headElementsMap.current.findIndex(
+      (a) => a.id === id,
+    );
     if (existingIdIndex !== -1) {
       headElementsMap.current.splice(existingIdIndex, 1);
     }
@@ -278,7 +302,10 @@ export const HeadProvider: FC<{
             <LazyHead />
           </Suspense>
           {convertToReactElement(<>{preStyles}</>)}
-          <meta name="theme-color" content={`${webmanifest?.theme_color ?? '#FFFFFF'}`}/>
+          <meta
+            name="theme-color"
+            content={`${webmanifest?.theme_color ?? '#FFFFFF'}`}
+          />
           <link rel="manifest" href="/manifest.webmanifest" />
           {!!appleIcon && (
             <link rel="apple-touch-icon" href={appleIcon.src}></link>

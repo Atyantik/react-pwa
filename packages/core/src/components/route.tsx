@@ -1,6 +1,4 @@
-import React, {
-  lazy as reactLazy, Suspense,
-} from 'react';
+import React, { lazy as reactLazy, Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { DataContext } from './data.js';
 import { RouteObject } from '../index.js';
@@ -28,20 +26,25 @@ export function lazy(props: RouteObject) {
                 {({ setDataPromiseResolver }) => {
                   setDataPromiseResolver(this.resolver);
                   // Create data promise
-                  createDataPromise('CustomHeadResolver', () => new Promise((resolve) => {
-                    // @ts-ignore
-                    const headResolveTimeout = HeadResolveTimeout || 10000;
-                    const timeout = setTimeout(() => {
-                      // eslint-disable-next-line no-console
-                      console.warn(`WARN:: Forcefully resolving Head after waiting for ${headResolveTimeout}ms.`);
-                      resolve(null);
-                    }, headResolveTimeout);
-                    //
-                    this.resolver.current = () => {
-                      resolve(null);
-                      clearTimeout(timeout);
-                    };
-                  }));
+                  createDataPromise(
+                    'CustomHeadResolver',
+                    () => new Promise((resolve) => {
+                      // @ts-ignore
+                      const headResolveTimeout = HeadResolveTimeout || 10000;
+                      const timeout = setTimeout(() => {
+                        // eslint-disable-next-line no-console
+                        console.warn(
+                          `WARN:: Forcefully resolving Head after waiting for ${headResolveTimeout}ms.`,
+                        );
+                        resolve(null);
+                      }, headResolveTimeout);
+                        //
+                      this.resolver.current = () => {
+                        resolve(null);
+                        clearTimeout(timeout);
+                      };
+                    }),
+                  );
                   return (
                     <ErrorBoundary FallbackComponent={ErrorFallback}>
                       <Suspense fallback={<FallbackComponent />}>
@@ -49,8 +52,7 @@ export function lazy(props: RouteObject) {
                       </Suspense>
                     </ErrorBoundary>
                   );
-                }
-                }
+                }}
               </HeadContext.Consumer>
             )}
           </DataContext.Consumer>

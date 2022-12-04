@@ -4,10 +4,10 @@ import { statusCodeWithLocations } from '../utils/redirect.js';
 import { ReactPWAContext } from './reactpwa.js';
 
 export const HttpStatus: FC<{
-  children?: ReactElement | ReactElement[],
-  statusCode: number,
-  location?: URL | To,
-  relative?: NavigateOptions['relative'],
+  children?: ReactElement | ReactElement[];
+  statusCode: number;
+  location?: URL | To;
+  relative?: NavigateOptions['relative'];
 }> = ({
   children, statusCode, location, relative,
 }) => {
@@ -20,10 +20,7 @@ export const HttpStatus: FC<{
     locationStr = useHref(location, { relative });
   }
 
-  if (
-    statusCodeWithLocations.includes(statusCode)
-    && !location
-  ) {
+  if (statusCodeWithLocations.includes(statusCode) && !location) {
     throw new Error(`Error: Status code: ${statusCode} requires location`);
   }
   const { setValue } = useContext(ReactPWAContext);
@@ -36,7 +33,7 @@ export const HttpStatus: FC<{
     return null;
   }
   if (Array.isArray(children)) {
-    return (<>{children}</>);
+    return <>{children}</>;
   }
   return children;
 };

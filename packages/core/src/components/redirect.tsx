@@ -14,18 +14,28 @@ import { HttpStatus } from './http-status.js';
  * } & NavigateOptions
  * @returns HttpStatus
  */
-export const Redirect: FC<{
-  children?: ReactElement | ReactElement[],
-  to: To | URL,
-  statusCode?: RedirectStatusCode,
-} & NavigateOptions> = ({
-  to, statusCode = 307, replace, state, preventScrollReset, relative,
+export const Redirect: FC<
+{
+  children?: ReactElement | ReactElement[];
+  to: To | URL;
+  statusCode?: RedirectStatusCode;
+} & NavigateOptions
+> = ({
+  to,
+  statusCode = 307,
+  replace,
+  state,
+  preventScrollReset,
+  relative,
 }) => {
   const navigate = useNavigate();
   const href = useHref(to, { relative });
   useEffect(() => {
     navigate(to, {
-      replace, state, preventScrollReset, relative,
+      replace,
+      state,
+      preventScrollReset,
+      relative,
     });
   }, []);
   return (

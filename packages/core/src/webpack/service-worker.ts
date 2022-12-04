@@ -8,9 +8,7 @@ import { InjectSW } from './plugins/inject-sw.js';
  * @param projectSW Absolute path to service worker
  * @returns webpack.Plugin InjectSW | InjectManifest
  */
-const injectSWManifest = (
-  projectSW: string,
-) => {
+const injectSWManifest = (projectSW: string) => {
   const projectSWContent = readFileSync(projectSW, { encoding: 'utf-8' });
   // If no manifest is needed, then simply inject the project sw.js
   if (projectSWContent.indexOf('self.__WB_MANIFEST') === -1) {
@@ -36,9 +34,7 @@ export const getServiceWorker = (
   serviceWorkerType: boolean | 'minimal' | 'default',
 ) => {
   // Check if custom sw already exists
-  const projectSW = projectExistsSync(
-    path.join(projectRoot, 'src', 'sw.js'),
-  );
+  const projectSW = projectExistsSync(path.join(projectRoot, 'src', 'sw.js'));
 
   // if Project service worker exists, then
   // return and inject accordingly

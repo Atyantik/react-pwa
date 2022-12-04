@@ -16,9 +16,17 @@ export const getResolveExtensions = (): string[] => [
 
 export const getResolveLoader = (): Configuration['resolveLoader'] => {
   const libraryNodeModules = resolve(libSrc, 'node_modules');
-  const libraryHasNodeModules = libraryNodeModules ? fs.existsSync(libraryNodeModules) : false;
+  const libraryHasNodeModules = libraryNodeModules
+    ? fs.existsSync(libraryNodeModules)
+    : false;
 
-  const workspaceNodeModules = resolve(libSrc, '..', '..', '..', 'node_modules');
+  const workspaceNodeModules = resolve(
+    libSrc,
+    '..',
+    '..',
+    '..',
+    'node_modules',
+  );
   const workspaceHasNodeModules = workspaceNodeModules
     ? fs.existsSync(workspaceNodeModules)
     : false;
@@ -31,22 +39,18 @@ export const getResolveLoader = (): Configuration['resolveLoader'] => {
   };
 };
 
-export const getResolve = (
-  options: {
-    projectRoot: string,
-    alias?: Record<string, string>,
-  },
-): Configuration['resolve'] => {
+export const getResolve = (options: {
+  projectRoot: string;
+  alias?: Record<string, string>;
+}): Configuration['resolve'] => {
   const resolveConfig: Configuration['resolve'] = {
     alias: {
-      '@currentProject/webmanifest': (
+      '@currentProject/webmanifest':
         projectExistsSync(resolve(options.projectRoot, 'src', 'webmanifest'))
-        || resolve(libSrc, 'defaults', 'webmanifest')
-      ),
-      '@currentProject/server': (
+        || resolve(libSrc, 'defaults', 'webmanifest'),
+      '@currentProject/server':
         projectExistsSync(resolve(options.projectRoot, 'src', 'server'))
-        || resolve(libSrc, 'defaults', 'server')
-      ),
+        || resolve(libSrc, 'defaults', 'server'),
       '@currentProject': resolve(options.projectRoot, 'src'),
     },
     extensions: getResolveExtensions(),

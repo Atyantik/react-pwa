@@ -26,7 +26,9 @@ type PositionedFiles = {
   files: string[];
 };
 
-export const extractChunksMap = (webpackStats: Stats | MultiStats | undefined): ChunksMap => {
+export const extractChunksMap = (
+  webpackStats: Stats | MultiStats | undefined,
+): ChunksMap => {
   const stats = webpackStats?.toJson?.() ?? {};
 
   // Extract from reasons, id, parents and children
@@ -127,16 +129,14 @@ export const extractFiles = (
   }[] = [];
 
   // Concat files from main chunk
-  const filesFromMain = (
-    chunksMap.assetsByChunkName?.main ?? []
-  ).filter((file) => hasExtension(file, ext));
+  const filesFromMain = (chunksMap.assetsByChunkName?.main ?? []).filter(
+    (file) => hasExtension(file, ext),
+  );
 
   if (filesFromMain.length) {
     positionedFiles.push({
       // position: -999,
-      files: (chunksMap.assetsByChunkName?.main ?? []).filter(
-        (file) => hasExtension(file, ext),
-      ),
+      files: (chunksMap.assetsByChunkName?.main ?? []).filter((file) => hasExtension(file, ext)),
     });
   }
 
@@ -145,7 +145,10 @@ export const extractFiles = (
     (chunk) => chunk?.reasonsStr?.indexOf?.('@currentProject') !== -1
       || chunk?.reasonsStr?.indexOf?.('@reactpwa') !== -1,
   );
-  const filesFromCurrentProjectChunks = filesFromChunks(currentProjectChunks, ext);
+  const filesFromCurrentProjectChunks = filesFromChunks(
+    currentProjectChunks,
+    ext,
+  );
   if (filesFromCurrentProjectChunks.length) {
     positionedFiles.push({
       // position: -998,
@@ -162,7 +165,10 @@ export const extractFiles = (
     // as it might be a direct reason
     if (matchedRoute?.route?.module) {
       chunksMap.chunks
-        .filter((chunk) => chunk?.reasonsStr?.indexOf?.(`||${matchedRoute.route.module}||`) !== -1)
+        .filter(
+          (chunk) => chunk?.reasonsStr?.indexOf?.(`||${matchedRoute.route.module}||`)
+            !== -1,
+        )
         .forEach((chunk) => {
           positionedFiles.push({
             // position: chunk.position,
@@ -174,7 +180,9 @@ export const extractFiles = (
     if (typeof matchedRoute?.route?.webpack !== 'undefined') {
       let webpackId = matchedRoute.route.webpack;
       if (typeof matchedRoute.route.webpack === 'string') {
-        webpackId = matchedRoute.route.webpack.replace(/[./]/gi, '_').replace(/^_+|_+$/g, '');
+        webpackId = matchedRoute.route.webpack
+          .replace(/[./]/gi, '_')
+          .replace(/^_+|_+$/g, '');
       }
 
       // Add chunk with ID and add its children as well.
@@ -182,17 +190,21 @@ export const extractFiles = (
     }
   });
   // positionedFiles.sort((a, b) => a.position - b.position);
-  return [
-    ...new Set(positionedFiles.map((p) => p.files).flat()),
-  ].map(prependForwardSlash);
+  return [...new Set(positionedFiles.map((p) => p.files).flat())].map(
+    prependForwardSlash,
+  );
 };
 
-export const extractStyles = (matchedRoutes: LazyRouteMatch[], chunksMap: ChunksMap) => extractFiles(matchedRoutes, chunksMap, '.css');
-
-export const extractScripts = (matchedRoutes: LazyRouteMatch[], chunksMap: ChunksMap) => extractFiles(matchedRoutes, chunksMap, '.js');
-
-export const extractMainScript = (
+export const extractStyles = (
+  matchedRoutes: LazyRouteMatch[],
   chunksMap: ChunksMap,
-) => (chunksMap?.assetsByChunkName?.main ?? [])
+) => extractFiles(matchedRoutes, chunksMap, '.css');
+
+export const extractScripts = (
+  matchedRoutes: LazyRouteMatch[],
+  chunksMap: ChunksMap,
+) => extractFiles(matchedRoutes, chunksMap, '.js');
+
+export const extractMainScript = (chunksMap: ChunksMap) => (chunksMap?.assetsByChunkName?.main ?? [])
   .filter((file) => hasExtension(file, '.js'))
   .map(prependForwardSlash);

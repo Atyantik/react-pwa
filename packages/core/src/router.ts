@@ -11,7 +11,7 @@ type Handler = (
   res: FastifyReply,
   params: { [k: string]: string | undefined },
   store: any,
-  searchParams: { [k: string]: string }
+  searchParams: { [k: string]: string },
 ) => any;
 
 interface ShortHandRoute {
@@ -22,35 +22,32 @@ interface ShortHandRoute {
 }
 
 // @ts-ignore
-interface RouterInstance<V extends FMWRouter.HTTPVersion> extends FMWRouter.Instance<V> {
-  on(
-    method: HTTPMethod | HTTPMethod[],
-    path: string,
-    handler: Handler
-  ): void;
+interface RouterInstance<V extends FMWRouter.HTTPVersion>
+  extends FMWRouter.Instance<V> {
+  on(method: HTTPMethod | HTTPMethod[], path: string, handler: Handler): void;
   on(
     method: HTTPMethod | HTTPMethod[],
     path: string,
     options: RouteOptions,
-    handler: Handler
+    handler: Handler,
   ): void;
   on(
     method: HTTPMethod | HTTPMethod[],
     path: string,
     handler: Handler,
-    store: any
+    store: any,
   ): void;
   on(
     method: HTTPMethod | HTTPMethod[],
     path: string,
     options: RouteOptions,
     handler: Handler,
-    store: any
+    store: any,
   ): void;
   off(
     method: HTTPMethod | HTTPMethod[],
     path: string,
-    constraints?: { [key: string]: any }
+    constraints?: { [key: string]: any },
   ): void;
   all: ShortHandRoute;
 

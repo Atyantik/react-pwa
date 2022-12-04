@@ -37,27 +37,31 @@ export type RoutesArgs = {
   userAgent: string;
   isbot: () => Promise<Boolean>;
   getScoped: <T = any>(
-    key: string, callback: (() => any) | (() => Promise<any>)
+    key: string,
+    callback: (() => any) | (() => Promise<any>),
   ) => Promise<T>;
-  addToHeadPreStyles: (components: ReactElement | ReactElement[]) => void
-  addToFooter: (components: ReactElement | ReactElement[]) => void
+  addToHeadPreStyles: (components: ReactElement | ReactElement[]) => void;
+  addToFooter: (components: ReactElement | ReactElement[]) => void;
 };
 
-export type Routes = RouteObject[] | (
-  (args: RoutesArgs) => Promise<RouteObject[]>
-) | ((args: RoutesArgs) => RouteObject[]);
+export type Routes =
+  | RouteObject[]
+  | ((args: RoutesArgs) => Promise<RouteObject[]>)
+  | ((args: RoutesArgs) => RouteObject[]);
 
-export interface RouteObject extends Omit<Omit<RRRouteObject, 'element'>, 'children'> {
+export interface RouteObject
+  extends Omit<Omit<RRRouteObject, 'element'>, 'children'> {
   element: () => Promise<{ default: React.ComponentType<any> }>;
   children?: RouteObject[];
   webpack?: string | number;
   module?: string;
   skeleton?: React.ComponentType<any>;
   error?: React.ComponentType<any>;
-  props?: Record<string, any>,
-  resolveHeadManually?: boolean,
+  props?: Record<string, any>;
+  resolveHeadManually?: boolean;
 }
 
-export type WebManifest = IWebManifest | (
-  (args: RoutesArgs) => Promise<IWebManifest>
-) | ((args: RoutesArgs) => IWebManifest);
+export type WebManifest =
+  | IWebManifest
+  | ((args: RoutesArgs) => Promise<IWebManifest>)
+  | ((args: RoutesArgs) => IWebManifest);

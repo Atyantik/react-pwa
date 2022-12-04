@@ -82,7 +82,10 @@ export function unique() {
             } else {
               const category = h.props[metatype];
               const categories = metaCategories[metatype] || new Set();
-              if ((metatype !== 'name' || !hasKey) && categories.has(category)) {
+              if (
+                (metatype !== 'name' || !hasKey)
+                && categories.has(category)
+              ) {
                 isUnique = false;
               } else {
                 categories.add(category);
@@ -130,8 +133,10 @@ export function convertToReactElement(list: HeadElement): ReactElement[] {
         // @ts-ignore
         && node.props?.children
       ) {
-        // @ts-ignore
-        const childElements = convertToReactElement(Children.toArray(node.props.children));
+        const childElements = convertToReactElement(
+          // @ts-ignore
+          Children.toArray(node.props.children),
+        );
         headNodes = headNodes.concat(childElements);
       } else if (
         // @ts-ignore
@@ -149,20 +154,21 @@ export function convertToReactElement(list: HeadElement): ReactElement[] {
         headNodes.push(node);
       }
 
+      // @ts-ignore
+      const rel = node.props?.rel;
+      // @ts-ignore
+      const href = node.props?.href;
+
       if (
         // @ts-ignore
         node.type === 'link'
-        // @ts-ignore
-        && node.props?.rel === 'stylesheet'
+        && rel === 'stylesheet'
       ) {
-        // @ts-ignore
-        const hrefText = node.props?.href
-          // @ts-ignore
-          ? `${node.props?.href} detected in your <Head> tag. `
-          : '';
+        const hrefText = href ? `${href} detected in your <Head> tag. ` : '';
         // eslint-disable-next-line no-console
         console.warn(
-          `WARNING:: ${hrefText}Avoid stylesheets in <Head> element.\nRead more here: https://www.reactpwa.com/blog/no-link-in-head.html`,
+          `WARNING:: ${hrefText} Avoid stylesheets in <Head> element.\n
+          Read more here: https://www.reactpwa.com/blog/no-link-in-head.html`,
         );
       }
     }
@@ -213,10 +219,16 @@ const priorities: Record<string, number> = {
 };
 
 const getPriority = (element: React.ReactElement) => {
-  if (element.type === 'meta' && (element.props?.charSet || element.props?.charset)) {
+  if (
+    element.type === 'meta'
+    && (element.props?.charSet || element.props?.charset)
+  ) {
     return priorities.charSet;
   }
-  if (element.type === 'meta' && (element.props?.httpEquiv || element.props?.['http-equiv'])) {
+  if (
+    element.type === 'meta'
+    && (element.props?.httpEquiv || element.props?.['http-equiv'])
+  ) {
     return priorities.httpEquiv;
   }
 
@@ -241,14 +253,9 @@ export const defaultHead = convertToReactElement(
   </>,
 );
 
-export const getAppleIcon = (
-  webmanifest: IWebManifest,
-) => (webmanifest?.icons ?? []).find(
-  (i: { sizes?: string, src: string }) => (
-    i?.sizes?.indexOf('192') !== -1 || i?.sizes?.indexOf('180') !== -1
-  ) && (
-    i?.src?.indexOf?.('.svg') === -1
-  ),
+export const getAppleIcon = (webmanifest: IWebManifest) => (webmanifest?.icons ?? []).find(
+  (i: { sizes?: string; src: string }) => (i?.sizes?.indexOf('192') !== -1 || i?.sizes?.indexOf('180') !== -1)
+      && i?.src?.indexOf?.('.svg') === -1,
 );
 
 export const sanitizeElements = (elements: ReactElement[]) => elements

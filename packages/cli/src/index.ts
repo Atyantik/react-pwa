@@ -1,19 +1,12 @@
 import { resolve } from 'node:path';
 import { Command, Option } from 'commander';
 import chokidar from 'chokidar';
-import {
-  getEnvFilePath,
-  getReactpwaConfigFilePath,
-  getRunOptions,
-} from './util.js';
+import { getEnvFilePath, getReactpwaConfigFilePath, getRunOptions } from './util.js';
 
 const program = new Command();
 const projectRoot = process.cwd();
 
-program
-  .name('reactpwa')
-  .description('Create & run ReactPWA seamlessly')
-  .version('1.0.0');
+program.name('reactpwa').description('Create & run ReactPWA seamlessly').version('1.0.0');
 
 const modeOption = new Option('-m, --mode <mode>', 'provide the mode to which the code can compile');
 modeOption.choices(['development', 'production']);
@@ -22,11 +15,12 @@ program.option('-ecf, --env-config-file <path>', 'relative path to .env file', '
 program.option('-rcf, --reactpwa-config-file <path>', 'relative path reactpwa.config.js');
 program.addOption(modeOption);
 
-program.command('dev')
+program
+  .command('dev')
   .description('Start the current project in development mode')
   .action(async () => {
     // Something to do here now.
-    const reactpwaCore = await import ('@reactpwa/core/start');
+    const reactpwaCore = await import('@reactpwa/core/start');
     let server: Awaited<ReturnType<typeof reactpwaCore.run>>;
     let restartingServer = false;
     const stopServer = (cb: () => void = () => {}) => {
@@ -54,7 +48,7 @@ program.command('dev')
       `${resolve(projectRoot, 'src', 'public')}`,
       // `${resolve(projectRoot, 'src', 'server')}`,
       // `${join(projectRoot, 'src', 'server')}.*`,
-    ].filter((n) => (typeof n === 'string')) as string[];
+    ].filter((n) => typeof n === 'string') as string[];
     const watcher = chokidar.watch(watchPaths, { ignoreInitial: true });
     watcher.on('all', (_event, path) => {
       if (path.indexOf('/server/') !== -1) {
@@ -72,14 +66,13 @@ program.command('dev')
     });
   });
 
-program.command('build')
+program
+  .command('build')
   .description('Build the current project')
   .action(async () => {
     // Something to do here now.
-    const reactpwaCore = await import ('@reactpwa/core/build');
-    reactpwaCore.run(
-      getRunOptions(program, 'production'),
-    );
+    const reactpwaCore = await import('@reactpwa/core/build');
+    reactpwaCore.run(getRunOptions(program, 'production'));
   });
 
 program.parse();

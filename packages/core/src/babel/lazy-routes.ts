@@ -50,11 +50,17 @@ export default (api: any) => {
                   propertiesMap[property.key.name] = property.value.value;
                 });
 
-                const moduleObj = t.objectProperty(t.identifier('module'), t.StringLiteral(source));
+                const moduleObj = t.objectProperty(
+                  t.identifier('module'),
+                  t.StringLiteral(source),
+                );
                 const webpackObj = t.objectProperty(
                   t.identifier('webpack'),
                   t.callExpression(
-                    t.memberExpression(t.identifier('require'), t.identifier('resolveWeak')),
+                    t.memberExpression(
+                      t.identifier('require'),
+                      t.identifier('resolveWeak'),
+                    ),
                     [callPaths[0].get('arguments')[0].node],
                   ),
                 );

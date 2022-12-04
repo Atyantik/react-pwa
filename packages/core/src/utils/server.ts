@@ -67,10 +67,7 @@ const setScopedVar = (request: FastifyRequest, key: string, value: any) => {
   });
 };
 
-const hasScopedVar = (
-  request: FastifyRequest,
-  key: string,
-) => !!(scopedCache.get(request)?.[key] ?? false);
+const hasScopedVar = (request: FastifyRequest, key: string) => !!(scopedCache.get(request)?.[key] ?? false);
 
 const getScopedVar = <T = any>(
   request: FastifyRequest,
@@ -117,11 +114,17 @@ export const getRequestArgs = (request: FastifyRequest): RoutesArgs => {
     getScoped,
     addToHeadPreStyles: (components: ReactElement | ReactElement[]) => {
       const previousComponents = getInternalVar(request, 'headPreStyles', []);
-      setInternalVar(request, 'headPreStyles', [...previousComponents, components]);
+      setInternalVar(request, 'headPreStyles', [
+        ...previousComponents,
+        components,
+      ]);
     },
     addToFooter: (components: ReactElement | ReactElement[]) => {
       const previousComponents = getInternalVar(request, 'footerScripts', []);
-      setInternalVar(request, 'footerScripts', [...previousComponents, components]);
+      setInternalVar(request, 'footerScripts', [
+        ...previousComponents,
+        components,
+      ]);
     },
   };
 };

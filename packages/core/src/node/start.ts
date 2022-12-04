@@ -29,13 +29,21 @@ export const run = async (options: RunOptions) => {
   const projectWebpack = path.resolve(options.projectRoot, 'webpack.js');
   let WHandler: typeof WebpackHandler = WebpackHandler;
   if (projectWebpack && existsSync(projectWebpack)) {
-    const projectWebpackHandler = await import(pathToFileURL(projectWebpack).toString());
+    const projectWebpackHandler = await import(
+      pathToFileURL(projectWebpack).toString()
+    );
     if (!projectWebpackHandler.default) {
       // eslint-disable-next-line no-console
-      console.error('webpack.js should default export a class extending WebpackHandler.');
-    } else if (!(projectWebpackHandler.default.prototype instanceof WebpackHandler)) {
+      console.error(
+        'webpack.js should default export a class extending WebpackHandler.',
+      );
+    } else if (
+      !(projectWebpackHandler.default.prototype instanceof WebpackHandler)
+    ) {
       // eslint-disable-next-line no-console
-      console.error('webpack.js should extends WebpackHandler from "@reactpwa/core/webpack"');
+      console.error(
+        'webpack.js should extends WebpackHandler from "@reactpwa/core/webpack"',
+      );
     } else {
       // No issues at all, create an instance of project handler instead
       WHandler = projectWebpackHandler.default;
@@ -75,12 +83,16 @@ export const run = async (options: RunOptions) => {
 
   await fastifyServer.register(fastifyExpress);
   // Web - webpack dev middleware
-  const webDevMiddleware = webpackDevMiddleware(webCompiler, { serverSideRender: true });
+  const webDevMiddleware = webpackDevMiddleware(webCompiler, {
+    serverSideRender: true,
+  });
   fastifyServer.use(webDevMiddleware);
   fastifyServer.use(webpackHotMiddleware(webCompiler));
 
   // Server - webpack dev middleware
-  const serverDevMiddleware = webpackDevMiddleware(serverCompiler, { serverSideRender: true });
+  const serverDevMiddleware = webpackDevMiddleware(serverCompiler, {
+    serverSideRender: true,
+  });
   fastifyServer.use(serverDevMiddleware);
 
   await fastifyServer.register(fastifyStatic, {
@@ -98,7 +110,10 @@ export const run = async (options: RunOptions) => {
     if (outputPath) {
       const serverFilePath = path.join(outputPath, 'server.cjs');
       // @ts-ignores
-      const serverContent = serverCompiler?.outputFileSystem?.readFileSync?.(serverFilePath, 'utf-8');
+      const serverContent = serverCompiler?.outputFileSystem?.readFileSync?.(
+        serverFilePath,
+        'utf-8',
+      );
       imported = requireFromString(serverContent, {
         appendPaths: nodePath.split(path.delimiter),
       });

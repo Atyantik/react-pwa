@@ -17,7 +17,9 @@ let webChunksMap: ChunksMap = {
 try {
   const jsonStatsContent = readFileSync(
     path.resolve(__dirname, 'chunks-map.json'),
-    { encoding: 'utf-8' },
+    {
+      encoding: 'utf-8',
+    },
   );
   webChunksMap = JSON.parse(jsonStatsContent);
 } catch {
@@ -25,10 +27,7 @@ try {
 }
 
 // Enable compression
-fastifyServer.register(
-  fastifyCompress,
-  { threshold: 2048 },
-);
+fastifyServer.register(fastifyCompress, { threshold: 2048 });
 
 const publicFolderExists = existsSync(path.resolve(__dirname, 'public'));
 fastifyServer.register(fastifyStatic, {

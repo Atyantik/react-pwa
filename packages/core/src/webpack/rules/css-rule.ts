@@ -5,15 +5,13 @@ import { getCssLoaderOptions } from '../loader-options/css-loader-options.js';
 import { getPostcssLoaderOptions } from '../loader-options/post-css-loader-options.js';
 import { getSassLoaderOptions } from '../loader-options/sass-loader-options.js';
 
-export const getCssRule = (
-  options: {
-    hotReload: boolean,
-    emit: boolean,
-    sourceMap: boolean,
-    detailedIdentName: boolean,
-    context: string,
-  },
-): RuleSetRule => ({
+export const getCssRule = (options: {
+  hotReload: boolean;
+  emit: boolean;
+  sourceMap: boolean;
+  detailedIdentName: boolean;
+  context: string;
+}): RuleSetRule => ({
   test: /\.(css|s[ac]ss)$/i,
   use: [
     options.hotReload && { loader: 'style-loader' },

@@ -10,7 +10,10 @@ const javascriptExtensions = [
   '.json',
 ];
 
-export const projectExistsSync = ((filePath: string, extension = javascriptExtensions) => {
+export const projectExistsSync = (
+  filePath: string,
+  extension = javascriptExtensions,
+) => {
   if (existsSync(filePath)) return filePath;
   let resolvedFilePath = '';
   extension.forEach((jsExt) => {
@@ -22,4 +25,4 @@ export const projectExistsSync = ((filePath: string, extension = javascriptExten
     }
   });
   return resolvedFilePath;
-});
+};

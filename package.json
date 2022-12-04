@@ -28,8 +28,10 @@
     "lerna": "^6.0.3",
     "pre-commit": "^1.2.2"
   },
-  "run": [
-    "lint",
-    "build"
-  ]
+  "pre-commit": {
+    "run": [
+      "lint",
+      "build"
+    ]
+  }
 }

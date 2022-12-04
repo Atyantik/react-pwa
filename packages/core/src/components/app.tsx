@@ -11,7 +11,14 @@ const lazifyRoutes = (
   const shouldResolveHeadManually = parentResolveHeadManually || route.resolveHeadManually;
   // Remove webpack, module and extra keys from route
   const {
-    webpack, module, element, children, index, props, resolveHeadManually, ...otherProps
+    webpack,
+    module,
+    element,
+    children,
+    index,
+    props,
+    resolveHeadManually,
+    ...otherProps
   } = route;
   const Element = lazy(route);
   // we are ignoring index route as of now, as we are not supporting
@@ -19,7 +26,9 @@ const lazifyRoutes = (
   return {
     ...otherProps,
     element: <Element />,
-    children: children?.length ? lazifyRoutes(children, shouldResolveHeadManually) : [],
+    children: children?.length
+      ? lazifyRoutes(children, shouldResolveHeadManually)
+      : [],
   };
 });
 
@@ -27,8 +36,13 @@ export const App: React.FC<{
   children?: React.ReactNode;
   routes: RouteObject[];
 }> = ({ routes }) => {
-  const loadableRoutes = useMemo(() => lazifyRoutes(routes), [JSON.stringify(routes)]);
+  const loadableRoutes = useMemo(
+    () => lazifyRoutes(routes),
+    [JSON.stringify(routes)],
+  );
 
   const routesEle = useRoutes(loadableRoutes);
-  return <ErrorBoundary FallbackComponent={ErrorFallback}>{routesEle}</ErrorBoundary>;
+  return (
+    <ErrorBoundary FallbackComponent={ErrorFallback}>{routesEle}</ErrorBoundary>
+  );
 };

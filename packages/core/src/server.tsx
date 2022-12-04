@@ -24,7 +24,10 @@ import { ReactPWAContext } from './components/reactpwa.js';
 import { getInternalVar, setInternalVar } from './utils/request-internals.js';
 import { statusCodeWithLocations } from './utils/redirect.js';
 import {
-  getHttpStatusCode, getIsBot, getRedirectUrl, getRequestArgs,
+  getHttpStatusCode,
+  getIsBot,
+  getRedirectUrl,
+  getRequestArgs,
 } from './utils/server.js';
 import { WebManifest } from './index.js';
 import { IWebManifest } from './typedefs/webmanifest.js';
@@ -65,7 +68,11 @@ export const handler = async (
 
   // Init web manifest for the request
   await initWebmanifest(request);
-  const { lang: webLang, charSet: webCharSet } = getInternalVar<IWebManifest>(request, 'Webmanifest', {});
+  const { lang: webLang, charSet: webCharSet } = getInternalVar<IWebManifest>(
+    request,
+    'Webmanifest',
+    {},
+  );
   const lang = webLang ?? 'en';
   const charSet = webCharSet ?? 'UTF-8';
   reply.raw.setHeader('Content-type', `text/html; charset=${charSet}`);
@@ -108,10 +115,7 @@ export const handler = async (
   const setRequestValue = (key: string, val: any) => {
     setInternalVar(request, key, val);
   };
-  const getRequestValue = (
-    key: string,
-    defaultValue: any = null,
-  ) => getInternalVar(request, key, defaultValue);
+  const getRequestValue = (key: string, defaultValue: any = null) => getInternalVar(request, key, defaultValue);
 
   const stream = renderToPipeableStream(
     <ReactStrictMode>
@@ -151,10 +155,11 @@ export const handler = async (
         console.log('An error occurred:\n', error);
         // Something errored before we could complete the shell so we emit an alternative shell.
         reply.code(500);
-        reply.send(`<app-content></app-content><script>SHELL_ERROR=true;</script>${
-          scripts.map((script) => (
-            `<script async type="module" src=${script}></script>`
-          ))}`);
+        reply.send(
+          `<app-content></app-content><script>SHELL_ERROR=true;</script>${scripts.map(
+            (script) => `<script async type="module" src=${script}></script>`,
+          )}`,
+        );
       },
       onAllReady() {
         if (!isBot) return;
@@ -173,7 +178,10 @@ export const handler = async (
       },
       onError(err: unknown) {
         setInternalVar(request, 'hasExecutionError', true);
-        if (err instanceof Error && err.message.indexOf('closed early') === -1) {
+        if (
+          err instanceof Error
+          && err.message.indexOf('closed early') === -1
+        ) {
           // eslint-disable-next-line no-console
           console.error('An error occurred: ', err);
         } else if (err?.toString?.().indexOf('closed early') === -1) {

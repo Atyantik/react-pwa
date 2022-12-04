@@ -1,11 +1,9 @@
 import { resolve } from 'node:path';
 import { Configuration } from 'webpack';
 
-export const getWebOutput = (
-  options: {
-    projectRoot: string,
-  },
-): Configuration['output'] => ({
+export const getWebOutput = (options: {
+  projectRoot: string;
+}): Configuration['output'] => ({
   clean: true,
   module: true,
   asyncChunks: true,
@@ -16,11 +14,9 @@ export const getWebOutput = (
   assetModuleFilename: 'assets/[contenthash]-[name][ext][query]',
 });
 
-export const getServerOutput = (
-  options: {
-    projectRoot: string,
-  },
-): Configuration['output'] => ({
+export const getServerOutput = (options: {
+  projectRoot: string;
+}): Configuration['output'] => ({
   module: false,
   chunkFormat: 'commonjs',
   publicPath: '/',

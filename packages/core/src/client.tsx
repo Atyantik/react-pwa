@@ -47,34 +47,30 @@ if (rootElement) {
       </ReactStrictMode>
     );
     if (ssrEnabled) {
-      hydrateRoot(
-        rootElement,
-        children,
-        {
-          onRecoverableError: (error) => {
-            /**
-             * A Developer to a developer:
-             * this is a known error, we are knowingly ignoring the error
-             * of hydration. this can be improved with improvised implementation
-             * of routes and router. Right now we are using ReactRouter and it only
-             * happens when we doing selective hydrate on the same route.
-             */
-            if (error instanceof Error) {
-              const isHydratingError = error.message
-                .toLowerCase()
-                .indexOf(
-                  'this suspense boundary received an update before it finished hydrating',
-                ) !== -1;
-              const isDocumentLoading = document.readyState === 'loading';
-              if (isHydratingError && isDocumentLoading) {
-                // Do nothing ignore the error.
-              }
-            } else {
-              throw error;
+      hydrateRoot(rootElement, children, {
+        onRecoverableError: (error) => {
+          /**
+           * A Developer to a developer:
+           * this is a known error, we are knowingly ignoring the error
+           * of hydration. this can be improved with improvised implementation
+           * of routes and router. Right now we are using ReactRouter and it only
+           * happens when we doing selective hydrate on the same route.
+           */
+          if (error instanceof Error) {
+            const isHydratingError = error.message
+              .toLowerCase()
+              .indexOf(
+                'this suspense boundary received an update before it finished hydrating',
+              ) !== -1;
+            const isDocumentLoading = document.readyState === 'loading';
+            if (isHydratingError && isDocumentLoading) {
+              // Do nothing ignore the error.
             }
-          },
+          } else {
+            throw error;
+          }
         },
-      );
+      });
     } else {
       const root = createRoot(rootElement);
       root.render(children);
@@ -85,13 +81,16 @@ if (rootElement) {
       // Register service worker
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js').then((registration) => {
-            // eslint-disable-next-line no-console
-            console.log('SW registered: ', registration);
-          }).catch((registrationError) => {
-            // eslint-disable-next-line no-console
-            console.log('SW registration failed: ', registrationError);
-          });
+          navigator.serviceWorker
+            .register('/sw.js')
+            .then((registration) => {
+              // eslint-disable-next-line no-console
+              console.log('SW registered: ', registration);
+            })
+            .catch((registrationError) => {
+              // eslint-disable-next-line no-console
+              console.log('SW registration failed: ', registrationError);
+            });
         });
       }
     } else if ('serviceWorker' in navigator) {

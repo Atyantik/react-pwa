@@ -14,11 +14,15 @@ type DataPromise = {
 };
 
 const initialContextValue = {
-  createDataPromise: (() => ({ read: () => {} })) as <T extends () => Promise<any>>(
+  createDataPromise: (() => ({ read: () => {} })) as <
+    T extends () => Promise<any>,
+  >(
     id: string,
     cb: T,
-  ) => ({ read: () => Awaited<ReturnType<T>> }),
-  awaitDataCompletion: (() => ({ read: () => {} })) as (id: string) => ({ read: () => void }),
+  ) => { read: () => Awaited<ReturnType<T>> },
+  awaitDataCompletion: (() => ({ read: () => {} })) as (id: string) => {
+    read: () => void;
+  },
 };
 
 /**
@@ -49,7 +53,9 @@ const getSyncData = (id: string) => {
  * one instance of eventEmitter
  * Thus avoiding any child components to re-render.
  */
-export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const DataProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const eventEmitter = useRef(new DataEventEmitter());
   /**
    * All promises are recorded at single place
@@ -80,7 +86,9 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const observerPromisesRef = useRef<DataPromise[]>([]);
   function createDataPromise<T extends () => Promise<any>>(id: string, cb: T) {
-    const previousPromise = pendingPromisesRef.current.find((dc) => dc.id === id);
+    const previousPromise = pendingPromisesRef.current.find(
+      (dc) => dc.id === id,
+    );
     if (previousPromise) {
       return previousPromise.promise as { read: () => Awaited<ReturnType<T>> };
     }
@@ -99,7 +107,9 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       // i.e. on error or success.
       onFinalize: async () => {
         await delay(10);
-        const promiseIndex = pendingPromisesRef.current.findIndex((dc) => dc.id === id);
+        const promiseIndex = pendingPromisesRef.current.findIndex(
+          (dc) => dc.id === id,
+        );
         // Remove promise reference from array on done
         pendingPromisesRef.current.splice(promiseIndex, 1);
         eventEmitter.current.emit('DataPromiseFinalise');
@@ -115,7 +125,9 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }
 
   function awaitDataCompletion(id: string) {
-    const previousPromise = observerPromisesRef.current.find((dc) => dc.id === id);
+    const previousPromise = observerPromisesRef.current.find(
+      (dc) => dc.id === id,
+    );
     if (previousPromise) {
       return previousPromise.promise as { read: () => Awaited<null> };
     }
@@ -154,7 +166,9 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
            * .Check if manual garbage collect is even required
            */
           setTimeout(() => {
-            const promiseIndex = observerPromisesRef.current.findIndex((dc) => dc.id === id);
+            const promiseIndex = observerPromisesRef.current.findIndex(
+              (dc) => dc.id === id,
+            );
             // Remove promise reference from array on done
             observerPromisesRef.current.splice(promiseIndex, 1);
           }, 10);

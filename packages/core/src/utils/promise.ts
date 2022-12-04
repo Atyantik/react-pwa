@@ -15,18 +15,20 @@ export const wrapPromise = <T extends PromiseCallback>(
     result = options.syncData;
     suspend = Promise.resolve(options.syncData);
   } else {
-    suspend = promise().then(
-      (res) => {
-        status = 'success';
-        result = res;
-      },
-      (err) => {
-        status = 'error';
-        result = err;
-      },
-    ).finally(() => {
-      options?.onFinalize?.();
-    });
+    suspend = promise()
+      .then(
+        (res) => {
+          status = 'success';
+          result = res;
+        },
+        (err) => {
+          status = 'error';
+          result = err;
+        },
+      )
+      .finally(() => {
+        options?.onFinalize?.();
+      });
   }
   return {
     read(): Awaited<ReturnType<T>> {

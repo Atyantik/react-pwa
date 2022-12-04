@@ -24,6 +24,7 @@ const config = {
     "es2021": true
   },
   "rules": {
+    "max-len": ["error", {"code": 120}],
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/no-use-before-define": [
       "error",

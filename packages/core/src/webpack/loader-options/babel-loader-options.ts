@@ -22,16 +22,14 @@ const getPresetEnvOptions = (options: { isTargetServer: boolean }) => {
   ];
 };
 
-export const getBabelLoaderOptions = (
-  options: {
-    isTargetServer: boolean,
-    hotReload: boolean,
-  },
-) => ({
+export const getBabelLoaderOptions = (options: {
+  isTargetServer: boolean;
+  hotReload: boolean;
+}) => ({
   presets: [
     [
       '@babel/preset-env',
-      ...(getPresetEnvOptions({ isTargetServer: options.isTargetServer })),
+      ...getPresetEnvOptions({ isTargetServer: options.isTargetServer }),
     ],
     [
       '@babel/preset-react',
