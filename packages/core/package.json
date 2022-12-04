@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsup --watch",
     "build": "tsup",
-    "lint": "prettier --write . && eslint",
+    "lint": "prettier --write . && eslint . --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "typings": "./lib",

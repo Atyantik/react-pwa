@@ -65,6 +65,15 @@ export const handler = async (
 
   // Init web manifest for the request
   await initWebmanifest(request);
+  const { lang: webLang, charSet: webCharSet } = getInternalVar<IWebManifest>(request, 'Webmanifest', {});
+  const lang = webLang ?? 'en';
+  const charSet = webCharSet ?? 'UTF-8';
+  reply.raw.setHeader('Content-type', `text/html; charset=${charSet}`);
+  reply.header('Content-type', `text/html; charset=${charSet}`);
+  const initialHtml = `<!DOCTYPE html><html lang="${lang}"><meta charset="${charSet}">`;
+  if (!isBot) {
+    reply.raw.write(initialHtml);
+  }
 
   if (typeof appRoutes === 'function') {
     routes = await appRoutes(getRequestArgs(request));
@@ -104,13 +113,6 @@ export const handler = async (
     defaultValue: any = null,
   ) => getInternalVar(request, key, defaultValue);
 
-  const { lang: webLang, charSet: webCharSet } = getInternalVar<IWebManifest>(request, 'Webmanifest', {});
-  const lang = webLang ?? 'en';
-  const charSet = webCharSet ?? 'UTF-8';
-  reply.raw.setHeader('Content-type', `text/html; charset=${charSet}`);
-  reply.header('Content-type', `text/html; charset=${charSet}`);
-  const initialHtml = `<!DOCTYPE html><html lang="${lang}"><meta charset="${charSet}">`;
-
   const stream = renderToPipeableStream(
     <ReactStrictMode>
       <ReactPWAContext.Provider
@@ -139,12 +141,8 @@ export const handler = async (
     {
       onShellReady() {
         if (isBot) return;
-        // The content above all Suspense boundaries is ready.
-        // If something errored before we started streaming, we set the error code appropriately.
-        reply.code(getHttpStatusCode(request, matchedRoutes));
         // @todo: Get html attributes as properties from
         // config file
-        reply.raw.write(initialHtml);
         stream.pipe(reply.raw);
       },
       onShellError(error) {
@@ -153,7 +151,7 @@ export const handler = async (
         console.log('An error occurred:\n', error);
         // Something errored before we could complete the shell so we emit an alternative shell.
         reply.code(500);
-        reply.send(`${initialHtml}<app-content></app-content><script>SHELL_ERROR=true;</script>${
+        reply.send(`<app-content></app-content><script>SHELL_ERROR=true;</script>${
           scripts.map((script) => (
             `<script async type="module" src=${script}></script>`
           ))}`);
