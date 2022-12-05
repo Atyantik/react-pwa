@@ -1,3 +1,5 @@
+import zlib from 'zlib';
+import { PassThrough } from 'node:stream';
 import Cookies from 'universal-cookie';
 import { renderToPipeableStream } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom/server.js';
@@ -32,7 +34,32 @@ import {
 import { WebManifest } from './index.js';
 import { IWebManifest } from './typedefs/webmanifest.js';
 import { cookieChangeHandler } from './utils/cookie.js';
-import { PwaStream } from './utils/stream.js';
+
+const getCompression = (request: FastifyRequest) => {
+  const acceptEncoding = request.headers['accept-encoding'] ?? '';
+  if (acceptEncoding.indexOf('br') !== -1) {
+    return {
+      compressionStream: zlib.createBrotliCompress(),
+      encoding: 'br',
+    };
+  }
+  if (acceptEncoding.indexOf('gzip') !== -1) {
+    return {
+      compressionStream: zlib.createGzip(),
+      encoding: 'gzip',
+    };
+  }
+  if (acceptEncoding.indexOf('deflate') !== -1) {
+    return {
+      compressionStream: zlib.createDeflate(),
+      encoding: 'deflate',
+    };
+  }
+  return {
+    compressionStream: new PassThrough(),
+    encoding: false,
+  };
+};
 
 const initWebmanifest = async (request: FastifyRequest) => {
   const computedWebmanifest = getInternalVar(request, 'Webmanifest', null);
@@ -84,13 +111,22 @@ export const handler = async (
   );
   const lang = webLang ?? 'en';
   const charSet = webCharSet ?? 'utf-8';
-  const pwaStream = new PwaStream();
-  reply.header('Content-type', `text/html; charset=${charSet}`);
+  /**
+   * Set header to text/html with charset as per webmanifest
+   * or default to utf-8
+   */
+  reply.raw.setHeader('content-type', `text/html; charset=${charSet}`);
+
+  const { compressionStream, encoding } = getCompression(request);
+  if (typeof encoding === 'string') {
+    reply.raw.setHeader('content-encoding', encoding);
+  }
+
   const initialHtml = `<!DOCTYPE html><html lang="${lang}"><meta charset="${charSet}">`;
-  reply.send(pwaStream);
+  compressionStream.pipe(reply.raw);
 
   if (!isBot) {
-    pwaStream.push(initialHtml);
+    compressionStream.write(initialHtml);
   }
 
   if (typeof appRoutes === 'function') {
@@ -135,9 +171,6 @@ export const handler = async (
                 <app-content>
                   <App routes={routes} />
                 </app-content>
-                {scripts.map((script) => (
-                  <script async type="module" key={script} src={script} />
-                ))}
                 {getRequestValue('footerScripts', <></>)}
               </HeadProvider>
             </DataProvider>
@@ -146,11 +179,10 @@ export const handler = async (
       </ReactPWAContext.Provider>
     </ReactStrictMode>,
     {
+      bootstrapModules: scripts,
       onShellReady() {
         if (isBot) return;
-        // @todo: Get html attributes as properties from
-        // config file
-        stream.pipe(pwaStream);
+        stream.pipe(compressionStream);
       },
       onShellError(error) {
         setInternalVar(request, 'hasExecutionError', true);
@@ -169,12 +201,10 @@ export const handler = async (
          * @todo do not add script on shell error. After adding the scripts the
          * frontend may work fine, thus the error is not directly visible to developer
          */
-        pwaStream.push(
-          `<app-content></app-content><script>SHELL_ERROR=true;</script>${scripts.map(
-            (script) => `<script async type="module" src=${script}></script>`,
-          )}`,
-        );
-        pwaStream.end();
+        compressionStream.write(`<app-content></app-content><script>SHELL_ERROR=true;</script>${scripts.map(
+          (script) => `<script async type="module" src=${script}></script>`,
+        )}`);
+        compressionStream.end();
       },
       onAllReady() {
         if (!isBot) return;
@@ -188,8 +218,8 @@ export const handler = async (
           reply.redirect(statusCode, redirectUrl);
           return;
         }
-        pwaStream.push(initialHtml);
-        stream.pipe(pwaStream);
+        compressionStream.write(initialHtml);
+        stream.pipe(compressionStream);
       },
       onError(err: unknown) {
         setInternalVar(request, 'hasExecutionError', true);
