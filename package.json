@@ -6,15 +6,12 @@
     "dev": "concurrently \"npm:dev:*\"",
     "dev:core": "npm run dev -w @reactpwa/core",
     "dev:cli": "npm run dev -w @reactpwa/cli",
-    
     "build": "concurrently \"npm:build:*\"",
     "build:core": "npm run build -w @reactpwa/core",
     "build:cli": "npm run build -w @reactpwa/cli",
-
     "lint": "concurrently \"npm:lint:*\"",
     "lint:core": "npm run lint -w @reactpwa/core",
     "lint:cli": "npm run lint -w @reactpwa/cli",
-
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Tirth Bodawala <tirthbodawala>",
@@ -25,7 +22,7 @@
   ],
   "devDependencies": {
     "concurrently": "^7.6.0",
-    "lerna": "^6.0.3",
+    "lerna": "^6.1.0",
     "pre-commit": "^1.2.2"
   },
   "pre-commit": {
