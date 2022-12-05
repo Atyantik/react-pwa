@@ -229,6 +229,7 @@ export class WebpackHandler {
         isTargetServer: this.isTargetServer,
         hotReload: this.shouldHotReload,
         projectRoot: this.options.projectRoot,
+        cacheDirectory: this.isDevelopment,
       }),
       getCssRule({
         hotReload: this.shouldHotReload,
@@ -249,6 +250,12 @@ export class WebpackHandler {
 
   getConfig(): webpack.Configuration {
     return {
+      cache: this.isDevelopment
+        ? {
+          type: 'filesystem',
+          allowCollectingMemory: true,
+        }
+        : false,
       mode: this.options.mode,
       entry: this.getEntry(),
       optimization: this.getOptimization(),

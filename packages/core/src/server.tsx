@@ -32,6 +32,7 @@ import {
 import { WebManifest } from './index.js';
 import { IWebManifest } from './typedefs/webmanifest.js';
 import { cookieChangeHandler } from './utils/cookie.js';
+import { PwaStream } from './utils/stream.js';
 
 const initWebmanifest = async (request: FastifyRequest) => {
   const computedWebmanifest = getInternalVar(request, 'Webmanifest', null);
@@ -61,6 +62,14 @@ export const handler = async (
   reply: FastifyReply,
   chunksMap: ChunksMap,
 ) => {
+  if (appServer?.lookup && appServer?.find) {
+    const routeHandler = appServer.find(request.method, request.url);
+    if (routeHandler) {
+      appServer.lookup(request, reply);
+      return;
+    }
+  }
+
   let routes = appRoutes;
   const userAgent = request.headers['user-agent'] ?? '';
   // get isbot instance
@@ -74,12 +83,14 @@ export const handler = async (
     {},
   );
   const lang = webLang ?? 'en';
-  const charSet = webCharSet ?? 'UTF-8';
-  reply.raw.setHeader('Content-type', `text/html; charset=${charSet}`);
+  const charSet = webCharSet ?? 'utf-8';
+  const pwaStream = new PwaStream();
   reply.header('Content-type', `text/html; charset=${charSet}`);
   const initialHtml = `<!DOCTYPE html><html lang="${lang}"><meta charset="${charSet}">`;
+  reply.send(pwaStream);
+
   if (!isBot) {
-    reply.raw.write(initialHtml);
+    pwaStream.push(initialHtml);
   }
 
   if (typeof appRoutes === 'function') {
@@ -102,14 +113,6 @@ export const handler = async (
 
   // release universal cookies
   reply.then(clearCookieListener, clearCookieListener);
-
-  if (appServer?.lookup && appServer?.find) {
-    const routeHandler = appServer.find(request.method, request.url);
-    if (routeHandler) {
-      appServer.lookup(request, reply);
-      return;
-    }
-  }
 
   // Initiate the router to get manage the data
   const setRequestValue = (key: string, val: any) => {
@@ -147,19 +150,31 @@ export const handler = async (
         if (isBot) return;
         // @todo: Get html attributes as properties from
         // config file
-        stream.pipe(reply.raw);
+        stream.pipe(pwaStream);
       },
       onShellError(error) {
         setInternalVar(request, 'hasExecutionError', true);
         // eslint-disable-next-line no-console
-        console.log('An error occurred:\n', error);
+        console.log('A Shell error occurred:\n', error);
+        // eslint-disable-next-line no-console
+        console.log(
+          'A shell error may also occur if wrong react components are injected in head or footer.'
+            + 'Please check you are using addToHeadPreStyles & addToFooter wisely.',
+        );
         // Something errored before we could complete the shell so we emit an alternative shell.
-        reply.code(500);
-        reply.send(
+        if (!isBot) {
+          reply.code(500);
+        }
+        /**
+         * @todo do not add script on shell error. After adding the scripts the
+         * frontend may work fine, thus the error is not directly visible to developer
+         */
+        pwaStream.push(
           `<app-content></app-content><script>SHELL_ERROR=true;</script>${scripts.map(
             (script) => `<script async type="module" src=${script}></script>`,
           )}`,
         );
+        pwaStream.end();
       },
       onAllReady() {
         if (!isBot) return;
@@ -173,8 +188,8 @@ export const handler = async (
           reply.redirect(statusCode, redirectUrl);
           return;
         }
-        reply.raw.write(initialHtml);
-        stream.pipe(reply.raw);
+        pwaStream.push(initialHtml);
+        stream.pipe(pwaStream);
       },
       onError(err: unknown) {
         setInternalVar(request, 'hasExecutionError', true);

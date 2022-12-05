@@ -25,7 +25,9 @@ const getPresetEnvOptions = (options: { isTargetServer: boolean }) => {
 export const getBabelLoaderOptions = (options: {
   isTargetServer: boolean;
   hotReload: boolean;
+  cacheDirectory: boolean;
 }) => ({
+  cacheDirectory: options.cacheDirectory,
   presets: [
     [
       '@babel/preset-env',

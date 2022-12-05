@@ -27,7 +27,7 @@ try {
 }
 
 // Enable compression
-fastifyServer.register(fastifyCompress, { threshold: 2048 });
+await fastifyServer.register(fastifyCompress);
 
 const publicFolderExists = existsSync(path.resolve(__dirname, 'public'));
 fastifyServer.register(fastifyStatic, {

@@ -6,6 +6,7 @@ export const getJsRule = (options: {
   projectRoot: string;
   isTargetServer: boolean;
   hotReload: boolean;
+  cacheDirectory: boolean;
 }): RuleSetRule => ({
   test: /\.(j|t)sx?$/,
   exclude: [/node_modules/],
@@ -15,6 +16,7 @@ export const getJsRule = (options: {
     // options: this.getSwcLoaderOptions(),
     loader: 'babel-loader',
     options: getBabelLoaderOptions({
+      cacheDirectory: options.cacheDirectory,
       isTargetServer: options.isTargetServer,
       hotReload: options.hotReload,
     }),
