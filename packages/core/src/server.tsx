@@ -201,9 +201,11 @@ export const handler = async (
          * @todo do not add script on shell error. After adding the scripts the
          * frontend may work fine, thus the error is not directly visible to developer
          */
-        compressionStream.write(`<app-content></app-content><script>SHELL_ERROR=true;</script>${scripts.map(
-          (script) => `<script async type="module" src=${script}></script>`,
-        )}`);
+        compressionStream.write(
+          `<app-content></app-content><script>SHELL_ERROR=true;</script>${scripts.map(
+            (script) => `<script async type="module" src=${script}></script>`,
+          )}`,
+        );
         compressionStream.end();
       },
       onAllReady() {
