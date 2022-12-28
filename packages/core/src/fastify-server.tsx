@@ -55,7 +55,7 @@ const requestHandler: RouteHandler = (request, reply) => {
   }
 };
 
-export const init = async () => {
+const init = async () => {
   const manigestRouteExists = fastifyServer.hasRoute({
     url: '/manifest.webmanifest',
     method: 'GET',
@@ -66,17 +66,20 @@ export const init = async () => {
 
   fastifyServer.get('*', requestHandler);
   fastifyServer.post('*', requestHandler);
+  return fastifyServer;
+};
+
+if (require.main === module) {
   const port = +(process?.env?.PORT ?? '0') || 3000;
   // Add host from env
   const host = (process?.env?.HOST ?? '0.0.0.0') || '0.0.0.0';
-  await fastifyServer.listen({
+  const initedServer = await init();
+  await initedServer.listen({
     port,
     host,
   });
   // eslint-disable-next-line no-console
   console.info(`Server now listening on http://${host}:${port}`);
-};
-
-if (require.main === module) {
-  init();
 }
+
+export default init;

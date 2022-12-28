@@ -41,7 +41,7 @@ export class WebpackHandler {
   constructor(
     options: Optional<
     WebpackHandlerConstructorOptions,
-    'buildWithHttpServer' | 'envVars' | 'config' | 'copyPublicFolder'
+    'buildWithHttpServer' | 'envVars' | 'config' | 'copyPublicFolder' | 'serverSideRender'
     >,
   ) {
     this.options = {
@@ -49,6 +49,7 @@ export class WebpackHandler {
       envVars: {},
       config: {},
       copyPublicFolder: false,
+      serverSideRender: false,
       ...options,
     };
 
@@ -178,6 +179,7 @@ export class WebpackHandler {
     return [
       new webpack.DefinePlugin({
         ...(this.isTargetWeb ? { 'process.env': {} } : {}),
+        EnableServerSideRender: this.options.serverSideRender,
         EnableReactStrictMode:
           this.configOptions.react.StrictMode && this.isDevelopment,
         HeadResolveTimeout: this.configOptions.react.HeadResolveTimeout,

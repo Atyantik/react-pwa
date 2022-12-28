@@ -66,69 +66,85 @@ export const run = async (options: RunOptions) => {
 
   const webCompiler = webpack(WebConfig);
   const serverCompiler = webpack(ServerConfig);
-
-  webCompiler.run((webErr, webStats) => {
-    if (webErr) {
-      // eslint-disable-next-line no-console
-      console.error(webErr);
-      process.exit(1);
-    }
-    // eslint-disable-next-line no-console
-    console.log(webStats?.toString(webpackStatsDisplayOptions));
-
-    const webChunksMap = extractChunksMap(webStats);
-    serverCompiler.run((serverErr, serverStats) => {
-      if (serverErr) {
+  try {
+    const compileStats: {
+      webStats: webpack.Stats | undefined,
+      serverStats: webpack.Stats | undefined,
+    } = await new Promise((resolve, reject) => {
+      webCompiler.run((webErr, webStats) => {
+        if (webErr) {
+          // eslint-disable-next-line no-console
+          reject(webErr);
+          return;
+        }
         // eslint-disable-next-line no-console
-        console.error(serverErr);
-        process.exit(1);
-      }
-      // eslint-disable-next-line no-console
-      console.log(serverStats?.toString(webpackStatsDisplayOptions));
-      // Move images and assets folder to build
-      if (ServerConfig.output?.path) {
-        const serverImagesPath = path.resolve(
-          ServerConfig.output.path,
-          'images',
-        );
-        const buildImagesPath = path.resolve(
-          ServerConfig.output.path,
-          'build',
-          'images',
-        );
-        if (existsSync(serverImagesPath)) {
-          fse.copySync(serverImagesPath, buildImagesPath, {
-            overwrite: false,
-            recursive: true,
-          });
-          fse.removeSync(serverImagesPath);
-        }
+        console.log(webStats?.toString(webpackStatsDisplayOptions));
 
-        const serverAssetsPath = path.resolve(
-          ServerConfig.output.path,
-          'assets',
-        );
-        // Copy to build/assets
-        const buildAssetsPath = path.resolve(
-          ServerConfig.output.path,
-          'build',
-          'assets',
-        );
-        if (existsSync(serverAssetsPath)) {
-          fse.copySync(serverAssetsPath, buildAssetsPath, {
-            overwrite: false,
-            recursive: true,
-          });
-          fse.removeSync(serverAssetsPath);
-        }
-        const chunksMapFilePath = path.join(
-          ServerConfig.output.path,
-          'chunks-map.json',
-        );
-        writeFileSync(chunksMapFilePath, JSON.stringify(webChunksMap), {
-          encoding: 'utf-8',
+        const webChunksMap = extractChunksMap(webStats);
+        serverCompiler.run((serverErr, serverStats) => {
+          if (serverErr) {
+            // eslint-disable-next-line no-console
+            reject(serverErr);
+            return;
+          }
+          // eslint-disable-next-line no-console
+          console.log(serverStats?.toString(webpackStatsDisplayOptions));
+          // Move images and assets folder to build
+          if (ServerConfig.output?.path) {
+            const serverImagesPath = path.resolve(
+              ServerConfig.output.path,
+              'images',
+            );
+            const buildImagesPath = path.resolve(
+              ServerConfig.output.path,
+              'build',
+              'images',
+            );
+            if (existsSync(serverImagesPath)) {
+              fse.copySync(serverImagesPath, buildImagesPath, {
+                overwrite: false,
+                recursive: true,
+              });
+              fse.removeSync(serverImagesPath);
+            }
+
+            const serverAssetsPath = path.resolve(
+              ServerConfig.output.path,
+              'assets',
+            );
+            // Copy to build/assets
+            const buildAssetsPath = path.resolve(
+              ServerConfig.output.path,
+              'build',
+              'assets',
+            );
+            if (existsSync(serverAssetsPath)) {
+              fse.copySync(serverAssetsPath, buildAssetsPath, {
+                overwrite: false,
+                recursive: true,
+              });
+              fse.removeSync(serverAssetsPath);
+            }
+            const chunksMapFilePath = path.join(
+              ServerConfig.output.path,
+              'chunks-map.json',
+            );
+            writeFileSync(chunksMapFilePath, JSON.stringify(webChunksMap), {
+              encoding: 'utf-8',
+            });
+            resolve({ serverStats, webStats });
+          }
         });
-      }
+      });
     });
-  });
+    return compileStats;
+  } catch (ex) {
+    // eslint-disable-next-line no-console
+    console.error(ex);
+    process.exit(1);
+  }
+  return {
+    webStats: undefined,
+    serverStats: undefined,
+  };
 };

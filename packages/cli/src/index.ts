@@ -1,7 +1,10 @@
 import { resolve } from 'node:path';
 import { Command, Option } from 'commander';
 import chokidar from 'chokidar';
-import { getEnvFilePath, getReactpwaConfigFilePath, getRunOptions } from './util.js';
+import {
+  getEnvFilePath, getReactpwaConfigFilePath, getRunOptions,
+} from './util.js';
+import { generateStaticSite } from './static-site-generator.js';
 
 const program = new Command();
 const projectRoot = process.cwd();
@@ -66,13 +69,19 @@ program
     });
   });
 
+const staticSiteOption = new Option('-ss, --static-site', 'Create a static file with index.html and manifest.json');
 program
   .command('build')
+  .addOption(staticSiteOption)
   .description('Build the current project')
-  .action(async () => {
+  .action(async ({ staticSite }) => {
     // Something to do here now.
     const reactpwaCore = await import('@reactpwa/core/build');
-    reactpwaCore.run(getRunOptions(program, 'production'));
+    const stats = await reactpwaCore.run(getRunOptions(program, 'production'));
+    if (staticSite && stats.serverStats) {
+      // Generate index.html & manifest.json files
+      generateStaticSite(stats);
+    }
   });
 
 program.parse();

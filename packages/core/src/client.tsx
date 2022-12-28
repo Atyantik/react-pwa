@@ -1,5 +1,6 @@
 const rootElement = document.getElementsByTagName('app-content')?.[0];
-const ssrEnabled = true;
+// @ts-ignore
+const ssrEnabled = EnableServerSideRender;
 
 if (rootElement) {
   (async () => {

@@ -19,16 +19,20 @@
   "license": "ISC",
   "devDependencies": {
     "@reactpwa/core": "^1.0.39-alpha.0",
-    "eslint": "^8.29.0",
+    "eslint": "^8.30.0",
     "eslint-config-reactpwa": "^1.0.38-alpha.0",
-    "prettier": "^2.8.0",
+    "prettier": "^2.8.1",
     "tsup": "^6.5.0"
   },
   "dependencies": {
     "chokidar": "^3.5.3",
     "commander": "^9.4.1",
     "dotenv": "^16.0.3",
-    "dotenv-expand": "^9.0.0"
+    "dotenv-expand": "^10.0.0",
+    "fastify": "^4.10.2",
+    "fs-extra": "^11.1.0",
+    "node-fetch": "^3.3.0",
+    "webpack": "^5.75.0"
   },
   "gitHead": "1b9ab957cac25218179b12f2ddc727fabb06f000"
 }

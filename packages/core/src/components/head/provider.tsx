@@ -73,7 +73,12 @@ export const HeadProvider: FC<{
   const headRootRef = useRef<ReturnType<typeof createRoot> | null>(null);
   const headShadowDivRef = useRef<HTMLDivElement | null>(null);
   const renderedHeadNodesRef = useRef<Node[]>([]);
-  const initialLoadRef = useRef(true);
+  // @ts-ignore
+  // If server side render is disabled, it means the script will be loaded at end
+  // and we do not need to stream or hydrate any data. Thus making sure we can set
+  // initialLoad as false. Purpose of initial load is only significant when we already have
+  // head rendered by SSR.
+  const initialLoadRef = useRef(EnableServerSideRender);
   const nextHeadUpdate = useRef<Function | null>(null);
   const isHeadUpdating = useRef(false);
   const isMutating = useRef(false);
@@ -212,7 +217,7 @@ export const HeadProvider: FC<{
       }
       queueUpdateHead();
     };
-    if (document.readyState !== 'complete') {
+    if (document.readyState === 'loading') {
       window.addEventListener('DOMContentLoaded', initLoaded, {
         passive: true,
       });
@@ -262,7 +267,6 @@ export const HeadProvider: FC<{
   };
 
   const removeChildren = (id: string) => {
-    // console.log('am in remove children');
     const existingIdIndex = headElementsMap.current.findIndex(
       (a) => a.id === id,
     );
@@ -275,8 +279,6 @@ export const HeadProvider: FC<{
     });
     try {
       elements.current = sanitizeElements(allElements);
-
-      // console.log('removing elements.current', elements.current);
       // Update on client side
       queueUpdateHead();
     } catch (ex) {

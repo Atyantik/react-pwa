@@ -156,6 +156,9 @@ export const handler = async (
   };
   const getRequestValue = (key: string, defaultValue: any = null) => getInternalVar(request, key, defaultValue);
 
+  // @ts-ignore
+  const app = EnableServerSideRender ? (<App routes={routes} />) : (<></>);
+
   const stream = renderToPipeableStream(
     <ReactStrictMode>
       <ReactPWAContext.Provider
@@ -169,7 +172,7 @@ export const handler = async (
                 preStyles={getRequestValue('headPreStyles', <></>)}
               >
                 <app-content>
-                  <App routes={routes} />
+                  {app}
                 </app-content>
                 {getRequestValue('footerScripts', <></>)}
               </HeadProvider>

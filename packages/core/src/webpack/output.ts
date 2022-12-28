@@ -23,6 +23,6 @@ export const getServerOutput = (options: {
   path: resolve(options.projectRoot, 'dist'),
   filename: 'server.cjs',
   library: {
-    type: 'commonjs',
+    type: 'commonjs-module',
   },
 });

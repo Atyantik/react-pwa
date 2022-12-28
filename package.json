@@ -22,7 +22,7 @@
   ],
   "devDependencies": {
     "concurrently": "^7.6.0",
-    "lerna": "^6.1.0",
+    "lerna": "^6.3.0",
     "pre-commit": "^1.2.2"
   },
   "pre-commit": {

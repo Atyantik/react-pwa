@@ -6,7 +6,8 @@
   "private": true,
   "scripts": {
     "dev": "reactpwa dev",
-    "build": "reactpwa build",
+    "build": "reactpwa --mode=production build",
+    "build:static": "reactpwa build --mode=production --static-site",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -20,7 +21,7 @@
   },
   "devDependencies": {
     "@types/react": "^18.0.26",
-    "@types/react-dom": "^18.0.8"
+    "@types/react-dom": "^18.0.10"
   },
   "gitHead": "1b9ab957cac25218179b12f2ddc727fabb06f000"
 }
