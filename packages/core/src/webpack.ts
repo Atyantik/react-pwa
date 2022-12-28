@@ -41,7 +41,11 @@ export class WebpackHandler {
   constructor(
     options: Optional<
     WebpackHandlerConstructorOptions,
-    'buildWithHttpServer' | 'envVars' | 'config' | 'copyPublicFolder' | 'serverSideRender'
+    | 'buildWithHttpServer'
+    | 'envVars'
+    | 'config'
+    | 'copyPublicFolder'
+    | 'serverSideRender'
     >,
   ) {
     this.options = {

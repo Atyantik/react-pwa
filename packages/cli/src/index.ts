@@ -1,9 +1,7 @@
 import { resolve } from 'node:path';
 import { Command, Option } from 'commander';
 import chokidar from 'chokidar';
-import {
-  getEnvFilePath, getReactpwaConfigFilePath, getRunOptions,
-} from './util.js';
+import { getEnvFilePath, getReactpwaConfigFilePath, getRunOptions } from './util.js';
 import { generateStaticSite } from './static-site-generator.js';
 
 const program = new Command();

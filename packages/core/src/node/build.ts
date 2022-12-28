@@ -68,8 +68,8 @@ export const run = async (options: RunOptions) => {
   const serverCompiler = webpack(ServerConfig);
   try {
     const compileStats: {
-      webStats: webpack.Stats | undefined,
-      serverStats: webpack.Stats | undefined,
+      webStats: webpack.Stats | undefined;
+      serverStats: webpack.Stats | undefined;
     } = await new Promise((resolve, reject) => {
       webCompiler.run((webErr, webStats) => {
         if (webErr) {

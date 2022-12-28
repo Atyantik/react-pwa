@@ -17,12 +17,10 @@ const startLocalServer = async (app: FastifyInstance) => {
 
 const stopLocalServer = async (app: FastifyInstance) => app.close();
 
-export const generateStaticSite = async (
-  stats: {
-    webStats: webpack.Stats | undefined,
-    serverStats: webpack.Stats | undefined,
-  },
-) => {
+export const generateStaticSite = async (stats: {
+  webStats: webpack.Stats | undefined;
+  serverStats: webpack.Stats | undefined;
+}) => {
   if (!stats.serverStats || !stats.webStats) {
     return;
   }
