@@ -29,7 +29,7 @@ program
     };
     // ...
     const startServer = async () => {
-      server = await reactpwaCore.run(getRunOptions(program, 'development'));
+      server = await reactpwaCore.run(getRunOptions(program, { serverSideRender: true }, 'development'));
       restartingServer = false;
     };
     const restartServer = async () => {
@@ -75,7 +75,7 @@ program
   .action(async ({ staticSite }) => {
     // Something to do here now.
     const reactpwaCore = await import('@reactpwa/core/build');
-    const stats = await reactpwaCore.run(getRunOptions(program, 'production'));
+    const stats = await reactpwaCore.run(getRunOptions(program, { serverSideRender: !staticSite }, 'production'));
     if (staticSite && stats.serverStats) {
       // Generate index.html & manifest.json files
       generateStaticSite(stats);

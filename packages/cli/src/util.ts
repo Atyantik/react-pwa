@@ -100,7 +100,11 @@ export const getReactpwaConfig = (program: Command) => (): Record<string, any> =
   return {};
 };
 
-export const getRunOptions = (program: Command, defaultMode = 'development') => {
+type RunOptions = {
+  serverSideRender: boolean;
+};
+
+export const getRunOptions = (program: Command, options: RunOptions, defaultMode = 'development') => {
   const { mode } = program.opts();
   const projectRoot = process.cwd();
   return {
@@ -108,5 +112,6 @@ export const getRunOptions = (program: Command, defaultMode = 'development') => 
     envVars: getEnvVars(program)(),
     config: getReactpwaConfig(program)(),
     mode: mode ?? defaultMode,
+    serverSideRender: options.serverSideRender,
   };
 };
