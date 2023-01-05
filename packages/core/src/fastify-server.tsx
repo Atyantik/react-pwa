@@ -3,6 +3,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import Fastify, { RouteHandler } from 'fastify';
 import fastifyCompress from '@fastify/compress';
 import fastifyStatic from '@fastify/static';
+import fastifyCookie from '@fastify/cookie';
 import { handler, webmanifestHandler } from './server.js';
 import { ChunksMap } from './utils/asset-extract.js';
 import { notBoolean } from './utils/not-boolean.js';
@@ -28,6 +29,11 @@ try {
 
 // Enable compression
 await fastifyServer.register(fastifyCompress);
+
+await fastifyServer.register(fastifyCookie, {
+  hook: 'onRequest',
+  parseOptions: {},
+});
 
 const publicFolderExists = existsSync(path.resolve(__dirname, 'public'));
 fastifyServer.register(fastifyStatic, {

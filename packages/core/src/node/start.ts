@@ -65,6 +65,7 @@ export const run = async (options: RunOptions) => {
     projectRoot: options.projectRoot,
     envVars: options.envVars,
     config: options.config,
+    serverSideRender: options.serverSideRender ?? true,
   });
 
   const nodeWebpackHandler = new WHandler({
@@ -73,6 +74,7 @@ export const run = async (options: RunOptions) => {
     projectRoot: options.projectRoot,
     envVars: options.envVars,
     config: options.config,
+    serverSideRender: options.serverSideRender ?? true,
   });
 
   const WebConfig: webpack.Configuration = webWebpackHandler.getConfig();

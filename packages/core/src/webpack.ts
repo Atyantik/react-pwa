@@ -53,7 +53,7 @@ export class WebpackHandler {
       envVars: {},
       config: {},
       copyPublicFolder: false,
-      serverSideRender: false,
+      serverSideRender: true,
       ...options,
     };
 

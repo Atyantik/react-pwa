@@ -49,6 +49,7 @@ export const run = async (options: RunOptions) => {
     buildWithHttpServer: false,
     envVars: options.envVars ?? {},
     config: options.config ?? {},
+    serverSideRender: options.serverSideRender ?? true,
   });
 
   const nodeWebpackHandler = new WHandler({
@@ -59,6 +60,7 @@ export const run = async (options: RunOptions) => {
     envVars: options.envVars ?? {},
     config: options.config ?? {},
     copyPublicFolder: true,
+    serverSideRender: options.serverSideRender ?? true,
   });
 
   const WebConfig: webpack.Configuration = webWebpackHandler.getConfig();

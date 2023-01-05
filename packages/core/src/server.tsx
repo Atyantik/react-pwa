@@ -158,7 +158,6 @@ export const handler = async (
 
   // @ts-ignore
   const app = EnableServerSideRender ? <App routes={routes} /> : <></>;
-
   const stream = renderToPipeableStream(
     <ReactStrictMode>
       <ReactPWAContext.Provider
