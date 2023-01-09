@@ -3,7 +3,7 @@ const rootElement = document.getElementsByTagName('app-content')?.[0];
 const ssrEnabled = EnableServerSideRender;
 
 if (rootElement) {
-  (async () => {
+  const init = async () => {
     const [
       { createRoot, hydrateRoot },
       { CookiesProvider },
@@ -99,7 +99,15 @@ if (rootElement) {
         registrations.forEach((registration) => registration.unregister());
       });
     }
-  })();
+  };
+  if (document.readyState === 'interactive') {
+    init();
+  }
+  document.addEventListener('readystatechange', () => {
+    if (document.readyState === 'interactive') {
+      init();
+    }
+  });
 } else {
   // eslint-disable-next-line no-console
   console.log('Cannot find root element');
