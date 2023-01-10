@@ -16,6 +16,7 @@ import {
   ChunksMap,
   extractMainScript,
   extractStyles,
+  extractStylesWithContent,
   LazyRouteMatch,
 } from './utils/asset-extract.js';
 import { App } from './components/app.js';
@@ -128,12 +129,17 @@ export const handler = async (
   if (!isBot) {
     compressionStream.write(initialHtml);
   }
-
   if (typeof appRoutes === 'function') {
     routes = await appRoutes(getRequestArgs(request));
   }
   const matchedRoutes = matchRoutes(routes, request.url) as LazyRouteMatch[];
-  const styles = extractStyles(matchedRoutes, chunksMap);
+  let stylesWithContent: { href: string, content: string }[] = [];
+  let styles: string[] = [];
+  try {
+    stylesWithContent = await extractStylesWithContent(matchedRoutes, chunksMap);
+  } catch {
+    styles = extractStyles(matchedRoutes, chunksMap);
+  }
   const scripts = extractMainScript(chunksMap);
 
   // Initialize Cookies
@@ -155,7 +161,6 @@ export const handler = async (
     setInternalVar(request, key, val);
   };
   const getRequestValue = (key: string, defaultValue: any = null) => getInternalVar(request, key, defaultValue);
-
   // @ts-ignore
   const app = EnableServerSideRender ? <App routes={routes} /> : <></>;
   const stream = renderToPipeableStream(
@@ -167,6 +172,7 @@ export const handler = async (
           <StaticRouter location={request.url}>
             <DataProvider>
               <HeadProvider
+                stylesWithContent={stylesWithContent}
                 styles={styles}
                 preStyles={getRequestValue('headPreStyles', <></>)}
               >

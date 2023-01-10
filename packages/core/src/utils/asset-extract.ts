@@ -1,4 +1,6 @@
 import { parse } from 'node:url';
+import { join } from 'node:path';
+import { existsSync, readFileSync } from 'node:fs';
 import { Stats, MultiStats } from 'webpack';
 import { RouteMatch, RouteObject } from 'react-router-dom';
 
@@ -195,10 +197,45 @@ export const extractFiles = (
   );
 };
 
+const cssContentMap = new Map();
+
+const getCssFileContent = async (cssFile: string) => {
+  const cssFileResolve = join(__dirname, 'build', cssFile);
+  let cssContent = '';
+  if (existsSync(cssFileResolve)) {
+    cssContent = readFileSync(cssFileResolve, { encoding: 'utf-8' });
+  } else {
+    throw new Error('CSS file not found!');
+  }
+  return cssContent;
+};
+
 export const extractStyles = (
   matchedRoutes: LazyRouteMatch[],
   chunksMap: ChunksMap,
 ) => extractFiles(matchedRoutes, chunksMap, '.css');
+
+export const extractStylesWithContent = async (
+  matchedRoutes: LazyRouteMatch[],
+  chunksMap: ChunksMap,
+) => {
+  const cssFiles = extractStyles(matchedRoutes, chunksMap);
+  const cssContentFiles: { href: string, content: string }[] = await Promise.all(cssFiles.map(async (cssFile) => {
+    if (cssContentMap.has(cssFile)) {
+      return {
+        href: cssFile,
+        content: cssContentMap.get(cssFile),
+      };
+    }
+    const cssContent = await getCssFileContent(cssFile);
+    cssContentMap.set(cssFile, cssContent);
+    return {
+      href: cssFile,
+      content: cssContent,
+    };
+  }));
+  return cssContentFiles;
+};
 
 export const extractScripts = (
   matchedRoutes: LazyRouteMatch[],

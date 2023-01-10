@@ -29,8 +29,11 @@ import { LazyHead } from './lazy.js';
 export const HeadProvider: FC<{
   children: ReactNode;
   styles?: string[];
+  stylesWithContent?: { href: string, content: string }[];
   preStyles?: ReactElement | ReactElement[];
-}> = ({ children, styles, preStyles }) => {
+}> = ({
+  children, styles, stylesWithContent, preStyles,
+}) => {
   const { getValue } = useContext(ReactPWAContext);
   const dataPromiseResolver = useRef<null | { current: PromiseResolver }>(null);
   const setDataPromiseResolver = (resolver: { current: PromiseResolver }) => {
@@ -312,8 +315,23 @@ export const HeadProvider: FC<{
           {!!appleIcon && (
             <link rel="apple-touch-icon" href={appleIcon.src}></link>
           )}
+          {(stylesWithContent ?? []).map((style) => (
+            <style
+              data-href={style.href}
+              key={`style-${style.href}`}
+              dangerouslySetInnerHTML={{
+                __html: style.content,
+              }}
+            />
+          ))}
           {(styles ?? []).map((style) => (
-            <link rel="stylesheet" key={style} type="text/css" href={style} />
+            <link
+              data-href={style}
+              rel="stylesheet"
+              key={style}
+              type="text/css"
+              href={style}
+            />
           ))}
         </head>
       )}
