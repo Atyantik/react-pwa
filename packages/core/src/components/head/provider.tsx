@@ -29,7 +29,7 @@ import { LazyHead } from './lazy.js';
 export const HeadProvider: FC<{
   children: ReactNode;
   styles?: string[];
-  stylesWithContent?: { href: string, content: string }[];
+  stylesWithContent?: { href: string; content: string }[];
   preStyles?: ReactElement | ReactElement[];
 }> = ({
   children, styles, stylesWithContent, preStyles,

@@ -220,20 +220,22 @@ export const extractStylesWithContent = async (
   chunksMap: ChunksMap,
 ) => {
   const cssFiles = extractStyles(matchedRoutes, chunksMap);
-  const cssContentFiles: { href: string, content: string }[] = await Promise.all(cssFiles.map(async (cssFile) => {
-    if (cssContentMap.has(cssFile)) {
+  const cssContentFiles: { href: string; content: string }[] = await Promise.all(
+    cssFiles.map(async (cssFile) => {
+      if (cssContentMap.has(cssFile)) {
+        return {
+          href: cssFile,
+          content: cssContentMap.get(cssFile),
+        };
+      }
+      const cssContent = await getCssFileContent(cssFile);
+      cssContentMap.set(cssFile, cssContent);
       return {
         href: cssFile,
-        content: cssContentMap.get(cssFile),
+        content: cssContent,
       };
-    }
-    const cssContent = await getCssFileContent(cssFile);
-    cssContentMap.set(cssFile, cssContent);
-    return {
-      href: cssFile,
-      content: cssContent,
-    };
-  }));
+    }),
+  );
   return cssContentFiles;
 };
 

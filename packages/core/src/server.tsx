@@ -133,10 +133,13 @@ export const handler = async (
     routes = await appRoutes(getRequestArgs(request));
   }
   const matchedRoutes = matchRoutes(routes, request.url) as LazyRouteMatch[];
-  let stylesWithContent: { href: string, content: string }[] = [];
+  let stylesWithContent: { href: string; content: string }[] = [];
   let styles: string[] = [];
   try {
-    stylesWithContent = await extractStylesWithContent(matchedRoutes, chunksMap);
+    stylesWithContent = await extractStylesWithContent(
+      matchedRoutes,
+      chunksMap,
+    );
   } catch {
     styles = extractStyles(matchedRoutes, chunksMap);
   }
