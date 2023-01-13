@@ -14,12 +14,14 @@ export type ChunksMap = {
   assetsByChunkName?: Record<string, string[]>;
   chunks: {
     // position: number;
+    names?: string[];
     id?: string | number;
     files?: string[];
     parents?: (string | number)[];
     children?: (string | number)[];
     reasons?: string[];
     reasonsStr?: string;
+    reasonModules?: (string | number)[];
   }[];
 };
 
@@ -35,6 +37,9 @@ export const extractChunksMap = (
 
   // Extract from reasons, id, parents and children
   const chunks = (stats.chunks ?? []).map((asset) => {
+    /**
+     * Collect reason for chunks
+     */
     const reasons: string[] = [
       ...new Set(
         (asset?.modules ?? [])
@@ -43,14 +48,29 @@ export const extractChunksMap = (
           .filter(Boolean),
       ),
     ].filter((r) => typeof r === 'string') as string[];
+
+    /**
+     * Collect reason modules for the chunk
+     */
+    const reasonModules = [
+      ...new Set(
+        (asset?.modules ?? [])
+          .map((mod) => (mod?.reasons ?? []).map((reason) => reason?.moduleId))
+          .flat()
+          .filter(Boolean),
+      ),
+    ] as (string | number)[];
+
     return {
+      ...asset,
       id: asset?.id,
       // position: index + 1,
-      name: asset?.name,
+      names: asset?.names,
       files: asset?.files,
       parents: asset?.parents,
       children: asset?.children,
       reasons,
+      reasonModules,
       reasonsStr: reasons.join('||'),
     };
   });
@@ -116,6 +136,7 @@ const prependForwardSlash = (file: string) => {
   return file.startsWith('/') ? file : `/${file}`;
 };
 
+// const extractFilesMapCache = new Map();
 export const extractFiles = (
   matchedRoutes: LazyRouteMatch[],
   chunksMap: ChunksMap,
@@ -124,6 +145,7 @@ export const extractFiles = (
   if (!matchedRoutes) {
     return [];
   }
+
   // First get the main assets via assetByChunksName
   const positionedFiles: {
     // position: number;
@@ -144,8 +166,12 @@ export const extractFiles = (
 
   // Once done, find the main files from @currentProject
   const currentProjectChunks = chunksMap.chunks.filter(
+    // All files dependent on current project
     (chunk) => chunk?.reasonsStr?.indexOf?.('@currentProject') !== -1
-      || chunk?.reasonsStr?.indexOf?.('@reactpwa') !== -1,
+      // All files dependent on @reactpwa
+      || chunk?.reasonsStr?.indexOf?.('@reactpwa') !== -1
+      // All files that are not dependent on anyone, i.e. the core files.
+      || chunk?.reasonsStr === '',
   );
   const filesFromCurrentProjectChunks = filesFromChunks(
     currentProjectChunks,
@@ -159,6 +185,22 @@ export const extractFiles = (
   }
 
   const extractedAssets = new Set<string | number>();
+
+  // const coreAppIds = [...new Set(chunksMap
+  //   ?.chunks
+  //   ?.filter((c) => c.names?.includes?.('main'))
+  //   .map((c) => [c.id, ...(c?.children ?? [])]).flat().filter(Boolean))];
+
+  // // Check for direct decendants of main chunk
+  // chunksMap.chunks
+  //   .filter(
+  //     (chunk) => chunk?.parents?.some((p) => coreAppIds.includes(p)),
+  //   ).forEach((chunk) => {
+  //     positionedFiles.push({
+  //       // position: chunk.position,
+  //       files: filesFromChunks([chunk], ext),
+  //     });
+  //   });
 
   // Once done with main and @currentProject
   // Loop through routes
@@ -179,13 +221,23 @@ export const extractFiles = (
         });
     }
 
-    if (typeof matchedRoute?.route?.webpack !== 'undefined') {
-      let webpackId = matchedRoute.route.webpack;
-      if (typeof matchedRoute.route.webpack === 'string') {
-        webpackId = matchedRoute.route.webpack
-          .replace(/[./]/gi, '_')
-          .replace(/^_+|_+$/g, '');
-      }
+    let webpackId = matchedRoute?.route?.webpack;
+    if (webpackId && typeof webpackId === 'number') {
+      chunksMap.chunks
+        .filter(
+          // @ts-ignore
+          (chunk) => chunk?.reasonModules?.indexOf?.(webpackId) !== -1,
+        )
+        .forEach((chunk) => {
+          positionedFiles.push({
+            // position: chunk.position,
+            files: filesFromChunks([chunk], ext),
+          });
+        });
+    }
+
+    if (webpackId && typeof webpackId === 'string') {
+      webpackId = webpackId.replace(/[./]/gi, '_').replace(/^_+|_+$/g, '');
 
       // Add chunk with ID and add its children as well.
       addById(webpackId, chunksMap, positionedFiles, ext, extractedAssets);

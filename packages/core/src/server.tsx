@@ -1,4 +1,5 @@
 import zlib from 'zlib';
+// import { inspect } from 'node:util';
 import { PassThrough } from 'node:stream';
 import Cookies from 'universal-cookie';
 import { renderToPipeableStream } from 'react-dom/server';
@@ -133,6 +134,7 @@ export const handler = async (
     routes = await appRoutes(getRequestArgs(request));
   }
   const matchedRoutes = matchRoutes(routes, request.url) as LazyRouteMatch[];
+  // console.log('matchedRoutes', inspect(matchedRoutes, { depth: 10 }));
   let stylesWithContent: { href: string; content: string }[] = [];
   let styles: string[] = [];
   try {

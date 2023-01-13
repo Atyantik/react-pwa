@@ -81,7 +81,7 @@
     "react-cookie": "^4.1.1",
     "react-error-boundary": "^3.1.4",
     "react-refresh": "^0.14.0",
-    "react-router-dom": "^6.6.1",
+    "react-router-dom": "^6.6.2",
     "sass": "^1.57.1",
     "sass-loader": "^13.2.0",
     "serialize-javascript": "^6.0.0",
@@ -98,7 +98,7 @@
     "react-dom": ">=18.2.0"
   },
   "devDependencies": {
-    "@types/fs-extra": "^9.0.13",
+    "@types/fs-extra": "^11.0.1",
     "@types/http-errors": "^2.0.1",
     "@types/is-object": "^1.0.2",
     "@types/require-from-string": "^1.2.1",
@@ -107,7 +107,7 @@
     "@types/webpack-node-externals": "^2.5.3",
     "eslint": "^8.31.0",
     "eslint-config-reactpwa": "^1.0.41-alpha.0",
-    "prettier": "^2.8.1",
+    "prettier": "^2.8.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "tsup": "^6.5.0"

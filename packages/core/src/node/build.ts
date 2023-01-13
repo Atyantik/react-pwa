@@ -105,7 +105,6 @@ export const run = async (options: RunOptions) => {
             if (existsSync(serverImagesPath)) {
               fse.copySync(serverImagesPath, buildImagesPath, {
                 overwrite: false,
-                recursive: true,
               });
               fse.removeSync(serverImagesPath);
             }
@@ -123,7 +122,6 @@ export const run = async (options: RunOptions) => {
             if (existsSync(serverAssetsPath)) {
               fse.copySync(serverAssetsPath, buildAssetsPath, {
                 overwrite: false,
-                recursive: true,
               });
               fse.removeSync(serverAssetsPath);
             }

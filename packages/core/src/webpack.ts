@@ -200,9 +200,11 @@ export class WebpackHandler {
         }),
       this.shouldHotReload
         || new MiniCssExtractPlugin({
-          filename: 'css/[contenthash].css',
-          chunkFilename: 'css/[chunkhash].css',
-          ignoreOrder: true,
+          filename: 'css/[name].[contenthash].css',
+          chunkFilename: 'css/[id].[contenthash].css',
+          // filename: 'css/[contenthash].css',
+          // chunkFilename: 'css/[chunkhash].css',
+          // ignoreOrder: true,
         }),
       this.isTargetServer
         && new webpack.optimize.LimitChunkCountPlugin({

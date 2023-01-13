@@ -29,6 +29,26 @@ export const getWebOptimization = (options: {
           return undefined;
         },
       },
+      styles: {
+        name: 'styles',
+        type: 'css/mini-extract',
+        chunks: 'all',
+        enforce: true,
+      },
+      // resources: {
+      //   // name: 'resources',
+      //   test: /[\\/]resources[\\/].*\.(sass|scss|css)/,
+      //   // chunks: 'all',
+      //   reuseExistingChunk: true,
+      //   enforce: true,
+      // },
+      // src: {
+      //   // name: '[name].css',
+      //   test: /[\\/]src[\\/].*\.(sass|scss|css)/,
+      //   chunks: 'all',
+      //   reuseExistingChunk: true,
+      //   enforce: true,
+      // },
     },
   },
 });
