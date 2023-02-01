@@ -135,14 +135,16 @@ export const handler = async (
   }
   const matchedRoutes = matchRoutes(routes, request.url) as LazyRouteMatch[];
   let stylesWithContent: { href: string; content: string }[] = [];
-  const styles: string [] = [];
+  const styles: string[] = [];
 
   const mainStyle = extractMainStyle(chunksMap);
   if (mainStyle) {
-    stylesWithContent = [{
-      content: await getCssFileContent(mainStyle),
-      href: mainStyle,
-    }];
+    stylesWithContent = [
+      {
+        content: await getCssFileContent(mainStyle),
+        href: mainStyle,
+      },
+    ];
   }
   const mainScript = extractMainScript(chunksMap);
 
@@ -213,7 +215,7 @@ export const handler = async (
          */
         compressionStream.write(
           '<app-content></app-content><script>SHELL_ERROR=true;</script>'
-           + `<script async type="module" src=${mainScript}></script>`,
+            + `<script async type="module" src=${mainScript}></script>`,
         );
         compressionStream.end();
       },

@@ -1,6 +1,8 @@
 import { Configuration } from 'webpack';
 
-export const getWebOptimization = (options: { minimize: boolean; }): Configuration['optimization'] => ({
+export const getWebOptimization = (options: {
+  minimize: boolean;
+}): Configuration['optimization'] => ({
   minimize: options.minimize,
   splitChunks: {
     chunks: 'all',
