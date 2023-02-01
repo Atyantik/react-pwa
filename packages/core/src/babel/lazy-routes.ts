@@ -52,17 +52,19 @@ export default (api: any) => {
 
                 const moduleObj = t.objectProperty(
                   t.identifier('module'),
-                  t.StringLiteral(source),
+                  t.arrayExpression([t.StringLiteral(source)]),
                 );
                 const webpackObj = t.objectProperty(
                   t.identifier('webpack'),
-                  t.callExpression(
-                    t.memberExpression(
-                      t.identifier('require'),
-                      t.identifier('resolveWeak'),
+                  t.arrayExpression([
+                    t.callExpression(
+                      t.memberExpression(
+                        t.identifier('require'),
+                        t.identifier('resolveWeak'),
+                      ),
+                      [callPaths[0].get('arguments')[0].node],
                     ),
-                    [callPaths[0].get('arguments')[0].node],
-                  ),
+                  ]),
                 );
 
                 obj.parentPath.pushContainer('properties', moduleObj);

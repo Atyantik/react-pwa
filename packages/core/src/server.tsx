@@ -16,8 +16,8 @@ import { CookiesProvider } from 'react-cookie';
 import {
   ChunksMap,
   extractMainScript,
-  extractStyles,
-  extractStylesWithContent,
+  extractMainStyle,
+  getCssFileContent,
   LazyRouteMatch,
 } from './utils/asset-extract.js';
 import { App } from './components/app.js';
@@ -134,18 +134,17 @@ export const handler = async (
     routes = await appRoutes(getRequestArgs(request));
   }
   const matchedRoutes = matchRoutes(routes, request.url) as LazyRouteMatch[];
-  // console.log('matchedRoutes', inspect(matchedRoutes, { depth: 10 }));
   let stylesWithContent: { href: string; content: string }[] = [];
-  let styles: string[] = [];
-  try {
-    stylesWithContent = await extractStylesWithContent(
-      matchedRoutes,
-      chunksMap,
-    );
-  } catch {
-    styles = extractStyles(matchedRoutes, chunksMap);
+  const styles: string [] = [];
+
+  const mainStyle = extractMainStyle(chunksMap);
+  if (mainStyle) {
+    stylesWithContent = [{
+      content: await getCssFileContent(mainStyle),
+      href: mainStyle,
+    }];
   }
-  const scripts = extractMainScript(chunksMap);
+  const mainScript = extractMainScript(chunksMap);
 
   // Initialize Cookies
   let universalCookies: Cookies | null = new Cookies(request.cookies);
@@ -190,7 +189,7 @@ export const handler = async (
       </ReactPWAContext.Provider>
     </ReactStrictMode>,
     {
-      bootstrapModules: scripts,
+      bootstrapModules: [mainScript],
       onShellReady() {
         if (isBot) return;
         stream.pipe(compressionStream);
@@ -213,9 +212,8 @@ export const handler = async (
          * frontend may work fine, thus the error is not directly visible to developer
          */
         compressionStream.write(
-          `<app-content></app-content><script>SHELL_ERROR=true;</script>${scripts.map(
-            (script) => `<script async type="module" src=${script}></script>`,
-          )}`,
+          '<app-content></app-content><script>SHELL_ERROR=true;</script>'
+           + `<script async type="module" src=${mainScript}></script>`,
         );
         compressionStream.end();
       },

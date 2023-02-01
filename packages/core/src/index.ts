@@ -53,8 +53,8 @@ export interface RouteObject
   extends Omit<Omit<RRRouteObject, 'element'>, 'children'> {
   element: () => Promise<{ default: React.ComponentType<any> }>;
   children?: RouteObject[];
-  webpack?: string | number;
-  module?: string;
+  webpack?: (string | number)[];
+  module?: string[];
   skeleton?: React.ComponentType<any>;
   error?: React.ComponentType<any>;
   props?: Record<string, any>;
