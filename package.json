@@ -12,6 +12,7 @@
     "lint": "concurrently \"npm:lint:*\"",
     "lint:core": "npm run lint -w @reactpwa/core",
     "lint:cli": "npm run lint -w @reactpwa/cli",
+    "publish": "lerna publish",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Tirth Bodawala <tirthbodawala>",
