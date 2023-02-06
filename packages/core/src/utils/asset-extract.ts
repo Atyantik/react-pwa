@@ -73,10 +73,10 @@ export const getCssFileContent = async (cssFile: string) => {
   return cssContent;
 };
 
-export const extractMainScript = (chunksMap: ChunksMap) => (chunksMap?.assetsByChunkName?.main ?? [])
+export const extractMainScripts = (chunksMap: ChunksMap) => (chunksMap?.assetsByChunkName?.main ?? [])
   .filter((file) => hasExtension(file, '.js'))
-  .map(prependForwardSlash)?.[0];
+  .map(prependForwardSlash);
 
-export const extractMainStyle = (chunksMap: ChunksMap) => (chunksMap?.assetsByChunkName?.main ?? [])
+export const extractMainStyles = (chunksMap: ChunksMap) => (chunksMap?.assetsByChunkName?.main ?? [])
   .filter((file) => hasExtension(file, '.css'))
-  .map(prependForwardSlash)?.[0];
+  .map(prependForwardSlash);

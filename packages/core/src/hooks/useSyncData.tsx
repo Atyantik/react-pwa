@@ -1,4 +1,4 @@
-import { useContext, useMemo } from 'react';
+import { useContext, useEffect, useMemo } from 'react';
 import { DataContext } from '../components/data.js';
 import { SyncDataScript } from '../components/sync-data-script.js';
 
@@ -7,7 +7,9 @@ export function useSyncData<T extends (
   id: string,
   promiseCallback: T,
 ): { data: Awaited<ReturnType<T>>; syncScript: React.ReactElement } {
-  const { createDataPromise } = useContext(DataContext);
+  const { createDataPromise, removeDataPromise } = useContext(DataContext);
+  // On unmount remove the data promise
+  useEffect(() => () => removeDataPromise(id), []);
   return useMemo(() => {
     const promise = createDataPromise(id, promiseCallback);
     const data = promise.read();

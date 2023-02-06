@@ -1,4 +1,4 @@
-import { useContext, useMemo } from 'react';
+import { useContext, useEffect, useMemo } from 'react';
 import { DataContext } from '../components/data.js';
 
 export function useData<T extends (
@@ -6,7 +6,9 @@ export function useData<T extends (
   id: string,
   promiseCallback: T,
 ) {
-  const { createDataPromise } = useContext(DataContext);
+  const { createDataPromise, removeDataPromise } = useContext(DataContext);
+  // On unmount remove the data promise
+  useEffect(() => () => removeDataPromise(id), []);
   return useMemo(() => {
     const promise = createDataPromise(id, promiseCallback);
     return promise.read();

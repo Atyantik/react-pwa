@@ -15,8 +15,8 @@ import { matchRoutes } from 'react-router-dom';
 import { CookiesProvider } from 'react-cookie';
 import {
   ChunksMap,
-  extractMainScript,
-  extractMainStyle,
+  extractMainScripts,
+  extractMainStyles,
   getCssFileContent,
   LazyRouteMatch,
 } from './utils/asset-extract.js';
@@ -137,16 +137,16 @@ export const handler = async (
   let stylesWithContent: { href: string; content: string }[] = [];
   const styles: string[] = [];
 
-  const mainStyle = extractMainStyle(chunksMap);
-  if (mainStyle) {
-    stylesWithContent = [
-      {
+  const mainStyles = extractMainStyles(chunksMap);
+  if (mainStyles?.length) {
+    stylesWithContent = await Promise.all(
+      mainStyles.map(async (mainStyle) => ({
         content: await getCssFileContent(mainStyle),
         href: mainStyle,
-      },
-    ];
+      })),
+    );
   }
-  const mainScript = extractMainScript(chunksMap);
+  const mainScripts = extractMainScripts(chunksMap);
 
   // Initialize Cookies
   let universalCookies: Cookies | null = new Cookies(request.cookies);
@@ -191,7 +191,7 @@ export const handler = async (
       </ReactPWAContext.Provider>
     </ReactStrictMode>,
     {
-      bootstrapModules: [mainScript],
+      bootstrapModules: mainScripts,
       onShellReady() {
         if (isBot) return;
         stream.pipe(compressionStream);
@@ -214,8 +214,7 @@ export const handler = async (
          * frontend may work fine, thus the error is not directly visible to developer
          */
         compressionStream.write(
-          '<app-content></app-content><script>SHELL_ERROR=true;</script>'
-            + `<script async type="module" src=${mainScript}></script>`,
+          '<app-content></app-content><script>SHELL_ERROR=true;</script>',
         );
         compressionStream.end();
       },

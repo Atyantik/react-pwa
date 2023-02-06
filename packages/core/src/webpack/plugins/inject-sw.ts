@@ -3,8 +3,8 @@ import path from 'node:path';
 import fs from 'node:fs';
 import {
   extractChunksMap,
-  extractMainScript,
-  extractMainStyle,
+  extractMainScripts,
+  extractMainStyles,
 } from '../../utils/asset-extract.js';
 
 export class InjectSW {
@@ -63,8 +63,8 @@ export class InjectSW {
           if (this.options.withScripts) {
             const chunksMap = extractChunksMap(compilation.getStats());
             const filesToCache = chunksMap.chunks.map((c) => c.files).flat(2);
-            const styles = extractMainStyle(chunksMap);
-            const scripts = extractMainScript(chunksMap);
+            const styles = extractMainStyles(chunksMap);
+            const scripts = extractMainScripts(chunksMap);
             this.srcFileContent = `const __FILES=${JSON.stringify(
               filesToCache,
             )};

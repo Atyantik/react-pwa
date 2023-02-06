@@ -11,6 +11,7 @@ export type GetPendingCount = () => number;
 type DataPromise = {
   id: string;
   promise: WrappedPromise;
+  done: boolean;
 };
 
 const initialContextValue = {
@@ -23,6 +24,7 @@ const initialContextValue = {
   awaitDataCompletion: (() => ({ read: () => {} })) as (id: string) => {
     read: () => void;
   },
+  removeDataPromise: (() => {}) as (id: string) => void,
 };
 
 /**
@@ -81,7 +83,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({
     if (pendingPromisesRef.current.length === 0) {
       await delay(isClient ? 1000 : 10);
     }
-    return !!pendingPromisesRef.current.length;
+    return pendingPromisesRef.current.some((p) => p.done === false);
   };
 
   const observerPromisesRef = useRef<DataPromise[]>([]);
@@ -110,8 +112,11 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({
         const promiseIndex = pendingPromisesRef.current.findIndex(
           (dc) => dc.id === id,
         );
+        if (promiseIndex !== -1) {
+          pendingPromisesRef.current[promiseIndex].done = true;
+        }
         // Remove promise reference from array on done
-        pendingPromisesRef.current.splice(promiseIndex, 1);
+        // pendingPromisesRef.current.splice(promiseIndex, 1);
         eventEmitter.current.emit('DataPromiseFinalise');
       },
       syncData,
@@ -120,8 +125,18 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({
     pendingPromisesRef.current.push({
       id,
       promise: wrapped,
+      done: false,
     });
     return wrapped as { read: () => Awaited<ReturnType<T>> };
+  }
+
+  function removeDataPromise(id: string) {
+    const promiseIndex = pendingPromisesRef.current.findIndex(
+      (dc) => dc.id === id,
+    );
+    if (promiseIndex !== -1) {
+      pendingPromisesRef.current.splice(promiseIndex, 1);
+    }
   }
 
   function awaitDataCompletion(id: string) {
@@ -179,12 +194,15 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({
     observerPromisesRef.current.push({
       id,
       promise: wrapped,
+      done: false,
     });
     return wrapped as { read: () => Awaited<null> };
   }
 
   return (
-    <DataContext.Provider value={{ createDataPromise, awaitDataCompletion }}>
+    <DataContext.Provider
+      value={{ createDataPromise, awaitDataCompletion, removeDataPromise }}
+    >
       {children}
     </DataContext.Provider>
   );

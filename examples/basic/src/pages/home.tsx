@@ -1,10 +1,10 @@
-import { useData, Head } from '@reactpwa/core';
+import { useSyncData, Head } from '@reactpwa/core';
 import { FC } from 'react';
 import { HomeData } from '../services/data';
 import styles from './styles.scss';
 
 const HomePage: FC<{ name?: string }> = ({ name }) => {
-  const homeData = useData('home.data', HomeData);
+  const { data: homeData, syncScript } = useSyncData('home.data', HomeData);
   return (
     <div>
       <Head resolve={true}>
@@ -15,6 +15,7 @@ const HomePage: FC<{ name?: string }> = ({ name }) => {
       </Head>
       <h1>Home Page</h1>
       <p className={styles.italic}>{homeData.content}</p>
+      {syncScript}
     </div>
   );
 };
