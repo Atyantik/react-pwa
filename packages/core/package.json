@@ -71,7 +71,7 @@
     "bowser": "^2.11.0",
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.7.3",
-    "fastify": "^4.12.0",
+    "fastify": "^4.13.0",
     "fs-extra": "^11.1.0",
     "http-errors": "^2.0.0",
     "is-object": "^1.0.2",
@@ -81,7 +81,7 @@
     "react-cookie": "^4.1.1",
     "react-error-boundary": "^3.1.4",
     "react-refresh": "^0.14.0",
-    "react-router-dom": "^6.8.0",
+    "react-router-dom": "^6.8.1",
     "sass": "^1.58.0",
     "sass-loader": "^13.2.0",
     "serialize-javascript": "^6.0.1",
@@ -107,10 +107,10 @@
     "@types/webpack-node-externals": "^2.5.3",
     "eslint": "^8.33.0",
     "eslint-config-reactpwa": "^1.0.46-alpha.0",
-    "prettier": "^2.8.3",
+    "prettier": "^2.8.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "tsup": "^6.5.0"
+    "tsup": "^6.6.0"
   },
   "gitHead": "1b9ab957cac25218179b12f2ddc727fabb06f000"
 }
