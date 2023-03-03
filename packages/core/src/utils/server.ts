@@ -126,5 +126,12 @@ export const getRequestArgs = (request: FastifyRequest): RoutesArgs => {
         components,
       ]);
     },
+    addHeaders: (headers: Headers) => {
+      const requestHeaders = getInternalVar(request, 'headers', new Headers());
+      Array.from(headers.entries()).forEach(([key, value]) => {
+        requestHeaders.set(key, value);
+      });
+      setInternalVar(request, 'headers', requestHeaders);
+    },
   };
 };

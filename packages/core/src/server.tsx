@@ -174,24 +174,28 @@ export const handler = async (
       <ReactPWAContext.Provider
         value={{ setValue: setRequestValue, getValue: getRequestValue }}
       >
-        <CookiesProvider cookies={universalCookies}>
-          <StaticRouter location={request.url}>
-            <DataProvider>
-              <HeadProvider
-                stylesWithContent={stylesWithContent}
-                styles={styles}
-                preStyles={getRequestValue('headPreStyles', <></>)}
-              >
-                <app-content>{app}</app-content>
-                {getRequestValue('footerScripts', <></>)}
-              </HeadProvider>
-            </DataProvider>
-          </StaticRouter>
-        </CookiesProvider>
+        <>
+          <CookiesProvider cookies={universalCookies}>
+            <StaticRouter location={request.url}>
+              <DataProvider>
+                <HeadProvider
+                  stylesWithContent={stylesWithContent}
+                  styles={styles}
+                  preStyles={getRequestValue('headPreStyles', <></>)}
+                >
+                  <app-content>{app}</app-content>
+                  {getRequestValue('footerScripts', <></>)}
+                </HeadProvider>
+              </DataProvider>
+            </StaticRouter>
+          </CookiesProvider>
+          {mainScripts.map((s) => (<script key={s} type="module" defer src={s} />))}
+        </>
       </ReactPWAContext.Provider>
     </ReactStrictMode>,
     {
-      bootstrapModules: mainScripts,
+      // bootstrapModules: mainScripts,
+      bootstrapModules: [],
       onShellReady() {
         if (isBot) return;
         stream.pipe(compressionStream);

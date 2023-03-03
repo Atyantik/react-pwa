@@ -42,6 +42,7 @@ export type RoutesArgs = {
   ) => Promise<T>;
   addToHeadPreStyles: (components: ReactElement | ReactElement[]) => void;
   addToFooter: (components: ReactElement | ReactElement[]) => void;
+  addHeaders: (headers: Headers) => void;
 };
 
 export type Routes =

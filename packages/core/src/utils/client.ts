@@ -59,4 +59,7 @@ export const requestArgs: RoutesArgs = {
   addToFooter: () => {
     // when called on client side do nothing
   },
+  addHeaders: () => {
+    // When called on client side do nothing
+  },
 };

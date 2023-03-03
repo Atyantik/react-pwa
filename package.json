@@ -31,5 +31,8 @@
       "lint",
       "build"
     ]
+  },
+  "dependencies": {
+    "speed-measure-webpack-plugin": "^1.5.0"
   }
 }

@@ -26,6 +26,7 @@ import { getServerOutput, getWebOutput } from './webpack/output.js';
 export const extensionRegex = (assetsList: string[]) => new RegExp(`\\.(${assetsList.join('|')})$`);
 
 const defaultConfig = {
+  hotReload: true,
   react: {
     strictMode: true,
   },
@@ -82,7 +83,7 @@ export class WebpackHandler {
   }
 
   get shouldHotReload() {
-    return this.isDevelopment && this.isTargetWeb;
+    return this.isDevelopment && this.isTargetWeb && this.configOptions.hotReload;
   }
 
   getEntry(): webpack.Configuration['entry'] {
@@ -123,7 +124,7 @@ export class WebpackHandler {
   }
 
   getDevtool(): webpack.Configuration['devtool'] {
-    return this.isDevelopment ? 'eval-source-map' : false;
+    return this.isDevelopment ? 'eval' : false;
   }
 
   getContext(): webpack.Configuration['context'] {
@@ -265,7 +266,9 @@ export class WebpackHandler {
       mode: this.options.mode,
       entry: this.getEntry(),
       optimization: this.getOptimization(),
-      experiments: getExperiments({ outputModule: this.isTargetWeb }),
+      experiments: getExperiments({
+        outputModule: this.isTargetWeb,
+      }),
       output: this.getOutput(),
       externalsPresets: this.isTargetServer ? { node: true } : undefined,
       externals: this.getExternals(),
