@@ -189,7 +189,9 @@ export const handler = async (
               </DataProvider>
             </StaticRouter>
           </CookiesProvider>
-          {mainScripts.map((s) => (<script key={s} type="module" defer src={s} />))}
+          {mainScripts.map((s) => (
+            <script key={s} type="module" defer src={s} />
+          ))}
         </>
       </ReactPWAContext.Provider>
     </ReactStrictMode>,

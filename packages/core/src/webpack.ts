@@ -83,7 +83,9 @@ export class WebpackHandler {
   }
 
   get shouldHotReload() {
-    return this.isDevelopment && this.isTargetWeb && this.configOptions.hotReload;
+    return (
+      this.isDevelopment && this.isTargetWeb && this.configOptions.hotReload
+    );
   }
 
   getEntry(): webpack.Configuration['entry'] {

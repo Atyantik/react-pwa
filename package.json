@@ -6,7 +6,7 @@
     "dev": "concurrently \"npm:dev:*\"",
     "dev:core": "npm run dev -w @reactpwa/core",
     "dev:cli": "npm run dev -w @reactpwa/cli",
-    "build": "concurrently \"npm:build:*\"",
+    "build": "npm run build:core && npm run build:cli",
     "build:core": "npm run build -w @reactpwa/core",
     "build:cli": "npm run build -w @reactpwa/cli",
     "lint": "concurrently \"npm:lint:*\"",
