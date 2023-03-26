@@ -7,7 +7,6 @@ import CopyPlugin from 'copy-webpack-plugin';
 import { notBoolean } from './utils/not-boolean.js';
 import { getServiceWorker } from './webpack/service-worker.js';
 import { getResolve, getResolveLoader } from './webpack/resolver.js';
-import { getMjsRule } from './webpack/rules/mjs-rule.js';
 import { getCssRule } from './webpack/rules/css-rule.js';
 import {
   getServerOptimization,
@@ -88,6 +87,10 @@ export class WebpackHandler {
     );
   }
 
+  get shouldOutputCss() {
+    return !this.isDevelopment && this.isTargetWeb;
+  }
+
   getEntry(): webpack.Configuration['entry'] {
     if (this.isTargetWeb) {
       return [
@@ -98,7 +101,7 @@ export class WebpackHandler {
     }
     if (this.isTargetServer) {
       if (this.options.buildWithHttpServer) {
-        return [path.resolve(libSrc, 'fastify-server.js')].filter(notBoolean);
+        return [path.resolve(libSrc, 'express-server.js')].filter(notBoolean);
       }
       return [path.resolve(libSrc, 'server.js')].filter(notBoolean);
     }
@@ -117,14 +120,21 @@ export class WebpackHandler {
 
   getOutput(): webpack.Configuration['output'] {
     if (this.isTargetWeb) {
-      return getWebOutput({ projectRoot: this.options.projectRoot });
+      return getWebOutput({
+        projectRoot: this.options.projectRoot,
+        isDevelopment: this.isDevelopment,
+      });
     }
     if (this.isTargetServer) {
-      return getServerOutput({ projectRoot: this.options.projectRoot });
+      return getServerOutput({
+        projectRoot: this.options.projectRoot,
+        isDevelopment: this.isDevelopment,
+      });
     }
     return undefined;
   }
 
+  // eslint-disable-next-line class-methods-use-this
   getDevtool(): webpack.Configuration['devtool'] {
     return this.isDevelopment ? 'eval' : false;
   }
@@ -201,10 +211,9 @@ export class WebpackHandler {
           esModule: true,
           overlay: { sockProtocol: 'ws' },
         }),
-      this.shouldHotReload
-        || new MiniCssExtractPlugin({
-          filename: 'css/[contenthash].css',
-          chunkFilename: 'css/[chunkhash].css',
+      this.shouldOutputCss
+        && new MiniCssExtractPlugin({
+          filename: '_rpwa/css/[name]-[contenthash].css',
           ignoreOrder: true,
         }),
       this.isTargetServer
@@ -216,7 +225,7 @@ export class WebpackHandler {
           patterns: [
             {
               from: path.resolve(this.options.projectRoot, 'src', 'public'),
-              to: path.join(this.getOutput()?.path ?? '', 'public'),
+              to: path.join(this.getOutput()?.path ?? '', 'build'),
             },
           ],
         }),
@@ -226,22 +235,22 @@ export class WebpackHandler {
 
   getRules(): RuleSetRule[] {
     return [
-      getMjsRule(),
       getAssetsRule({
-        emit: true,
+        emit: this.isTargetWeb,
       }),
       getImagesRule({
-        emit: true,
+        emit: this.isTargetWeb,
       }),
-      getRawResourceRule({ emit: true }),
+      getRawResourceRule({ emit: this.isTargetWeb }),
       getJsRule({
         isTargetServer: this.isTargetServer,
         hotReload: this.shouldHotReload,
         projectRoot: this.options.projectRoot,
-        cacheDirectory: this.isDevelopment,
+        useCache: this.isDevelopment,
       }),
       getCssRule({
-        hotReload: this.shouldHotReload,
+        useCache: this.isDevelopment,
+        outputCss: this.shouldOutputCss,
         emit: this.isTargetWeb,
         sourceMap: this.isDevelopment,
         detailedIdentName: this.isDevelopment,
@@ -259,12 +268,7 @@ export class WebpackHandler {
 
   getConfig(): webpack.Configuration {
     return {
-      cache: this.isDevelopment
-        ? {
-          type: 'filesystem',
-          allowCollectingMemory: true,
-        }
-        : false,
+      name: this.isTargetWeb ? 'web' : 'node',
       mode: this.options.mode,
       entry: this.getEntry(),
       optimization: this.getOptimization(),

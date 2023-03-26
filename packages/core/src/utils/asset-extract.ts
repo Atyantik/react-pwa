@@ -1,7 +1,7 @@
 import { parse } from 'node:url';
 import { join } from 'node:path';
 import { existsSync, readFileSync } from 'node:fs';
-import { Stats, MultiStats } from 'webpack';
+import * as webpack from 'webpack';
 import { RouteMatch, RouteObject } from 'react-router-dom';
 
 export type LazyRouteMatch = RouteMatch & {
@@ -10,6 +10,7 @@ export type LazyRouteMatch = RouteMatch & {
     module?: string[];
   };
 };
+
 export type ChunksMap = {
   assetsByChunkName?: Record<string, string[]>;
   chunks: {
@@ -26,22 +27,37 @@ export type ChunksMap = {
 };
 
 export const extractChunksMap = (
-  webpackStats: Stats | MultiStats | undefined,
+  webpackStats:
+  | webpack.Stats
+  | webpack.MultiStats
+  | webpack.StatsCompilation
+  | undefined,
 ): ChunksMap => {
-  const stats = webpackStats?.toJson?.() ?? {};
+  let stats = webpackStats as any;
+  if (webpackStats && 'toJson' in webpackStats) {
+    stats = webpackStats?.toJson?.() ?? {};
+  }
+  if (!stats) {
+    return {
+      assetsByChunkName: {},
+      chunks: [],
+    };
+  }
 
   // Extract from id and children
-  const chunks = (stats.chunks ?? []).map((asset) => ({
-    id: asset?.id,
-    idHints: asset?.idHints,
-    names: asset?.names,
-    files: asset?.files,
-    children: asset?.children,
-  }));
+  // const chunks = (stats.chunks ?? []).map((asset: any) => ({
+  //   id: asset?.id,
+  //   idHints: asset?.idHints,
+  //   names: asset?.names,
+  //   files: asset?.files,
+  //   children: asset?.children,
+  // }));
 
   return {
-    assetsByChunkName: stats.assetsByChunkName ?? {},
-    chunks,
+    assetsByChunkName: {
+      main: stats.assetsByChunkName.main,
+    },
+    chunks: [],
   };
 };
 
@@ -74,7 +90,7 @@ export const getCssFileContent = async (cssFile: string) => {
 };
 
 export const extractMainScripts = (chunksMap: ChunksMap) => (chunksMap?.assetsByChunkName?.main ?? [])
-  .filter((file) => hasExtension(file, '.js'))
+  .filter((file) => hasExtension(file, '.mjs'))
   .map(prependForwardSlash);
 
 export const extractMainStyles = (chunksMap: ChunksMap) => (chunksMap?.assetsByChunkName?.main ?? [])

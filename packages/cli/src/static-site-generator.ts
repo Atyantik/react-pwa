@@ -1,33 +1,41 @@
 import fs from 'node:fs';
 import fse from 'fs-extra';
 import path from 'node:path';
-import webpack from 'webpack';
+import { MultiStats } from 'webpack';
 import fetch from 'node-fetch';
-import { FastifyInstance } from 'fastify';
+import { Server } from 'http';
+import { Application } from 'express';
 
-const startLocalServer = async (app: FastifyInstance) => {
-  await app.listen();
-  const address = app.server.address();
-  if (!address || typeof address === 'string') {
-    await app.close();
-    throw new Error('Error with Fastify server. Cannot resolve address for static file generation');
-  }
-  return `http://localhost:${address.port}`;
-};
+let localServer: Server;
 
-const stopLocalServer = async (app: FastifyInstance) => app.close();
+const startLocalServer = async (app: Application) => new Promise<string>((resolve, reject) => {
+  localServer = app.listen(() => {
+    const address = localServer.address();
+    if (!address || typeof address === 'string') {
+      localServer.close();
+      reject(new Error('Error with express server. Cannot resolve address for static file generation'));
+      return;
+    }
+    resolve(`http://localhost:${address.port}`);
+  });
+});
 
-export const generateStaticSite = async (stats: {
-  webStats: webpack.Stats | undefined;
-  serverStats: webpack.Stats | undefined;
-}) => {
-  if (!stats.serverStats || !stats.webStats) {
+const stopLocalServer = async () => localServer.close();
+
+export const generateStaticSite = async (stats: MultiStats | undefined) => {
+  if (!stats) {
     return;
   }
-  const { outputOptions: serverOutputOptions } = stats.serverStats.compilation;
-  const { outputOptions: webOutputOptions } = stats.webStats.compilation;
-  const webPath = webOutputOptions.path;
+  const serverStats = stats.stats.find((s) => s.compilation.name === 'node');
+  const webStats = stats.stats.find((s) => s.compilation.name === 'web');
 
+  if (!serverStats || !webStats) {
+    return;
+  }
+  const { outputOptions: serverOutputOptions } = serverStats.compilation;
+  const { outputOptions: webOutputOptions } = webStats.compilation;
+
+  const webPath = webOutputOptions.path;
   if (
     serverOutputOptions.path
     && webPath
@@ -47,7 +55,7 @@ export const generateStaticSite = async (stats: {
         fetch(new URL(localServerBase).toString()).then((r) => r.text()),
         fetch(new URL(manifestFile, localServerBase).toString()).then((r) => r.text()),
       ]);
-      await stopLocalServer(fastifyServer);
+      await stopLocalServer();
 
       const indexPath = path.join(webPath, indexFile);
       const manifestPath = path.join(webPath, manifestFile);

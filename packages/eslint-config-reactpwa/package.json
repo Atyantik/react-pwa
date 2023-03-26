@@ -21,16 +21,16 @@
   "author": "Tirth Bodawala <tirthbodawala@atyantik.com>",
   "license": "ISC",
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.54.0",
-    "@typescript-eslint/parser": "^5.54.0",
+    "@typescript-eslint/eslint-plugin": "^5.56.0",
+    "@typescript-eslint/parser": "^5.56.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^17.0.0",
-    "eslint-config-prettier": "^8.6.0",
+    "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-import": "^2.27.5"
   },
   "peerDependencies": {
-    "eslint": "^8.35.0",
-    "prettier": "^2.8.4"
+    "eslint": "^8.36.0",
+    "prettier": "^2.8.6"
   },
   "gitHead": "1b9ab957cac25218179b12f2ddc727fabb06f000"
 }

@@ -1,11 +1,11 @@
-import fastify from 'fastify';
+// import fastify from 'fastify';
 
-const instance = fastify();
+// const instance = fastify();
 
-instance.get('/something2', (request, reply) => {
-  reply.send({
-    name: 'Tirth',
-  });
-});
+// instance.get('/something2', (request, reply) => {
+//   reply.send({
+//     name: 'Tirth',
+//   });
+// });
 
-export default instance;
+// export default instance;

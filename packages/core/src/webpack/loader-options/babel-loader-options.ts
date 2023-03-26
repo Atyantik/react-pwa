@@ -1,5 +1,4 @@
 import { notBoolean } from '../../utils/not-boolean.js';
-import BabelLazyRoutes from '../../babel/lazy-routes.js';
 
 const getPresetEnvOptions = (options: { isTargetServer: boolean }) => {
   if (options.isTargetServer) {
@@ -25,9 +24,12 @@ const getPresetEnvOptions = (options: { isTargetServer: boolean }) => {
 export const getBabelLoaderOptions = (options: {
   isTargetServer: boolean;
   hotReload: boolean;
-  cacheDirectory: boolean;
+  useCache: boolean;
 }) => ({
-  cacheDirectory: options.cacheDirectory,
+  cacheDirectory: options.useCache,
+  // Disabling cache-compression, as it will occupy more space on disk, however
+  // it is faster to read rather than decompress it.
+  cacheCompression: false,
   presets: [
     [
       '@babel/preset-env',
@@ -46,9 +48,5 @@ export const getBabelLoaderOptions = (options: {
       },
     ],
   ],
-  plugins: [
-    BabelLazyRoutes,
-    options.hotReload && 'react-refresh/babel',
-    'babel-plugin-lodash',
-  ].filter(notBoolean),
+  plugins: [options.hotReload && 'react-refresh/babel'].filter(notBoolean),
 });

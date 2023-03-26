@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import path from 'node:path';
 import { existsSync, writeFileSync } from 'node:fs';
 import fse from 'fs-extra';
@@ -66,65 +67,25 @@ export const run = async (options: RunOptions) => {
   const WebConfig: webpack.Configuration = webWebpackHandler.getConfig();
   const ServerConfig: webpack.Configuration = nodeWebpackHandler.getConfig();
 
-  const webCompiler = webpack(WebConfig);
-  const serverCompiler = webpack(ServerConfig);
-  try {
-    const compileStats: {
-      webStats: webpack.Stats | undefined;
-      serverStats: webpack.Stats | undefined;
-    } = await new Promise((resolve, reject) => {
-      webCompiler.run((webErr, webStats) => {
-        if (webErr) {
-          // eslint-disable-next-line no-console
-          reject(webErr);
-          return;
-        }
-        // eslint-disable-next-line no-console
-        console.log(webStats?.toString(webpackStatsDisplayOptions));
+  const compiler = webpack([WebConfig, ServerConfig]);
 
-        const webChunksMap = extractChunksMap(webStats);
-        serverCompiler.run((serverErr, serverStats) => {
-          if (serverErr) {
+  try {
+    const compileStats: webpack.MultiStats | undefined = await new Promise(
+      (resolve, reject) => {
+        compiler.run((webErr, stats) => {
+          if (webErr) {
             // eslint-disable-next-line no-console
-            reject(serverErr);
+            reject(webErr);
             return;
           }
           // eslint-disable-next-line no-console
-          console.log(serverStats?.toString(webpackStatsDisplayOptions));
-          // Move images and assets folder to build
-          if (ServerConfig.output?.path) {
-            const serverImagesPath = path.resolve(
-              ServerConfig.output.path,
-              'images',
-            );
-            const buildImagesPath = path.resolve(
-              ServerConfig.output.path,
-              'build',
-              'images',
-            );
-            if (existsSync(serverImagesPath)) {
-              fse.copySync(serverImagesPath, buildImagesPath, {
-                overwrite: false,
-              });
-              fse.removeSync(serverImagesPath);
-            }
+          console.log(stats?.toString(webpackStatsDisplayOptions));
 
-            const serverAssetsPath = path.resolve(
-              ServerConfig.output.path,
-              'assets',
+          if (ServerConfig.output?.path) {
+            const webStats = stats?.stats.find(
+              (s) => s.compilation.name === 'web',
             );
-            // Copy to build/assets
-            const buildAssetsPath = path.resolve(
-              ServerConfig.output.path,
-              'build',
-              'assets',
-            );
-            if (existsSync(serverAssetsPath)) {
-              fse.copySync(serverAssetsPath, buildAssetsPath, {
-                overwrite: false,
-              });
-              fse.removeSync(serverAssetsPath);
-            }
+            const webChunksMap = extractChunksMap(webStats);
             const chunksMapFilePath = path.join(
               ServerConfig.output.path,
               'chunks-map.json',
@@ -132,19 +93,16 @@ export const run = async (options: RunOptions) => {
             writeFileSync(chunksMapFilePath, JSON.stringify(webChunksMap), {
               encoding: 'utf-8',
             });
-            resolve({ serverStats, webStats });
           }
+          resolve(stats);
         });
-      });
-    });
+      },
+    );
     return compileStats;
   } catch (ex) {
     // eslint-disable-next-line no-console
     console.error(ex);
     process.exit(1);
   }
-  return {
-    webStats: undefined,
-    serverStats: undefined,
-  };
+  return undefined;
 };

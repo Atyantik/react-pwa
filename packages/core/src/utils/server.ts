@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 import bowser from 'bowser';
-import { FastifyRequest } from 'fastify';
+import { Request } from 'express';
 import isbot from 'isbot';
 import { RoutesArgs } from '../index.js';
 import { LazyRouteMatch } from './asset-extract.js';
@@ -14,7 +14,7 @@ import { getInternalVar, setInternalVar } from './request-internals.js';
  * @returns code number
  */
 export const getHttpStatusCode = (
-  request: FastifyRequest,
+  request: Request,
   matchedRoutes?: LazyRouteMatch[],
 ) => {
   let code = 200;
@@ -33,7 +33,7 @@ export const getHttpStatusCode = (
  * @param request FastifyRequest
  * @returns string
  */
-export const getRedirectUrl = (request: FastifyRequest) => {
+export const getRedirectUrl = (request: Request) => {
   const location = getInternalVar(request, 'httpLocationHeader', '/');
   const baseUrl = getBaseUrl(request);
   const baseUrlStr = baseUrl.toString();
@@ -59,7 +59,7 @@ export const getIsBot = () => {
 
 const scopedCache = new WeakMap();
 
-const setScopedVar = (request: FastifyRequest, key: string, value: any) => {
+const setScopedVar = (request: Request, key: string, value: any) => {
   const scopedVals = scopedCache.get(request) ?? {};
   scopedCache.set(request, {
     ...scopedVals,
@@ -67,10 +67,10 @@ const setScopedVar = (request: FastifyRequest, key: string, value: any) => {
   });
 };
 
-const hasScopedVar = (request: FastifyRequest, key: string) => !!(scopedCache.get(request)?.[key] ?? false);
+const hasScopedVar = (request: Request, key: string) => !!(scopedCache.get(request)?.[key] ?? false);
 
 const getScopedVar = <T = any>(
-  request: FastifyRequest,
+  request: Request,
   key: string,
   defaultValue?: T,
 ) => scopedCache.get(request)?.[key] ?? defaultValue ?? null;
@@ -79,7 +79,7 @@ const getScopedVar = <T = any>(
  * Get request args for
  * @param request FastifyRequest
  */
-export const getRequestArgs = (request: FastifyRequest): RoutesArgs => {
+export const getRequestArgs = (request: Request): RoutesArgs => {
   const userAgent = request.headers['user-agent'] ?? '';
   const isBot = isbot(userAgent);
   const getScoped = async (

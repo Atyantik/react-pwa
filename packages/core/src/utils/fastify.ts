@@ -1,4 +1,4 @@
-import { FastifyRequest } from 'fastify';
+import { Request } from 'express';
 
 /**
  * Get full Url of the request, respect x-host,
@@ -7,12 +7,12 @@ import { FastifyRequest } from 'fastify';
  * @param req FastifyRequest
  * @returns baseUrl without pathname
  */
-export const getBaseUrl = (req: FastifyRequest): URL => {
+export const getBaseUrl = (req: Request): URL => {
   const { hostname, protocol } = req;
   return new URL('/', `${protocol}://${hostname}`);
 };
 
-export const getUrl = (req: FastifyRequest): URL => {
+export const getUrl = (req: Request): URL => {
   const baseUrl = getBaseUrl(req);
   try {
     return new URL(req.url, baseUrl);

@@ -1,35 +1,12 @@
-import ReactPWASVG512 from '@reactpwa/core/assets/reactpwa-512.svg';
-import ReactPWAPNG512 from '@reactpwa/core/assets/reactpwa-512.png';
-import ReactPWAPNG192 from '@reactpwa/core/assets/reactpwa-192.png';
-
 export default {
   short_name: 'ReactPWA',
   name: 'ReactPWA',
-  icons: [
-    {
-      src: ReactPWASVG512,
-      type: 'image/svg+xml',
-      sizes: '512x512',
-    },
-    {
-      src: ReactPWAPNG192,
-      type: 'image/png',
-      sizes: '192x192',
-      purpose: 'maskable',
-    },
-    {
-      src: ReactPWAPNG512,
-      type: 'image/png',
-      sizes: '512x512',
-      purpose: 'maskable',
-    },
-  ],
   id: '/?source=pwa',
   start_url: '/?source=pwa',
   background_color: '#FFFFFF',
   display: 'standalone',
   scope: '/',
-  theme_color: '#00ABEB',
+  theme_color: '#FFFFFF',
   shortcuts: [
     // {
     //   name: "How's weather today?",

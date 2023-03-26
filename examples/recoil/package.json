@@ -16,10 +16,10 @@
     "@reactpwa/core": "^1.0.50-alpha.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "recoil": "^0.7.6"
+    "recoil": "^0.7.7"
   },
   "devDependencies": {
-    "@types/react": "^18.0.27",
-    "@types/react-dom": "^18.0.10"
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11"
   }
 }

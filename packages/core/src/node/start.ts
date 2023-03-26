@@ -1,31 +1,33 @@
 import path from 'node:path';
 import { existsSync } from 'node:fs';
+import { Server } from 'http';
 import { pathToFileURL } from 'url';
-import Fastify, { RouteHandler } from 'fastify';
-import fastifyStatic from '@fastify/static';
-import HttpErrors from 'http-errors';
+import express from 'express';
 import webpack from 'webpack';
-import fastifyExpress from '@fastify/express';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
-import fastifyCookie from '@fastify/cookie';
 import { WebpackHandler } from '../webpack.js';
 import { requireFromString } from '../utils/require-from-string.js';
 import { extractChunksMap } from '../utils/asset-extract.js';
 import { RunOptions } from '../typedefs/server.js';
 
-let fastifyServer: ReturnType<typeof Fastify>;
+let expressServer: ReturnType<typeof express>;
 
-const startServer = async () => {
+const startServer = () => new Promise<Server>((resolve) => {
   const port = +(process?.env?.PORT ?? '0') || 3000;
-  await fastifyServer.listen({
-    port,
-  });
-  // eslint-disable-next-line no-console
-  console.info(`Server now listening on http://localhost:${port}`);
-};
+  const httpServer = expressServer.listen(
+    {
+      port,
+    },
+    () => {
+      // eslint-disable-next-line no-console
+      console.info(`Server now listening on http://localhost:${port}`);
+      resolve(httpServer);
+    },
+  );
+});
 
-export const run = async (options: RunOptions) => {
+export const run = async (options: RunOptions): Promise<Server> => {
   const projectWebpack = path.resolve(options.projectRoot, 'webpack.js');
   let WHandler: typeof WebpackHandler = WebpackHandler;
   if (projectWebpack && existsSync(projectWebpack)) {
@@ -50,14 +52,8 @@ export const run = async (options: RunOptions) => {
     }
   }
 
-  fastifyServer = Fastify({
-    trustProxy: true,
-  });
-
-  fastifyServer.register(fastifyCookie, {
-    hook: 'onRequest',
-    parseOptions: {},
-  });
+  expressServer = express();
+  expressServer.set('trust proxy', true);
 
   const webWebpackHandler = new WHandler({
     mode: options.mode,
@@ -80,79 +76,67 @@ export const run = async (options: RunOptions) => {
   const WebConfig: webpack.Configuration = webWebpackHandler.getConfig();
   const ServerConfig: webpack.Configuration = nodeWebpackHandler.getConfig();
 
-  const webCompiler = webpack(WebConfig);
-  const serverCompiler = webpack(ServerConfig);
-
-  await fastifyServer.register(fastifyExpress);
-  // Web - webpack dev middleware
-  const webDevMiddleware = webpackDevMiddleware(webCompiler, {
+  const compiler = webpack([WebConfig, ServerConfig]);
+  const devMiddleware = webpackDevMiddleware(compiler, {
     serverSideRender: true,
+    writeToDisk: true,
   });
-  fastifyServer.use(webDevMiddleware);
-  fastifyServer.use(webpackHotMiddleware(webCompiler));
+  expressServer.use(devMiddleware);
 
-  // Server - webpack dev middleware
-  const serverDevMiddleware = webpackDevMiddleware(serverCompiler, {
-    serverSideRender: true,
-  });
-  fastifyServer.use(serverDevMiddleware);
+  const hotMiddleware = webpackHotMiddleware(compiler);
+  expressServer.use(hotMiddleware);
 
-  await fastifyServer.register(fastifyStatic, {
-    root: path.join(options.projectRoot, 'src', 'public'),
-    prefix: '/',
-    wildcard: false,
-  });
+  expressServer.use(
+    express.static(path.join(options.projectRoot, 'src', 'public')),
+  );
 
-  let imported: any = null;
-
-  serverCompiler.hooks.done.tap('InformServerCompiled', (compilation) => {
+  compiler.hooks.done.tap('InformServerCompiled', (compilation) => {
     const nodePath = process.env.NODE_PATH || '';
+
     const jsonWebpackStats = compilation.toJson();
-    const { outputPath } = jsonWebpackStats;
+    // Get webStats and nodeStats
+    const webStats = jsonWebpackStats.children?.find?.((c) => c.name === 'web');
+    const nodeStats = jsonWebpackStats.children?.find?.(
+      (c) => c.name === 'node',
+    );
+
+    if (!webStats || !nodeStats) return;
+
+    expressServer.locals.chunksMap = extractChunksMap(webStats);
+
+    const { outputPath } = nodeStats;
     if (outputPath) {
       const serverFilePath = path.join(outputPath, 'server.cjs');
-      // @ts-ignores
-      const serverContent = serverCompiler?.outputFileSystem?.readFileSync?.(
+      const nodeCompiler = compiler.compilers.find(
+        (c) => c.options.name === 'node',
+      );
+
+      // @ts-ignore
+      const serverContent = nodeCompiler?.outputFileSystem?.readFileSync?.(
         serverFilePath,
         'utf-8',
       );
-      imported = requireFromString(serverContent, {
+
+      const imported = requireFromString(serverContent, {
         appendPaths: nodePath.split(path.delimiter),
       });
+
+      /**
+       * Remove the old RPWA Router attached to the express app
+       * and assign the new router to it.
+       */
+      // @ts-ignore
+      const rpwaRouterIndex = (expressServer.router?.stack ?? []).findIndex(
+        (r: any) => r?.name === 'RPWA_Router',
+      );
+      if (rpwaRouterIndex !== -1) {
+        // @ts-ignore
+        expressServer.router.stack.splice(rpwaRouterIndex, 1);
+      }
+      expressServer.use(imported.router);
     }
   });
 
-  const requestHandler: RouteHandler = (request, reply) => {
-    if (request.url === '/favicon.ico') {
-      throw new HttpErrors.NotFound();
-    }
-    const chunksMap = extractChunksMap(webDevMiddleware.context.stats);
-    const hasImported = !!imported?.handler && !!imported?.webmanifestHandler;
-    try {
-      if (hasImported) {
-        if (request.url === '/manifest.webmanifest') {
-          imported?.webmanifestHandler?.(request, reply);
-        } else {
-          imported?.handler?.(request, reply, chunksMap);
-        }
-      } else {
-        reply.code(500);
-        reply.send({
-          error: 'Server not compiled.',
-          code: 500,
-        });
-      }
-    } catch (ex) {
-      reply.code(500);
-      reply.send('Error');
-      // eslint-disable-next-line no-console
-      console.log(ex);
-    }
-  };
-
-  fastifyServer.get('*', requestHandler);
-  fastifyServer.post('*', requestHandler);
-
-  await startServer();
-  return fastifyServer;
+  const httpServer = await startServer();
+  return httpServer;
 };

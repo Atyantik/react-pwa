@@ -1,12 +1,8 @@
-import { FastifyRequest } from 'fastify';
+import { Request } from 'express';
 
 const requestInternals = new WeakMap();
 
-export const setInternalVar = (
-  request: FastifyRequest,
-  key: string,
-  value: any,
-) => {
+export const setInternalVar = (request: Request, key: string, value: any) => {
   const requestVals = requestInternals.get(request) ?? {};
   requestInternals.set(request, {
     ...requestVals,
@@ -15,7 +11,7 @@ export const setInternalVar = (
 };
 
 export const getInternalVar = <T = any>(
-  request: FastifyRequest,
+  request: Request,
   key: string,
   defaultValue?: T,
 ) => requestInternals.get(request)?.[key] ?? defaultValue ?? null;

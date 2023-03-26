@@ -1,5 +1,4 @@
 import zlib from 'zlib';
-// import { inspect } from 'node:util';
 import { PassThrough } from 'node:stream';
 import Cookies from 'universal-cookie';
 import { renderToPipeableStream } from 'react-dom/server';
@@ -10,11 +9,10 @@ import appRoutes from '@currentProject/routes';
 import appServer from '@currentProject/server';
 // @ts-ignore
 import appWebmanifest from '@currentProject/webmanifest';
-import { FastifyReply, FastifyRequest } from 'fastify';
+import { Request, Response, Router } from 'express';
 import { matchRoutes } from 'react-router-dom';
 import { CookiesProvider } from 'react-cookie';
 import {
-  ChunksMap,
   extractMainScripts,
   extractMainStyles,
   getCssFileContent,
@@ -37,7 +35,7 @@ import { WebManifest } from './index.js';
 import { IWebManifest } from './typedefs/webmanifest.js';
 import { cookieChangeHandler } from './utils/cookie.js';
 
-const getCompression = (request: FastifyRequest) => {
+const getCompression = (request: Request) => {
   const acceptEncoding = request.headers['accept-encoding'] ?? '';
   if (acceptEncoding.indexOf('br') !== -1) {
     return {
@@ -63,7 +61,7 @@ const getCompression = (request: FastifyRequest) => {
   };
 };
 
-const initWebmanifest = async (request: FastifyRequest) => {
+const initWebmanifest = async (request: Request) => {
   const computedWebmanifest = getInternalVar(request, 'Webmanifest', null);
   if (computedWebmanifest !== null) {
     return;
@@ -78,26 +76,13 @@ const initWebmanifest = async (request: FastifyRequest) => {
   setInternalVar(request, 'Webmanifest', appWebmanifest ?? {});
 };
 
-export const webmanifestHandler = async (
-  request: FastifyRequest,
-  reply: FastifyReply,
-) => {
+const webmanifestHandler = async (request: Request, response: Response) => {
   await initWebmanifest(request);
-  reply.send(getInternalVar(request, 'Webmanifest', {}));
+  response.json(getInternalVar(request, 'Webmanifest', {}));
 };
 
-export const handler = async (
-  request: FastifyRequest,
-  reply: FastifyReply,
-  chunksMap: ChunksMap,
-) => {
-  if (appServer?.lookup && appServer?.find) {
-    const routeHandler = appServer.find(request.method, request.url);
-    if (routeHandler) {
-      appServer.lookup(request, reply);
-      return;
-    }
-  }
+const handler = async (request: Request, response: Response) => {
+  const { chunksMap } = request.app.locals;
 
   let routes = appRoutes;
   const userAgent = request.headers['user-agent'] ?? '';
@@ -117,15 +102,17 @@ export const handler = async (
    * Set header to text/html with charset as per webmanifest
    * or default to utf-8
    */
-  reply.raw.setHeader('content-type', `text/html; charset=${charSet}`);
+  response.set({
+    'content-type': `text/html; charset=${charSet}`,
+  });
 
   const { compressionStream, encoding } = getCompression(request);
   if (typeof encoding === 'string') {
-    reply.raw.setHeader('content-encoding', encoding);
+    response.set({ 'content-encoding': encoding });
   }
 
   const initialHtml = `<!DOCTYPE html><html lang="${lang}"><meta charset="${charSet}">`;
-  compressionStream.pipe(reply.raw);
+  compressionStream.pipe(response);
 
   if (!isBot) {
     compressionStream.write(initialHtml);
@@ -149,8 +136,8 @@ export const handler = async (
   const mainScripts = extractMainScripts(chunksMap);
 
   // Initialize Cookies
-  let universalCookies: Cookies | null = new Cookies(request.cookies);
-  const onCookieChange = cookieChangeHandler(reply);
+  let universalCookies: Cookies | null = new Cookies(request.headers.cookie);
+  const onCookieChange = cookieChangeHandler(response);
   universalCookies.addChangeListener(onCookieChange);
   const clearCookieListener = () => {
     if (universalCookies) {
@@ -160,7 +147,9 @@ export const handler = async (
   };
 
   // release universal cookies
-  reply.then(clearCookieListener, clearCookieListener);
+  response.once('close', () => {
+    clearCookieListener();
+  });
 
   // Initiate the router to get manage the data
   const setRequestValue = (key: string, val: any) => {
@@ -189,15 +178,11 @@ export const handler = async (
               </DataProvider>
             </StaticRouter>
           </CookiesProvider>
-          {mainScripts.map((s) => (
-            <script key={s} type="module" defer src={s} />
-          ))}
         </>
       </ReactPWAContext.Provider>
     </ReactStrictMode>,
     {
-      // bootstrapModules: mainScripts,
-      bootstrapModules: [],
+      bootstrapModules: mainScripts,
       onShellReady() {
         if (isBot) return;
         stream.pipe(compressionStream);
@@ -213,7 +198,7 @@ export const handler = async (
         );
         // Something errored before we could complete the shell so we emit an alternative shell.
         if (!isBot) {
-          reply.code(500);
+          response.status(500);
         }
         /**
          * @todo do not add script on shell error. After adding the scripts the
@@ -230,10 +215,10 @@ export const handler = async (
         // This will fire after the entire page content is ready.
         // You can use this for crawlers or static generation.
         const statusCode = getHttpStatusCode(request, matchedRoutes);
-        reply.code(statusCode);
+        response.status(statusCode);
         if (statusCodeWithLocations.includes(statusCode)) {
           const redirectUrl = getRedirectUrl(request);
-          reply.redirect(statusCode, redirectUrl);
+          response.redirect(statusCode, redirectUrl);
           return;
         }
         compressionStream.write(initialHtml);
@@ -255,3 +240,19 @@ export const handler = async (
     },
   );
 };
+
+const router = Router();
+Object.defineProperty(router, 'name', { value: 'RPWA_Router' });
+
+// Add app server as priority
+if (appServer && appServer.default) {
+  router.use(appServer.default); // global mount the app server
+}
+
+// Use /manifest.webmanifest as webmanifestHandler
+router.get('/manifest.webmanifest', webmanifestHandler);
+
+// At end use * for default handler
+router.get('*', handler);
+
+export { router };

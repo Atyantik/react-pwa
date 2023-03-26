@@ -1,7 +1,8 @@
 {
   "extends": "eslint-config-reactpwa/tsconfig.json",
   "compilerOptions": {
-    "noEmit": true,
+    // "noEmit": true,
+    "declarationDir": "./dist/types",
     "rootDir": "./src/",
     "esModuleInterop": true,
     "paths": {

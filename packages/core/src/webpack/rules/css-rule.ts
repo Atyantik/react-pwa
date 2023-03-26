@@ -6,16 +6,17 @@ import { getPostcssLoaderOptions } from '../loader-options/post-css-loader-optio
 import { getSassLoaderOptions } from '../loader-options/sass-loader-options.js';
 
 export const getCssRule = (options: {
-  hotReload: boolean;
+  outputCss: boolean;
   emit: boolean;
   sourceMap: boolean;
   detailedIdentName: boolean;
   context: string;
+  useCache: boolean;
 }): RuleSetRule => ({
   test: /\.(css|s[ac]ss)$/i,
   use: [
-    options.hotReload && { loader: 'style-loader' },
-    options.hotReload || {
+    options.outputCss || { loader: 'style-loader' },
+    options.outputCss && {
       loader: MiniCssExtractPlugin.loader,
       options: { emit: options.emit },
     },

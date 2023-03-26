@@ -1,6 +1,7 @@
 import { resolve } from 'node:path';
 import { Command, Option } from 'commander';
 import chokidar from 'chokidar';
+import { Server } from 'http';
 import { getEnvFilePath, getReactpwaConfigFilePath, getRunOptions } from './util.js';
 import { generateStaticSite } from './static-site-generator.js';
 
@@ -22,7 +23,7 @@ program
   .action(async () => {
     // Something to do here now.
     const reactpwaCore = await import('@reactpwa/core/start');
-    let server: Awaited<ReturnType<typeof reactpwaCore.run>>;
+    let server: Server;
     let restartingServer = false;
     const stopServer = (cb: () => void = () => {}) => {
       server.close(cb);
@@ -75,8 +76,8 @@ program
   .action(async ({ staticSite }) => {
     // Something to do here now.
     const reactpwaCore = await import('@reactpwa/core/build');
-    const stats = await reactpwaCore.run(getRunOptions(program, { serverSideRender: !staticSite }, 'production'));
-    if (staticSite && stats.serverStats) {
+    const stats = await reactpwaCore.run(getRunOptions(program, { serverSideRender: true }, 'production'));
+    if (staticSite && stats) {
       // Generate index.html & manifest.json files
       generateStaticSite(stats);
     }

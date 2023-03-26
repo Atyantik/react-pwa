@@ -21,7 +21,10 @@ export const ChildComponent: FC = () => {
         <title>{title} | Atyantik</title>
         <meta
           property="og:image"
-          content="http://static01.nyt.com/images/2015/02/19/arts/international/19iht-btnumbers19A/19iht-btnumbers19A-facebookJumbo-v2.jpg"
+          content={
+            'http://static01.nyt.com/images/2015/02/19/arts/international/'
+            + '19iht-btnumbers19A/19iht-btnumbers19A-facebookJumbo-v2.jpg'
+          }
         />
       </Head>
       <h1 className="redBg">Welcome, { childDetails.name }</h1>
