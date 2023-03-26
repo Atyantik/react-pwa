@@ -21,7 +21,7 @@
     "@reactpwa/core": "^1.0.50-alpha.1",
     "eslint": "^8.36.0",
     "eslint-config-reactpwa": "^1.0.50-alpha.1",
-    "prettier": "^2.8.6",
+    "prettier": "^2.8.7",
     "tsup": "^6.7.0"
   },
   "dependencies": {

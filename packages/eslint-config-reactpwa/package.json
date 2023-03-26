@@ -30,7 +30,7 @@
   },
   "peerDependencies": {
     "eslint": "^8.36.0",
-    "prettier": "^2.8.6"
+    "prettier": "^2.8.7"
   },
   "gitHead": "1b9ab957cac25218179b12f2ddc727fabb06f000"
 }

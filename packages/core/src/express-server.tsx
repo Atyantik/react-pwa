@@ -50,16 +50,13 @@ if (require.main === module) {
   // Add host from env
   const host = (process?.env?.HOST ?? '0.0.0.0') || '0.0.0.0';
   const initedServer = await init();
-  initedServer.listen(
-    {
-      port,
-      host,
-    },
-    () => {
-      // eslint-disable-next-line no-console
-      console.info(`Server now listening on http://${host}:${port}`);
-    },
-  );
+  initedServer.listen({
+    port,
+    host,
+  }, () => {
+    // eslint-disable-next-line no-console
+    console.info(`Server now listening on http://${host}:${port}`);
+  });
 }
 
 export default init;

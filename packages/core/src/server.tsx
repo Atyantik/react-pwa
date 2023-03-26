@@ -253,6 +253,6 @@ if (appServer && appServer.default) {
 router.get('/manifest.webmanifest', webmanifestHandler);
 
 // At end use * for default handler
-router.get('*', handler);
+router.use(handler);
 
 export { router };
