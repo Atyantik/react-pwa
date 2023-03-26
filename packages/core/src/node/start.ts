@@ -137,7 +137,9 @@ export const run = async (options: RunOptions): Promise<Server> => {
       }
       // @ts-ignore
       const stack = expressServer.router?.stack ?? [];
-      const rpwaClientRouterIndex = stack.findIndex((r: any) => r?.name === 'RPWA_App_Server');
+      const rpwaClientRouterIndex = stack.findIndex(
+        (r: any) => r?.name === 'RPWA_App_Server',
+      );
       if (rpwaClientRouterIndex !== -1) {
         // @ts-ignore
         expressServer.router.stack.splice(rpwaClientRouterIndex, 1);
