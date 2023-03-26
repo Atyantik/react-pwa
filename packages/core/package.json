@@ -1,6 +1,6 @@
 {
   "name": "@reactpwa/core",
-  "version": "1.0.50-alpha.0",
+  "version": "1.0.50-alpha.1",
   "description": "Core of ReactPWA",
   "type": "module",
   "scripts": {
@@ -109,7 +109,7 @@
     "@types/webpack-hot-middleware": "^2.25.6",
     "@types/webpack-node-externals": "^3.0.0",
     "eslint": "^8.36.0",
-    "eslint-config-reactpwa": "^1.0.50-alpha.0",
+    "eslint-config-reactpwa": "^1.0.50-alpha.1",
     "prettier": "^2.8.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
