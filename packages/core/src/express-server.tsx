@@ -2,7 +2,7 @@ import path from 'node:path';
 import { readFileSync } from 'node:fs';
 import express from 'express';
 import compression from 'compression';
-import { router } from './server.js';
+import { router, appServer } from './server.js';
 import { ChunksMap } from './utils/asset-extract.js';
 
 const app = express();
@@ -41,6 +41,12 @@ const staticOptions = {
 app.use(express.static(path.resolve(__dirname, 'build'), staticOptions));
 
 const init = async () => {
+  if (
+    appServer
+    && (Object.keys(appServer).length || typeof appServer === 'function')
+  ) {
+    app.use(appServer);
+  }
   app.use(router);
   return app;
 };

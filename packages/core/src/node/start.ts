@@ -83,8 +83,11 @@ export const run = async (options: RunOptions): Promise<Server> => {
   });
   expressServer.use(devMiddleware);
 
-  const hotMiddleware = webpackHotMiddleware(compiler);
-  expressServer.use(hotMiddleware);
+  const webCompiler = compiler.compilers.find((n) => n.name === 'web');
+  if (webCompiler) {
+    const hotMiddleware = webpackHotMiddleware(webCompiler);
+    expressServer.use(hotMiddleware);
+  }
 
   expressServer.use(
     express.static(path.join(options.projectRoot, 'src', 'public')),
@@ -131,6 +134,21 @@ export const run = async (options: RunOptions): Promise<Server> => {
       if (rpwaRouterIndex !== -1) {
         // @ts-ignore
         expressServer.router.stack.splice(rpwaRouterIndex, 1);
+      }
+      // @ts-ignore
+      const stack = expressServer.router?.stack ?? [];
+      const rpwaClientRouterIndex = stack.findIndex((r: any) => r?.name === 'RPWA_App_Server');
+      if (rpwaClientRouterIndex !== -1) {
+        // @ts-ignore
+        expressServer.router.stack.splice(rpwaClientRouterIndex, 1);
+      }
+
+      if (
+        imported.appServer
+        && (Object.keys(imported.appServer).length
+          || typeof imported.appServer === 'function')
+      ) {
+        expressServer.use(imported.appServer);
       }
       expressServer.use(imported.router);
     }

@@ -9,15 +9,9 @@ export const getWebOutput = (options: {
   module: true,
   asyncChunks: true,
   path: resolve(options.projectRoot, 'dist', 'build'),
-  assetModuleFilename: options.isDevelopment
-    ? '_rpwa/assets/[file][ext]'
-    : '_rpwa/assets/[name]-[contenthash][ext]',
-  filename: options.isDevelopment
-    ? '_rpwa/js/[id].mjs'
-    : '_rpwa/js/[name]-[contenthash].mjs',
-  cssFilename: options.isDevelopment
-    ? '_rpwa/css/[id].css'
-    : '_rpwa/css/[name]-[contenthash].css',
+  assetModuleFilename: '_rpwa/assets/[name]-[contenthash][ext]',
+  filename: '_rpwa/js/[name]-[contenthash].mjs',
+  cssFilename: '_rpwa/css/[name]-[contenthash].css',
   publicPath: '/',
 });
 
@@ -30,12 +24,7 @@ export const getServerOutput = (options: {
   chunkFormat: 'commonjs',
   path: resolve(options.projectRoot, 'dist'),
   filename: 'server.cjs',
-  assetModuleFilename: options.isDevelopment
-    ? '_rpwa/assets/[file][ext]'
-    : '_rpwa/assets/[name]-[contenthash][ext]',
-  cssFilename: options.isDevelopment
-    ? '_rpwa/css/[id].css'
-    : '_rpwa/css/[name]-[contenthash].css',
+  assetModuleFilename: '_rpwa/assets/[name]-[contenthash][ext]',
   publicPath: '/',
   library: {
     type: 'commonjs-module',

@@ -8,8 +8,8 @@ import { Request } from 'express';
  * @returns baseUrl without pathname
  */
 export const getBaseUrl = (req: Request): URL => {
-  const { hostname, protocol } = req;
-  return new URL('/', `${protocol}://${hostname}`);
+  const { protocol } = req;
+  return new URL('/', `${protocol}://${req.get('host')}`);
 };
 
 export const getUrl = (req: Request): URL => {

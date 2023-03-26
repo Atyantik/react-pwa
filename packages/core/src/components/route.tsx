@@ -40,8 +40,8 @@ export function lazy(props: RouteObject) {
                       }, headResolveTimeout);
                         //
                       this.resolver.current = () => {
-                        resolve(null);
                         clearTimeout(timeout);
+                        resolve(null);
                       };
                     }),
                   );

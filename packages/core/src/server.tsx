@@ -82,6 +82,16 @@ const webmanifestHandler = async (request: Request, response: Response) => {
 };
 
 const handler = async (request: Request, response: Response) => {
+  /**
+   * Manually reject *.map as they should be directly served via static
+   */
+  const requestUrl = new URL(request.url, `http://${request.get('host')}`);
+  if (requestUrl.pathname.endsWith('.map')) {
+    response.status(404);
+    response.send('Not found');
+    return;
+  }
+
   const { chunksMap } = request.app.locals;
 
   let routes = appRoutes;
@@ -244,10 +254,14 @@ const handler = async (request: Request, response: Response) => {
 const router = Router();
 Object.defineProperty(router, 'name', { value: 'RPWA_Router' });
 
-// Add app server as priority
-if (appServer && appServer.default) {
-  router.use(appServer.default); // global mount the app server
+if (
+  appServer
+  && (Object.keys(appServer).length || typeof appServer === 'function')
+) {
+  Object.defineProperty(router, 'name', { value: 'RPWA_App_Server' });
 }
+
+// Add app server as priority
 
 // Use /manifest.webmanifest as webmanifestHandler
 router.get('/manifest.webmanifest', webmanifestHandler);
@@ -255,4 +269,4 @@ router.get('/manifest.webmanifest', webmanifestHandler);
 // At end use * for default handler
 router.use(handler);
 
-export { router };
+export { router, appServer };

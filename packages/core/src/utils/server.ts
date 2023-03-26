@@ -4,7 +4,7 @@ import { Request } from 'express';
 import isbot from 'isbot';
 import { RoutesArgs } from '../index.js';
 import { LazyRouteMatch } from './asset-extract.js';
-import { getBaseUrl, getUrl } from './fastify.js';
+import { getBaseUrl, getUrl } from './express.js';
 import { getInternalVar, setInternalVar } from './request-internals.js';
 
 /**

@@ -136,7 +136,7 @@ export class WebpackHandler {
 
   // eslint-disable-next-line class-methods-use-this
   getDevtool(): webpack.Configuration['devtool'] {
-    return this.isDevelopment ? 'eval' : false;
+    return this.isDevelopment ? 'inline-source-map' : false;
   }
 
   getContext(): webpack.Configuration['context'] {
