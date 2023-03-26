@@ -101,7 +101,6 @@ export const run = async (options: RunOptions): Promise<Server> => {
     );
 
     if (!webStats || !nodeStats) return;
-
     expressServer.locals.chunksMap = extractChunksMap(webStats);
 
     const { outputPath } = nodeStats;
