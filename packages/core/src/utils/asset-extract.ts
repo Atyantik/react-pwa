@@ -90,7 +90,9 @@ export const getCssFileContent = async (cssFile: string) => {
 };
 
 export const extractMainScripts = (chunksMap: ChunksMap) => (chunksMap?.assetsByChunkName?.main ?? [])
-  .filter((file) => hasExtension(file, '.mjs') && file.indexOf('hot-update') === -1)
+  .filter(
+    (file) => hasExtension(file, '.mjs') && file.indexOf('hot-update') === -1,
+  )
   .map(prependForwardSlash);
 
 export const extractMainStyles = (chunksMap: ChunksMap) => (chunksMap?.assetsByChunkName?.main ?? [])
