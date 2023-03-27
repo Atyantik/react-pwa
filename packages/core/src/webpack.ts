@@ -30,6 +30,7 @@ const defaultConfig = {
     strictMode: true,
   },
   sassCompiler: 'sass-embedded',
+  cacheType: 'memory',
   serviceWorker: true,
 };
 
@@ -269,13 +270,21 @@ export class WebpackHandler {
   }
 
   getConfig(): webpack.Configuration {
+    let cache: webpack.Configuration['cache'];
+    if (this.isDevelopment) {
+      if (this.configOptions.cacheType === 'memory') {
+        cache = true;
+      } else if (this.configOptions.cacheType === 'filesystem') {
+        cache = {
+          type: 'filesystem',
+          allowCollectingMemory: true,
+          memoryCacheUnaffected: true,
+          name: 'RPWA_Cache',
+        };
+      }
+    }
     return {
-      cache: this.isDevelopment ? {
-        type: 'filesystem',
-        allowCollectingMemory: true,
-        memoryCacheUnaffected: true,
-        name: 'RPWA_Cache',
-      } : undefined,
+      cache,
       name: this.isTargetWeb ? 'web' : 'node',
       mode: this.options.mode,
       entry: this.getEntry(),
