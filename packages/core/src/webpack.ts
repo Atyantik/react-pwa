@@ -29,6 +29,7 @@ const defaultConfig = {
   react: {
     strictMode: true,
   },
+  sassCompiler: 'sass-embedded',
   serviceWorker: true,
 };
 
@@ -254,6 +255,7 @@ export class WebpackHandler {
         emit: this.isTargetWeb,
         sourceMap: this.isDevelopment,
         detailedIdentName: this.isDevelopment,
+        sassCompiler: this.configOptions.sassCompiler,
         context: path.resolve(this.options.projectRoot, 'src'),
       }),
     ];

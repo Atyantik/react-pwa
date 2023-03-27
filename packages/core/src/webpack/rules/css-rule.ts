@@ -12,6 +12,7 @@ export const getCssRule = (options: {
   detailedIdentName: boolean;
   context: string;
   useCache: boolean;
+  sassCompiler: 'sass' | 'node-sass' | 'sass-embedded';
 }): RuleSetRule => ({
   test: /\.(css|s[ac]ss)$/i,
   use: [
@@ -35,7 +36,9 @@ export const getCssRule = (options: {
     // Compiles Sass to CSS
     {
       loader: 'sass-loader',
-      options: getSassLoaderOptions(),
+      options: getSassLoaderOptions({
+        compiler: options.sassCompiler,
+      }),
     },
   ].filter(notBoolean),
 });
