@@ -270,12 +270,19 @@ export class WebpackHandler {
 
   getConfig(): webpack.Configuration {
     return {
+      cache: this.isDevelopment ? {
+        type: 'filesystem',
+        allowCollectingMemory: true,
+        memoryCacheUnaffected: true,
+        name: 'RPWA_Cache',
+      } : undefined,
       name: this.isTargetWeb ? 'web' : 'node',
       mode: this.options.mode,
       entry: this.getEntry(),
       optimization: this.getOptimization(),
       experiments: getExperiments({
         outputModule: this.isTargetWeb,
+        cacheUnaffected: this.isDevelopment,
       }),
       output: this.getOutput(),
       externalsPresets: this.isTargetServer ? { node: true } : undefined,
