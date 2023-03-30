@@ -71,7 +71,10 @@ export const run = async (options: RunOptions) => {
 
   try {
     // Clean the dist folder
-    if (ServerConfig?.output?.path && fse.existsSync(ServerConfig.output.path)) {
+    if (
+      ServerConfig?.output?.path
+      && fse.existsSync(ServerConfig.output.path)
+    ) {
       fse.removeSync(ServerConfig.output.path);
     }
     const compileStats: webpack.MultiStats | undefined = await new Promise(
