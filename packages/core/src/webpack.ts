@@ -222,7 +222,7 @@ export class WebpackHandler {
         && new webpack.optimize.LimitChunkCountPlugin({
           maxChunks: 1,
         }),
-      this.canCopyPublicFolder()
+      this.isTargetServer && this.canCopyPublicFolder()
         && new CopyPlugin({
           patterns: [
             {

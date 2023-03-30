@@ -70,6 +70,10 @@ export const run = async (options: RunOptions) => {
   const compiler = webpack([WebConfig, ServerConfig]);
 
   try {
+    // Clean the dist folder
+    if (ServerConfig?.output?.path && fse.existsSync(ServerConfig.output.path)) {
+      fse.removeSync(ServerConfig.output.path);
+    }
     const compileStats: webpack.MultiStats | undefined = await new Promise(
       (resolve, reject) => {
         compiler.run((webErr, stats) => {

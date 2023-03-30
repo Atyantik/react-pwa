@@ -18,7 +18,7 @@ export const ChildComponent: FC = () => {
   return (
     <>
       <Head>
-        <title>{title} | Atyantik</title>
+        <title>{title} | Atyantik Technology</title>
         <meta
           property="og:image"
           content={

@@ -5,7 +5,6 @@ export const getWebOutput = (options: {
   projectRoot: string;
   isDevelopment: boolean;
 }): Configuration['output'] => ({
-  clean: true,
   module: true,
   asyncChunks: true,
   path: resolve(options.projectRoot, 'dist', 'build'),
