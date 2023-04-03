@@ -4,7 +4,7 @@ import { libSrc } from '../root.js';
 
 export const getNodeExternals = (options: {
   projectRoot: string;
-  allowList: string [],
+  allowList: string[];
 }): ReturnType<typeof webpackNodeExternals> => webpackNodeExternals({
   allowlist: [
     /@reactpwa/,

@@ -266,10 +266,12 @@ export class WebpackHandler {
 
   getExternals(): webpack.Configuration['externals'] {
     if (this.isTargetServer) {
-      return [getNodeExternals({
-        projectRoot: this.options.projectRoot,
-        allowList: this.configOptions.esmodules ?? [],
-      })];
+      return [
+        getNodeExternals({
+          projectRoot: this.options.projectRoot,
+          allowList: this.configOptions.esmodules ?? [],
+        }),
+      ];
     }
     return undefined;
   }
