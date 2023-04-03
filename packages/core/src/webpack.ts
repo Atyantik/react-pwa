@@ -32,6 +32,7 @@ const defaultConfig = {
   sassCompiler: 'sass-embedded',
   cacheType: 'memory',
   serviceWorker: true,
+  esmodules: [] as string[],
 };
 
 type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
@@ -265,7 +266,10 @@ export class WebpackHandler {
 
   getExternals(): webpack.Configuration['externals'] {
     if (this.isTargetServer) {
-      return [getNodeExternals({ projectRoot: this.options.projectRoot })];
+      return [getNodeExternals({
+        projectRoot: this.options.projectRoot,
+        allowList: this.configOptions.esmodules ?? [],
+      })];
     }
     return undefined;
   }
