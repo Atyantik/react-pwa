@@ -19,7 +19,7 @@
   "license": "ISC",
   "devDependencies": {
     "@reactpwa/core": "^1.0.50-alpha.8",
-    "eslint": "^8.37.0",
+    "eslint": "^8.38.0",
     "eslint-config-reactpwa": "^1.0.50-alpha.7",
     "prettier": "^2.8.7",
     "tsup": "^6.7.0"
@@ -31,7 +31,7 @@
     "dotenv-expand": "^10.0.0",
     "fs-extra": "^11.1.1",
     "node-fetch": "^3.3.1",
-    "webpack": "^5.77.0"
+    "webpack": "^5.78.0"
   },
   "gitHead": "1b9ab957cac25218179b12f2ddc727fabb06f000"
 }
