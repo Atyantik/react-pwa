@@ -82,11 +82,11 @@ if (rootElement) {
     if (document.readyState === 'interactive') {
       render();
     }
-      document.addEventListener('readystatechange', () => {
-        if (document.readyState === 'interactive') {
-          render();
-        }
-      });
+    document.addEventListener('readystatechange', () => {
+      if (document.readyState === 'interactive') {
+        render();
+      }
+    });
 
     // @ts-ignore
     if (EnableServiceWorker) {
