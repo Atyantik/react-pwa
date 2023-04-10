@@ -93,7 +93,7 @@ export const run = async (options: RunOptions): Promise<Server> => {
     express.static(path.join(options.projectRoot, 'src', 'public')),
   );
 
-  compiler.hooks.done.tap('InformServerCompiled', (compilation) => {
+  compiler.hooks.done.tap('InformServerCompiled', async (compilation) => {
     const nodePath = process.env.NODE_PATH || '';
 
     const jsonWebpackStats = compilation.toJson();
@@ -119,9 +119,10 @@ export const run = async (options: RunOptions): Promise<Server> => {
         'utf-8',
       );
 
-      const imported = requireFromString(serverContent, {
+      const imported = await requireFromString(serverContent, {
         appendPaths: nodePath.split(path.delimiter),
       });
+      console.log(imported);
 
       /**
        * Remove the old RPWA Router attached to the express app
@@ -152,6 +153,7 @@ export const run = async (options: RunOptions): Promise<Server> => {
       ) {
         expressServer.use(imported.appServer);
       }
+      console.log(imported.router);
       expressServer.use(imported.router);
     }
   });
