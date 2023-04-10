@@ -122,7 +122,6 @@ export const run = async (options: RunOptions): Promise<Server> => {
       const imported = await requireFromString(serverContent, {
         appendPaths: nodePath.split(path.delimiter),
       });
-      console.log(imported);
 
       /**
        * Remove the old RPWA Router attached to the express app
@@ -153,7 +152,6 @@ export const run = async (options: RunOptions): Promise<Server> => {
       ) {
         expressServer.use(imported.appServer);
       }
-      console.log(imported.router);
       expressServer.use(imported.router);
     }
   });
