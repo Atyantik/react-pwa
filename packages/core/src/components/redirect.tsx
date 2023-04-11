@@ -21,6 +21,7 @@ export const Redirect: FC<
   statusCode?: RedirectStatusCode;
 } & NavigateOptions
 > = ({
+  children,
   to,
   statusCode = 307,
   replace,
@@ -39,6 +40,8 @@ export const Redirect: FC<
     });
   }, []);
   return (
-    <HttpStatus statusCode={statusCode} location={href} relative={relative} />
+    <HttpStatus statusCode={statusCode} location={href} relative={relative}>
+      {children}
+    </HttpStatus>
   );
 };
