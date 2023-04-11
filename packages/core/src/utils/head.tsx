@@ -101,6 +101,19 @@ export function unique() {
             hashList.push(propsHash);
           }
         }
+        if (
+          isUnique
+          && typeof h.key === 'string'
+          && h.key.indexOf('$') === -1
+          && h.props?.property === 'og:image'
+        ) {
+          // this is a classic case when we want to avoid the default share image in og:image
+          if (keys.has(h.key)) {
+            isUnique = false;
+          } else {
+            keys.add(h.key);
+          }
+        }
         break;
       default:
         break;
