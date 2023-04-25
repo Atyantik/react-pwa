@@ -1,3 +1,5 @@
+import { matchRoutes } from 'react-router-dom';
+
 const rootElement = document.getElementsByTagName('app-content')?.[0];
 // @ts-ignore
 const ssrEnabled = EnableServerSideRender;
@@ -34,6 +36,11 @@ if (rootElement) {
     if (typeof Routes === 'function') {
       routes = await Routes(requestArgs);
     }
+    const matched = matchRoutes(routes, window.location) ?? [];
+    await Promise.all(
+      // @ts-ignore
+      matched.map((route) => route.route?.element?.()),
+    );
     const children = (
       <ReactStrictMode>
         <CookiesProvider>
@@ -47,7 +54,6 @@ if (rootElement) {
         </CookiesProvider>
       </ReactStrictMode>
     );
-
     const render = async () => {
       if (ssrEnabled) {
         hydrateRoot(rootElement, children, {
@@ -79,11 +85,11 @@ if (rootElement) {
         root.render(children);
       }
     };
-    if (document.readyState === 'interactive') {
+    if (document.readyState === 'complete') {
       render();
     }
     document.addEventListener('readystatechange', () => {
-      if (document.readyState === 'interactive') {
+      if (document.readyState === 'complete') {
         render();
       }
     });
