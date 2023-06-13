@@ -1,6 +1,6 @@
 {
   "name": "@reactpwa/cli",
-  "version": "1.0.50-alpha.13",
+  "version": "1.0.50-alpha.14",
   "description": "Command line interface for ReactPWA",
   "type": "module",
   "scripts": {
@@ -18,9 +18,9 @@
   "author": "Tirth Bodawala <tirthbodawala@atyantik.com>",
   "license": "ISC",
   "devDependencies": {
-    "@reactpwa/core": "^1.0.50-alpha.13",
+    "@reactpwa/core": "^1.0.50-alpha.14",
     "eslint": "^8.42.0",
-    "eslint-config-reactpwa": "^1.0.50-alpha.11",
+    "eslint-config-reactpwa": "^1.0.50-alpha.14",
     "prettier": "^2.8.8",
     "tsup": "^6.7.0"
   },
