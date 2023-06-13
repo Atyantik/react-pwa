@@ -1,5 +1,5 @@
 import SassEmbedded from 'sass-embedded';
-import Sass from 'sass';
+import * as Sass from 'sass';
 import NodeSass from 'node-sass';
 
 export const getSassLoaderOptions = (options: {

@@ -22,7 +22,7 @@
     "examples/*"
   ],
   "devDependencies": {
-    "concurrently": "^7.6.0",
+    "concurrently": "^8.2.0",
     "lerna": "^6.4.1",
     "pre-commit": "^1.2.2"
   },
