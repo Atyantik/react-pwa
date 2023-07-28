@@ -1,6 +1,6 @@
-import { Configuration } from 'webpack';
 import { resolve } from 'node:path';
 import fs from 'node:fs';
+import { Configuration } from 'webpack';
 import { projectExistsSync } from '../utils/resolver.js';
 import { libSrc } from '../root.js';
 

@@ -30,7 +30,7 @@
     "dotenv": "^16.3.1",
     "dotenv-expand": "^10.0.0",
     "fs-extra": "^11.1.1",
-    "node-fetch": "^3.3.1",
+    "node-fetch": "^3.3.2",
     "webpack": "^5.88.2"
   },
   "gitHead": "1b9ab957cac25218179b12f2ddc727fabb06f000"

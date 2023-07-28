@@ -1,5 +1,7 @@
 import zlib from 'zlib';
 import { PassThrough } from 'node:stream';
+import { Request, Response, Router } from 'express';
+import { matchRoutes } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import { renderToPipeableStream } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom/server.js';
@@ -9,13 +11,11 @@ import appRoutes from '@currentProject/routes';
 import appServer from '@currentProject/server';
 // @ts-ignore
 import appWebmanifest from '@currentProject/webmanifest';
-import { Request, Response, Router } from 'express';
-import { matchRoutes } from 'react-router-dom';
 import { CookiesProvider } from 'react-cookie';
 import {
   extractMainScripts,
-  extractMainStyles,
-  getCssFileContent,
+  extractStyles,
+  extractStylesWithContent,
   LazyRouteMatch,
 } from './utils/asset-extract.js';
 import { App } from './components/app.js';
@@ -132,17 +132,16 @@ const handler = async (request: Request, response: Response) => {
   }
   const matchedRoutes = matchRoutes(routes, request.url) as LazyRouteMatch[];
   let stylesWithContent: { href: string; content: string }[] = [];
-  const styles: string[] = [];
-
-  const mainStyles = extractMainStyles(chunksMap);
-  if (mainStyles?.length) {
-    stylesWithContent = await Promise.all(
-      mainStyles.map(async (mainStyle) => ({
-        content: await getCssFileContent(mainStyle),
-        href: mainStyle,
-      })),
+  let styles: string[] = [];
+  try {
+    stylesWithContent = await extractStylesWithContent(
+      matchedRoutes,
+      chunksMap,
     );
+  } catch {
+    styles = extractStyles(matchedRoutes, chunksMap);
   }
+
   const mainScripts = extractMainScripts(chunksMap);
 
   // Initialize Cookies
@@ -194,8 +193,8 @@ const handler = async (request: Request, response: Response) => {
     {
       bootstrapModules: mainScripts,
       onShellReady() {
-        if (isBot) return;
-        stream.pipe(compressionStream);
+        // if (isBot) return;
+        // stream.pipe(compressionStream);
       },
       onShellError(error) {
         setInternalVar(request, 'hasExecutionError', true);
@@ -220,7 +219,7 @@ const handler = async (request: Request, response: Response) => {
         compressionStream.end();
       },
       onAllReady() {
-        if (!isBot) return;
+        // if (!isBot) return;
         // If you don't want streaming, use this instead of onShellReady.
         // This will fire after the entire page content is ready.
         // You can use this for crawlers or static generation.

@@ -1,7 +1,7 @@
 import { resolve } from 'node:path';
+import { Server } from 'http';
 import { Command, Option } from 'commander';
 import chokidar from 'chokidar';
-import { Server } from 'http';
 import { getEnvFilePath, getReactpwaConfigFilePath, getRunOptions } from './util.js';
 import { generateStaticSite } from './static-site-generator.js';
 
