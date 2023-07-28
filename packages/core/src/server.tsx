@@ -1,5 +1,7 @@
 import zlib from 'zlib';
 import { PassThrough } from 'node:stream';
+import { Request, Response, Router } from 'express';
+import { matchRoutes } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import { renderToPipeableStream } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom/server.js';
@@ -9,8 +11,6 @@ import appRoutes from '@currentProject/routes';
 import appServer from '@currentProject/server';
 // @ts-ignore
 import appWebmanifest from '@currentProject/webmanifest';
-import { Request, Response, Router } from 'express';
-import { matchRoutes } from 'react-router-dom';
 import { CookiesProvider } from 'react-cookie';
 import {
   extractMainScripts,
@@ -192,7 +192,7 @@ const handler = async (request: Request, response: Response) => {
       </ReactPWAContext.Provider>
     </ReactStrictMode>,
     {
-      bootstrapModules: mainScripts,
+      bootstrapScripts: mainScripts,
       onShellReady() {
         if (isBot) return;
         stream.pipe(compressionStream);

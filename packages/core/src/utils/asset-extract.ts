@@ -1,8 +1,8 @@
 import { parse } from 'node:url';
 import { join } from 'node:path';
 import { existsSync, readFileSync } from 'node:fs';
-import * as webpack from 'webpack';
 import { RouteMatch, RouteObject } from 'react-router-dom';
+import * as webpack from 'webpack';
 
 export type LazyRouteMatch = RouteMatch & {
   route: RouteObject & {
@@ -91,7 +91,7 @@ export const getCssFileContent = async (cssFile: string) => {
 
 export const extractMainScripts = (chunksMap: ChunksMap) => (chunksMap?.assetsByChunkName?.main ?? [])
   .filter(
-    (file) => hasExtension(file, '.mjs') && file.indexOf('hot-update') === -1,
+    (file) => hasExtension(file, '.js') && file.indexOf('hot-update') === -1,
   )
   .map(prependForwardSlash);
 

@@ -6,7 +6,7 @@ const getPresetEnvOptions = (options: { isTargetServer: boolean }) => {
       {
         targets: {
           node: 'current',
-          esmodules: true,
+          esmodules: false,
         },
       },
     ];
@@ -16,7 +16,7 @@ const getPresetEnvOptions = (options: { isTargetServer: boolean }) => {
     {
       useBuiltIns: 'entry',
       corejs: 'core-js@3',
-      targets: { esmodules: true },
+      targets: { esmodules: false },
     },
   ];
 };

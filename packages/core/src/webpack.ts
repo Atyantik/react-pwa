@@ -211,7 +211,7 @@ export class WebpackHandler {
       this.shouldHotReload && new webpack.HotModuleReplacementPlugin(),
       this.shouldHotReload
         && new ReactRefreshWebpackPlugin({
-          esModule: true,
+          esModule: false,
           overlay: { sockProtocol: 'ws' },
         }),
       this.shouldOutputCss
@@ -297,7 +297,7 @@ export class WebpackHandler {
       entry: this.getEntry(),
       optimization: this.getOptimization(),
       experiments: getExperiments({
-        outputModule: this.isTargetWeb,
+        outputModule: false,
         cacheUnaffected: this.isDevelopment,
       }),
       output: this.getOutput(),

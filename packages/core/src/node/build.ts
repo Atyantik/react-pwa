@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import path from 'node:path';
 import { existsSync, writeFileSync } from 'node:fs';
-import fse from 'fs-extra';
 import { pathToFileURL } from 'node:url';
+import fse from 'fs-extra';
 import webpack from 'webpack';
 import { extractChunksMap } from '../utils/asset-extract.js';
 import { WebpackHandler } from '../webpack.js';
