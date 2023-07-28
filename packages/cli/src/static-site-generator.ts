@@ -1,10 +1,10 @@
 import fs from 'node:fs';
-import fse from 'fs-extra';
 import path from 'node:path';
-import { MultiStats } from 'webpack';
-import fetch from 'node-fetch';
 import { Server } from 'http';
 import { Application } from 'express';
+import fse from 'fs-extra';
+import { MultiStats } from 'webpack';
+import fetch from 'node-fetch';
 
 let localServer: Server;
 

@@ -1,6 +1,6 @@
-import { Compiler } from 'webpack';
 import path from 'node:path';
 import fs from 'node:fs';
+import { Compiler } from 'webpack';
 import {
   extractChunksMap,
   extractMainScripts,

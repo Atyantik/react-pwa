@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
-import bowser from 'bowser';
 import { Request } from 'express';
+import bowser from 'bowser';
 import isbot from 'isbot';
 import { RoutesArgs } from '../index.js';
 import { LazyRouteMatch } from './asset-extract.js';

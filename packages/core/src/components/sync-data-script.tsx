@@ -1,5 +1,5 @@
-import serialize from 'serialize-javascript';
 import { FC } from 'react';
+import serialize from 'serialize-javascript';
 
 // export const SyncDataScript: FC<{ id: string; data: any }> = ({ id, data }) => {
 //   const disableSyncScript = typeof document !== 'undefined' && document.readyState === 'complete';

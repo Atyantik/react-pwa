@@ -1,6 +1,6 @@
-import { parse } from 'bowser';
 import { ReactElement } from 'react';
 import { RouteObject as RRRouteObject } from 'react-router-dom';
+import { parse } from 'bowser';
 import { IWebManifest } from './typedefs/webmanifest.js';
 
 export { DataContext } from './components/data.js';
