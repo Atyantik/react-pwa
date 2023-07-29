@@ -29,14 +29,6 @@ export const getWebOptimization = (options: {
           return undefined;
         },
       },
-      main: {
-        name: 'main',
-        type: 'css/mini-extract',
-        chunks: 'all',
-        minChunks: 1,
-        reuseExistingChunk: true,
-        enforce: true,
-      },
     },
   },
 });
