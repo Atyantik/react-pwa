@@ -211,7 +211,6 @@ export class WebpackHandler {
       this.shouldHotReload && new webpack.HotModuleReplacementPlugin(),
       this.shouldHotReload
         && new ReactRefreshWebpackPlugin({
-          esModule: false,
           overlay: { sockProtocol: 'ws' },
         }),
       this.shouldOutputCss
