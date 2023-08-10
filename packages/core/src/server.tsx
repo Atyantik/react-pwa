@@ -14,8 +14,8 @@ import appWebmanifest from '@currentProject/webmanifest';
 import { CookiesProvider } from 'react-cookie';
 import {
   extractMainScripts,
-  extractMainStyles,
-  getCssFileContent,
+  extractStyles,
+  extractStylesWithContent,
   LazyRouteMatch,
 } from './utils/asset-extract.js';
 import { App } from './components/app.js';
@@ -124,25 +124,38 @@ const handler = async (request: Request, response: Response) => {
   const initialHtml = `<!DOCTYPE html><html lang="${lang}"><meta charset="${charSet}">`;
   compressionStream.pipe(response);
 
-  if (!isBot) {
-    compressionStream.write(initialHtml);
-  }
-  if (typeof appRoutes === 'function') {
-    routes = await appRoutes(getRequestArgs(request));
-  }
-  const matchedRoutes = matchRoutes(routes, request.url) as LazyRouteMatch[];
-  let stylesWithContent: { href: string; content: string }[] = [];
-  const styles: string[] = [];
+  // Cache mechanism, if the previous request had a response code of
+  // @todo 200 then send the initial HTML without hesitation
 
-  const mainStyles = extractMainStyles(chunksMap);
-  if (mainStyles?.length) {
-    stylesWithContent = await Promise.all(
-      mainStyles.map(async (mainStyle) => ({
-        content: await getCssFileContent(mainStyle),
-        href: mainStyle,
-      })),
-    );
+  // Irrespective of the error, send the initial HTML, maybe handle 500 errors or 404 errors
+  compressionStream.write(initialHtml);
+
+  // @todo when calling request Args, simply memoize that function
+  if (typeof appRoutes === 'function') {
+    // eslint-disable-next-line no-console
+    console.time('Routes function execution time');
+    routes = await appRoutes(getRequestArgs(request));
+    // eslint-disable-next-line no-console
+    console.timeEnd('Routes function execution time');
   }
+
+  // @todo: memoize the match routes function
+  const matchedRoutes = matchRoutes(routes, request.url) as LazyRouteMatch[];
+
+  let stylesWithContent: { href: string; content: string }[] = [];
+  let styles: string[] = [];
+  try {
+    // @todo: memoize the extractStylesWithContent function
+    stylesWithContent = await extractStylesWithContent(
+      matchedRoutes,
+      chunksMap,
+    );
+  } catch {
+    // @todo: memoize the extractStyles function
+    styles = extractStyles(matchedRoutes, chunksMap);
+  }
+
+  // @todo memoize the extractMainScripts function, along with preflight and preconnect
   const mainScripts = extractMainScripts(chunksMap);
 
   // Initialize Cookies
@@ -194,8 +207,8 @@ const handler = async (request: Request, response: Response) => {
     {
       bootstrapScripts: mainScripts,
       onShellReady() {
-        if (isBot) return;
-        stream.pipe(compressionStream);
+        // if (isBot) return;
+        // stream.pipe(compressionStream);
       },
       onShellError(error) {
         setInternalVar(request, 'hasExecutionError', true);
@@ -220,7 +233,7 @@ const handler = async (request: Request, response: Response) => {
         compressionStream.end();
       },
       onAllReady() {
-        if (!isBot) return;
+        // if (!isBot) return;
         // If you don't want streaming, use this instead of onShellReady.
         // This will fire after the entire page content is ready.
         // You can use this for crawlers or static generation.

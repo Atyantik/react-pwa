@@ -96,17 +96,16 @@ export const run = async (options: RunOptions): Promise<Server> => {
   compiler.hooks.done.tap('InformServerCompiled', async (compilation) => {
     const nodePath = process.env.NODE_PATH || '';
 
-    const jsonWebpackStats = compilation.toJson();
+    const jsonWebpackStats = compilation.stats;
+
     // Get webStats and nodeStats
-    const webStats = jsonWebpackStats.children?.find?.((c) => c.name === 'web');
-    const nodeStats = jsonWebpackStats.children?.find?.(
-      (c) => c.name === 'node',
-    );
+    const webStats = jsonWebpackStats.find?.((c) => c.compilation.name === 'web');
+    const nodeStats = jsonWebpackStats.find?.((c) => c.compilation.name === 'node');
 
     if (!webStats || !nodeStats) return;
     expressServer.locals.chunksMap = extractChunksMap(webStats);
 
-    const { outputPath } = nodeStats;
+    const outputPath = nodeStats.compilation.outputOptions.path;
     if (outputPath) {
       const serverFilePath = path.join(outputPath, 'server.cjs');
       const nodeCompiler = compiler.compilers.find(

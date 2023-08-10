@@ -4,7 +4,7 @@ import { Compiler } from 'webpack';
 import {
   extractChunksMap,
   extractMainScripts,
-  extractMainStyles,
+  extractStyles,
 } from '../../utils/asset-extract.js';
 
 export class InjectSW {
@@ -63,7 +63,7 @@ export class InjectSW {
           if (this.options.withScripts) {
             const chunksMap = extractChunksMap(compilation.getStats());
             const filesToCache = chunksMap.chunks.map((c) => c.files).flat(2);
-            const styles = extractMainStyles(chunksMap);
+            const styles = extractStyles([], chunksMap);
             const scripts = extractMainScripts(chunksMap);
             this.srcFileContent = `const __FILES=${JSON.stringify(
               filesToCache,
