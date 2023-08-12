@@ -99,8 +99,12 @@ export const run = async (options: RunOptions): Promise<Server> => {
     const jsonWebpackStats = compilation.stats;
 
     // Get webStats and nodeStats
-    const webStats = jsonWebpackStats.find?.((c) => c.compilation.name === 'web');
-    const nodeStats = jsonWebpackStats.find?.((c) => c.compilation.name === 'node');
+    const webStats = jsonWebpackStats.find?.(
+      (c) => c.compilation.name === 'web',
+    );
+    const nodeStats = jsonWebpackStats.find?.(
+      (c) => c.compilation.name === 'node',
+    );
 
     if (!webStats || !nodeStats) return;
     expressServer.locals.chunksMap = extractChunksMap(webStats);

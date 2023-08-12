@@ -1,13 +1,10 @@
-import { useSyncData, Head } from '@reactpwa/core';
 import { FC, useState, useEffect } from 'react';
+import { useData, Head } from '@reactpwa/core';
 import { ChildData } from '../../services/data';
 import '../../resources/styles.scss';
 
 export const ChildComponent: FC = () => {
-  const {
-    data: childDetails,
-    syncScript,
-  } = useSyncData('child.data', ChildData);
+  const childDetails = useData('child.data', ChildData);
   const titleText = `Welcome, ${childDetails.name}`;
   const [title, setTitle] = useState(titleText);
   useEffect(() => {
@@ -27,8 +24,7 @@ export const ChildComponent: FC = () => {
           }
         />
       </Head>
-      <h1 className="redBg">Welcome, { childDetails.name }</h1>
-      {syncScript}
+      <h1 className="redBg">Welcome, {childDetails.name}</h1>
     </>
   );
 };

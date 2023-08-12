@@ -3,10 +3,8 @@ import { RouteObject as RRRouteObject } from 'react-router-dom';
 import { parse } from 'bowser';
 import { IWebManifest } from './typedefs/webmanifest.js';
 
-export { DataContext } from './components/data.js';
 export { useData } from './hooks/useData.js';
-export { useSyncData } from './hooks/useSyncData.js';
-export { SyncDataScript as SyncData } from './components/sync-data-script.js';
+export { lazy } from './components/route.js';
 export {
   Outlet,
   Link,
@@ -27,7 +25,7 @@ export {
 } from 'react-router-dom';
 export { useCookies } from 'react-cookie';
 export * from 'react-error-boundary';
-export { Head } from './components/head/index.js';
+export { Head } from './components/head.js';
 export { HttpStatus } from './components/http-status.js';
 export { Redirect } from './components/redirect.js';
 

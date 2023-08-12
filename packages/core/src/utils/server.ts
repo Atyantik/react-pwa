@@ -52,10 +52,7 @@ export const getRedirectUrl = (request: Request) => {
  * Get instance of isBot
  * @returns isbot
  */
-export const getIsBot = () => {
-  isbot.exclude(['chrome-lighthouse']);
-  return isbot;
-};
+export const getIsBot = () => isbot;
 
 const scopedCache = new WeakMap();
 

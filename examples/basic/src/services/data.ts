@@ -7,7 +7,8 @@ const delay = (time: number) => new Promise((resolve) => { setTimeout(resolve, t
 
 export const HomeData = async () => {
   // delay of 2 seconds
-  await delay(2000);
+  // await delay(2000);
+  console.log('In here');
   return {
     content: 'Develop Progressive Web Applications with Ease.',
   };

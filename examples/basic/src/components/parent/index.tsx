@@ -1,38 +1,30 @@
+import { FC } from 'react';
 import {
-  useSyncData, ErrorBoundary, Head,
+  useData, Head, lazy,
 } from '@reactpwa/core';
-import { Suspense, FC, lazy } from 'react';
 import { ParentData } from '../../services/data';
 import { Skeleton } from '../skeleton';
 import styles from './styles.scss';
 
-const LazyChild = lazy(() => import('@components/child'));
+const LazyChild = lazy({
+  element: () => import('@components/child'),
+  skeleton: Skeleton,
+});
 
 export const ParentComponent: FC = () => {
-  const {
-    data: parentDetails,
-    syncScript,
-  } = useSyncData('parent.data', ParentData);
+  const parentDetails = useData('parent.data', ParentData);
   return (
     <>
       <Head>
         <title>Welcome, {parentDetails.name} | Atyantik</title>
-        <meta
-          property="og:image"
-          content="https://picsum.photos/200/300"
-        />
+        <meta property="og:image" content="https://picsum.photos/200/300" />
         <meta name="theme-color" content="#317EFB" />
       </Head>
       <div>
-        <h1 className={styles.red}>Welcome, { parentDetails.name }</h1>
+        <h1 className={styles.red}>Welcome, {parentDetails.name}</h1>
         <div className={styles.logo}></div>
       </div>
-      <ErrorBoundary FallbackComponent={() => <>Error</>}>
-        <Suspense fallback={<Skeleton />}>
-          <LazyChild />
-        </Suspense>
-      </ErrorBoundary>
-      {syncScript}
+      <LazyChild />
     </>
   );
 };

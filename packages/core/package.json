@@ -89,11 +89,13 @@
     "serialize-javascript": "^6.0.1",
     "style-loader": "^3.3.3",
     "universal-cookie": "^4.0.4",
+    "universal-cookie-express": "^4.0.3",
     "webpack": "^5.88.2",
     "webpack-dev-middleware": "^6.1.1",
     "webpack-hot-middleware": "^2.25.4",
     "webpack-node-externals": "^3.0.0",
-    "workbox-webpack-plugin": "^7.0.0"
+    "workbox-webpack-plugin": "^7.0.0",
+    "xxhash-wasm": "^1.0.2"
   },
   "peerDependencies": {
     "react": ">=18.2.0",
@@ -113,6 +115,7 @@
     "prettier": "^3.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "redis": "^4.6.7",
     "tsup": "^7.2.0"
   },
   "gitHead": "1b9ab957cac25218179b12f2ddc727fabb06f000"

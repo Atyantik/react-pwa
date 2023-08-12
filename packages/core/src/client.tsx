@@ -1,4 +1,15 @@
-import { matchRoutes } from 'react-router-dom';
+import { matchRoutes, BrowserRouter } from 'react-router-dom';
+import { createRoot, hydrateRoot } from 'react-dom/client';
+import { CookiesProvider } from 'react-cookie';
+// @ts-ignore
+import Routes from '@currentProject/routes';
+import { ReactStrictMode } from './components/strict.js';
+import { App } from './components/app.js';
+import { requestArgs } from './utils/client.js';
+import { ReactPWAContext } from './components/reactpwa.js';
+import { setInternalVar, getInternalVar } from './utils/request-internals.js';
+
+const DEFAULT_REFERENCE = Symbol('DEFAULT_REFERENCE');
 
 const rootElement = document.getElementsByTagName('app-content')?.[0];
 // @ts-ignore
@@ -6,29 +17,6 @@ const ssrEnabled = EnableServerSideRender;
 
 if (rootElement) {
   const init = async () => {
-    const [
-      { createRoot, hydrateRoot },
-      { CookiesProvider },
-      { default: Routes },
-      { BrowserRouter },
-      { ReactStrictMode },
-      { App },
-      { DataProvider },
-      { HeadProvider },
-      { requestArgs },
-    ] = await Promise.all([
-      import('react-dom/client'),
-      import('react-cookie'),
-      // @ts-ignore
-      import('@currentProject/routes'),
-      // import('./components/browser-router.js')
-      import('react-router-dom'),
-      import('./components/strict.js'),
-      import('./components/app.js'),
-      import('./components/data.js'),
-      import('./components/head/provider.js'),
-      import('./utils/client.js'),
-    ]);
     let routes = Routes;
     if (!Routes) {
       routes = [];
@@ -41,17 +29,32 @@ if (rootElement) {
       // @ts-ignore
       matched.map((route) => route.route?.element?.()),
     );
+    const setRequestValue = (key: string, val: any) => {
+      let reference = window.history.state;
+      if (!window.history.state) {
+        reference = DEFAULT_REFERENCE;
+      }
+      setInternalVar(reference, key, val);
+    };
+    const getRequestValue = (key: string, defaultValue: any = null) => {
+      let reference = window.history.state;
+      if (!window.history.state) {
+        reference = DEFAULT_REFERENCE;
+      }
+      return getInternalVar(reference, key, defaultValue);
+    };
+
     const children = (
       <ReactStrictMode>
-        <CookiesProvider>
-          <BrowserRouter>
-            <DataProvider>
-              <HeadProvider>
-                <App routes={routes} />
-              </HeadProvider>
-            </DataProvider>
-          </BrowserRouter>
-        </CookiesProvider>
+        <ReactPWAContext.Provider
+          value={{ setValue: setRequestValue, getValue: getRequestValue }}
+        >
+          <CookiesProvider>
+            <BrowserRouter>
+              <App routes={routes} />
+            </BrowserRouter>
+          </CookiesProvider>
+        </ReactPWAContext.Provider>
       </ReactStrictMode>
     );
     const render = async () => {
@@ -85,14 +88,13 @@ if (rootElement) {
         root.render(children);
       }
     };
-    if (document.readyState === 'complete') {
+    // @ts-ignore
+    if (window.preloadComplete) {
       render();
+    } else {
+      // @ts-ignore
+      window.onPreloadComplete = render;
     }
-    document.addEventListener('readystatechange', () => {
-      if (document.readyState === 'complete') {
-        render();
-      }
-    });
 
     // @ts-ignore
     if (EnableServiceWorker) {

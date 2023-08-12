@@ -1,267 +1,240 @@
-import zlib from 'zlib';
-import { PassThrough } from 'node:stream';
-import { Request, Response, Router } from 'express';
+import {
+  NextFunction, Request, Response, Router,
+} from 'express';
+import { Writable } from 'stream';
 import { matchRoutes } from 'react-router-dom';
-import Cookies from 'universal-cookie';
+import cookiesMiddleware from 'universal-cookie-express';
 import { renderToPipeableStream } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom/server.js';
 // @ts-ignore
 import appRoutes from '@currentProject/routes';
 // @ts-ignore
 import appServer from '@currentProject/server';
-// @ts-ignore
-import appWebmanifest from '@currentProject/webmanifest';
+
 import { CookiesProvider } from 'react-cookie';
-import {
-  extractMainScripts,
-  extractStyles,
-  extractStylesWithContent,
-  LazyRouteMatch,
-} from './utils/asset-extract.js';
+import compression from 'compression';
+import { extractMainScripts, LazyRouteMatch } from './utils/asset-extract.js';
 import { App } from './components/app.js';
-import { DataProvider } from './components/data.js';
-import { HeadProvider } from './components/head/provider.js';
 import { ReactStrictMode } from './components/strict.js';
 import { ReactPWAContext } from './components/reactpwa.js';
 import { getInternalVar, setInternalVar } from './utils/request-internals.js';
 import { statusCodeWithLocations } from './utils/redirect.js';
 import {
   getHttpStatusCode,
-  getIsBot,
   getRedirectUrl,
   getRequestArgs,
 } from './utils/server.js';
-import { WebManifest } from './index.js';
 import { IWebManifest } from './typedefs/webmanifest.js';
-import { cookieChangeHandler } from './utils/cookie.js';
+import {
+  initWebmanifest,
+  webmanifestHandler,
+} from './utils/server/webmanifest.js';
+import { getHeadContent } from './utils/server/head.js';
+import { cacheData, retrieveData } from './utils/cache.js';
+import { getRequestUniqueId } from './utils/server/request-id.js';
 
-const getCompression = (request: Request) => {
-  const acceptEncoding = request.headers['accept-encoding'] ?? '';
-  if (acceptEncoding.indexOf('br') !== -1) {
-    return {
-      compressionStream: zlib.createBrotliCompress(),
-      encoding: 'br',
-    };
-  }
-  if (acceptEncoding.indexOf('gzip') !== -1) {
-    return {
-      compressionStream: zlib.createGzip(),
-      encoding: 'gzip',
-    };
-  }
-  if (acceptEncoding.indexOf('deflate') !== -1) {
-    return {
-      compressionStream: zlib.createDeflate(),
-      encoding: 'deflate',
-    };
-  }
-  return {
-    compressionStream: new PassThrough(),
-    encoding: false,
-  };
-};
-
-const initWebmanifest = async (request: Request) => {
-  const computedWebmanifest = getInternalVar(request, 'Webmanifest', null);
-  if (computedWebmanifest !== null) {
-    return;
-  }
-  if (typeof appWebmanifest === 'function') {
-    const webmanifest: WebManifest = await appWebmanifest(
-      getRequestArgs(request),
-    );
-    setInternalVar(request, 'Webmanifest', webmanifest);
-    return;
-  }
-  setInternalVar(request, 'Webmanifest', appWebmanifest ?? {});
-};
-
-const webmanifestHandler = async (request: Request, response: Response) => {
+/**
+ * Initialize the data and routes required to execute the request.
+ * @param request Request
+ * @returns { routes, mainScripts }
+ */
+const initializeDataAndRoutes = async (request: Request) => {
   await initWebmanifest(request);
-  response.json(getInternalVar(request, 'Webmanifest', {}));
+  const routes = typeof appRoutes === 'function'
+    ? await appRoutes(getRequestArgs(request))
+    : appRoutes;
+  const mainScripts = extractMainScripts(request.app.locals.chunksMap);
+  return { routes, mainScripts };
 };
 
-const handler = async (request: Request, response: Response) => {
+/**
+ *
+ * @param request Request
+ * @param resolve
+ * @param data
+ * @param webCharSet
+ * @param matchedRoutes
+ */
+const handleWritableOnFinish = async (
+  request: Request,
+  resolve: Function,
+  data: string,
+  webCharSet: string | null,
+  matchedRoutes: LazyRouteMatch[],
+) => {
+  const requestUniqueId = getRequestUniqueId(request);
+  const headContent = await getHeadContent(request);
+  const body = `${headContent}${data}`;
+
+  const statusCode = getHttpStatusCode(request, matchedRoutes);
+  let redirectUrl = '';
+
+  if (statusCodeWithLocations.includes(statusCode)) {
+    redirectUrl = getRedirectUrl(request);
+  }
+
+  const charSet = webCharSet ?? 'utf-8';
+  const headers: Record<string, string> = {
+    'content-type': `text/html; charset=${charSet}`,
+  };
+
+  cacheData(requestUniqueId, JSON.stringify({
+    body,
+    headers,
+    statusCode,
+    redirectUrl,
+  }));
+
+  resolve({
+    body, headers, statusCode, redirectUrl,
+  });
+};
+
+const handleStreamError = (request: Request, err: unknown) => {
+  setInternalVar(request, 'hasExecutionError', true);
+  if (err instanceof Error && err.message.indexOf('closed early') === -1) {
+    // eslint-disable-next-line no-console
+    console.error('An error occurred: ', err);
+  } else if (err?.toString?.().indexOf('closed early') === -1) {
+    // eslint-disable-next-line no-console
+    console.error('An error occurred: ', err);
+  }
+};
+
+const renderApp = (
+  request: Request,
+  app: JSX.Element,
+  mainScripts: any,
+  setRequestValue: (key: string, value: any) => void,
+  getRequestValue: <T = any>(key: string, defaultValue: T) => T,
+) => renderToPipeableStream(
+    <ReactStrictMode>
+      <ReactPWAContext.Provider
+        value={{ setValue: setRequestValue, getValue: getRequestValue }}
+      >
+        {/* @ts-ignore */}
+        <CookiesProvider cookies={request.universalCookies}>
+          <StaticRouter location={request.url}>
+            <app-content>{app}</app-content>
+            {getRequestValue('footerScripts', <></>)}
+          </StaticRouter>
+        </CookiesProvider>
+      </ReactPWAContext.Provider>
+    </ReactStrictMode>,
+    {
+      bootstrapScripts: mainScripts,
+      onShellError(error) {
+        handleStreamError(request, error);
+      },
+      onError(err: unknown) {
+        handleStreamError(request, err);
+      },
+    },
+);
+
+const requestExecutionPromiseMap = new Map();
+
+const executeAndCacheRequest = async (request: Request) => {
+  const requestUniqueId = getRequestUniqueId(request);
+  const existingRequestExecution = requestExecutionPromiseMap.get(requestUniqueId);
+  if (existingRequestExecution) return existingRequestExecution;
+
+  // eslint-disable-next-line no-async-promise-executor
+  const requestExecutionPromise = new Promise(async (resolve, reject) => {
+    try {
+      const { routes, mainScripts } = await initializeDataAndRoutes(request);
+      const webCharSet = getInternalVar<IWebManifest>(request, 'Webmanifest', {}).charSet;
+      const matchedRoutes = matchRoutes(routes, request.url) as LazyRouteMatch[];
+
+      let data = '';
+      const writable = new Writable({
+        write(chunk, _, callback) {
+          data += chunk;
+          callback();
+        },
+      });
+
+      writable.on('finish', () => handleWritableOnFinish(
+        request,
+        resolve,
+        data,
+        webCharSet,
+        matchedRoutes,
+      ));
+
+      const setRequestValue = (key: string, val: any) => setInternalVar(request, key, val);
+      const getRequestValue = (key: string, defaultValue: any = null) => getInternalVar(request, key, defaultValue);
+
+      // @ts-ignore
+      const app = EnableServerSideRender ? <App routes={routes} /> : <></>;
+      const stream = renderApp(request, app, mainScripts, setRequestValue, getRequestValue);
+      stream.pipe(writable);
+    } catch (ex) {
+      reject(ex);
+    }
+  });
+
+  requestExecutionPromiseMap.set(requestUniqueId, requestExecutionPromise);
+  requestExecutionPromise.finally(() => {
+    requestExecutionPromiseMap.delete(requestUniqueId);
+  });
+  return requestExecutionPromise;
+};
+
+const handleResponseData = (response: Response, data: any) => {
+  if (data.redirectUrl) {
+    response
+      .status(data.statusCode)
+      .redirect(data.redirectUrl);
+    return;
+  }
+  response.status(data.statusCode);
+  // Cached data found, so use it to respond to the client
+  Object.entries(data.headers).forEach(([key, value]: any) => {
+    response.setHeader(key, value);
+  });
+  response.end(data.body);
+};
+
+const handler = async (request: Request, response: Response, next: NextFunction) => {
   /**
    * Manually reject *.map as they should be directly served via static
    */
   const requestUrl = new URL(request.url, `http://${request.get('host')}`);
-  if (requestUrl.pathname.endsWith('.map')) {
+  if (
+    requestUrl.pathname.endsWith('.map')
+    || requestUrl.pathname.endsWith('.json')
+    || requestUrl.pathname.endsWith('.manifest')
+    || requestUrl.pathname.endsWith('.js')
+    || requestUrl.pathname.endsWith('.css')
+    || requestUrl.pathname.endsWith('.ico')
+  ) {
     response.status(404);
     response.send('Not found');
     return;
   }
 
-  const { chunksMap } = request.app.locals;
+  const requestUniqueId = getRequestUniqueId(request); // Function to generate a unique ID based on the request
+  const cachedData = await retrieveData(requestUniqueId);
 
-  let routes = appRoutes;
-  const userAgent = request.headers['user-agent'] ?? '';
-  // get isbot instance
-  const isBot = getIsBot()(userAgent);
-
-  // Init web manifest for the request
-  await initWebmanifest(request);
-  const { lang: webLang, charSet: webCharSet } = getInternalVar<IWebManifest>(
-    request,
-    'Webmanifest',
-    {},
-  );
-  const lang = webLang ?? 'en';
-  const charSet = webCharSet ?? 'utf-8';
-  /**
-   * Set header to text/html with charset as per webmanifest
-   * or default to utf-8
-   */
-  response.set({
-    'content-type': `text/html; charset=${charSet}`,
-  });
-
-  const { compressionStream, encoding } = getCompression(request);
-  if (typeof encoding === 'string') {
-    response.set({ 'content-encoding': encoding });
-  }
-
-  const initialHtml = `<!DOCTYPE html><html lang="${lang}"><meta charset="${charSet}">`;
-  compressionStream.pipe(response);
-
-  // Cache mechanism, if the previous request had a response code of
-  // @todo 200 then send the initial HTML without hesitation
-
-  // Irrespective of the error, send the initial HTML, maybe handle 500 errors or 404 errors
-  compressionStream.write(initialHtml);
-
-  // @todo when calling request Args, simply memoize that function
-  if (typeof appRoutes === 'function') {
-    // eslint-disable-next-line no-console
-    console.time('Routes function execution time');
-    routes = await appRoutes(getRequestArgs(request));
-    // eslint-disable-next-line no-console
-    console.timeEnd('Routes function execution time');
-  }
-
-  // @todo: memoize the match routes function
-  const matchedRoutes = matchRoutes(routes, request.url) as LazyRouteMatch[];
-
-  let stylesWithContent: { href: string; content: string }[] = [];
-  let styles: string[] = [];
-  try {
-    // @todo: memoize the extractStylesWithContent function
-    stylesWithContent = await extractStylesWithContent(
-      matchedRoutes,
-      chunksMap,
-    );
-  } catch {
-    // @todo: memoize the extractStyles function
-    styles = extractStyles(matchedRoutes, chunksMap);
-  }
-
-  // @todo memoize the extractMainScripts function, along with preflight and preconnect
-  const mainScripts = extractMainScripts(chunksMap);
-
-  // Initialize Cookies
-  let universalCookies: Cookies | null = new Cookies(request.headers.cookie);
-  const onCookieChange = cookieChangeHandler(response);
-  universalCookies.addChangeListener(onCookieChange);
-  const clearCookieListener = () => {
-    if (universalCookies) {
-      universalCookies.removeChangeListener(onCookieChange);
-      universalCookies = null;
+  if (cachedData) {
+    // Request cached data and try to parse it.
+    try {
+      const cachedRequestData = JSON.parse(cachedData);
+      if (cachedRequestData) {
+        handleResponseData(response, cachedRequestData);
+        executeAndCacheRequest(request);
+        next();
+        return;
+      }
+    } catch (ex) {
+      // eslint-disable-next-line no-console
+      console.error('Error while parsing cached data: ', ex);
     }
-  };
-
-  // release universal cookies
-  response.once('close', () => {
-    clearCookieListener();
-  });
-
-  // Initiate the router to get manage the data
-  const setRequestValue = (key: string, val: any) => {
-    setInternalVar(request, key, val);
-  };
-  const getRequestValue = (key: string, defaultValue: any = null) => getInternalVar(request, key, defaultValue);
-  // @ts-ignore
-  const app = EnableServerSideRender ? <App routes={routes} /> : <></>;
-  const stream = renderToPipeableStream(
-    <ReactStrictMode>
-      <ReactPWAContext.Provider
-        value={{ setValue: setRequestValue, getValue: getRequestValue }}
-      >
-        <>
-          <CookiesProvider cookies={universalCookies}>
-            <StaticRouter location={request.url}>
-              <DataProvider>
-                <HeadProvider
-                  stylesWithContent={stylesWithContent}
-                  styles={styles}
-                  preStyles={getRequestValue('headPreStyles', <></>)}
-                >
-                  <app-content>{app}</app-content>
-                  {getRequestValue('footerScripts', <></>)}
-                </HeadProvider>
-              </DataProvider>
-            </StaticRouter>
-          </CookiesProvider>
-        </>
-      </ReactPWAContext.Provider>
-    </ReactStrictMode>,
-    {
-      bootstrapScripts: mainScripts,
-      onShellReady() {
-        // if (isBot) return;
-        // stream.pipe(compressionStream);
-      },
-      onShellError(error) {
-        setInternalVar(request, 'hasExecutionError', true);
-        // eslint-disable-next-line no-console
-        console.log('A Shell error occurred:\n', error);
-        // eslint-disable-next-line no-console
-        console.log(
-          'A shell error may also occur if wrong react components are injected in head or footer.'
-            + 'Please check you are using addToHeadPreStyles & addToFooter wisely.',
-        );
-        // Something errored before we could complete the shell so we emit an alternative shell.
-        if (!isBot) {
-          response.status(500);
-        }
-        /**
-         * @todo do not add script on shell error. After adding the scripts the
-         * frontend may work fine, thus the error is not directly visible to developer
-         */
-        compressionStream.write(
-          '<app-content></app-content><script>SHELL_ERROR=true;</script>',
-        );
-        compressionStream.end();
-      },
-      onAllReady() {
-        // if (!isBot) return;
-        // If you don't want streaming, use this instead of onShellReady.
-        // This will fire after the entire page content is ready.
-        // You can use this for crawlers or static generation.
-        const statusCode = getHttpStatusCode(request, matchedRoutes);
-        response.status(statusCode);
-        if (statusCodeWithLocations.includes(statusCode)) {
-          const redirectUrl = getRedirectUrl(request);
-          response.redirect(statusCode, redirectUrl);
-          return;
-        }
-        compressionStream.write(initialHtml);
-        stream.pipe(compressionStream);
-      },
-      onError(err: unknown) {
-        setInternalVar(request, 'hasExecutionError', true);
-        if (
-          err instanceof Error
-          && err.message.indexOf('closed early') === -1
-        ) {
-          // eslint-disable-next-line no-console
-          console.error('An error occurred: ', err);
-        } else if (err?.toString?.().indexOf('closed early') === -1) {
-          // eslint-disable-next-line no-console
-          console.error('An error occurred: ', err);
-        }
-      },
-    },
-  );
+  }
+  const data = await executeAndCacheRequest(request);
+  handleResponseData(response, data);
+  next();
 };
 
 const router = Router();
@@ -278,6 +251,11 @@ if (
 
 // Use /manifest.webmanifest as webmanifestHandler
 router.get('/manifest.webmanifest', webmanifestHandler);
+
+router.use(cookiesMiddleware());
+
+// Enable compression
+router.use(compression());
 
 // At end use * for default handler
 router.use(handler);

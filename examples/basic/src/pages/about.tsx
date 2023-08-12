@@ -1,14 +1,17 @@
-import { FC, lazy, Suspense } from 'react';
+import { FC } from 'react';
 import { Skeleton } from '@components/skeleton';
+import { lazy } from '@reactpwa/core';
 
-const LazyParent = lazy(() => import('@components/parent'));
+const LazyParent = lazy({
+  element: () => import('@components/parent'),
+  skeleton: Skeleton,
+  error: () => <>Error</>,
+});
 
 const HomePage: FC = () => (
-    <div>
-      <Suspense fallback={<Skeleton />}>
-        <LazyParent />
-      </Suspense>
-    </div>
+  <div>
+    <LazyParent />
+  </div>
 );
 
 export default HomePage;

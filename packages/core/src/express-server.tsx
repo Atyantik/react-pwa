@@ -6,6 +6,8 @@ import { router, appServer } from './server.js';
 import { ChunksMap } from './utils/asset-extract.js';
 
 const app = express();
+
+app.disable('x-powered-by');
 app.set('trust proxy', true);
 
 let webChunksMap: ChunksMap = {

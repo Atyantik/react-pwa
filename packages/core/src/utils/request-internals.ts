@@ -1,17 +1,21 @@
-import { Request } from 'express';
+import type { Request } from 'express';
 
 const requestInternals = new WeakMap();
 
-export const setInternalVar = (request: Request, key: string, value: any) => {
-  const requestVals = requestInternals.get(request) ?? {};
-  requestInternals.set(request, {
+export const setInternalVar = (
+  reference: Request | object | Symbol,
+  key: string,
+  value: any,
+) => {
+  const requestVals = requestInternals.get(reference) ?? {};
+  requestInternals.set(reference, {
     ...requestVals,
     [key]: value,
   });
 };
 
 export const getInternalVar = <T = any>(
-  request: Request,
+  reference: Request | object | Symbol,
   key: string,
   defaultValue?: T,
-) => requestInternals.get(request)?.[key] ?? defaultValue ?? null;
+) => requestInternals.get(reference)?.[key] ?? defaultValue ?? null;

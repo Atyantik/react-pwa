@@ -5,8 +5,8 @@ import {
   Children,
   DetailedReactHTMLElement,
 } from 'react';
-import { IWebManifest } from '../typedefs/webmanifest.js';
-import { HeadElement } from '../typedefs/head.js';
+import { IWebManifest } from '../../typedefs/webmanifest.js';
+import { HeadElement } from '../../typedefs/head.js';
 
 // eslint-disable-next-line no-bitwise
 export const fastHashStr = (str: string) => str.split('').reduce((s, c) => (Math.imul(31, s) + c.charCodeAt(0)) | 0, 0);
@@ -107,7 +107,8 @@ export function unique() {
           && h.key.indexOf('$') === -1
           && h.props?.property === 'og:image'
         ) {
-          // this is a classic case when we want to avoid the default share image in og:image
+          // this is a classic case when we want to avoid
+          // the default share image in og:image
           if (keys.has(h.key)) {
             isUnique = false;
           } else {
@@ -122,6 +123,8 @@ export function unique() {
   };
 }
 
+const isValidReactElement = (n: HeadElement): n is ReactElement => n !== null && typeof n === 'object' && 'type' in n;
+
 /**
  * Get Elements presented by user in the <Head></Head>
  * tag as children and convert it to ReactElement
@@ -129,63 +132,51 @@ export function unique() {
  * @returns ReactElement []
  */
 export function convertToReactElement(list: HeadElement): ReactElement[] {
-  let headNodes: any[] = [];
-  const allNodes = Array.isArray(list) ? list : [list];
-  for (let i = 0; i < allNodes.length; i += 1) {
-    const node = allNodes[i];
-    if (
-      typeof node !== 'string'
-      && typeof node !== 'number'
-      && typeof node !== 'boolean'
-      && node !== null
-      && typeof node !== 'undefined'
-    ) {
-      if (
-        // @ts-ignore
-        node.type === Fragment
-        // @ts-ignore
-        && node.props?.children
-      ) {
-        const childElements = convertToReactElement(
-          // @ts-ignore
-          Children.toArray(node.props.children),
-        );
-        headNodes = headNodes.concat(childElements);
-      } else if (
-        // @ts-ignore
-        node.type === 'title'
-        // @ts-ignore
-        && Array.isArray(node.props?.children)
-      ) {
-        const titleNode = node as DetailedReactHTMLElement<any, any>;
-        headNodes.push(
-          cloneElement(titleNode, {
-            children: titleNode.props.children.join(''),
-          }),
-        );
+  const headNodes: ReactElement[] = [];
+
+  const allNodes: HeadElement[] = Array.isArray(list) ? list : [list];
+
+  const handleFragment = (node: ReactElement) => {
+    const childElements = convertToReactElement(
+      Children.toArray(node.props.children),
+    );
+    headNodes.push(...childElements);
+  };
+
+  const handleTitle = (node: DetailedReactHTMLElement<any, any>) => {
+    const titleNode = cloneElement(node, {
+      children: node.props.children.join(''),
+    });
+    headNodes.push(titleNode);
+  };
+
+  const handleWarnings = (node: ReactElement) => {
+    const { type, props } = node;
+    if (type === 'link' && props?.rel === 'stylesheet') {
+      const hrefText = props?.href
+        ? `${props.href} detected in your <Head> tag. `
+        : '';
+      // eslint-disable-next-line no-console
+      console.warn(
+        `WARNING:: ${hrefText} Avoid stylesheets in <Head> element.\n
+         Read more here: https://www.reactpwa.com/blog/no-link-in-head.html`,
+      );
+    }
+  };
+
+  allNodes.forEach((node) => {
+    if (isValidReactElement(node)) {
+      if (node.type === Fragment && node.props?.children) {
+        handleFragment(node);
+      } else if (node.type === 'title' && Array.isArray(node.props?.children)) {
+        handleTitle(node as DetailedReactHTMLElement<any, any>);
       } else {
         headNodes.push(node);
       }
-
-      // @ts-ignore
-      const rel = node.props?.rel;
-      // @ts-ignore
-      const href = node.props?.href;
-
-      if (
-        // @ts-ignore
-        node.type === 'link'
-        && rel === 'stylesheet'
-      ) {
-        const hrefText = href ? `${href} detected in your <Head> tag. ` : '';
-        // eslint-disable-next-line no-console
-        console.warn(
-          `WARNING:: ${hrefText} Avoid stylesheets in <Head> element.\n
-          Read more here: https://www.reactpwa.com/blog/no-link-in-head.html`,
-        );
-      }
+      handleWarnings(node);
     }
-  }
+  });
+
   return headNodes;
 }
 
@@ -196,22 +187,26 @@ export function convertToReactElement(list: HeadElement): ReactElement[] {
  */
 export const addKeyToElement = () => {
   let keyIndex = 1;
-  const existingKeys: (string | number)[] = [];
+  const existingKeys: Set<string | number> = new Set();
+
   return (element: ReactElement) => {
-    if (!element.key || existingKeys.includes(element.key)) {
-      let key = `h.${keyIndex}`;
-      while (existingKeys.includes(key)) {
+    let { key } = element;
+
+    if (!key || existingKeys.has(key)) {
+      key = `h.${keyIndex}`;
+      while (existingKeys.has(key)) {
         keyIndex += 1;
         key = `h.${keyIndex}`;
       }
-      const clonedElement = cloneElement(element, {
-        key,
-      });
-      keyIndex += 1;
-      existingKeys.push(key);
+    }
+
+    existingKeys.add(key);
+
+    if (key !== element.key) {
+      const clonedElement = cloneElement(element, { key });
       return clonedElement;
     }
-    existingKeys.push(element.key);
+
     return element;
   };
 };
@@ -259,13 +254,6 @@ export const sortHeadElements = (
   b: React.ReactElement,
 ) => getPriority(a) - getPriority(b);
 
-export const defaultHead = convertToReactElement(
-  <>
-    <meta httpEquiv="X-UA-Compatible" content="IE=Edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-  </>,
-);
-
 export const getAppleIcon = (webmanifest: IWebManifest) => (webmanifest?.icons ?? []).find(
   (i: { sizes?: string; src: string }) => (i?.sizes?.indexOf('192') !== -1 || i?.sizes?.indexOf('180') !== -1)
       && i?.src?.indexOf?.('.svg') === -1,
@@ -277,39 +265,3 @@ export const sanitizeElements = (elements: ReactElement[]) => elements
   .reverse()
   .map(addKeyToElement())
   .sort(sortHeadElements);
-
-const historyWeakMap = new WeakMap();
-export const proxyHistoryPushReplace = (callback: Function) => {
-  if (historyWeakMap.has(window)) {
-    return;
-  }
-  (function proxyHistory(history) {
-    const { pushState, replaceState } = history;
-    historyWeakMap.set(window, { pushState, replaceState });
-
-    const pushOverride: typeof pushState = (...args) => {
-      callback();
-      pushState.apply(history, args);
-    };
-    const replaceOverride: typeof replaceState = (...args) => {
-      callback();
-      pushState.apply(history, args);
-    };
-    // Patch the history for custom monitoring of events
-    // eslint-disable-next-line no-param-reassign
-    history.pushState = pushOverride;
-    // eslint-disable-next-line no-param-reassign
-    history.replaceState = replaceOverride;
-  }(window.history));
-};
-
-export const restoreHistoryPushReplace = () => {
-  (function proxyHistory(history) {
-    const { pushState, replaceState } = historyWeakMap.get(window);
-    // Patch the history for custom monitoring of events
-    // eslint-disable-next-line no-param-reassign
-    history.pushState = pushState;
-    // eslint-disable-next-line no-param-reassign
-    history.replaceState = replaceState;
-  }(window.history));
-};

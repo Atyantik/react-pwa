@@ -1,4 +1,5 @@
 import { notBoolean } from '../../utils/not-boolean.js';
+import BabelLazyRoutes from '../../babel/lazy-routes.js';
 
 const getPresetEnvOptions = (options: { isTargetServer: boolean }) => {
   if (options.isTargetServer) {
@@ -48,5 +49,7 @@ export const getBabelLoaderOptions = (options: {
       },
     ],
   ],
-  plugins: [options.hotReload && 'react-refresh/babel'].filter(notBoolean),
+  plugins: [BabelLazyRoutes, options.hotReload && 'react-refresh/babel'].filter(
+    notBoolean,
+  ),
 });
