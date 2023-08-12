@@ -78,15 +78,21 @@ const handleWritableOnFinish = async (
     'content-type': `text/html; charset=${charSet}`,
   };
 
-  cacheData(requestUniqueId, JSON.stringify({
+  cacheData(
+    requestUniqueId,
+    JSON.stringify({
+      body,
+      headers,
+      statusCode,
+      redirectUrl,
+    }),
+  );
+
+  resolve({
     body,
     headers,
     statusCode,
     redirectUrl,
-  }));
-
-  resolve({
-    body, headers, statusCode, redirectUrl,
   });
 };
 
@@ -143,8 +149,15 @@ const executeAndCacheRequest = async (request: Request) => {
   const requestExecutionPromise = new Promise(async (resolve, reject) => {
     try {
       const { routes, mainScripts } = await initializeDataAndRoutes(request);
-      const webCharSet = getInternalVar<IWebManifest>(request, 'Webmanifest', {}).charSet;
-      const matchedRoutes = matchRoutes(routes, request.url) as LazyRouteMatch[];
+      const webCharSet = getInternalVar<IWebManifest>(
+        request,
+        'Webmanifest',
+        {},
+      ).charSet;
+      const matchedRoutes = matchRoutes(
+        routes,
+        request.url,
+      ) as LazyRouteMatch[];
 
       let data = '';
       const writable = new Writable({
@@ -167,7 +180,13 @@ const executeAndCacheRequest = async (request: Request) => {
 
       // @ts-ignore
       const app = EnableServerSideRender ? <App routes={routes} /> : <></>;
-      const stream = renderApp(request, app, mainScripts, setRequestValue, getRequestValue);
+      const stream = renderApp(
+        request,
+        app,
+        mainScripts,
+        setRequestValue,
+        getRequestValue,
+      );
       stream.pipe(writable);
     } catch (ex) {
       reject(ex);
@@ -183,9 +202,7 @@ const executeAndCacheRequest = async (request: Request) => {
 
 const handleResponseData = (response: Response, data: any) => {
   if (data.redirectUrl) {
-    response
-      .status(data.statusCode)
-      .redirect(data.redirectUrl);
+    response.status(data.statusCode).redirect(data.redirectUrl);
     return;
   }
   response.status(data.statusCode);
@@ -196,7 +213,11 @@ const handleResponseData = (response: Response, data: any) => {
   response.end(data.body);
 };
 
-const handler = async (request: Request, response: Response, next: NextFunction) => {
+const handler = async (
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) => {
   /**
    * Manually reject *.map as they should be directly served via static
    */
