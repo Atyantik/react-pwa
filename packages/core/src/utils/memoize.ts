@@ -21,7 +21,6 @@ export const memoize = <T extends (...args: any[]) => any>(
     if (typeof key !== 'string') {
       key = hash(JSON.stringify(key));
     }
-    console.log('Memoization Key', key);
 
     // Try to use Redis
     if (client && client.isReady && client.isOpen) {

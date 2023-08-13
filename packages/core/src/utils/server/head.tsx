@@ -105,13 +105,17 @@ const headContent = async (request: Request) => {
   );
 
   const scripts = await memoizedGetScripts(lazyModules, lazyWebpack, chunksMap);
+  const styles = await memoizedGetStyles(lazyModules, lazyWebpack, chunksMap);
+  const syncData = getInternalVar(request, 'syncData', new Map());
+  const syncDataText = JSON.stringify(Array.from(syncData.entries()));
 
   const htmlSnippets = [
     '<!DOCTYPE html>',
     `<html lang="${lang}">`,
     '<head>',
     headStr,
-    await memoizedGetStyles(lazyModules, lazyWebpack, chunksMap),
+    styles,
+    `<script type="text/sync-data-template" id="_rpwa">${syncDataText}</script>`,
     scripts,
     '</head>',
   ];

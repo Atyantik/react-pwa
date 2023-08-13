@@ -3,7 +3,7 @@ export type PromiseCallback = () => Promise<any>;
 export const wrapPromise = <T extends PromiseCallback>(
   promise: T,
   options?: {
-    onFinalize?: () => void;
+    onFinalize?: (status: string, result: Awaited<ReturnType<T>>) => void;
   },
 ) => {
   let status = 'pending';
@@ -20,7 +20,7 @@ export const wrapPromise = <T extends PromiseCallback>(
       },
     )
     .finally(() => {
-      options?.onFinalize?.();
+      options?.onFinalize?.(status, result);
     });
   return {
     read(): Awaited<ReturnType<T>> {

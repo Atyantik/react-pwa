@@ -33,6 +33,14 @@ import { getHeadContent } from './utils/server/head.js';
 import { cacheData, retrieveData } from './utils/cache.js';
 import { getRequestUniqueId } from './utils/server/request-id.js';
 
+const extensions = [
+  'jpg', 'jpeg', 'png', 'gif', 'svg', 'ico', 'css', 'js', 'html',
+  'woff', 'woff2', 'ttf', 'eot', 'mp3', 'mp4', 'wav', 'pdf',
+];
+
+const isAssetRequest = (requestUrl: string) => requestUrl.match(
+  new RegExp(`\\.(${extensions.join('|')})$`),
+);
 /**
  * Initialize the data and routes required to execute the request.
  * @param request Request
@@ -154,11 +162,16 @@ const executeAndCacheRequest = async (request: Request) => {
         'Webmanifest',
         {},
       ).charSet;
+
       const matchedRoutes = matchRoutes(
         routes,
         request.url,
       ) as LazyRouteMatch[];
 
+      /**
+       * We need to catch all data from the stream and then
+       * concatinate it. So we are using a writable stream
+       */
       let data = '';
       const writable = new Writable({
         write(chunk, _, callback) {
@@ -193,6 +206,10 @@ const executeAndCacheRequest = async (request: Request) => {
     }
   });
 
+  /**
+   * Cache the promise so that we don't execute the same request again
+   * on the same server instance
+   */
   requestExecutionPromiseMap.set(requestUniqueId, requestExecutionPromise);
   requestExecutionPromise.finally(() => {
     requestExecutionPromiseMap.delete(requestUniqueId);
@@ -222,16 +239,8 @@ const handler = async (
    * Manually reject *.map as they should be directly served via static
    */
   const requestUrl = new URL(request.url, `http://${request.get('host')}`);
-  if (
-    requestUrl.pathname.endsWith('.map')
-    || requestUrl.pathname.endsWith('.json')
-    || requestUrl.pathname.endsWith('.manifest')
-    || requestUrl.pathname.endsWith('.js')
-    || requestUrl.pathname.endsWith('.css')
-    || requestUrl.pathname.endsWith('.ico')
-  ) {
-    response.status(404);
-    response.send('Not found');
+  if (isAssetRequest(requestUrl.toString())) {
+    next();
     return;
   }
 
