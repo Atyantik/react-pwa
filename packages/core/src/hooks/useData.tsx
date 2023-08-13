@@ -36,7 +36,6 @@ export function useData<T extends (
   promise = wrapPromise(promiseCallback, {
     onFinalize: (status, data) => {
       if (status !== 'error' && typeof window === 'undefined') {
-        console.log('Set Sync Data', id, data);
         syncData.set(id, data);
         setValue('syncData', syncData);
       }

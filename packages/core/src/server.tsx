@@ -9,10 +9,11 @@ import { StaticRouter } from 'react-router-dom/server.js';
 // @ts-ignore
 import appRoutes from '@currentProject/routes';
 // @ts-ignore
-import appServer from '@currentProject/server';
+import * as customAppServer from '@currentProject/server';
 
 import { CookiesProvider } from 'react-cookie';
 import compression from 'compression';
+import type { createClient } from 'redis';
 import { extractMainScripts, LazyRouteMatch } from './utils/asset-extract.js';
 import { App } from './components/app.js';
 import { ReactStrictMode } from './components/strict.js';
@@ -32,6 +33,8 @@ import {
 import { getHeadContent } from './utils/server/head.js';
 import { cacheData, retrieveData } from './utils/cache.js';
 import { getRequestUniqueId } from './utils/server/request-id.js';
+
+type RedisClient = ReturnType<typeof createClient>;
 
 const extensions = [
   'jpg',
@@ -107,6 +110,7 @@ const handleWritableOnFinish = async (
       statusCode,
       redirectUrl,
     }),
+    request.app.locals.redisClient,
   );
 
   resolve({
@@ -258,7 +262,7 @@ const handler = async (
   }
 
   const requestUniqueId = getRequestUniqueId(request); // Function to generate a unique ID based on the request
-  const cachedData = await retrieveData(requestUniqueId);
+  const cachedData = await retrieveData(requestUniqueId, request.app.locals.redisClient);
 
   if (cachedData) {
     // Request cached data and try to parse it.
@@ -283,6 +287,8 @@ const handler = async (
 const router = Router();
 Object.defineProperty(router, 'name', { value: 'RPWA_Router' });
 
+export const appServer = customAppServer?.default || undefined;
+
 if (
   appServer
   && (Object.keys(appServer).length || typeof appServer === 'function')
@@ -303,4 +309,6 @@ router.use(compression());
 // At end use * for default handler
 router.use(handler);
 
-export { router, appServer };
+export const redisClient = (customAppServer?.redisClient || undefined) as RedisClient | undefined;
+
+export { router };

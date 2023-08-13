@@ -1,11 +1,11 @@
-// import fastify from 'fastify';
+import { createClient } from 'redis';
 
-// const instance = fastify();
+const client = createClient();
+try {
+  await client.connect();
+} catch (ex) {
+  // eslint-disable-next-line no-console
+  console.error('Failed to connect to Redis', ex);
+}
 
-// instance.get('/something2', (request, reply) => {
-//   reply.send({
-//     name: 'Tirth',
-//   });
-// });
-
-// export default instance;
+export const redisClient = client;

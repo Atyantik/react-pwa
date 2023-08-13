@@ -44,17 +44,19 @@ if (rootElement) {
       return getInternalVar(reference, key, defaultValue);
     };
 
-    const scriptText = document.querySelector(
-      'script[type="text/sync-data-template"][id="_rpwa"]',
-    )?.innerHTML ?? '{}';
-    try {
-      setRequestValue(
-        'syncData',
-        new Map(JSON.parse(scriptText) as [string, any][]),
-      );
-    } catch (ex) {
-      // @ts-ignore
-      console.error('Failed to parse sync data.', ex);
+    const scriptTextElement = document.querySelector('script[type="text/sync-data-template"][id="_rpwa"]');
+    if (scriptTextElement) {
+      const scriptText = scriptTextElement.innerHTML;
+      try {
+        setRequestValue(
+          'syncData',
+          new Map(JSON.parse(scriptText) as [string, any][]),
+        );
+      } catch (ex) {
+        // eslint-disable-next-line no-console
+        console.error('Failed to parse sync data.', ex);
+      }
+      scriptTextElement.remove();
     }
 
     const children = (

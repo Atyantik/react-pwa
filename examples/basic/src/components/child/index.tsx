@@ -10,7 +10,7 @@ export const ChildComponent: FC = () => {
   useEffect(() => {
     setTimeout(() => {
       setTitle(`${titleText} - 1`);
-    }, 4000);
+    }, 1000);
   }, []);
   return (
     <>

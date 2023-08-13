@@ -2,10 +2,14 @@ import path from 'node:path';
 import { readFileSync } from 'node:fs';
 import express from 'express';
 import compression from 'compression';
-import { router, appServer } from './server.js';
+import { router, appServer, redisClient } from './server.js';
 import { ChunksMap } from './utils/asset-extract.js';
 
 const app = express();
+// Set redis client for every request access
+if (redisClient) {
+  app.locals.redisClient = redisClient;
+}
 
 app.disable('x-powered-by');
 app.set('trust proxy', true);

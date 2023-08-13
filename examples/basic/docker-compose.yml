@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  cache:
+    image: redis:7
+    restart: always
+    ports:
+      - '6379:6379'
+    volumes:
+      - cache:/data
+volumes:
+  cache:
+    driver: local
