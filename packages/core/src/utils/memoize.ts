@@ -14,7 +14,7 @@ export const memoize = <T extends (...args: any[]) => any>(
   // Store both value and timestamp in the local cache
   const localCache = new Map();
 
-  return async function (...args: any[]) {
+  return async function memoized(...args: any[]) {
     let key = createKey
       ? await Promise.resolve(createKey(...args))
       : JSON.stringify(args);

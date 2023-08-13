@@ -44,7 +44,9 @@ if (rootElement) {
       return getInternalVar(reference, key, defaultValue);
     };
 
-    const scriptTextElement = document.querySelector('script[type="text/sync-data-template"][id="_rpwa"]');
+    const scriptTextElement = document.querySelector(
+      'script[type="text/sync-data-template"][id="_rpwa"]',
+    );
     if (scriptTextElement) {
       const scriptText = scriptTextElement.innerHTML;
       try {

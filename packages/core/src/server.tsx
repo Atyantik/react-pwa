@@ -262,7 +262,10 @@ const handler = async (
   }
 
   const requestUniqueId = getRequestUniqueId(request); // Function to generate a unique ID based on the request
-  const cachedData = await retrieveData(requestUniqueId, request.app.locals.redisClient);
+  const cachedData = await retrieveData(
+    requestUniqueId,
+    request.app.locals.redisClient,
+  );
 
   if (cachedData) {
     // Request cached data and try to parse it.
@@ -309,6 +312,8 @@ router.use(compression());
 // At end use * for default handler
 router.use(handler);
 
-export const redisClient = (customAppServer?.redisClient || undefined) as RedisClient | undefined;
+export const redisClient = (customAppServer?.redisClient || undefined) as
+  | RedisClient
+  | undefined;
 
 export { router };
