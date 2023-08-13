@@ -44,9 +44,14 @@ if (rootElement) {
       return getInternalVar(reference, key, defaultValue);
     };
 
-    const scriptText = document.querySelector('script[type="text/sync-data-template"][id="_rpwa"]')?.innerHTML ?? '{}';
+    const scriptText = document.querySelector(
+      'script[type="text/sync-data-template"][id="_rpwa"]',
+    )?.innerHTML ?? '{}';
     try {
-      setRequestValue('syncData', new Map(JSON.parse(scriptText) as [string, any][]));
+      setRequestValue(
+        'syncData',
+        new Map(JSON.parse(scriptText) as [string, any][]),
+      );
     } catch (ex) {
       // @ts-ignore
       console.error('Failed to parse sync data.', ex);

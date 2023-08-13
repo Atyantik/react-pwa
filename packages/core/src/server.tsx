@@ -34,13 +34,26 @@ import { cacheData, retrieveData } from './utils/cache.js';
 import { getRequestUniqueId } from './utils/server/request-id.js';
 
 const extensions = [
-  'jpg', 'jpeg', 'png', 'gif', 'svg', 'ico', 'css', 'js', 'html',
-  'woff', 'woff2', 'ttf', 'eot', 'mp3', 'mp4', 'wav', 'pdf',
+  'jpg',
+  'jpeg',
+  'png',
+  'gif',
+  'svg',
+  'ico',
+  'css',
+  'js',
+  'html',
+  'woff',
+  'woff2',
+  'ttf',
+  'eot',
+  'mp3',
+  'mp4',
+  'wav',
+  'pdf',
 ];
 
-const isAssetRequest = (requestUrl: string) => requestUrl.match(
-  new RegExp(`\\.(${extensions.join('|')})$`),
-);
+const isAssetRequest = (requestUrl: string) => requestUrl.match(new RegExp(`\\.(${extensions.join('|')})$`));
 /**
  * Initialize the data and routes required to execute the request.
  * @param request Request
