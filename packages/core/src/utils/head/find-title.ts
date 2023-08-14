@@ -3,6 +3,9 @@ import { ReactElement, Fragment } from 'react';
 type HeadElement = ReactElement | HeadElement[];
 
 export function findTitle(list: HeadElement): string | null {
+  if (!list) {
+    return null;
+  }
   // Base case: if it's a title element, return its contents.
   if (!Array.isArray(list) && list.type === 'title') {
     return typeof list.props.children === 'string'

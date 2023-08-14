@@ -95,31 +95,31 @@ const filesFromChunks = (chunks: ChunksMap['chunks'], ext: string) => {
   return files;
 };
 
-const addById = (
-  webpackId: string | number,
-  chunksMap: ChunksMap,
-  files: Set<string>,
-  ext: string,
-  extractedAssets: Set<string | number>,
-) => {
-  if (extractedAssets.has(webpackId)) {
-    return;
-  }
-  extractedAssets.add(webpackId);
-  const idChunk = chunksMap.chunks.find((chunk) => chunk.id === webpackId);
-  if (idChunk) {
-    filesFromChunks([idChunk], ext).forEach((file) => {
-      files.add(file);
-    });
+// const addById = (
+//   webpackId: string | number,
+//   chunksMap: ChunksMap,
+//   files: Set<string>,
+//   ext: string,
+//   extractedAssets: Set<string | number>,
+// ) => {
+//   if (extractedAssets.has(webpackId)) {
+//     return;
+//   }
+//   extractedAssets.add(webpackId);
+//   const idChunk = chunksMap.chunks.find((chunk) => chunk.id === webpackId);
+//   if (idChunk) {
+//     filesFromChunks([idChunk], ext).forEach((file) => {
+//       files.add(file);
+//     });
 
-    // Check children
-    (idChunk.children ?? []).forEach((childId) => {
-      if (childId !== webpackId) {
-        addById(childId, chunksMap, files, ext, extractedAssets);
-      }
-    });
-  }
-};
+//     // Check children
+//     (idChunk.children ?? []).forEach((childId) => {
+//       if (childId !== webpackId) {
+//         addById(childId, chunksMap, files, ext, extractedAssets);
+//       }
+//     });
+//   }
+// };
 
 const prependForwardSlash = (file: string) => {
   if (file.startsWith('http')) {
@@ -163,7 +163,23 @@ export const extractFiles = (
     });
   }
 
-  const extractedAssets = new Set<string | number>();
+  const chunksSet = new Set<number>();
+
+  const addReasonChunk = (chunkId: string | number) => {
+    chunksMap.chunks.forEach((chunk) => {
+      if (
+        chunk.id
+        && typeof chunk.id === 'number'
+        && chunk?.reasonModules?.includes?.(chunkId)
+        && !chunksSet.has(chunk.id)
+      ) {
+        chunksSet.add(chunk.id);
+        addReasonChunk(chunk.id);
+      }
+    });
+  };
+
+  console.log(modules, webpack);
 
   modules?.forEach((moduleId) => {
     chunksMap.chunks
@@ -172,14 +188,15 @@ export const extractFiles = (
           || chunk?.reasonsStr === moduleId,
       )
       .forEach((chunk) => {
-        filesFromChunks([chunk], ext).forEach((file) => {
-          files.add(file);
-        });
+        if (chunk.id && typeof chunk.id === 'number') {
+          chunksSet.add(chunk.id);
+          addReasonChunk(chunk.id);
+        }
       });
   });
 
   webpack?.forEach((wId) => {
-    let webpackId = wId;
+    const webpackId = wId;
     if (webpackId && typeof webpackId === 'number') {
       chunksMap.chunks
         .filter(
@@ -187,18 +204,23 @@ export const extractFiles = (
           (chunk) => chunk?.reasonModules?.indexOf?.(webpackId) !== -1,
         )
         .forEach((chunk) => {
-          filesFromChunks([chunk], ext).forEach((file) => {
-            files.add(file);
-          });
+          if (chunk.id && typeof chunk.id === 'number') {
+            chunksSet.add(chunk.id);
+            addReasonChunk(chunk.id);
+          }
         });
     }
+  });
 
-    if (webpackId && typeof webpackId === 'string') {
-      webpackId = webpackId.replace(/[./]/gi, '_').replace(/^_+|_+$/g, '');
-
-      // Add chunk with ID and add its children as well.
-      addById(webpackId, chunksMap, files, ext, extractedAssets);
+  const chunks = chunksMap.chunks.filter((c) => {
+    if (c.id && typeof c.id === 'number') {
+      return chunksSet.has(c.id);
     }
+    return false;
+  });
+
+  filesFromChunks(chunks, ext).forEach((file) => {
+    files.add(file);
   });
 
   return [...files].map(prependForwardSlash);

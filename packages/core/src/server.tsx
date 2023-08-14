@@ -35,7 +35,7 @@ import { cacheData, retrieveData } from './utils/cache.js';
 import { getRequestUniqueId } from './utils/server/request-id.js';
 
 // @ts-ignore
-const serverCacheStrategy = ServerCacheStrategy ?? false;
+const serverCacheStrategy = ServerCacheStrategy === 'true' ?? false;
 const shouldUseCache = serverCacheStrategy !== false;
 type RedisClient = ReturnType<typeof createClient>;
 
@@ -61,6 +61,10 @@ const extensions = [
   'mp4',
   'wav',
   'pdf',
+  'map',
+  'js',
+  'json',
+  'css',
 ];
 
 const isAssetRequest = (requestUrl: string) => requestUrl.match(new RegExp(`\\.(${extensions.join('|')})$`));
@@ -161,7 +165,6 @@ const renderApp = (
         <CookiesProvider cookies={request.universalCookies}>
           <StaticRouter location={request.url}>
             <app-content>{app}</app-content>
-            {getRequestValue('footerScripts', <></>)}
           </StaticRouter>
         </CookiesProvider>
       </ReactPWAContext.Provider>
@@ -271,6 +274,7 @@ const handler = async (
    */
   const requestUrl = new URL(request.url, `http://${request.get('host')}`);
   if (isAssetRequest(requestUrl.toString())) {
+    console.log(`Asset request: ${requestUrl.toString()}`);
     next();
     return;
   }

@@ -10,7 +10,7 @@ export function lazy(props: RouteObject) {
   const LazyComponent = reactLazy(props.element);
   const ErrorFallback = props.error || DefaultErrorFallback;
   const FallbackComponent = props.skeleton || DefaultFallbackComponent;
-  return class extends React.Component {
+  return class extends React.Component<any> {
     // eslint-disable-next-line class-methods-use-this
     render() {
       return (
@@ -27,7 +27,7 @@ export function lazy(props: RouteObject) {
             return (
               <ErrorBoundary FallbackComponent={ErrorFallback}>
                 <Suspense fallback={<FallbackComponent />}>
-                  <LazyComponent {...(props?.props ?? {})} />
+                  <LazyComponent {...this.props} {...(props?.props ?? {})} />
                 </Suspense>
               </ErrorBoundary>
             );

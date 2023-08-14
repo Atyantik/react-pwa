@@ -73,7 +73,7 @@ export class WebpackHandler {
         ...(react ?? {}),
       },
       server: {
-        cache: 'staleWhileRevalidate',
+        cache: false,
         ...server,
       },
       serviceWorker: serviceWorker ?? !this.isDevelopment,
@@ -213,7 +213,7 @@ export class WebpackHandler {
           this.configOptions.react.strictMode && this.isDevelopment,
         ServerCacheStrategy: this.isDevelopment
           ? false
-          : this.configOptions.server.cache,
+          : this.configOptions.server.cache === 'staleWhileRevalidate',
         EnableServiceWorker: this.configOptions.serviceWorker !== false,
       }),
       new webpack.EnvironmentPlugin({

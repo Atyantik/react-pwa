@@ -48,7 +48,7 @@ if (rootElement) {
       'script[type="text/sync-data-template"][id="_rpwa"]',
     );
     if (scriptTextElement) {
-      const scriptText = scriptTextElement.innerHTML;
+      const scriptText = window.atob(scriptTextElement.innerHTML);
       try {
         setRequestValue(
           'syncData',

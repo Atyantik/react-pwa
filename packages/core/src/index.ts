@@ -3,6 +3,8 @@ import { parse } from 'bowser';
 import { IWebManifest } from './typedefs/webmanifest.js';
 
 export { useData } from './hooks/useData.js';
+export { useSyncData } from './hooks/useSyncData.js';
+export { useRequestVars } from './hooks/useRequestVars.js';
 export { lazy } from './components/route.js';
 export {
   Outlet,
