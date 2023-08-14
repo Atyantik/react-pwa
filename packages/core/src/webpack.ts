@@ -32,6 +32,10 @@ const defaultConfig = {
   sassCompiler: 'sass-embedded',
   cacheType: 'memory',
   serviceWorker: true,
+  server: {
+    cache: false,
+    // cache: 'staleWhileRevalidate',
+  },
   esmodules: [] as string[],
 };
 
@@ -60,12 +64,17 @@ export class WebpackHandler {
       ...options,
     };
 
-    const { react, serviceWorker, ...otherOptions } = options?.config ?? {};
+    const {
+      react, server, serviceWorker, ...otherOptions
+    } = options?.config ?? {};
     this.configOptions = {
       react: {
-        StrictMode: true,
-        HeadResolveTimeout: 10000,
+        strictMode: true,
         ...(react ?? {}),
+      },
+      server: {
+        cache: 'staleWhileRevalidate',
+        ...server,
       },
       serviceWorker: serviceWorker ?? !this.isDevelopment,
       ...otherOptions,
@@ -201,8 +210,10 @@ export class WebpackHandler {
         ...(this.isTargetWeb ? { 'process.env': {} } : {}),
         EnableServerSideRender: this.options.serverSideRender,
         EnableReactStrictMode:
-          this.configOptions.react.StrictMode && this.isDevelopment,
-        HeadResolveTimeout: this.configOptions.react.HeadResolveTimeout,
+          this.configOptions.react.strictMode && this.isDevelopment,
+        ServerCacheStrategy: (
+          this.isDevelopment ? false : this.configOptions.server.cache
+        ),
         EnableServiceWorker: this.configOptions.serviceWorker !== false,
       }),
       new webpack.EnvironmentPlugin({

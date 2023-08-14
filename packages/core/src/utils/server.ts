@@ -1,4 +1,3 @@
-import { ReactElement } from 'react';
 import { Request } from 'express';
 import bowser from 'bowser';
 import isbot from 'isbot';
@@ -109,18 +108,18 @@ export const getRequestArgs = (request: Request): RoutesArgs => {
     userAgent,
     isbot: async () => isBot,
     getScoped,
-    addToHeadPreStyles: (components: ReactElement | ReactElement[]) => {
-      const previousComponents = getInternalVar(request, 'headPreStyles', []);
+    addToHeadPreStyles: (content: string) => {
+      const previousPreStylesContent = getInternalVar(request, 'headPreStyles', []);
       setInternalVar(request, 'headPreStyles', [
-        ...previousComponents,
-        components,
+        ...previousPreStylesContent,
+        content,
       ]);
     },
-    addToFooter: (components: ReactElement | ReactElement[]) => {
-      const previousComponents = getInternalVar(request, 'footerScripts', []);
+    addToFooter: (content: string) => {
+      const previousFooterContent = getInternalVar(request, 'footerScripts', []);
       setInternalVar(request, 'footerScripts', [
-        ...previousComponents,
-        components,
+        ...previousFooterContent,
+        content,
       ]);
     },
     addHeaders: (headers: Headers) => {

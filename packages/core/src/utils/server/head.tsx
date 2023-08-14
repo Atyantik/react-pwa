@@ -104,6 +104,8 @@ const headContent = async (request: Request) => {
     getInternalVar(request, 'lazyWebpack', new Set()) as Set<string | number>,
   );
 
+  const preStyles = getInternalVar(request, 'headPreStyles', []) as string[];
+
   const scripts = await memoizedGetScripts(lazyModules, lazyWebpack, chunksMap);
   const styles = await memoizedGetStyles(lazyModules, lazyWebpack, chunksMap);
   const syncData = getInternalVar(request, 'syncData', new Map());
@@ -114,6 +116,7 @@ const headContent = async (request: Request) => {
     `<html lang="${lang}">`,
     '<head>',
     headStr,
+    preStyles.join(''),
     styles,
     `<script type="text/sync-data-template" id="_rpwa">${syncDataText}</script>`,
     scripts,

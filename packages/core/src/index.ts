@@ -1,4 +1,3 @@
-import { ReactElement } from 'react';
 import { RouteObject as RRRouteObject } from 'react-router-dom';
 import { parse } from 'bowser';
 import { IWebManifest } from './typedefs/webmanifest.js';
@@ -38,8 +37,8 @@ export type RoutesArgs = {
     key: string,
     callback: (() => any) | (() => Promise<any>),
   ) => Promise<T>;
-  addToHeadPreStyles: (components: ReactElement | ReactElement[]) => void;
-  addToFooter: (components: ReactElement | ReactElement[]) => void;
+  addToHeadPreStyles: (content: string) => void;
+  addToFooter: (content: string) => void;
   addHeaders: (headers: Headers) => void;
 };
 

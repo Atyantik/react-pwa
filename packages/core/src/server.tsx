@@ -34,7 +34,14 @@ import { getHeadContent } from './utils/server/head.js';
 import { cacheData, retrieveData } from './utils/cache.js';
 import { getRequestUniqueId } from './utils/server/request-id.js';
 
+// @ts-ignore
+const serverCacheStrategy = ServerCacheStrategy ?? false;
+const shouldUseCache = serverCacheStrategy !== false;
 type RedisClient = ReturnType<typeof createClient>;
+
+const redisClient = (customAppServer?.redisClient || undefined) as
+  | RedisClient
+  | undefined;
 
 const extensions = [
   'jpg',
@@ -88,7 +95,8 @@ const handleWritableOnFinish = async (
 ) => {
   const requestUniqueId = getRequestUniqueId(request);
   const headContent = await getHeadContent(request);
-  const body = `${headContent}${data}`;
+  const footerContent = getInternalVar(request, 'footerScripts', []) as string[];
+  const body = `${headContent}${data}${footerContent.join('')}`;
 
   const statusCode = getHttpStatusCode(request, matchedRoutes);
   let redirectUrl = '';
@@ -102,16 +110,18 @@ const handleWritableOnFinish = async (
     'content-type': `text/html; charset=${charSet}`,
   };
 
-  cacheData(
-    requestUniqueId,
-    JSON.stringify({
-      body,
-      headers,
-      statusCode,
-      redirectUrl,
-    }),
-    request.app.locals.redisClient,
-  );
+  if (shouldUseCache) {
+    cacheData(
+      requestUniqueId,
+      JSON.stringify({
+        body,
+        headers,
+        statusCode,
+        redirectUrl,
+      }),
+      redisClient,
+    );
+  }
 
   resolve({
     body,
@@ -262,24 +272,26 @@ const handler = async (
   }
 
   const requestUniqueId = getRequestUniqueId(request); // Function to generate a unique ID based on the request
-  const cachedData = await retrieveData(
-    requestUniqueId,
-    request.app.locals.redisClient,
-  );
+  if (shouldUseCache) {
+    const cachedData = await retrieveData(
+      requestUniqueId,
+      redisClient,
+    );
 
-  if (cachedData) {
-    // Request cached data and try to parse it.
-    try {
-      const cachedRequestData = JSON.parse(cachedData);
-      if (cachedRequestData) {
-        handleResponseData(response, cachedRequestData);
-        executeAndCacheRequest(request);
-        next();
-        return;
+    if (cachedData) {
+      // Request cached data and try to parse it.
+      try {
+        const cachedRequestData = JSON.parse(cachedData);
+        if (cachedRequestData) {
+          handleResponseData(response, cachedRequestData);
+          executeAndCacheRequest(request);
+          next();
+          return;
+        }
+      } catch (ex) {
+        // eslint-disable-next-line no-console
+        console.error('Error while parsing cached data: ', ex);
       }
-    } catch (ex) {
-      // eslint-disable-next-line no-console
-      console.error('Error while parsing cached data: ', ex);
     }
   }
   const data = await executeAndCacheRequest(request);
@@ -299,8 +311,7 @@ if (
   Object.defineProperty(router, 'name', { value: 'RPWA_App_Server' });
 }
 
-// Add app server as priority
-
+// Add app server as priority handler
 // Use /manifest.webmanifest as webmanifestHandler
 router.get('/manifest.webmanifest', webmanifestHandler);
 
@@ -311,9 +322,5 @@ router.use(compression());
 
 // At end use * for default handler
 router.use(handler);
-
-export const redisClient = (customAppServer?.redisClient || undefined) as
-  | RedisClient
-  | undefined;
 
 export { router };

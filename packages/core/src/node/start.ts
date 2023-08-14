@@ -53,6 +53,7 @@ export const run = async (options: RunOptions): Promise<Server> => {
   }
 
   expressServer = express();
+  expressServer.disable('x-powered-by');
   expressServer.set('trust proxy', true);
 
   const webWebpackHandler = new WHandler({
