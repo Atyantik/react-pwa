@@ -211,9 +211,9 @@ export class WebpackHandler {
         EnableServerSideRender: this.options.serverSideRender,
         EnableReactStrictMode:
           this.configOptions.react.strictMode && this.isDevelopment,
-        ServerCacheStrategy: (
-          this.isDevelopment ? false : this.configOptions.server.cache
-        ),
+        ServerCacheStrategy: this.isDevelopment
+          ? false
+          : this.configOptions.server.cache,
         EnableServiceWorker: this.configOptions.serviceWorker !== false,
       }),
       new webpack.EnvironmentPlugin({

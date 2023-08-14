@@ -95,7 +95,11 @@ const handleWritableOnFinish = async (
 ) => {
   const requestUniqueId = getRequestUniqueId(request);
   const headContent = await getHeadContent(request);
-  const footerContent = getInternalVar(request, 'footerScripts', []) as string[];
+  const footerContent = getInternalVar(
+    request,
+    'footerScripts',
+    [],
+  ) as string[];
   const body = `${headContent}${data}${footerContent.join('')}`;
 
   const statusCode = getHttpStatusCode(request, matchedRoutes);
@@ -273,10 +277,7 @@ const handler = async (
 
   const requestUniqueId = getRequestUniqueId(request); // Function to generate a unique ID based on the request
   if (shouldUseCache) {
-    const cachedData = await retrieveData(
-      requestUniqueId,
-      redisClient,
-    );
+    const cachedData = await retrieveData(requestUniqueId, redisClient);
 
     if (cachedData) {
       // Request cached data and try to parse it.

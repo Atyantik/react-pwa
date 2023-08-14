@@ -109,14 +109,22 @@ export const getRequestArgs = (request: Request): RoutesArgs => {
     isbot: async () => isBot,
     getScoped,
     addToHeadPreStyles: (content: string) => {
-      const previousPreStylesContent = getInternalVar(request, 'headPreStyles', []);
+      const previousPreStylesContent = getInternalVar(
+        request,
+        'headPreStyles',
+        [],
+      );
       setInternalVar(request, 'headPreStyles', [
         ...previousPreStylesContent,
         content,
       ]);
     },
     addToFooter: (content: string) => {
-      const previousFooterContent = getInternalVar(request, 'footerScripts', []);
+      const previousFooterContent = getInternalVar(
+        request,
+        'footerScripts',
+        [],
+      );
       setInternalVar(request, 'footerScripts', [
         ...previousFooterContent,
         content,
