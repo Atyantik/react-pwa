@@ -179,8 +179,6 @@ export const extractFiles = (
     });
   };
 
-  console.log(modules, webpack);
-
   modules?.forEach((moduleId) => {
     chunksMap.chunks
       .filter(

@@ -109,7 +109,9 @@ const headContent = async (request: Request) => {
   const scripts = await memoizedGetScripts(lazyModules, lazyWebpack, chunksMap);
   const styles = await memoizedGetStyles(lazyModules, lazyWebpack, chunksMap);
   const syncData = getInternalVar(request, 'syncData', new Map());
-  const syncDataText = Buffer.from(JSON.stringify(Array.from(syncData.entries()))).toString('base64');
+  const syncDataText = Buffer.from(
+    JSON.stringify(Array.from(syncData.entries())),
+  ).toString('base64');
 
   const htmlSnippets = [
     '<!DOCTYPE html>',

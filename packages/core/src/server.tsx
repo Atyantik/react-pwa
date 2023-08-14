@@ -274,7 +274,6 @@ const handler = async (
    */
   const requestUrl = new URL(request.url, `http://${request.get('host')}`);
   if (isAssetRequest(requestUrl.toString())) {
-    console.log(`Asset request: ${requestUrl.toString()}`);
     next();
     return;
   }
