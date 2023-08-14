@@ -35,8 +35,7 @@ import { cacheData, retrieveData } from './utils/cache.js';
 import { getRequestUniqueId } from './utils/server/request-id.js';
 
 // @ts-ignore
-const serverCacheStrategy = ServerCacheStrategy === 'true' ?? false;
-const shouldUseCache = serverCacheStrategy !== false;
+const shouldUseCache = ServerCacheStrategy;
 type RedisClient = ReturnType<typeof createClient>;
 
 const redisClient = (customAppServer?.redisClient || undefined) as
@@ -119,16 +118,21 @@ const handleWritableOnFinish = async (
   };
 
   if (shouldUseCache) {
-    cacheData(
-      requestUniqueId,
-      JSON.stringify({
-        body,
-        headers,
-        statusCode,
-        redirectUrl,
-      }),
-      redisClient,
-    );
+    try {
+      await cacheData(
+        requestUniqueId,
+        JSON.stringify({
+          body,
+          headers,
+          statusCode,
+          redirectUrl,
+        }),
+        redisClient,
+      );
+    } catch (ex) {
+      // eslint-disable-next-line no-console
+      console.log(ex);
+    }
   }
 
   resolve({

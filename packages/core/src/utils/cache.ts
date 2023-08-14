@@ -12,9 +12,8 @@ export async function cacheData(
 ): Promise<void> {
   const rpwaKey = `__rpwa__${key}__`;
   if (redisClient?.isOpen && redisClient?.isReady) {
-    await redisClient.set(rpwaKey, value, {
-      EX: expirationInSeconds,
-    });
+    await redisClient.set(rpwaKey, value);
+    await redisClient.expireAt(rpwaKey, (Math.floor((+new Date()) / 1000) + expirationInSeconds));
   } else {
     localCache.set(rpwaKey, {
       data: value,
