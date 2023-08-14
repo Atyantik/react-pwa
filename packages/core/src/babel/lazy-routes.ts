@@ -21,7 +21,7 @@ export default (api: any) => {
               if (
                 path.parent?.type !== 'ArrowFunctionExpression' &&
                 path.parentPath?.parent?.type !== 'ObjectProperty' &&
-                path.parentPath?.parent?.key?.name === 'component'
+                path.parentPath?.parent?.key?.name !== 'element'
               ) {
                 return;
               }
