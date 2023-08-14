@@ -1,6 +1,6 @@
 {
   "name": "@reactpwa/examples-basic",
-  "version": "0.0.2-zeta.0",
+  "version": "0.0.3-zeta.0",
   "description": "Core of ReactPWA",
   "type": "module",
   "private": true,
@@ -14,7 +14,7 @@
   "author": "Tirth Bodawala <tirthbodawala@atyantik.com>",
   "license": "ISC",
   "dependencies": {
-    "@reactpwa/core": "^0.0.2-zeta.0",
+    "@reactpwa/core": "^0.0.3-zeta.0",
     "bulma": "^0.9.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
