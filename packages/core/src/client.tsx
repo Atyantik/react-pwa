@@ -1,4 +1,5 @@
-import { matchRoutes, BrowserRouter } from 'react-router-dom';
+import { useLayoutEffect } from 'react';
+import { matchRoutes, BrowserRouter, useLocation } from 'react-router-dom';
 import { createRoot, hydrateRoot } from 'react-dom/client';
 import { CookiesProvider } from 'react-cookie';
 // @ts-ignore
@@ -8,8 +9,6 @@ import { App } from './components/app.js';
 import { requestArgs } from './utils/client.js';
 import { ReactPWAContext } from './components/reactpwa.js';
 import { setInternalVar, getInternalVar } from './utils/request-internals.js';
-
-const DEFAULT_REFERENCE = Symbol('DEFAULT_REFERENCE');
 
 const rootElement = document.getElementsByTagName('app-content')?.[0];
 // @ts-ignore
@@ -29,37 +28,50 @@ if (rootElement) {
       // @ts-ignore
       matched.map((route) => route.route?.element?.()),
     );
-    const setRequestValue = (key: string, val: any) => {
-      let reference = window.history.state;
-      if (!window.history.state) {
-        reference = DEFAULT_REFERENCE;
-      }
-      setInternalVar(reference, key, val);
+
+    const reference = {
+      current: {
+        key: 'INITIAL',
+      },
     };
-    const getRequestValue = (key: string, defaultValue: any = null) => {
-      let reference = window.history.state;
-      if (!window.history.state) {
-        reference = DEFAULT_REFERENCE;
+    const setRequestValue = (key: string, val: any) => {
+      setInternalVar(reference.current, key, val);
+    };
+    const getRequestValue = (key: string, dv: any = null) => getInternalVar(reference.current, key, dv);
+
+    let scriptInitialized = false;
+    const initSyncData = () => {
+      if (!scriptInitialized) {
+        scriptInitialized = true;
+        const scriptTextElement = document.querySelector(
+          'script[type="text/sync-data-template"][id="_rpwa"]',
+        );
+        if (scriptTextElement) {
+          try {
+            const scriptText = window.atob(scriptTextElement.innerHTML);
+            setRequestValue(
+              'syncData',
+              new Map(JSON.parse(scriptText) as [string, any][]),
+            );
+          } catch (ex) {
+            // eslint-disable-next-line no-console
+            console.error('Failed to parse sync data.', ex);
+          }
+          scriptTextElement.remove();
+        }
       }
-      return getInternalVar(reference, key, defaultValue);
     };
 
-    const scriptTextElement = document.querySelector(
-      'script[type="text/sync-data-template"][id="_rpwa"]',
-    );
-    if (scriptTextElement) {
-      const scriptText = window.atob(scriptTextElement.innerHTML);
-      try {
-        setRequestValue(
-          'syncData',
-          new Map(JSON.parse(scriptText) as [string, any][]),
-        );
-      } catch (ex) {
-        // eslint-disable-next-line no-console
-        console.error('Failed to parse sync data.', ex);
-      }
-      scriptTextElement.remove();
-    }
+    const MountElement = () => {
+      const location = useLocation();
+      useLayoutEffect(() => {
+        reference.current = {
+          key: location.key,
+        };
+        initSyncData();
+      }, [location.key]);
+      return null;
+    };
 
     const children = (
       <ReactStrictMode>
@@ -68,6 +80,7 @@ if (rootElement) {
         >
           <CookiesProvider>
             <BrowserRouter>
+              <MountElement />
               <App routes={routes} />
             </BrowserRouter>
           </CookiesProvider>
