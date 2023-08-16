@@ -41,6 +41,8 @@ export const getRequestUniqueId = (
     // Create a hash from the combined attributes
     uniqueId = h32ToString(data);
   }
-  requestUniqueIdMap.set(req, uniqueId);
-  return `req_${host}_${uniqueId}`;
+
+  const finalUniqueId = `req_${host}_${uniqueId}`;
+  requestUniqueIdMap.set(req, finalUniqueId);
+  return finalUniqueId;
 };
