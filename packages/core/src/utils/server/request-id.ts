@@ -18,6 +18,7 @@ export const getRequestUniqueId = (
   if (requestUniqueIdMap.has(req)) {
     return requestUniqueIdMap.get(req) ?? '';
   }
+  const host = req.get('host');
   let uniqueId: string;
   // If the method is not GET, create a unique ID
   if (req.method !== 'GET') {
@@ -26,7 +27,7 @@ export const getRequestUniqueId = (
     // Combine the attributes you want to use for GET requests
     const data = `
     ${req.protocol}
-    ${req.get('host')}
+    ${host}
     ${req.get('origin')}
     ${req.get('x-forwarded-host')}
     ${options.includeUserAgent ? req.get('user-agent') : ''}
@@ -41,5 +42,5 @@ export const getRequestUniqueId = (
     uniqueId = h32ToString(data);
   }
   requestUniqueIdMap.set(req, uniqueId);
-  return uniqueId;
+  return `req_${host}_${uniqueId}`;
 };

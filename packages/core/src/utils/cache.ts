@@ -10,7 +10,7 @@ export async function cacheData(
   redisClient?: RedisClient,
   expirationInSeconds: number = 3600,
 ): Promise<void> {
-  const rpwaKey = `__rpwa__${key}__`;
+  const rpwaKey = `__rpwa_${key}`;
   if (redisClient?.isOpen && redisClient?.isReady) {
     await redisClient.set(rpwaKey, value);
     await redisClient.expireAt(
@@ -29,7 +29,7 @@ export async function retrieveData(
   key: string,
   redisClient?: RedisClient,
 ): Promise<string | null> {
-  const rpwaKey = `__rpwa__${key}__`;
+  const rpwaKey = `__rpwa_${key}`;
   if (redisClient?.isOpen && redisClient?.isReady) {
     const reply = await redisClient.get(rpwaKey);
     return reply || null;
