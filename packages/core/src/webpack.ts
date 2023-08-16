@@ -34,6 +34,7 @@ const defaultConfig = {
   serviceWorker: true,
   server: {
     cache: false,
+    compression: true,
     // cache: 'staleWhileRevalidate',
   },
   esmodules: [] as string[],
@@ -74,6 +75,7 @@ export class WebpackHandler {
       },
       server: {
         cache: false,
+        compression: true,
         ...server,
       },
       serviceWorker: serviceWorker ?? !this.isDevelopment,
@@ -209,6 +211,7 @@ export class WebpackHandler {
       new webpack.DefinePlugin({
         ...(this.isTargetWeb ? { 'process.env': {} } : {}),
         EnableServerSideRender: this.options.serverSideRender,
+        EnableCompression: this.configOptions.server.compression,
         EnableReactStrictMode:
           this.configOptions.react.strictMode && this.isDevelopment,
         ServerCacheStrategy: this.isDevelopment

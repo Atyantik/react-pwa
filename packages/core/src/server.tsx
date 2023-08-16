@@ -326,7 +326,10 @@ router.get('/manifest.webmanifest', webmanifestHandler);
 router.use(cookiesMiddleware());
 
 // Enable compression
-router.use(compression());
+// @ts-ignore
+if (EnableCompression) {
+  router.use(compression());
+}
 
 // At end use * for default handler
 router.use(handler);

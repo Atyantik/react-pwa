@@ -27,7 +27,10 @@ try {
 }
 
 // Enable compression
-app.use(compression());
+// @ts-ignore
+if (EnableCompression) {
+  app.use(compression());
+}
 
 const staticOptions = {
   immutable: true,
