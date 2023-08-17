@@ -37,9 +37,13 @@ export const getRedirectUrl = (request: Request) => {
   const baseUrl = getBaseUrl(request);
   const baseUrlStr = baseUrl.toString();
   const url = new URL(location, baseUrl);
+
   let urlString = url.toString();
   if (urlString.indexOf(baseUrlStr) !== -1) {
     urlString = urlString.replace(baseUrlStr, '');
+    if (!urlString.startsWith('/')) {
+      return `/${urlString}`;
+    }
   }
   if (!urlString) {
     urlString = '/';
