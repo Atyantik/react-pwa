@@ -7,10 +7,10 @@ import fs from 'fs';
 // Function to get the current file name in a way that supports both CommonJS and ES Modules
 function getCurrentFileName() {
   if (typeof __filename !== 'undefined') {
-      return __filename; // CommonJS environment
+    return __filename; // CommonJS environment
   }
   if (typeof import.meta.url !== 'undefined') {
-      return fileURLToPath(import.meta.url); // ES Module environment
+    return fileURLToPath(import.meta.url); // ES Module environment
   }
   throw new Error('Cannot determine the module type or environment.');
 }
@@ -60,7 +60,9 @@ export const getRequestUniqueId = (
   }
 
   const finalUniqueId = `req_${host}_${lastModifiedTime}_${uniqueId}`;
-  console.info(`request uniqueId:: ${finalUniqueId} with modifiedTime: ${lastModifiedTime}`);
+  console.info(
+    `request uniqueId:: ${finalUniqueId} with modifiedTime: ${lastModifiedTime}`,
+  );
   requestUniqueIdMap.set(req, finalUniqueId);
   return finalUniqueId;
 };
