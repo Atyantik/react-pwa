@@ -1,6 +1,6 @@
 {
   "name": "@reactpwa/examples-recoil",
-  "version": "0.0.11-zeta.0",
+  "version": "0.0.12-zeta.0",
   "description": "Integrating Recoil with ReactPWA",
   "type": "module",
   "private": true,
@@ -13,7 +13,7 @@
   "author": "Tirth Bodawala <tirthbodawala@atyantik.com>",
   "license": "ISC",
   "dependencies": {
-    "@reactpwa/core": "^0.0.11-zeta.0",
+    "@reactpwa/core": "^0.0.12-zeta.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "recoil": "^0.7.7"
