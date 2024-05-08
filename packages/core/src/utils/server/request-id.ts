@@ -1,6 +1,23 @@
 import type { Request } from 'express';
 import crypto from 'crypto';
 import xxhash from 'xxhash-wasm';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
+
+// Function to get the current file name in a way that supports both CommonJS and ES Modules
+function getCurrentFileName() {
+  if (typeof __filename !== 'undefined') {
+      return __filename; // CommonJS environment
+  }
+  if (typeof import.meta.url !== 'undefined') {
+      return fileURLToPath(import.meta.url); // ES Module environment
+  }
+  throw new Error('Cannot determine the module type or environment.');
+}
+
+// Get file stats using the appropriate filename
+const stats = fs.statSync(getCurrentFileName());
+const lastModifiedTime = stats.mtime.toISOString();
 
 const { h32ToString } = await xxhash();
 
@@ -42,7 +59,8 @@ export const getRequestUniqueId = (
     uniqueId = h32ToString(data);
   }
 
-  const finalUniqueId = `req_${host}_${uniqueId}`;
+  const finalUniqueId = `req_${host}_${lastModifiedTime}_${uniqueId}`;
+  console.info(`request uniqueId:: ${finalUniqueId} with modifiedTime: ${lastModifiedTime}`);
   requestUniqueIdMap.set(req, finalUniqueId);
   return finalUniqueId;
 };
