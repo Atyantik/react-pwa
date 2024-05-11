@@ -15,9 +15,14 @@ function getCurrentFileName() {
   throw new Error('Cannot determine the module type or environment.');
 }
 
-// Get file stats using the appropriate filename
-const stats = fs.statSync(getCurrentFileName());
-const lastModifiedTime = stats.mtime.toISOString();
+let lastModifiedTime = (new Date()).toISOString();
+try {
+  // Get file stats using the appropriate filename
+  const stats = fs.statSync(getCurrentFileName());
+  lastModifiedTime = stats.mtime.toISOString();
+} catch {
+  // Ignore the error when the application is run in START mode
+}
 
 const { h32ToString } = await xxhash();
 
