@@ -15,7 +15,7 @@ function getCurrentFileName() {
   throw new Error('Cannot determine the module type or environment.');
 }
 
-let lastModifiedTime = (new Date()).toISOString();
+let lastModifiedTime = new Date().toISOString();
 try {
   // Get file stats using the appropriate filename
   const stats = fs.statSync(getCurrentFileName());
