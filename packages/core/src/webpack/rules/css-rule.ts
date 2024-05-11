@@ -12,7 +12,7 @@ export const getCssRule = (options: {
   detailedIdentName: boolean;
   context: string;
   useCache: boolean;
-  sassCompiler: 'sass' | 'node-sass' | 'sass-embedded';
+  sassCompiler: 'sass' | 'sass-embedded';
 }): RuleSetRule => ({
   test: /\.(css|s[ac]ss)$/i,
   use: [

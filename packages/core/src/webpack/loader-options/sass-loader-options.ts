@@ -1,14 +1,11 @@
 import SassEmbedded from 'sass-embedded';
 import * as Sass from 'sass';
-import NodeSass from 'node-sass';
 
 export const getSassLoaderOptions = (options: {
-  compiler: 'sass' | 'sass-embedded' | 'node-sass';
+  compiler: 'sass' | 'sass-embedded';
 }) => {
   let compiler: any = SassEmbedded;
-  if (options.compiler === 'node-sass') {
-    compiler = NodeSass;
-  } else if (options.compiler === 'sass') {
+  if (options.compiler === 'sass') {
     compiler = Sass;
   }
   return {
