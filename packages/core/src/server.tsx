@@ -34,6 +34,7 @@ import {
 import { WebManifest } from './index.js';
 import { IWebManifest } from './typedefs/webmanifest.js';
 import { cookieChangeHandler } from './utils/cookie.js';
+import { notBoolean } from './utils/not-boolean.js';
 
 const getCompression = (request: Request) => {
   const acceptEncoding = request.headers['accept-encoding'] ?? '';
@@ -132,16 +133,32 @@ const handler = async (request: Request, response: Response) => {
   }
   const matchedRoutes = matchRoutes(routes, request.url) as LazyRouteMatch[];
   let stylesWithContent: { href: string; content: string }[] = [];
-  const styles: string[] = [];
+  let styles: string[] = [];
 
   const mainStyles = extractMainStyles(chunksMap);
   if (mainStyles?.length) {
-    stylesWithContent = await Promise.all(
-      mainStyles.map(async (mainStyle) => ({
-        content: await getCssFileContent(mainStyle),
-        href: mainStyle,
-      })),
-    );
+    stylesWithContent = (
+      await Promise.all(
+        mainStyles.map(async (mainStyle) => {
+          if (mainStyle.startsWith('http')) {
+            return false;
+          }
+          return {
+            content: await getCssFileContent(mainStyle),
+            href: mainStyle,
+          };
+        }),
+      )
+    ).filter(notBoolean);
+
+    styles = mainStyles
+      .map((mainStyle) => {
+        if (mainStyle.startsWith('http')) {
+          return mainStyle;
+        }
+        return false;
+      })
+      .filter(notBoolean);
   }
   const mainScripts = extractMainScripts(chunksMap);
 

@@ -44,6 +44,14 @@ export const extractChunksMap = (
     };
   }
 
+  let isExternalCdn = false;
+  let publicPathUrl = new URL('https://www.reactpwa.com');
+  try {
+    publicPathUrl = new URL(stats.publicPath);
+    isExternalCdn = true;
+  } catch (ex) {
+    console.log('invalid public path url');
+  }
   // Extract from id and children
   // const chunks = (stats.chunks ?? []).map((asset: any) => ({
   //   id: asset?.id,
@@ -52,10 +60,17 @@ export const extractChunksMap = (
   //   files: asset?.files,
   //   children: asset?.children,
   // }));
+  const main = (stats.assetsByChunkName?.main ?? []).map((asset: string) => {
+    if (isExternalCdn) {
+      console.log(publicPathUrl);
+      return new URL(asset, publicPathUrl).toString();
+    }
+    return asset;
+  });
 
   return {
     assetsByChunkName: {
-      main: stats.assetsByChunkName.main,
+      main,
     },
     chunks: [],
   };

@@ -33,6 +33,7 @@ const defaultConfig = {
   cacheType: 'memory',
   serviceWorker: true,
   esmodules: [] as string[],
+  cdnPath: '',
 };
 
 type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
@@ -126,12 +127,14 @@ export class WebpackHandler {
       return getWebOutput({
         projectRoot: this.options.projectRoot,
         isDevelopment: this.isDevelopment,
+        publicPath: this.configOptions.cdnPath,
       });
     }
     if (this.isTargetServer) {
       return getServerOutput({
         projectRoot: this.options.projectRoot,
         isDevelopment: this.isDevelopment,
+        publicPath: this.configOptions.cdnPath,
       });
     }
     return undefined;
