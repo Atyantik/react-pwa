@@ -26,6 +26,36 @@ export type ChunksMap = {
   }[];
 };
 
+const getStats = (webpackStats: any) => {
+  if (webpackStats && 'toJson' in webpackStats) {
+    return webpackStats?.toJson?.() ?? {};
+  }
+  return webpackStats;
+};
+
+const getPublicPathUrl = (publicPath: string) => {
+  let isExternalCdn = false;
+  let publicPathUrl = new URL('https://www.reactpwa.com');
+  try {
+    publicPathUrl = new URL(publicPath);
+    isExternalCdn = true;
+  } catch (ex) {
+    console.log('invalid public path url');
+  }
+  return { publicPathUrl, isExternalCdn };
+};
+
+const processMainAssets = (
+  mainAssets: string[] = [],
+  isExternalCdn: boolean = false,
+  publicPathUrl: URL = new URL('https://www.reactpwa.com'),
+) => mainAssets.map((asset: string) => {
+  if (isExternalCdn) {
+    return new URL(asset, publicPathUrl).toString();
+  }
+  return asset;
+});
+
 export const extractChunksMap = (
   webpackStats:
   | webpack.Stats
@@ -33,10 +63,7 @@ export const extractChunksMap = (
   | webpack.StatsCompilation
   | undefined,
 ): ChunksMap => {
-  let stats = webpackStats as any;
-  if (webpackStats && 'toJson' in webpackStats) {
-    stats = webpackStats?.toJson?.() ?? {};
-  }
+  const stats = getStats(webpackStats);
   if (!stats) {
     return {
       assetsByChunkName: {},
@@ -44,14 +71,7 @@ export const extractChunksMap = (
     };
   }
 
-  let isExternalCdn = false;
-  let publicPathUrl = new URL('https://www.reactpwa.com');
-  try {
-    publicPathUrl = new URL(stats.publicPath);
-    isExternalCdn = true;
-  } catch (ex) {
-    console.log('invalid public path url');
-  }
+  const { publicPathUrl, isExternalCdn } = getPublicPathUrl(stats.publicPath);
   // Extract from id and children
   // const chunks = (stats.chunks ?? []).map((asset: any) => ({
   //   id: asset?.id,
@@ -60,13 +80,11 @@ export const extractChunksMap = (
   //   files: asset?.files,
   //   children: asset?.children,
   // }));
-  const main = (stats.assetsByChunkName?.main ?? []).map((asset: string) => {
-    if (isExternalCdn) {
-      console.log(publicPathUrl);
-      return new URL(asset, publicPathUrl).toString();
-    }
-    return asset;
-  });
+  const main = processMainAssets(
+    stats.assetsByChunkName?.main,
+    isExternalCdn,
+    publicPathUrl,
+  );
 
   return {
     assetsByChunkName: {
