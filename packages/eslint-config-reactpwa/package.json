@@ -1,6 +1,6 @@
 {
   "name": "eslint-config-reactpwa",
-  "version": "0.0.2-zeta.0",
+  "version": "0.0.14",
   "description": "Linting of ReactPWA Apps",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
