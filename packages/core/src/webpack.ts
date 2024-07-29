@@ -123,19 +123,16 @@ export class WebpackHandler {
   }
 
   getOutput(): webpack.Configuration['output'] {
+    const outputOptions = {
+      projectRoot: this.options.projectRoot,
+      isDevelopment: this.isDevelopment,
+      publicPath: this.configOptions.cdnPath,
+    }
     if (this.isTargetWeb) {
-      return getWebOutput({
-        projectRoot: this.options.projectRoot,
-        isDevelopment: this.isDevelopment,
-        publicPath: this.configOptions.cdnPath,
-      });
+      return getWebOutput(outputOptions);
     }
     if (this.isTargetServer) {
-      return getServerOutput({
-        projectRoot: this.options.projectRoot,
-        isDevelopment: this.isDevelopment,
-        publicPath: this.configOptions.cdnPath,
-      });
+      return getServerOutput(outputOptions);
     }
     return undefined;
   }

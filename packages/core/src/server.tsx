@@ -190,22 +190,20 @@ const handler = async (request: Request, response: Response) => {
       <ReactPWAContext.Provider
         value={{ setValue: setRequestValue, getValue: getRequestValue }}
       >
-        <>
-          <CookiesProvider cookies={universalCookies}>
-            <StaticRouter location={request.url}>
-              <DataProvider>
-                <HeadProvider
-                  stylesWithContent={stylesWithContent}
-                  styles={styles}
-                  preStyles={getRequestValue('headPreStyles', <></>)}
-                >
-                  <app-content>{app}</app-content>
-                  {getRequestValue('footerScripts', <></>)}
-                </HeadProvider>
-              </DataProvider>
-            </StaticRouter>
-          </CookiesProvider>
-        </>
+        <CookiesProvider cookies={universalCookies}>
+          <StaticRouter location={request.url}>
+            <DataProvider>
+              <HeadProvider
+                stylesWithContent={stylesWithContent}
+                styles={styles}
+                preStyles={getRequestValue('headPreStyles', <></>)}
+              >
+                <app-content>{app}</app-content>
+                {getRequestValue('footerScripts', <></>)}
+              </HeadProvider>
+            </DataProvider>
+          </StaticRouter>
+        </CookiesProvider>
       </ReactPWAContext.Provider>
     </ReactStrictMode>,
     {
