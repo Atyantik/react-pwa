@@ -14,6 +14,7 @@ const modeOption = new Option('-m, --mode <mode>', 'provide the mode to which th
 modeOption.choices(['development', 'production']);
 
 program.option('-ecf, --env-config-file <path>', 'relative path to .env file', '.env');
+program.option('-cdn, --cdn-path <path>', 'CDN Path for the output resources', '');
 program.option('-rcf, --reactpwa-config-file <path>', 'relative path reactpwa.config.js');
 program.addOption(modeOption);
 

@@ -9,6 +9,7 @@ export type LazyRouteMatch = RouteMatch & {
   };
 };
 export type ChunksMap = {
+  publicPath?: string;
   assetsByChunkName?: Record<string, string[]>;
   chunks: {
     // position: number;

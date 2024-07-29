@@ -93,6 +93,11 @@ export const run = async (options: RunOptions) => {
               (s) => s.compilation.name === 'web',
             );
             const webChunksMap = extractChunksMap(webStats);
+            let publicPath = webStats?.compilation?.options?.output?.publicPath ?? '/';
+            if (typeof publicPath === 'function') {
+              publicPath = '/';
+            }
+            webChunksMap.publicPath = publicPath;
             const chunksMapFilePath = path.join(
               ServerConfig.output.path,
               'chunks-map.json',

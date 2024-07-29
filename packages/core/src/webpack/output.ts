@@ -4,6 +4,7 @@ import { Configuration } from 'webpack';
 export const getWebOutput = (options: {
   projectRoot: string;
   isDevelopment: boolean;
+  publicPath: string;
 }): Configuration['output'] => ({
   module: false,
   asyncChunks: true,
@@ -11,12 +12,13 @@ export const getWebOutput = (options: {
   assetModuleFilename: '_rpwa/assets/[name]-[contenthash][ext]',
   filename: '_rpwa/js/[name]-[contenthash].js',
   cssFilename: '_rpwa/css/[name]-[contenthash].css',
-  publicPath: '/',
+  publicPath: options.publicPath ? options.publicPath : '/',
 });
 
 export const getServerOutput = (options: {
   projectRoot: string;
   isDevelopment: boolean;
+  publicPath: string;
 }): Configuration['output'] => ({
   module: false,
   asyncChunks: false,
@@ -24,7 +26,7 @@ export const getServerOutput = (options: {
   path: resolve(options.projectRoot, 'dist'),
   filename: 'server.cjs',
   assetModuleFilename: '_rpwa/assets/[name]-[contenthash][ext]',
-  publicPath: '/',
+  publicPath: options.publicPath ? options.publicPath : '/',
   library: {
     type: 'commonjs-module',
   },

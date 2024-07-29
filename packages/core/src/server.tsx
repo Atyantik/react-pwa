@@ -30,7 +30,7 @@ import {
   initWebmanifest,
   webmanifestHandler,
 } from './utils/server/webmanifest.js';
-import { getHeadContent } from './utils/server/head.js';
+import { getCDNPath, getHeadContent } from './utils/server/head.js';
 import { cacheData, retrieveData } from './utils/cache.js';
 import { getRequestUniqueId } from './utils/server/request-id.js';
 
@@ -77,7 +77,9 @@ const initializeDataAndRoutes = async (request: Request) => {
   const routes = typeof appRoutes === 'function'
     ? await appRoutes(getRequestArgs(request))
     : appRoutes;
-  const mainScripts = extractMainScripts(request.app.locals.chunksMap);
+  const mainScripts = extractMainScripts(request.app.locals.chunksMap).map(
+    (scriptPath) => getCDNPath(scriptPath, request.app.locals.chunksMap?.publicPath ?? ''),
+  );
   return { routes, mainScripts };
 };
 
