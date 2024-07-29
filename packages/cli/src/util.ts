@@ -106,11 +106,12 @@ type RunOptions = {
 
 export const getRunOptions = (program: Command, options: RunOptions, defaultMode = 'development') => {
   const { mode } = program.opts();
+  const { cdnPath } = program.opts();
   const projectRoot = process.cwd();
   return {
     projectRoot,
     envVars: getEnvVars(program)(),
-    config: getReactpwaConfig(program)(),
+    config: { ...getReactpwaConfig(program)(), cdnPath },
     mode: mode ?? defaultMode,
     serverSideRender: options.serverSideRender,
   };
