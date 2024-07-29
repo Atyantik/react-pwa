@@ -38,6 +38,7 @@ const defaultConfig = {
     // cache: 'staleWhileRevalidate',
   },
   esmodules: [] as string[],
+  cdnPath: '',
 };
 
 type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
@@ -133,17 +134,16 @@ export class WebpackHandler {
   }
 
   getOutput(): webpack.Configuration['output'] {
+    const outputOptions = {
+      projectRoot: this.options.projectRoot,
+      isDevelopment: this.isDevelopment,
+      publicPath: this.configOptions.cdnPath,
+    };
     if (this.isTargetWeb) {
-      return getWebOutput({
-        projectRoot: this.options.projectRoot,
-        isDevelopment: this.isDevelopment,
-      });
+      return getWebOutput(outputOptions);
     }
     if (this.isTargetServer) {
-      return getServerOutput({
-        projectRoot: this.options.projectRoot,
-        isDevelopment: this.isDevelopment,
-      });
+      return getServerOutput(outputOptions);
     }
     return undefined;
   }

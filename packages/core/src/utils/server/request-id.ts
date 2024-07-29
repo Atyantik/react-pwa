@@ -65,9 +65,6 @@ export const getRequestUniqueId = (
   }
 
   const finalUniqueId = `req_${host}_${lastModifiedTime}_${uniqueId}`;
-  console.info(
-    `request uniqueId:: ${finalUniqueId} with modifiedTime: ${lastModifiedTime}`,
-  );
   requestUniqueIdMap.set(req, finalUniqueId);
   return finalUniqueId;
 };

@@ -41,16 +41,32 @@ const getDefaultHeadTags = async (request: Request) => {
   return defaultElements;
 };
 
+export const getCDNPath = (assetPath: string, publicPath: string) => {
+  const isExternal = (publicPath || '/').startsWith('http');
+  let assetUrl = assetPath;
+  if (isExternal) {
+    assetUrl = assetUrl.startsWith('/') ? assetUrl.substring(1) : assetUrl;
+    try {
+      assetUrl = new URL(assetUrl, publicPath).toString();
+    } catch {
+      /**/
+    }
+  }
+  return assetUrl;
+};
+
 const getStyles = async (
   lazyModules: string[],
   lazyWebpack: (string | number)[],
   chunksMap: any,
 ) => {
   const styles = extractStyles(lazyModules, lazyWebpack, chunksMap);
+  const { publicPath } = chunksMap;
   return styles
-    .map(
-      (style) => `<link data-href="${style}" rel="stylesheet" href="${style}" />`,
-    )
+    .map((stylePath) => {
+      const style = getCDNPath(stylePath, publicPath);
+      return `<link data-href="${style}" rel="stylesheet" href="${style}" />`;
+    })
     .join('');
 };
 
@@ -60,15 +76,19 @@ const getScripts = async (
   chunksMap: any,
 ) => {
   const scripts = extractScripts(lazyModules, lazyWebpack, chunksMap);
+  const { publicPath } = chunksMap;
   return (
     '<script>var _orp,_pr=0;window.preloadComplete=!1,_orp=(()=>{var o,l;'
     + `(_pr+=1)===${scripts.length}&&(window.preloadComplete=!0,`
     + `null===(o=(l=window).onPreloadComplete)||void 0===o||o.call(l))});</script>${scripts
-      .map(
-        (script) => `<link href="${script}" data-script-type="route" `
+      .map((scriptPath) => {
+        const script = getCDNPath(scriptPath, publicPath);
+        return (
+          `<link href="${script}" data-script-type="route" `
           + `onload="_orp()" rel="preload" href="${script}" `
-          + 'as="script" />',
-      )
+          + 'as="script" />'
+        );
+      })
       .join('')}`
   );
 };
